@@ -36,9 +36,13 @@ void TextFileSource::readFile(string trainDataFile){
 Mat TextFileSource::nextImage(){
 	//cout << imageIndex << " " << !imagesPath.empty() << " " << imagesPath.size() << endl;
 	if (!imagesPath.empty() && imageIndex < imagesPath.size()) {
-		stringstream fullPath;
-		fullPath << baseDir << imagesPath.at(imageIndex);
-		Mat frame = imread(fullPath.str(), 1 );
+		string s= imagesPath.at(imageIndex);
+		#ifdef __linux__
+			stringstream fullPath;
+			fullPath << baseDir << imagesPath.at(imageIndex);
+			s = fullPath.str();
+		#endif
+		Mat frame = imread(s, 1 );
 		imagesPath.at(imageIndex++);
 		return frame;
 	}
