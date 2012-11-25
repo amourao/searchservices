@@ -1,5 +1,5 @@
 #pragma once
-#include "imagesource.h"
+#include "ImageSource.h"
 #include <opencv2/opencv.hpp>
 
 using namespace std;

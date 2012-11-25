@@ -21,3 +21,8 @@ Old/
 media/
 [Rr]elease*/
 _ReSharper*
+
+*.bin
+*.*~
+*.o
+ck+*

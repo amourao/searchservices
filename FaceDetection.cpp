@@ -1,7 +1,7 @@
 #include "FaceDetection.h"
 
 
-FaceDetection::FaceDetection(string _cascadePath, string _nestedCascadePath, double _scaleChangeFactor, double _eyeScaleChangeFactor, cv::Size& _minSize, cv::Size& _maxSize){
+FaceDetection::FaceDetection(string _cascadePath, string _nestedCascadePath, double _scaleChangeFactor, double _eyeScaleChangeFactor, cv::Size _minSize, cv::Size _maxSize){
 	faceCascade.load( _cascadePath );
 	eyesCascade.load( _nestedCascadePath );
 
@@ -36,7 +36,8 @@ void FaceDetection::detectFaces(Mat& img, vector<Mat>& faceImages, vector<cv::Po
 
 
 
-	for each(Rect r in facesVectorCascade){		
+	for (int q = 0; q < facesVectorCascade.size(); q++){	
+		Rect r = facesVectorCascade.at(q);
 		cv::Rect newR = cv::Rect(r.x,r.y,r.width,r.height);
 		newR.x *= scaleChangeFactor;
 		newR.y *= scaleChangeFactor;
@@ -94,8 +95,9 @@ bool FaceDetection::preProcessFaceImage(Mat& img, Mat& faceImage){
 	center.y = cvRound((img.rows*0.5));
 
 	double radius = (img.cols + img.rows)*0.25;
+	for (int q = 0; q < eyesVectorCascade.size(); q++){	
+		Rect r = eyesVectorCascade.at(q);
 
-	for each(Rect r in eyesVectorCascade){		
 
 		cv::Rect newR = cv::Rect(r.x,r.y,r.width,r.height);
 		newR.x *= eyeScaleChangeFactor;
@@ -160,8 +162,10 @@ bool FaceDetection::detectBestEyepair (Point& center, double faceRadius, vector<
 	Eye tmpRightEye;
 	bool tmpRightDetected = false;
 	bool tmpLeftDetected = false;
-	for each(Eye leftEye in leftEyes){
-		for each(Eye rightEye in rightEyes){
+	for (int l = 0; l < leftEyes.size(); l++){
+		Eye leftEye = leftEyes.at(l);
+		for (int r = 0; r < rightEyes.size(); r++){
+			Eye rightEye = rightEyes.at(r);
 			if(!tmpRightDetected){
 				tmpRightEye = rightEye;
 				tmpRightDetected = true;
@@ -239,7 +243,7 @@ cv::Rect FaceDetection::computeROI(cv::Point& center, cv::Point& eye1, cv::Point
 	return roi;
 }
 
-void FaceDetection::ajustROI (cv::Rect& roi, cv::Size& s){
+void FaceDetection::ajustROI (cv::Rect& roi, cv::Size s){
 	if(roi.x <0)
 		roi.x = 0;
 	if (roi.y < 0)

@@ -3,7 +3,7 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
-#include "imagesource.h"
+#include "ImageSource.h"
 class SingleImageSource :
 	public ImageSource
 {
