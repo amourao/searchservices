@@ -26,3 +26,11 @@ string VideoSource::getImageInfo(){
 bool VideoSource::isAvailable(){
 	return capture.isOpened();
 }
+
+	int VideoSource::getImageCount(){
+		return -1;
+	}
+	
+	int VideoSource::getRemainingImageCount(){
+		return -1;
+	}

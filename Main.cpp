@@ -51,10 +51,10 @@ int testDetection(int argc, char *argv[]){
 
 }
 
-void extractAllFeaturesImEmotion(){
+void extractAllFeaturesImEmotion(string testPath, string output){
 
-string path = "./ck+/CK_Emotion_test.txt";
-	TextFileSource is (path);
+
+	TextFileSource is (testPath);
 
 	//HistogramExtractor histogramExtractor (8);
 
@@ -69,7 +69,7 @@ string path = "./ck+/CK_Emotion_test.txt";
 	GaborExtractor faceGaborExtractor (92,112,4,6,rectangleRois);
 
 
-	fstream faceGaborExtractorF ("gaborTest.bin", std::ios::out | std::ios::binary);
+	fstream faceGaborExtractorF (output, std::ios::out | std::ios::binary);
 
 	//fstream faceEigenExtractorF ("eigen.bin", std::ios::out | std::ios::binary);
 
@@ -78,13 +78,14 @@ string path = "./ck+/CK_Emotion_test.txt";
 	Mat src;
 	Mat eigen;
 	Mat gabor;
+	Mat gaborNeutral;
 	Mat hist;
 
 	float faceGaborExtractorS = faceGaborExtractor.getFeatureVectorSize();
 	//float faceEigenExtractorS = faceEigenExtractor.getFeatureVectorSize();
 	//float histogramExtractorS = histogramExtractor.getFeatureVectorSize();
 
-	float size = 242;
+	float size = is.getImageCount();
 
 	faceGaborExtractorF.write( (const char*)& faceGaborExtractorS, sizeof(float) );
 	//faceEigenExtractorF.write( (const char*)& faceEigenExtractorS, sizeof(float) );
@@ -104,7 +105,7 @@ string path = "./ck+/CK_Emotion_test.txt";
 		float expected;
 
 		string idS;
-		string detectedS;
+		string neutralPath;
 		string expectedS;
 
 
@@ -112,9 +113,9 @@ string path = "./ck+/CK_Emotion_test.txt";
 		string imageInfo = is.getImageInfo();
 
 		stringstream liness(imageInfo);
-		getline(liness, idS, ';');
-		//getline(liness, detectedS, ';');
-		getline(liness, expectedS);
+		//getline(liness, idS, ';');
+		getline(liness, expectedS, ';');
+		getline(liness, neutralPath);
 
 
 		//istringstream ( idS ) >> id;
@@ -124,11 +125,22 @@ string path = "./ck+/CK_Emotion_test.txt";
 		istringstream ( expectedS ) >> expected;
 
 
+		
+		if(!neutralPath.empty()){
+			
+			Mat neutral = imread(neutralPath);
 		//faceEigenExtractor.extractFeatures(src,eigen);
 		//histogramExtractor.extractFeatures(src,hist);
 		faceGaborExtractor.extractFeatures(src,gabor);
+		faceGaborExtractor.extractFeatures(neutral,gaborNeutral);
+
+		Mat gaborMinusNeutral = gabor-gaborNeutral;
+
+		normalize(gaborMinusNeutral, gaborMinusNeutral, 0,1, CV_MINMAX);
+		
 
 
+		gabor = gaborMinusNeutral;
 		//faceEigenExtractorF.write( (const char*)& id, sizeof(float) );
 
 		//float teste;
@@ -171,7 +183,7 @@ string path = "./ck+/CK_Emotion_test.txt";
 			lastT = cvGetTickCount();
 		}
 
-		
+	}
 
 	}
 
@@ -184,7 +196,14 @@ string path = "./ck+/CK_Emotion_test.txt";
 }
 
 int main(int argc, char *argv[]){
-	extractAllFeaturesImEmotion();
+	if(argc != 3)
+		cout << "Missing args" << endl;
+	
+	string path = argv[1];
+	string path2 = argv[2];
+	//"./ck+/CK_Emotion_train.txt";
+	
+	extractAllFeaturesImEmotion(path,path2);
 	
 	
 	getchar();

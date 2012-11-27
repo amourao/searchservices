@@ -3,7 +3,8 @@
 
 TextFileSource::TextFileSource(string _filename){
 	readFile(_filename);
-	baseDir = "./ck+/"; //TODO
+	//baseDir = "./ck+/"; //TODO
+	baseDir = "";
 	imageIndex = 0;
 }
 
@@ -14,7 +15,7 @@ TextFileSource::~TextFileSource(){
 
 void TextFileSource::readFile(string trainDataFile){
 	ifstream file(trainDataFile.c_str(), ifstream::in);
-		string line, path, numOfSamplesStr, emotionStr;
+		string line, path, numOfSamplesStr, emotionStr,idStr, idStr2,dontCare1,neutralPath;
 
 		getline(file, line);
 		stringstream liness(line);
@@ -25,11 +26,20 @@ void TextFileSource::readFile(string trainDataFile){
 
 		int i = 0;
 		while (getline(file, line)) {
+			//./detectedEmotionCKWithNeutalTrain0.png;s130;1;007;d:\\\\datasets\\\\ck+2\\\\cohn-kanade-images\\\\s130\\\\007\\\\s130_007_00000001.png;./detectedEmotionCKWithNeutalTrain0_neutral.png
 			stringstream liness(line);
+
 			getline(liness, path, ';');
-			getline(liness, emotionStr, '\r');
+			getline(liness, idStr, ';');
+			getline(liness, emotionStr, ';');
+			getline(liness, idStr2, ';');
+			getline(liness, dontCare1, ';');
+			getline(liness, neutralPath, '\r');
+			
+			stringstream ss;
+			ss << emotionStr << ";" << neutralPath;
 			imagesPath.push_back(path );
-			imagesOriginalInfo.push_back(emotionStr);
+			imagesOriginalInfo.push_back(ss.str());
 		}
 	}
 
@@ -57,3 +67,11 @@ string TextFileSource::getImageInfo(){
 bool TextFileSource::isAvailable(){
 	return !imagesPath.empty() && imageIndex < imagesPath.size();
 }
+
+	int TextFileSource::getImageCount(){
+		return imagesPath.size();
+	}
+	
+	int TextFileSource::getRemainingImageCount(){
+		return imagesPath.size() - imageIndex;
+	}

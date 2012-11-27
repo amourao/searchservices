@@ -25,4 +25,5 @@ _ReSharper*
 *.bin
 *.*~
 *.o
-ck+*
+ck+*/
+detectedEmotionCK*/

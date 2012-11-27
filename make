@@ -1,1 +1,1 @@
-g++-4.7 -std=c++11 -o a.out *.cpp -lopencv_core -lopencv_imgproc -lopencv_calib3d -lopencv_video -lopencv_features2d -lopencv_ml -lopencv_highgui -lopencv_objdetect -lopencv_contrib -lopencv_legacy -lfftw3f -lfftw3 -lm
+g++-4.7 -std=c++11 -o main *.cpp -lopencv_core -lopencv_imgproc -lopencv_calib3d -lopencv_video -lopencv_features2d -lopencv_ml -lopencv_highgui -lopencv_objdetect -lopencv_contrib -lopencv_legacy -lfftw3f -lfftw3 -lm

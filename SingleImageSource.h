@@ -14,6 +14,8 @@ public:
 	Mat nextImage();
 	string getImageInfo();
 	bool isAvailable();
+	int getImageCount();
+	int getRemainingImageCount();
 
 private:
 

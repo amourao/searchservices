@@ -135,7 +135,7 @@ void GaborExtractor::extractFeatures(Mat& image, Mat& result){
 			}
 	}
 	fftw_free( fft );
-	normalize(result, result, 0,1, CV_MINMAX);
+	//normalize(result, result, 0,1, CV_MINMAX);
 }
 
 void GaborExtractor::meshGrid(double minX, double maxX, double minY, double maxY, int rows, int cols, Mat& x, Mat& y){

@@ -21,3 +21,10 @@ string SingleImageSource::getImageInfo(){
 bool SingleImageSource::isAvailable(){
 	return true;
 }
+	int SingleImageSource::getImageCount(){
+		return -1;
+	}
+	
+	int SingleImageSource::getRemainingImageCount(){
+		return -1;
+	}

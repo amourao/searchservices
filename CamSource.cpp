@@ -37,3 +37,11 @@ string CamSource::getImageInfo(){
 bool CamSource::isAvailable(){
 	return capture.isOpened();
 }
+
+	int CamSource::getImageCount(){
+		return -1;
+	}
+	
+	int CamSource::getRemainingImageCount(){
+		return -1;
+	}

@@ -12,4 +12,6 @@ class ImageSource
         virtual Mat nextImage() = 0;
 		virtual string getImageInfo() = 0;
 		virtual bool isAvailable() = 0;
+		virtual int getImageCount() = 0;
+		virtual int getRemainingImageCount() = 0;
 };
