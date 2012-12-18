@@ -20,7 +20,7 @@ using namespace cv;
 
 
 
-int testDetection(int argc, char *argv[]){
+void testDetection(int argc, char *argv[]){
 
 /*
 	SingleImageSource vs("./data/teste/faces.png");
@@ -73,7 +73,7 @@ void extractAllFeaturesImEmotion(string testPath, string output){
 
 	//fstream faceEigenExtractorF ("eigen.bin", std::ios::out | std::ios::binary);
 
-	int i = 0;
+	//int i = 0;
 
 	Mat src;
 	Mat eigen;
@@ -100,8 +100,8 @@ void extractAllFeaturesImEmotion(string testPath, string output){
 	double lastT = cvGetTickCount();
 
 	while(!(src = is.nextImage()).empty()){
-		float id;
-		float detected;
+		//float id;
+		//float detected;
 		float expected;
 
 		string idS;

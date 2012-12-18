@@ -36,7 +36,7 @@ void FaceDetection::detectFaces(Mat& img, vector<Mat>& faceImages, vector<cv::Po
 
 
 
-	for (int q = 0; q < facesVectorCascade.size(); q++){	
+	for (unsigned int q = 0; q < facesVectorCascade.size(); q++){	
 		Rect r = facesVectorCascade.at(q);
 		cv::Rect newR = cv::Rect(r.x,r.y,r.width,r.height);
 		newR.x *= scaleChangeFactor;
@@ -95,7 +95,7 @@ bool FaceDetection::preProcessFaceImage(Mat& img, Mat& faceImage){
 	center.y = cvRound((img.rows*0.5));
 
 	double radius = (img.cols + img.rows)*0.25;
-	for (int q = 0; q < eyesVectorCascade.size(); q++){	
+	for (unsigned int q = 0; q < eyesVectorCascade.size(); q++){	
 		Rect r = eyesVectorCascade.at(q);
 
 
@@ -156,15 +156,16 @@ bool FaceDetection::preProcessFaceImage(Mat& img, Mat& faceImage){
 
 	imshow("a",faceImage);
 	waitKey(1);
+	return 0;
 }
 
 bool FaceDetection::detectBestEyepair (Point& center, double faceRadius, vector<Eye>& leftEyes, vector<Eye>& rightEyes, Eye& bestLeftEye, Eye& bestRightEye){
 	Eye tmpRightEye;
 	bool tmpRightDetected = false;
 	bool tmpLeftDetected = false;
-	for (int l = 0; l < leftEyes.size(); l++){
+	for (unsigned int l = 0; l < leftEyes.size(); l++){
 		Eye leftEye = leftEyes.at(l);
-		for (int r = 0; r < rightEyes.size(); r++){
+		for (unsigned int r = 0; r < rightEyes.size(); r++){
 			Eye rightEye = rightEyes.at(r);
 			if(!tmpRightDetected){
 				tmpRightEye = rightEye;
@@ -181,10 +182,10 @@ bool FaceDetection::detectBestEyepair (Point& center, double faceRadius, vector<
 			//cout << abs(leftEye->eyeRadius-rightEye->eyeRadius) << " "  << abs(leftEye->eyeRadius-tmpRightEye->eyeRadius) << endl;
 		}
 
-		if ((tmpRightDetected && !tmpLeftDetected ||
+		if (((tmpRightDetected && !tmpLeftDetected) ||
 
-			abs(abs(leftEye.eyeCenter.x-center.x)-abs(tmpRightEye.eyeCenter.x-center.x)) <
-			abs(abs(bestLeftEye.eyeCenter.x-center.x)-abs(bestRightEye.eyeCenter.x-center.x))) 
+			(abs(abs(leftEye.eyeCenter.x-center.x)-abs(tmpRightEye.eyeCenter.x-center.x)) <
+			abs(abs(bestLeftEye.eyeCenter.x-center.x)-abs(bestRightEye.eyeCenter.x-center.x)))) 
 
 			&&
 

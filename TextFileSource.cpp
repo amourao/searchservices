@@ -24,7 +24,7 @@ void TextFileSource::readFile(string trainDataFile){
 		path.erase(remove(path.begin(), path.end(), '\n'), path.end());
 		path.erase(remove(path.begin(), path.end(), ' '), path.end());
 
-		int i = 0;
+		//int i = 0;
 		while (getline(file, line)) {
 			//./detectedEmotionCKWithNeutalTrain0.png;s130;1;007;d:\\\\datasets\\\\ck+2\\\\cohn-kanade-images\\\\s130\\\\007\\\\s130_007_00000001.png;./detectedEmotionCKWithNeutalTrain0_neutral.png
 			stringstream liness(line);
@@ -45,7 +45,7 @@ void TextFileSource::readFile(string trainDataFile){
 
 Mat TextFileSource::nextImage(){
 	//cout << imageIndex << " " << !imagesPath.empty() << " " << imagesPath.size() << endl;
-	if (!imagesPath.empty() && imageIndex < imagesPath.size()) {
+	if (!imagesPath.empty() && (unsigned int) imageIndex < imagesPath.size()) {
 		string s= imagesPath.at(imageIndex);
 		#ifdef __linux__
 			stringstream fullPath;
@@ -65,7 +65,7 @@ string TextFileSource::getImageInfo(){
 }
 
 bool TextFileSource::isAvailable(){
-	return !imagesPath.empty() && imageIndex < imagesPath.size();
+	return !imagesPath.empty() && (unsigned int)  imageIndex < imagesPath.size();
 }
 
 	int TextFileSource::getImageCount(){
