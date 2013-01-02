@@ -240,7 +240,6 @@ int testSR(int argc, char *argv[]){
 	
 	for(int j = 0; j < features.rows; j++){
 		float a, b, c, d;
-		int y= 0;
 		a = sr->classify(features.row(j));
 		b = knn->classify(features.row(j));
 		c = svm->classify(features.row(j));
