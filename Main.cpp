@@ -2,6 +2,10 @@
 #include <string>
 #include <sstream>
 
+#include "classifiers/SRClassifier.h"
+#include "classifiers/kNNClassifier.h"
+#include "classifiers/SVMClassifier.h"
+
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -16,11 +20,9 @@
 #include "SURFExtractor.h"
 
 
+
+
 using namespace std;
-using namespace cv;
-
-
-
 
 void testDetection(int argc, char *argv[]){
 
@@ -77,11 +79,11 @@ void extractAllFeaturesImEmotion(string testPath, string output){
 
 	//int i = 0;
 
-	Mat src;
-	Mat eigen;
-	Mat gabor;
-	Mat gaborNeutral;
-	Mat hist;
+	cv::Mat src;
+	cv::Mat eigen;
+	cv::Mat gabor;
+	cv::Mat gaborNeutral;
+	cv::Mat hist;
 
 	float faceGaborExtractorS = faceGaborExtractor.getFeatureVectorSize();
 	//float faceEigenExtractorS = faceEigenExtractor.getFeatureVectorSize();
@@ -130,13 +132,13 @@ void extractAllFeaturesImEmotion(string testPath, string output){
 		
 		if(!neutralPath.empty()){
 			
-			Mat neutral = imread(neutralPath);
+			cv::Mat neutral = imread(neutralPath);
 		//faceEigenExtractor.extractFeatures(src,eigen);
 		//histogramExtractor.extractFeatures(src,hist);
 		faceGaborExtractor.extractFeatures(src,gabor);
 		faceGaborExtractor.extractFeatures(neutral,gaborNeutral);
 
-		Mat gaborMinusNeutral = gabor-gaborNeutral;
+		cv::Mat gaborMinusNeutral = gabor-gaborNeutral;
 
 		normalize(gaborMinusNeutral, gaborMinusNeutral, 0,1, CV_MINMAX);
 		
@@ -201,19 +203,59 @@ int testSURF(int argc, char *argv[]){
 	//extractAllFeaturesImEmotion(argv[1],argv[2]);
 	
 	FeatureExtractor* s = new SURFExtractor(1000);
-	Mat features;
+	cv::Mat features;
 	String file(argv[1]);
 	s->extractFeatures(file,features);
 	
 	cout << features.rows << " " << features.cols << endl << s->getFeatureVectorSize() << endl;
+	
+	return 0;
+}
 
+int testSR(int argc, char *argv[]){
+
+	FeatureExtractor* s = new SURFExtractor(1000);
+	cv::Mat features;
+	String file("/home/and/Code/faceframework/data/teste/fruits.jpg");
+
+	s->extractFeatures(file,features);
+
+	IClassifier* sr = new SRClassifier();
+	IClassifier* knn = new kNNClassifier();
+	IClassifier* svm = new SVMClassifier();
+
+	cv::Mat labels(features.rows,1,CV_32F);
+
+	for(int j = 0; j < features.rows; j++){
+		if(j < features.rows/2)
+			labels.at<float>(j,0) = 1;
+		else
+			labels.at<float>(j,0) = 2;
+	}
+
+
+	sr->train(features,labels);
+	knn->train(features,labels);
+	svm->train(features,labels);
+	
+	for(int j = 0; j < features.rows; j++){
+		float a, b, c, d;
+		int y= 0;
+		a = sr->classify(features.row(j));
+		b = knn->classify(features.row(j));
+		c = svm->classify(features.row(j));
+		d = labels.at<float>(j,0);
+		cout << a << " " << b << " " << c << " " << d << endl;
+	}
 	
 	return 0;
 }
 
 int main(int argc, char *argv[]){
 	//extractAllFeaturesImEmotion(argv[1],argv[2]);
-	testSURF(argc, argv);
+	//testSURF(argc, argv);
+	
+	testSR(argc, argv);
 	
 	getchar();
 	return 0;

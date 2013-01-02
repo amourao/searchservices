@@ -8,18 +8,23 @@
 using namespace cv;
 using namespace std;
 
-class kNNClassifier
+class kNNClassifier: public IClassifier
 {
 public:
 	kNNClassifier();
 	~kNNClassifier();
 
-	void train(Mat trainData, Mat trainLabels);
+	void train(cv::Mat trainData, cv::Mat trainLabels);
 
-	void test(Mat testData, Mat testLabels);
-	float classify( Mat query, int neighboursCount = 1);
+	void test(cv::Mat testData, cv::Mat testLabels);
+		
+	float classify( cv::Mat query);
+	
+	float classify( cv::Mat query, int neighboursCount = 1);
+	
+	string getName();
 private:
 
-	Mat trainLabels;
+	cv::Mat trainLabels;
 	flann::Index* flannIndex;
 };

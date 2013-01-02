@@ -3,7 +3,6 @@
 #include <opencv2/ml/ml.hpp>
 #include "IClassifier.h"
 
-using namespace cv;
 using namespace std;
 
 class SVMClassifier: public IClassifier
@@ -12,10 +11,11 @@ public:
 	SVMClassifier();
 	~SVMClassifier();
 
-	void train(Mat trainData, Mat trainLabels);
+	void train(cv::Mat trainData, cv::Mat trainLabels);
 
-	void test(Mat testData, Mat testLabels);
-	float classify( Mat query);
+	void test(cv::Mat testData, cv::Mat testLabels);
+	float classify( cv::Mat query);
+	string getName();
 private:
 
 	CvSVM svm;

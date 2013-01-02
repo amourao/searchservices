@@ -13,7 +13,7 @@ kNNClassifier::~kNNClassifier()
 
 }
 
-void kNNClassifier::train( Mat trainData, Mat _trainLabels )
+void kNNClassifier::train( cv::Mat trainData, cv::Mat _trainLabels )
 {
 	flann::LinearIndexParams params = flann::LinearIndexParams();
 
@@ -24,20 +24,27 @@ void kNNClassifier::train( Mat trainData, Mat _trainLabels )
 	
 
 
-void kNNClassifier::test( Mat testData, Mat testLabels )
+void kNNClassifier::test( cv::Mat testData, cv::Mat testLabels )
 {
 
 }
+float kNNClassifier::classify( cv::Mat query){
+	return classify(query,1);
+}
 
-float kNNClassifier::classify( Mat query, int neighboursCount )
+string kNNClassifier::getName(){
+	return "kNN";
+}
+
+float kNNClassifier::classify( cv::Mat query, int neighboursCount )
 {
 
 	//int j = 0;
 
 	//query.colRange(0,5);
-	Mat indices (1,neighboursCount,CV_32S);
+	cv::Mat indices (1,neighboursCount,CV_32S);
 
-	Mat dists (1,neighboursCount,CV_32F);
+	cv::Mat dists (1,neighboursCount,CV_32F);
 //cout << j++ << endl;
 	flannIndex->knnSearch(query,indices,dists,neighboursCount);
 

@@ -3,9 +3,9 @@
 #include "fista.h"
 #include "omp.h"
 #include "thresholding.h"
+#include "IClassifier.h"
 #include <opencv2/highgui/highgui.hpp>
 
-using namespace cv;
 using namespace std;
 
 class SRClassifier: public IClassifier
@@ -14,12 +14,21 @@ public:
 	SRClassifier();
 	~SRClassifier();
 
-	void train(Mat trainData, Mat trainLabels);
-
-	void test(Mat testData, Mat testLabels);
-	float classify( Mat query);
+	void train(cv::Mat trainData, cv::Mat trainLabels);
+	void test(cv::Mat testData, cv::Mat testLabels);
+	float classify( cv::Mat query);
+	
+	void train(arma::fmat trainData, arma::fmat trainLabels);
+	void test(arma::fmat testData, arma::fmat testLabels);
+	float classify(arma::fmat query);
+	string getName();
+	
 private:
 
+	arma::fmat trainData;
+	arma::fvec labelsCute;
+	l1min::FISTA* omp;
 	
+	int numberOfClasses;
 };
 
