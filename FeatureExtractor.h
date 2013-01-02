@@ -18,6 +18,7 @@ public:
 	virtual void extractFeatures(Mat& src, Mat& dst) = 0;
 	virtual int getFeatureVectorSize() = 0;
 
+
 	void extractFeatures(string& filename, vector<float>& features){
 		Mat src = imread(filename);
 		Mat dst;
@@ -33,6 +34,34 @@ public:
 		extractFeatures(srcMat,dstMat);
 		float* array = (float*)dstMat.data;
 		dst = vector<float>(array, array + sizeof(float)*dstMat.cols*dstMat.rows);
+	}
+
+	void extractFeatures(string& filename, Mat& dst){
+		Mat src = imread(filename);
+		extractFeatures(src,dst);	
+	}
+	
+	void extractFeatures(string& filename, vector<vector<float>>& features){
+		Mat dst;
+		extractFeatures(filename,dst);
+		
+		for(int i = 0; i < dst.rows; i++){
+			float* array = (float*)dst.row(i).data;
+			features.at(i) = vector<float>(array, array + sizeof(float)*dst.cols);
+		}
+	}
+	
+
+	void extractFeatures(vector<float>& src, vector<vector<float>>& features){
+		Mat srcMat(src,true);
+		srcMat = srcMat.reshape(1,1);
+		Mat dst;
+		extractFeatures(srcMat,dst);
+		for(int i = 0; i < dst.rows; i++){
+			float* array = (float*)dst.row(i).data;
+			features.at(i) = vector<float>(array, array + sizeof(float)*dst.cols);
+		}
+
 	}
 
 

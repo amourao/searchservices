@@ -45,9 +45,9 @@ void GaborExtractor::applyFilter(Mat& image, Mat& dst){
 
 	preProcess(image,image);
 	
-	int i = 0;
-	double rows = image.rows;
-	double cols = image.cols;
+	//int i = 0;
+	//double rows = image.rows;
+	//double cols = image.cols;
 	dst = Mat::zeros(image.rows,image.cols,CV_32F);
 	Mat imagefft;
 
@@ -55,7 +55,7 @@ void GaborExtractor::applyFilter(Mat& image, Mat& dst){
 
 	fftw_complex* fft = newFFTW(image);
 
-	for (int k = 0; k < filters.size(); k++){
+	for (unsigned int k = 0; k < filters.size(); k++){
 
 			Mat filter = filters.at(k);
 
@@ -90,12 +90,12 @@ void GaborExtractor::applyFilter(Mat& image, Mat& dst){
 
 void GaborExtractor::extractFeatures(Mat& image, Mat& result){
 	
-	int rectanglesLength=rectangleRois.size();
+	//int rectanglesLength=rectangleRois.size();
 
 	// 2 quer dizer que por cada rectângulo é calculada a média e desvio padrão
-	int i = 0;
-	double rows = image.rows;
-	double cols = image.cols;
+	//int i = 0;
+	//double rows = image.rows;
+	//double cols = image.cols;
 
 	result = Mat::zeros(1,getFeatureVectorSize(),CV_32F);
 	Mat imagefft;
@@ -106,7 +106,7 @@ void GaborExtractor::extractFeatures(Mat& image, Mat& result){
 
 
 	int pos = 0;
-	for (int k = 0; k < filters.size(); k++){
+	for (unsigned int k = 0; k < filters.size(); k++){
 
 
 			fftw_complex* tmpResultC = (fftw_complex* )fftw_malloc(sizeof(fftw_complex)*filters.at(k).rows*filters.at(k).cols);
@@ -124,7 +124,7 @@ void GaborExtractor::extractFeatures(Mat& image, Mat& result){
 
 			fftw_free( tmpResultC );
 
-			for (int i = 0; i < rectangleRois.size(); i++){
+			for (unsigned int i = 0; i < rectangleRois.size(); i++){
 				Scalar_<double> mean, stdDev;
 				Mat tmpResultROI = tmpResult(rectangleRois[i]);
 				meanStdDev(tmpResultROI,mean,stdDev);
@@ -215,13 +215,13 @@ fftw_complex* GaborExtractor::newFFTW(Mat image){
 	fftw_complex    *fft;  
 	fftw_plan       plan_f;
 
-	int             width, height, step;
+	int             width, height;
 	int             i, j, k;
 	Mat result (image.rows,image.cols,image.type());
 
 	width  	  = image.cols;
 	height 	  = image.rows;
-	step = 0;
+	//step = 0;
 
 	data_in = ( fftw_complex* )fftw_malloc( sizeof( fftw_complex ) * width * height );
 	fft     = ( fftw_complex* )fftw_malloc( sizeof( fftw_complex ) * width * height );
@@ -286,7 +286,7 @@ Mat GaborExtractor::newIFFTW(fftw_complex* image, int width, int height){
 
 void GaborExtractor::buildFilters(){
 	filters.clear();
-	int i = 0;
+	//int i = 0;
 	double rows = imageH;
 	double cols = imageW;
 

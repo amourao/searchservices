@@ -17,7 +17,7 @@ class EigenExtractor :
 {
 public:
 	EigenExtractor(string xmlDataFile);
-	EigenExtractor(int eigenCount = 100);
+	EigenExtractor(int eigenCount = 30);
 	~EigenExtractor();
 
 
@@ -31,7 +31,7 @@ public:
 	int getFeatureVectorSize();
 
 private:
-		Mat readFile(string trainDataFile);
+	Mat readFile(string trainDataFile);
 	void toGrayscale(Mat& src, Mat& dst);
 	
 

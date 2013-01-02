@@ -13,6 +13,8 @@
 #include "TextFileSource.h"
 #include "GaborExtractor.h"
 #include "FaceDetection.h"
+#include "SURFExtractor.h"
+
 
 using namespace std;
 using namespace cv;
@@ -20,7 +22,7 @@ using namespace cv;
 
 
 
-int testDetection(int argc, char *argv[]){
+void testDetection(int argc, char *argv[]){
 
 /*
 	SingleImageSource vs("./data/teste/faces.png");
@@ -73,7 +75,7 @@ void extractAllFeaturesImEmotion(string testPath, string output){
 
 	//fstream faceEigenExtractorF ("eigen.bin", std::ios::out | std::ios::binary);
 
-	int i = 0;
+	//int i = 0;
 
 	Mat src;
 	Mat eigen;
@@ -100,8 +102,8 @@ void extractAllFeaturesImEmotion(string testPath, string output){
 	double lastT = cvGetTickCount();
 
 	while(!(src = is.nextImage()).empty()){
-		float id;
-		float detected;
+		//float id;
+		//float detected;
 		float expected;
 
 		string idS;
@@ -195,16 +197,23 @@ void extractAllFeaturesImEmotion(string testPath, string output){
 
 }
 
+int testSURF(int argc, char *argv[]){
+	//extractAllFeaturesImEmotion(argv[1],argv[2]);
+	
+	FeatureExtractor* s = new SURFExtractor(1000);
+	Mat features;
+	String file(argv[1]);
+	s->extractFeatures(file,features);
+	
+	cout << features.rows << " " << features.cols << endl << s->getFeatureVectorSize() << endl;
+
+	
+	return 0;
+}
+
 int main(int argc, char *argv[]){
-	if(argc != 3)
-		cout << "Missing args" << endl;
-	
-	string path = argv[1];
-	string path2 = argv[2];
-	//"./ck+/CK_Emotion_train.txt";
-	
-	extractAllFeaturesImEmotion(path,path2);
-	
+	//extractAllFeaturesImEmotion(argv[1],argv[2]);
+	testSURF(argc, argv);
 	
 	getchar();
 	return 0;

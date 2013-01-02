@@ -96,7 +96,6 @@ int testFaceDetectScales(){
 	SingleImageSource vs("./data/faces.png");
 
 	cv::Size minSizes[]={cv::Size(10,10),cv::Size(20,20),cv::Size(30,30),cv::Size(50,50),cv::Size(100,100),cv::Size(200,200)};
-	cv::Size maxSizes[]={cv::Size(10,10),cv::Size(20,20),cv::Size(30,30),cv::Size(50,50),cv::Size(100,100),cv::Size(200,200),cv::Size(300,300),cv::Size(400,400),cv::Size(500,500),cv::Size(750,750)};
 
 	for (int scale = 2; scale <= 10; scale+=2){
 		for (int i = 0; i < 6; i++){
