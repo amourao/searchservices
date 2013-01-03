@@ -15,6 +15,13 @@ kNNClassifier::~kNNClassifier()
 
 void kNNClassifier::train( cv::Mat trainData, cv::Mat _trainLabels )
 {
+	
+	double min, max;
+	int minInd, maxInd;
+	cv::minMaxIdx(_trainLabels, &min, &max, &minInd, &maxInd, Mat());
+		
+	numberOfClasses = max+1;
+	
 	flann::LinearIndexParams params = flann::LinearIndexParams();
 
 	flannIndex->build(trainData,params);
@@ -39,16 +46,16 @@ string kNNClassifier::getName(){
 float kNNClassifier::classify( cv::Mat query, int neighboursCount )
 {
 
-	//int j = 0;
 
-	//query.colRange(0,5);
+	int j = 0;
+
 	cv::Mat indices (1,neighboursCount,CV_32S);
 
 	cv::Mat dists (1,neighboursCount,CV_32F);
 //cout << j++ << endl;
 	flannIndex->knnSearch(query,indices,dists,neighboursCount);
 
-	vector<int> matches(8,0);
+	vector<int> matches(numberOfClasses,0);
 
 //cout << j++ << endl;
 
@@ -63,7 +70,7 @@ float kNNClassifier::classify( cv::Mat query, int neighboursCount )
 	float maxEmotion = -1;
 	int maxEmotionCount = 0;
 //cout << j++ << endl;
-	for (int i = 1; i < 8; i++){
+	for (int i = 0; i < numberOfClasses; i++){
 		
 		if (matches[i] > maxEmotionCount){
 			maxEmotion = i;

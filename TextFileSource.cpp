@@ -30,16 +30,11 @@ void TextFileSource::readFile(string trainDataFile){
 			stringstream liness(line);
 
 			getline(liness, path, ';');
-			getline(liness, idStr, ';');
-			getline(liness, emotionStr, ';');
-			getline(liness, idStr2, ';');
-			getline(liness, dontCare1, ';');
-			getline(liness, neutralPath, '\r');
+			getline(liness, idStr, '\r');
+			//getline(liness, neutralPath, ');
 			
-			stringstream ss;
-			ss << emotionStr << ";" << neutralPath;
 			imagesPath.push_back(path );
-			imagesOriginalInfo.push_back(ss.str());
+			imagesOriginalInfo.push_back(line);
 		}
 	}
 
@@ -52,8 +47,9 @@ Mat TextFileSource::nextImage(){
 			fullPath << baseDir << imagesPath.at(imageIndex);
 			s = fullPath.str();
 		#endif
-		Mat frame = imread(s, 1 );
-		imagesPath.at(imageIndex++);
+		//TODO
+		imageIndex++;
+		Mat frame = imread(s,1);
 		return frame;
 	}
 	return Mat();

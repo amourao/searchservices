@@ -27,4 +27,5 @@ private:
 
 	cv::Mat trainLabels;
 	flann::Index* flannIndex;
+	int numberOfClasses;
 };

@@ -31,7 +31,7 @@ public:
 	
 private:
 
-	string test(Mat trainData, Mat trainLabels, Mat testData, Mat testLabels, IClassifier* classifier, vector<int>& correctGuesses, vector<int>& falsePositives, Mat& confusionMatrix);
+	void test(Mat trainData, Mat trainLabels, Mat testData, Mat testLabels, IClassifier* classifier, vector<int>& correctGuesses, vector<int>& falsePositives, Mat& confusionMatrix);
 	string resultsToString(vector<int>& correctGuesses, vector<int>& falsePositives, Mat& confusionMatrix);
 	void divideByClass(Mat trainData, Mat trainLabels, int numberOfDivisions, int currentDivision,Mat& newTrainData,Mat& newTrainLabels, Mat& testData, Mat& testLabels);
 	

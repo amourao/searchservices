@@ -18,8 +18,10 @@
 #include "GaborExtractor.h"
 #include "FaceDetection.h"
 #include "SURFExtractor.h"
+#include "HistogramExtractor.h"
 
 
+#include "TrainTestFeaturesTools.h"
 
 
 using namespace std;
@@ -224,37 +226,67 @@ int testSR(int argc, char *argv[]){
 	IClassifier* knn = new kNNClassifier();
 	IClassifier* svm = new SVMClassifier();
 
-	cv::Mat labels(features.rows,1,CV_32F);
-
-	for(int j = 0; j < features.rows; j++){
-		if(j < features.rows/2)
-			labels.at<float>(j,0) = 1;
-		else
-			labels.at<float>(j,0) = 2;
-	}
-
-
-	sr->train(features,labels);
-	knn->train(features,labels);
-	svm->train(features,labels);
 	
-	for(int j = 0; j < features.rows; j++){
-		float a, b, c, d;
-		a = sr->classify(features.row(j));
-		b = knn->classify(features.row(j));
-		c = svm->classify(features.row(j));
-		d = labels.at<float>(j,0);
-		cout << a << " " << b << " " << c << " " << d << endl;
-	}
+}
+
+int testEverything(int argc, char *argv[]){
+
+	string file(argv[1]);
+	TextFileSource is (file);
 	
-	return 0;
+	FeatureExtractor* s = new HistogramExtractor(16);
+
+	cv::Mat src;
+	cv::Mat dst;
+	cv::Mat features;
+	cv::Mat labels;
+	int i = 0;
+	for(int k = 0; k < is.getImageCount(); k++){
+	if(!(src = is.nextImage()).empty()){
+		
+		cv::Mat featuresRow;
+		if (src.channels() == 1){
+			cv::cvtColor(src, dst, CV_GRAY2BGR);
+		} else
+			dst = src;
+		s->extractFeatures(dst,featuresRow);
+		
+		cv::Mat label(1,1,CV_32F);
+		
+		string path,idStr;
+		
+		stringstream liness(is.getImageInfo());
+
+		getline(liness, path, ';');
+		getline(liness, idStr, '\r');
+		
+		label.at<float>(0,0) = atoi(idStr.c_str());
+		if(i++ % 50 == 0)
+			cout << "a" << i << " " << is.getImageCount() << " " << path <<  endl;
+		features.push_back(featuresRow);
+		labels.push_back(label);
+	}
+}
+	IClassifier* sr = new SRClassifier();
+	IClassifier* knn = new kNNClassifier();
+	IClassifier* svm = new SVMClassifier();
+	
+	vector<IClassifier*> classi;
+	classi.push_back(sr);
+	classi.push_back(knn);
+	classi.push_back(svm);
+	
+	TrainTestFeaturesTools ttft(features,labels,classi);
+	
+	cout << ttft.crossValidateAll(10) << endl;	
 }
 
 int main(int argc, char *argv[]){
-	//extractAllFeaturesImEmotion(argv[1],argv[2]);
-	//testSURF(argc, argv);
 	
-	testSR(argc, argv);
+	
+	
+	
+	testEverything(argc, argv);
 	
 	getchar();
 	return 0;
