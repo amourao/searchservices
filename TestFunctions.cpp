@@ -10,11 +10,11 @@
 #include <opencv2/contrib/detection_based_tracker.hpp>
 
 
-#include "ImageSource.h"
-#include "CamSource.h"
-#include "SingleImageSource.h"
-#include "VideoSource.h"
-#include "FaceDetection.h"
+#include "sources/ImageSource.h"
+#include "sources/CamSource.h"
+#include "sources/SingleImageSource.h"
+#include "sources/VideoSource.h"
+#include "extractors/FaceDetection.h"
 
 using namespace std;
 using namespace cv;

@@ -10,16 +10,18 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
-#include "ImageSource.h"
-#include "CamSource.h"
-#include "SingleImageSource.h"
-#include "VideoSource.h"
-#include "TextFileSource.h"
-#include "GaborExtractor.h"
-#include "FaceDetection.h"
-#include "SURFExtractor.h"
-#include "HistogramExtractor.h"
-#include "SegmentedHistogramExtractor.h"
+#include "sources/ImageSource.h"
+#include "sources/CamSource.h"
+#include "sources/SingleImageSource.h"
+#include "sources/VideoSource.h"
+#include "sources/TextFileSource.h"
+#include "extractors/GaborExtractor.h"
+
+#include "extractors/SURFExtractor.h"
+#include "extractors/HistogramExtractor.h"
+#include "extractors/SegmentedHistogramExtractor.h"
+
+#include "extractors/FaceDetection.h"
 
 #include "TrainTestFeaturesTools.h"
 

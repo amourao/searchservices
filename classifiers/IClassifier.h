@@ -1,7 +1,7 @@
 #pragma once
 #include <opencv2/highgui/highgui.hpp>
 #include <armadillo>
-#include "../MatrixTools.h"
+#include "MatrixTools.h"
 
 using namespace std;
 
