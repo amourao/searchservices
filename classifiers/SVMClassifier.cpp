@@ -15,7 +15,10 @@ void SVMClassifier::train( cv::Mat trainData, cv::Mat trainLabels ){
 	//params.gamma = 0.03375;
 	//params.C = 62.5;
 	//params.p = 1.1920928955078125e-007;
-	svm.train_auto(trainData,trainLabels,cv::Mat(),cv::Mat(),params);
+	//svm.train_auto(trainData,trainLabels,cv::Mat(),cv::Mat(),params);
+	
+	//TODO
+	svm.train(trainData,trainLabels);
 }
 
 float SVMClassifier::classify( cv::Mat query){

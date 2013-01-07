@@ -19,7 +19,7 @@
 #include "FaceDetection.h"
 #include "SURFExtractor.h"
 #include "HistogramExtractor.h"
-
+#include "SegmentedHistogramExtractor.h"
 
 #include "TrainTestFeaturesTools.h"
 
@@ -221,12 +221,8 @@ int testSR(int argc, char *argv[]){
 	String file("/home/and/Code/faceframework/data/teste/fruits.jpg");
 
 	s->extractFeatures(file,features);
-
-	IClassifier* sr = new SRClassifier();
-	IClassifier* knn = new kNNClassifier();
-	IClassifier* svm = new SVMClassifier();
-
 	
+	return 0;
 }
 
 int testEverything(int argc, char *argv[]){
@@ -234,13 +230,64 @@ int testEverything(int argc, char *argv[]){
 	string file(argv[1]);
 	TextFileSource is (file);
 	
-	FeatureExtractor* s = new HistogramExtractor(16);
+	//FeatureExtractor* s = new SegmentedHistogramExtractor(atoi(argv[3]),atoi(argv[4]),atoi(argv[5]));
+	FeatureExtractor* s = new HistogramExtractor(atoi(argv[3]));
 
 	cv::Mat src;
 	cv::Mat dst;
 	cv::Mat features;
 	cv::Mat labels;
 	int i = 0;
+	for(int k = 0; k < 200/*is.getImageCount()*/; k++){
+	if(!(src = is.nextImage()).empty()){
+		
+		cv::Mat featuresRow;
+		if (src.channels() == 1){
+			cv::cvtColor(src, dst, CV_GRAY2BGR);
+		} else
+			dst = src;
+		s->extractFeatures(dst,featuresRow);
+		
+		cv::Mat label(1,1,CV_32F);
+		
+		string path,idStr;
+		
+		stringstream liness(is.getImageInfo());
+
+		getline(liness, path, ';');
+		getline(liness, idStr, '\r');
+		
+		label.at<float>(0,0) = atoi(idStr.c_str());
+		if((i-1) % 50 == 0)
+			cout << "a" << i << " " << is.getImageCount() << " " << path <<  endl;
+		i++;
+		features.push_back(featuresRow);
+		labels.push_back(label);
+	}
+}
+	IClassifier* sr = new SRClassifier();
+	IClassifier* knn = new kNNClassifier();
+	IClassifier* svm = new SVMClassifier();
+	
+	vector<IClassifier*> classi;
+	classi.push_back(sr);
+	classi.push_back(knn);
+	classi.push_back(svm);
+	
+	TrainTestFeaturesTools ttft(features,labels,classi);
+	
+	cout << ttft.crossValidateAll(atoi(argv[2])) << endl;
+	
+	return 0;
+}
+
+void readFile(string file, Mat& dataR, Mat& labelsR,FeatureExtractor* s){
+		cv::Mat features;
+	cv::Mat labels;
+		TextFileSource is (file);
+		cv::Mat src;
+	cv::Mat dst;
+		int i = 0;
 	for(int k = 0; k < is.getImageCount(); k++){
 	if(!(src = is.nextImage()).empty()){
 		
@@ -261,24 +308,62 @@ int testEverything(int argc, char *argv[]){
 		getline(liness, idStr, '\r');
 		
 		label.at<float>(0,0) = atoi(idStr.c_str());
-		if(i++ % 50 == 0)
-			cout << "a" << i << " " << is.getImageCount() << " " << path <<  endl;
+		//if((i+1) % 50 == 0)
+		//	cout << "a" << i << " " << is.getImageCount() << " " << path <<  endl;
+		//i++;
 		features.push_back(featuresRow);
 		labels.push_back(label);
+	} else {
+		string path,idStr;
+		
+		stringstream liness(is.getImageInfo());
+
+		getline(liness, path, ';');
+		getline(liness, idStr, '\r');
+		cout << "WARNING: error reading image " << path << endl;
 	}
 }
-	IClassifier* sr = new SRClassifier();
-	IClassifier* knn = new kNNClassifier();
-	IClassifier* svm = new SVMClassifier();
+features.copyTo(dataR);
+labels.copyTo(labelsR);
+
+//cout << dataR.rows << " " << dataR.cols << endl;
+}
+
+int testINRIA(int argc, char *argv[]){
+
+	string trainfile(argv[1]);
+	string testfile(argv[2]);
+
+	vector<FeatureExtractor*> featureExtractors;
+	featureExtractors.push_back(new SegmentedHistogramExtractor(atoi(argv[4]),atoi(argv[5]),atoi(argv[6])));
+	featureExtractors.push_back(new HistogramExtractor(atoi(argv[4])));
+
+	for (unsigned int i = 0; i < featureExtractors.size(); i ++){
+		if (i == 0)
+			cout << "SegmentedHistogramExtractor" << endl;
+		else if (i == 1)
+			cout << "HistogramExtractor" << endl;
+		else
+			cout << i << "th Extractor" << endl;
+		cv::Mat features;
+		cv::Mat labels;
+
+		cv::Mat featuresTest;
+		cv::Mat labelsTest;
+
+		readFile(trainfile,features,labels,featureExtractors.at(i));
+		readFile(testfile,featuresTest,labelsTest,featureExtractors.at(i));
+
+		vector<IClassifier*> classi;
+		classi.push_back(new SRClassifier());
+		classi.push_back(new kNNClassifier());
+		//classi.push_back(new SVMClassifier());
 	
-	vector<IClassifier*> classi;
-	classi.push_back(sr);
-	classi.push_back(knn);
-	classi.push_back(svm);
+		TrainTestFeaturesTools ttft(features,labels,featuresTest,labelsTest,classi);
 	
-	TrainTestFeaturesTools ttft(features,labels,classi);
-	
-	cout << ttft.crossValidateAll(10) << endl;	
+		cout << ttft.testAll() << endl;	
+	}
+	return 0;
 }
 
 int main(int argc, char *argv[]){
@@ -286,7 +371,7 @@ int main(int argc, char *argv[]){
 	
 	
 	
-	testEverything(argc, argv);
+	testINRIA(argc, argv);
 	
 	getchar();
 	return 0;
