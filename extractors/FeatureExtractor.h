@@ -18,7 +18,6 @@ public:
 	virtual void extractFeatures(Mat& src, Mat& dst) = 0;
 	virtual int getFeatureVectorSize() = 0;
 
-	//TODO: use functions from MatrixTools.h
 	void extractFeatures(string& filename, vector<float>& features){
 		Mat src = imread(filename);
 		Mat dst;
@@ -26,7 +25,8 @@ public:
 		float* array = (float*)dst.data;
 		features = vector<float>(array, array + sizeof(float)*dst.cols*dst.rows);
 	}
-
+	
+	//Extra functions (not necessary for now)
 	void extractFeatures(vector<float>& src, vector<float>& dst){
 		Mat srcMat(src,true);
 		srcMat = srcMat.reshape(1,1);

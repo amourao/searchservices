@@ -1,6 +1,6 @@
 #pragma once
 
-#include "FeatureExtractor.h"
+#include "KeypointFeatureExtractor.h"
 #include <opencv2/highgui/highgui.hpp>
 #include <stdio.h>
 #include <iostream>
@@ -21,15 +21,15 @@ using namespace std;
 using namespace cv;
 
 class SURFExtractor :
-	public FeatureExtractor
+	public KeypointFeatureExtractor
 {
 public:
 	SURFExtractor(double hessianThreshold, int nOctaves=4, int nOctaveLayers=2, bool extended=true, bool upright=false);
 	~SURFExtractor();
 	
-	void extractFeatures(Mat& src, Mat& dst);
+	void extractFeatures(Mat& source,vector< cv::KeyPoint>& keypoints, Mat& features);
 	
-	int getFeatureVectorSize();
+	int getDescriptorSize();
 
 private:
 	SurfFeatureDetector detector;

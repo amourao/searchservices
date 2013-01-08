@@ -47,7 +47,7 @@ float kNNClassifier::classify( cv::Mat query, int neighboursCount )
 {
 
 
-	int j = 0;
+	//int j = 0;
 
 	cv::Mat indices (1,neighboursCount,CV_32S);
 

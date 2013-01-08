@@ -20,6 +20,10 @@ static void matToFMat(cv::Mat &src, arma::fmat& dst);
 
 static void matToVector(cv::Mat &src, vector<float>& dst);
 
+static void matToVectors(cv::Mat &src, vector<vector<float>>& dst);
+
 static void vectorToMat(vector<float>&src, cv::Mat& dst);
+
+static void vectorsToMat(vector<vector<float>>&src, cv::Mat& dst);
 
 };

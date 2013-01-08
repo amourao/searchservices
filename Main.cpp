@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <opencv2/features2d/features2d.hpp>
 
 #include "classifiers/SRClassifier.h"
 #include "classifiers/kNNClassifier.h"
@@ -206,23 +207,17 @@ void extractAllFeaturesImEmotion(string testPath, string output){
 int testSURF(int argc, char *argv[]){
 	//extractAllFeaturesImEmotion(argv[1],argv[2]);
 	
-	FeatureExtractor* s = new SURFExtractor(1000);
-	cv::Mat features;
-	String file(argv[1]);
-	s->extractFeatures(file,features);
+	KeypointFeatureExtractor* s = new SURFExtractor(1000);
+
+	string file(argv[1]);
 	
-	cout << features.rows << " " << features.cols << endl << s->getFeatureVectorSize() << endl;
+	vector< pair<float,float> > keypoints;
+	vector<vector<float>> features;
 	
-	return 0;
-}
-
-int testSR(int argc, char *argv[]){
-
-	FeatureExtractor* s = new SURFExtractor(1000);
-	cv::Mat features;
-	String file("/home/and/Code/faceframework/data/teste/fruits.jpg");
-
-	s->extractFeatures(file,features);
+	s->extractFeatures(file,keypoints,features);
+	
+	cout << features.size() << " " << features.at(0).size() << endl;
+	cout << keypoints.size() << " " << keypoints.at(0).at(0) << " " << keypoints.at(0).at(1) << endl;
 	
 	return 0;
 }
@@ -289,7 +284,7 @@ void readFile(string file, Mat& dataR, Mat& labelsR,FeatureExtractor* s){
 		TextFileSource is (file);
 		cv::Mat src;
 	cv::Mat dst;
-		int i = 0;
+	//int i = 0;
 	for(int k = 0; k < is.getImageCount(); k++){
 	if(!(src = is.nextImage()).empty()){
 		
@@ -373,7 +368,7 @@ int main(int argc, char *argv[]){
 	
 	
 	
-	testINRIA(argc, argv);
+	testSURF(argc, argv);
 	
 	getchar();
 	return 0;
