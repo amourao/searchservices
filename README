@@ -1,0 +1,32 @@
+This is the image feature extraction component of the framework.
+
+- classifiers
+	Contains the classifiers used for tests and (possibly) as features
+	At the moment, it contains kNN, SVM and SR (Sparse reconstruction and classsification by reconstruction error)
+
+- extractors
+	Contains the image feature extractors.
+	Image features:
+		Histogram
+		Gabor
+		SURF
+		SIFT
+	Face features:
+		FaceDetection
+		FaceRecognition
+		FacialExpressionRecognition
+	Image filters:
+		Illumination correction
+	
+- sources
+	Contains the image sources for the extractors and classifiers.
+	Transforms an image path, directory, video or csv text file.
+
+TrainTestFeaturesTools
+	Useful to test and train the extractors and classifiers
+
+TestFunctions.cpp
+	Old main
+
+Main.cpp
+	Functions to test the system

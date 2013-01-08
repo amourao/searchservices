@@ -1,6 +1,0 @@
-Make factory for classifiers
-Make factory for features extractors
-Ajust interface for SURF and SIFT feature vectors
-Make cross validation class (90% divisions for training and 10% for testing rotation)
-Make testing class (70% divisions for training and 30% for testing)
-Make REST interface
