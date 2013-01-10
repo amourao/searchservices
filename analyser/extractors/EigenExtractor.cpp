@@ -95,3 +95,11 @@ int EigenExtractor::getFeatureVectorSize(){
 void EigenExtractor::toGrayscale(Mat& src, Mat& dst){
 
 }
+
+string EigenExtractor::getName(){
+	return "EigenExtractor";
+}
+
+void* EigenExtractor::createType(string& type){
+	return new EigenExtractor();
+}

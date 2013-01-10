@@ -23,9 +23,11 @@
 #include "extractors/SegmentedHistogramExtractor.h"
 
 #include "extractors/FaceDetection.h"
+#include "extractors/Extractor.h"
 
 #include "TrainTestFeaturesTools.h"
 
+#include "FactoryAnalyser.h"
 
 using namespace std;
 
@@ -211,13 +213,12 @@ int testSURF(int argc, char *argv[]){
 
 	string file(argv[1]);
 	
-	vector< pair<float,float> > keypoints;
-	vector<vector<float>> features;
+	vector<pair<vector<float>,vector<float>>> keypoints;
 	
-	s->extractFeatures(file,keypoints,features);
+	s->extractFeatures(file,keypoints);
 	
-	cout << features.size() << " " << features.at(0).size() << endl;
-	cout << keypoints.size() << " " << keypoints.at(0).at(0) << " " << keypoints.at(0).at(1) << endl;
+	cout << keypoints.at(0).first.size() << " " << keypoints.at(0).first.size() << endl;
+	cout << keypoints.at(0).second.size() << " " << keypoints.at(0).second.at(0) << " " << keypoints.at(0).second.at(1) << endl;
 	
 	return 0;
 }
@@ -363,12 +364,56 @@ int testINRIA(int argc, char *argv[]){
 	return 0;
 }
 
+int testInterfaces(int argc, char *argv[]){
+
+	string trainfile(argv[1]);
+
+	FeatureExtractor* featureExtractor = new SegmentedHistogramExtractor(atoi(argv[2]),atoi(argv[3]),atoi(argv[4]));
+	FeatureExtractor* featureExtractor2 = new HistogramExtractor(atoi(argv[2]));
+	
+	vector<float> a;
+	vector<float> b;
+	
+	featureExtractor->extractFeatures(trainfile, a);
+	featureExtractor2->extractFeatures(trainfile, b);
+	
+	cout << a.size() << endl;
+	cout << b.size() << endl;
+	
+	cout << a.at(0) << endl;
+	cout << b.at(0) << endl;
+	
+	getchar();
+	return 0;
+}
+
+int testFactories(int argc, char *argv[]){
+
+	FactoryAnalyser * f = FactoryAnalyser::getInstance();
+		
+	FeatureExtractor* featureExtractor = new SegmentedHistogramExtractor(atoi(argv[2]),atoi(argv[3]),atoi(argv[4]));
+	FeatureExtractor* featureExtractor2 = new HistogramExtractor(atoi(argv[2]));
+	
+	f->registerType(featureExtractor->getName(),featureExtractor);
+	f->registerType(featureExtractor2->getName(),featureExtractor2);
+	
+	f->listTypes();
+	l
+	string s = "";
+	cout << f->createType(s) << endl;
+	
+	string s2 = featureExtractor->getName();
+	AnalyserDataType* dt = ((IAnalyser*)f->createType(s2))->getFeatures(string(argv[1]));
+	cout << dt->getName() << endl;
+	//cout <<  f->createType(featureExtractor->getName()) << endl;
+	
+	return 0;
+}
+
 int main(int argc, char *argv[]){
 	
+	testFactories(argc,argv);
 	
-	
-	
-	testSURF(argc, argv);
 	
 	getchar();
 	return 0;

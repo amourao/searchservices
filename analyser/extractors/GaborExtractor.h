@@ -1,6 +1,6 @@
 #pragma once
 
-#include "fftw3.h"
+#include <fftw3.h>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <vector>
 #include <string>
@@ -21,6 +21,7 @@ class GaborExtractor: public ImageFilter, public  FeatureExtractor
 {
 public:
 	GaborExtractor(int imageW, int imageH, int nScales, int nOrientations, vector<cv::Rect> rectangles = vector<cv::Rect>(),int minWaveLength = 3,int mult = 2, double sigmaOnf = 0.65, double dThetaOnSigma = 1.5);
+	GaborExtractor();
 	~GaborExtractor();
 
 	void applyFilter(Mat& src, Mat& dst);
@@ -28,6 +29,10 @@ public:
 	void extractFeatures(Mat& src, Mat& dst);
 	
 	int getFeatureVectorSize();
+	
+	string getName();
+	
+	void* createType(string &typeId);
 
 private:
 	int imageW;

@@ -382,3 +382,11 @@ void GaborExtractor::buildFilters(){
 	}
 }
 
+string GaborExtractor::getName(){
+	return "GaborExtractor";
+}
+
+void* GaborExtractor::createType(string& type){
+	//TODO
+	return new GaborExtractor(1,1,4,8);
+}

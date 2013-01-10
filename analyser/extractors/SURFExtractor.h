@@ -30,7 +30,11 @@ public:
 	void extractFeatures(Mat& source,vector< cv::KeyPoint>& keypoints, Mat& features);
 	
 	int getDescriptorSize();
-
+	
+	string getName();
+	
+	void* createType(string &typeId);
+	
 private:
 	SurfFeatureDetector detector;
 	SurfDescriptorExtractor extractor;

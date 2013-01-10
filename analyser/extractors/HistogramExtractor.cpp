@@ -60,3 +60,11 @@ void HistogramExtractor::extractFeaturesSingle(Mat& src, Mat& dst, int channel){
 int HistogramExtractor::getFeatureVectorSize(){
 	return binCount*3;
 }
+
+string HistogramExtractor::getName(){
+	return "HistogramExtractor";
+}
+
+void* HistogramExtractor::createType(string &typeId){
+	return new HistogramExtractor(8);
+}

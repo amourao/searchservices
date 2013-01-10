@@ -17,7 +17,7 @@ class EigenExtractor :
 {
 public:
 	EigenExtractor(string xmlDataFile);
-	EigenExtractor(int eigenCount = 30);
+	EigenExtractor(int eigenCount = 100);
 	~EigenExtractor();
 
 
@@ -29,6 +29,10 @@ public:
 	void extractFeatures(Mat& src, Mat& dst);
 	
 	int getFeatureVectorSize();
+	
+	string getName();
+	
+	void* createType(string &typeId);
 
 private:
 	Mat readFile(string trainDataFile);

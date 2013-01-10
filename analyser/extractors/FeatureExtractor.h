@@ -6,10 +6,15 @@
 #include <string>
 #include <vector>
 
+#include "../tools/MatrixTools.h"
+#include "IAnalyser.h"
+
+#define VECTOR_FEATURES_NAME "VectorFeatures"
+
 using namespace cv;
 using namespace std;
 
-class FeatureExtractor
+class FeatureExtractor: public IAnalyser
 {
 public:
 	
@@ -17,8 +22,17 @@ public:
 
 	virtual void extractFeatures(Mat& src, Mat& dst) = 0;
 	virtual int getFeatureVectorSize() = 0;
+	virtual string getName() = 0;
+	
+	virtual void* createType(string &typeId) = 0;
 
-	void extractFeatures(string& filename, vector<float>& features){
+	AnalyserDataType* getFeatures(string name){
+		vector<float>* features = new vector<float>();
+		extractFeatures(name, *features);
+		return new AnalyserDataType(features,VECTOR_FEATURES_NAME);
+	}
+	
+	void extractFeatures(string filename, vector<float>& features){
 		Mat src = imread(filename);
 		Mat dst;
 		extractFeatures(src,dst);
@@ -26,29 +40,23 @@ public:
 		features = vector<float>(array, array + sizeof(float)*dst.cols*dst.rows);
 	}
 	
+	void extractFeatures(string filename, vector<vector<float>>& features){
+		Mat dst;
+		extractFeatures(filename,dst);
+		MatrixTools::matToVectors(dst,features);
+	}
 	//Extra functions (not necessary for now)
 	void extractFeatures(vector<float>& src, vector<float>& dst){
 		Mat srcMat(src,true);
 		srcMat = srcMat.reshape(1,1);
 		Mat dstMat;
 		extractFeatures(srcMat,dstMat);
-		float* array = (float*)dstMat.data;
-		dst = vector<float>(array, array + sizeof(float)*dstMat.cols*dstMat.rows);
+		MatrixTools::matToVector(dstMat,dst);
 	}
 
-	void extractFeatures(string& filename, Mat& dst){
+	void extractFeatures(string filename, Mat& dst){
 		Mat src = imread(filename);
 		extractFeatures(src,dst);	
-	}
-	
-	void extractFeatures(string& filename, vector<vector<float>>& features){
-		Mat dst;
-		extractFeatures(filename,dst);
-		
-		for(int i = 0; i < dst.rows; i++){
-			float* array = (float*)dst.row(i).data;
-			features.at(i) = vector<float>(array, array + sizeof(float)*dst.cols);
-		}
 	}
 
 	void extractFeatures(vector<float>& src, vector<vector<float>>& features){
@@ -56,13 +64,10 @@ public:
 		srcMat = srcMat.reshape(1,1);
 		Mat dst;
 		extractFeatures(srcMat,dst);
-		for(int i = 0; i < dst.rows; i++){
-			float* array = (float*)dst.row(i).data;
-			features.at(i) = vector<float>(array, array + sizeof(float)*dst.cols);
-		}
+		MatrixTools::matToVectors(dst,features);
 
 	}
 
-
+	
 };
 

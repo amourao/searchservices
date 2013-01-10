@@ -17,7 +17,9 @@ public:
 	
 	int getFeatureVectorSize();
 
-
+	string getName();
+	
+	void* createType(string &typeId);
 private:
 	
 	Ptr<HistogramExtractor> singleHistogramExtractor;

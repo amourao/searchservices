@@ -24,3 +24,12 @@ void SURFExtractor::extractFeatures(Mat& src,vector< cv::KeyPoint>& keypoints, M
 int SURFExtractor::getDescriptorSize(){
 	return detector.descriptorSize();
 }
+
+
+string SURFExtractor::getName(){
+	return "SURFExtractor";
+}
+
+void* SURFExtractor::createType(string &typeId){
+	return new SURFExtractor(400);
+}

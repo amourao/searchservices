@@ -41,3 +41,12 @@ void SegmentedHistogramExtractor::extractFeatures(Mat& src, Mat& dst){
 int SegmentedHistogramExtractor::getFeatureVectorSize(){
 	return singleHistogramExtractor->getFeatureVectorSize()*(horizontalDivisions+1)*(verticalDivisions+1);
 }
+
+string SegmentedHistogramExtractor::getName(){
+	return "SegmentedHistogramExtractor";
+}
+
+void* SegmentedHistogramExtractor::createType(string &typeId){
+	return new SegmentedHistogramExtractor(8,2,2);
+}
+

@@ -19,7 +19,10 @@ public:
 	
 	int getFeatureVectorSize();
 
-
+	string getName();
+	
+	void* createType(string &typeId);
+	
 private:
 	
 	void extractFeaturesSingle(Mat& src, Mat& dst, int channel);
