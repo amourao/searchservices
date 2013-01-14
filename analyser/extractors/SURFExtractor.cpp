@@ -1,5 +1,17 @@
 #include "SURFExtractor.h"
 
+static SURFExtractor surfExtractorFactory;
+
+SURFExtractor::SURFExtractor(){
+	FactoryAnalyser::getInstance()->registerType("SURF1000",this);
+	FactoryAnalyser::getInstance()->registerType("SegHistogram16",this);
+}
+
+void* SURFExtractor::createType(string& type){
+	//TODO
+	if (type == "SURF1000")
+		return new SURFExtractor(1000);
+}
 
 SURFExtractor::SURFExtractor(double hessianThreshold, int nOctaves, int nOctaveLayers, bool extended, bool upright){
 	//detector = FeatureDetector::create(
@@ -28,8 +40,4 @@ int SURFExtractor::getDescriptorSize(){
 
 string SURFExtractor::getName(){
 	return "SURFExtractor";
-}
-
-void* SURFExtractor::createType(string &typeId){
-	return new SURFExtractor(400);
 }

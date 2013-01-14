@@ -6,7 +6,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-
+#include "../FactoryAnalyser.h"
 
 using namespace std;
 using namespace cv;
@@ -16,8 +16,9 @@ class EigenExtractor :
 	public FeatureExtractor
 {
 public:
+	EigenExtractor();
 	EigenExtractor(string xmlDataFile);
-	EigenExtractor(int eigenCount = 100);
+	EigenExtractor(int eigenCount);
 	~EigenExtractor();
 
 

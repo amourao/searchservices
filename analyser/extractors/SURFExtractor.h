@@ -8,7 +8,7 @@
 #include <opencv2/features2d/features2d.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/nonfree/features2d.hpp>
-
+#include "../FactoryAnalyser.h"
 /*
  * [Bay06]	
  * Bay, H. and Tuytelaars, T. and Van Gool, L. 
@@ -24,6 +24,7 @@ class SURFExtractor :
 	public KeypointFeatureExtractor
 {
 public:
+	SURFExtractor();
 	SURFExtractor(double hessianThreshold, int nOctaves=4, int nOctaveLayers=2, bool extended=true, bool upright=false);
 	~SURFExtractor();
 	

@@ -1,5 +1,20 @@
 #include "GaborExtractor.h"
 
+static GaborExtractor gaborExtractorFactory;
+
+GaborExtractor::GaborExtractor(){
+	FactoryAnalyser::getInstance()->registerType("GaborFace",this);
+	FactoryAnalyser::getInstance()->registerType("GaborGlobal",this);
+}
+
+void* GaborExtractor::createType(string& type){
+	//TODO
+	if (type == "GaborFace")
+		return new GaborExtractor(112,92,4,8);
+	else if (type == "GaborGlobal")
+		return new GaborExtractor(112,92,4,8);
+}
+
 GaborExtractor::GaborExtractor(int _imageW, int _imageH, int _nScales, int _nOrientations, vector<cv::Rect> rectangularAreas, int _minWaveLength,int _mult, double _sigmaOnf, double _dThetaOnSigma){
 
 	// If no rectangles are given, assume the full image must be used
@@ -384,9 +399,4 @@ void GaborExtractor::buildFilters(){
 
 string GaborExtractor::getName(){
 	return "GaborExtractor";
-}
-
-void* GaborExtractor::createType(string& type){
-	//TODO
-	return new GaborExtractor(1,1,4,8);
 }

@@ -1,5 +1,18 @@
 #include "EigenExtractor.h"
 
+static EigenExtractor eigenExtractorFactory;
+
+EigenExtractor::EigenExtractor(){
+	FactoryAnalyser::getInstance()->registerType("EigenFace",this);
+	FactoryAnalyser::getInstance()->registerType("GaborGlobal",this);
+}
+
+void* EigenExtractor::createType(string& type){
+	//TODO
+	if (type == "EigenFace")
+		return new EigenExtractor(100);
+}
+
 
 EigenExtractor::EigenExtractor(string xmlDataFile){
 	load(xmlDataFile);
@@ -98,8 +111,4 @@ void EigenExtractor::toGrayscale(Mat& src, Mat& dst){
 
 string EigenExtractor::getName(){
 	return "EigenExtractor";
-}
-
-void* EigenExtractor::createType(string& type){
-	return new EigenExtractor();
 }

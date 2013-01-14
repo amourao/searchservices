@@ -390,21 +390,10 @@ int testInterfaces(int argc, char *argv[]){
 int testFactories(int argc, char *argv[]){
 
 	FactoryAnalyser * f = FactoryAnalyser::getInstance();
-		
-	FeatureExtractor* featureExtractor = new SegmentedHistogramExtractor(atoi(argv[2]),atoi(argv[3]),atoi(argv[4]));
-	FeatureExtractor* featureExtractor2 = new HistogramExtractor(atoi(argv[2]));
-	
-	f->registerType(featureExtractor->getName(),featureExtractor);
-	f->registerType(featureExtractor2->getName(),featureExtractor2);
-	
+
 	f->listTypes();
-	l
-	string s = "";
-	cout << f->createType(s) << endl;
 	
-	string s2 = featureExtractor->getName();
-	AnalyserDataType* dt = ((IAnalyser*)f->createType(s2))->getFeatures(string(argv[1]));
-	cout << dt->getName() << endl;
+
 	//cout <<  f->createType(featureExtractor->getName()) << endl;
 	
 	return 0;

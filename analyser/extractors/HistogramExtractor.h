@@ -1,7 +1,7 @@
 #pragma once
 
 #include "FeatureExtractor.h"
-
+#include "../FactoryAnalyser.h"
 
 #define HUE_FEATURES 0
 #define SAT_FEATURES 1
@@ -12,6 +12,7 @@ class HistogramExtractor :
 	public FeatureExtractor
 {
 public:
+	HistogramExtractor();
 	HistogramExtractor(int binCount);
 	~HistogramExtractor();
 

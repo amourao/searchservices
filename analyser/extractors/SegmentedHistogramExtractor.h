@@ -3,6 +3,7 @@
 #include "FeatureExtractor.h"
 #include "HistogramExtractor.h"
 #include <iostream>
+#include "../FactoryAnalyser.h"
 
 using namespace std;
 
@@ -10,6 +11,7 @@ class SegmentedHistogramExtractor :
 	public FeatureExtractor
 {
 public:
+	SegmentedHistogramExtractor();
 	SegmentedHistogramExtractor(int binCount, int horizontalDivisions, int verticalDivisions);
 	~SegmentedHistogramExtractor();
 

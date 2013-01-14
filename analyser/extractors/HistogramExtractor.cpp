@@ -1,5 +1,19 @@
 #include "HistogramExtractor.h"
 
+static HistogramExtractor histogramExtractorFactory;
+
+HistogramExtractor::HistogramExtractor(){
+	FactoryAnalyser::getInstance()->registerType("Histogram8",this);
+	FactoryAnalyser::getInstance()->registerType("Histogram16",this);
+}
+
+void* HistogramExtractor::createType(string& type){
+	//TODO
+	if (type == "Histogram8")
+		return new HistogramExtractor(8);
+	else if (type == "Histogram16")
+		return new HistogramExtractor(16);
+}
 
 HistogramExtractor::HistogramExtractor(int _binCount){
 	binCount = _binCount;
@@ -65,6 +79,3 @@ string HistogramExtractor::getName(){
 	return "HistogramExtractor";
 }
 
-void* HistogramExtractor::createType(string &typeId){
-	return new HistogramExtractor(8);
-}

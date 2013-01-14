@@ -8,7 +8,7 @@
 #include "IlluminationCorrectionFilter.h"
 #include "FeatureExtractor.h"
 #include "ImageFilter.h"
-
+#include "../FactoryAnalyser.h"
 #ifndef PI
 #define PI 3.14159265359
 #endif

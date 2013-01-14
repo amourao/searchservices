@@ -1,5 +1,19 @@
 #include "SegmentedHistogramExtractor.h"
 
+static SegmentedHistogramExtractor segHistogramExtractorFactory;
+
+SegmentedHistogramExtractor::SegmentedHistogramExtractor(){
+	FactoryAnalyser::getInstance()->registerType("SegHistogram8",this);
+	FactoryAnalyser::getInstance()->registerType("SegHistogram16",this);
+}
+
+void* SegmentedHistogramExtractor::createType(string& type){
+	//TODO
+	if (type == "SegHistogram8")
+		return new SegmentedHistogramExtractor(8,2,2);
+	else if (type == "SegHistogram16")
+		return new SegmentedHistogramExtractor(16,2,2);
+}
 
 SegmentedHistogramExtractor::SegmentedHistogramExtractor(int _binCount, int _horizontalDivisions, int _verticalDivisions){
 	binCount = _binCount;
@@ -46,7 +60,4 @@ string SegmentedHistogramExtractor::getName(){
 	return "SegmentedHistogramExtractor";
 }
 
-void* SegmentedHistogramExtractor::createType(string &typeId){
-	return new SegmentedHistogramExtractor(8,2,2);
-}
 
