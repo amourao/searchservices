@@ -1,0 +1,7 @@
+graph G {
+	HTTPRequestHandlerFactory -- RequestHandlerFactory;
+	HTTPRequestHandler -- RestRequestHandler;
+	ServerApplication -- RestServer;
+	InterfaceController -- RestRequestHandler [style=dotted];
+}
+

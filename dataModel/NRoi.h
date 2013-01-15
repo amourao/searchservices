@@ -3,12 +3,12 @@
 
 using namespace std;
 
-class NTag : public IDataModel{
+class NRoi : public IDataModel{
 
 public:
 
-	NTag(string SQLTable, map<string,float>* value);
-	~NTag();
+	NRoi(string SQLTable, map<string,region>* value);
+	~NRoi();
 
 	bool storeSQL();
 	bool loadSQL(int mediaId);
@@ -16,7 +16,8 @@ public:
 
 private:
 
-	map<string,float>* value;
+	 map<string,region>* value;
+	string SQLTable;
 	size_t rawSize;
 
 };

@@ -124,5 +124,5 @@ int main()
 
 	IDataModel* nv = new NKeypoint(x,&v);
 	nv->storeSQL();
-	nv->loadSQL();
+	nv->loadSQL(1);
 }

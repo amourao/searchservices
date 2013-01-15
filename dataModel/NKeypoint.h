@@ -11,7 +11,7 @@ public:
 	~NKeypoint();
 
 	bool storeSQL();
-	bool loadSQL();
+	bool loadSQL(int mediaId);
 
 private:
 
