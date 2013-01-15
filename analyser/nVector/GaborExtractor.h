@@ -5,9 +5,9 @@
 #include <vector>
 #include <string>
 
-#include "IlluminationCorrectionFilter.h"
+#include "../tools/IlluminationCorrectionFilter.h"
 #include "FeatureExtractor.h"
-#include "ImageFilter.h"
+#include "../tools/ImageFilter.h"
 #include "../FactoryAnalyser.h"
 #ifndef PI
 #define PI 3.14159265359

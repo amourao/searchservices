@@ -3,8 +3,8 @@
 #include <map>
 #include <string>
 #include <iostream>
-#include "Factory.h"
-#include "extractors/IAnalyser.h"
+#include "../commons/factory/Factory.h"
+#include "IAnalyser.h"
 #include "../dataModel/IDataModel.h"
 
 using namespace std;

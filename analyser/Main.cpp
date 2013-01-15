@@ -3,29 +3,30 @@
 #include <sstream>
 #include <opencv2/features2d/features2d.hpp>
 
-#include "classifiers/SRClassifier.h"
-#include "classifiers/kNNClassifier.h"
-#include "classifiers/SVMClassifier.h"
-
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+
+#include "nTag/SRClassifier.h"
 
 #include "sources/ImageSource.h"
 #include "sources/CamSource.h"
 #include "sources/SingleImageSource.h"
 #include "sources/VideoSource.h"
 #include "sources/TextFileSource.h"
-#include "extractors/GaborExtractor.h"
 
-#include "extractors/SURFExtractor.h"
-#include "extractors/HistogramExtractor.h"
-#include "extractors/SegmentedHistogramExtractor.h"
+#include "nVector/GaborExtractor.h"
+#include "nKeypoint/SURFExtractor.h"
+#include "nVector/HistogramExtractor.h"
+#include "nVector/SegmentedHistogramExtractor.h"
 
-#include "extractors/FaceDetection.h"
-#include "extractors/Extractor.h"
+#include "nRoi/FaceDetection.h"
 
-#include "TrainTestFeaturesTools.h"
+
+#include "nTag/kNNClassifier.h"
+#include "nTag/SVMClassifier.h"
+
+#include "tools/TrainTestFeaturesTools.h"
 
 #include "FactoryAnalyser.h"
 

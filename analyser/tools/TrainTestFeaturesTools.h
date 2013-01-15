@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
-#include "classifiers/IClassifier.h"
+#include "../nTag/IClassifier.h"
 
 using namespace std;
 

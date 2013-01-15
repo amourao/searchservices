@@ -7,7 +7,7 @@
 #include <vector>
 
 #include "../tools/MatrixTools.h"
-#include "IAnalyser.h"
+#include "../IAnalyser.h"
 #include "../../dataModel/IDataModel.h"
 
 #define VECTOR_FEATURES_NAME "VectorFeatures"

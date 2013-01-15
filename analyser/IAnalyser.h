@@ -4,9 +4,9 @@
 #include <string>
 #include <iostream>
 
-#include "../Factory.h"
+#include "../commons/factory/Factory.h"
 #include "AnalyserDataType.h"
-#include "../../dataModel/IDataModel.h"
+#include "../dataModel/IDataModel.h"
 
 using namespace std;
 

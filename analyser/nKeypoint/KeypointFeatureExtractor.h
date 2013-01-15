@@ -9,7 +9,7 @@
 #include <utility>
 
 #include "../tools/MatrixTools.h"
-#include "IAnalyser.h"
+#include "../IAnalyser.h"
 #include "../../dataModel/IDataModel.h"
 
 #define KEYPOINT_FEATURES_NAME "KeypointFeatures"
