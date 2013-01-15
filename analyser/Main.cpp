@@ -80,7 +80,7 @@ void extractAllFeaturesImEmotion(string testPath, string output){
 	GaborExtractor faceGaborExtractor (92,112,4,6,rectangleRois);
 
 
-	fstream faceGaborExtractorF (output, std::ios::out | std::ios::binary);
+	fstream faceGaborExtractorF (output.c_str(), std::ios::out | std::ios::binary);
 
 	//fstream faceEigenExtractorF ("eigen.bin", std::ios::out | std::ios::binary);
 
@@ -213,7 +213,7 @@ int testSURF(int argc, char *argv[]){
 
 	string file(argv[1]);
 	
-	vector<pair<vector<float>,vector<float>>> keypoints;
+	vector<pair<vector<float>,vector<float> > > keypoints;
 	
 	s->extractFeatures(file,keypoints);
 	

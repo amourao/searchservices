@@ -13,7 +13,7 @@ public:
 	
 	virtual ~Extractor()  {}
 
-	virtual void extractFeatures(string filename, vector<pair<vector<float>,vector<float>>>& features){
+	virtual void extractFeatures(string filename, vector<pair<vector<float>,vector<float> > >& features){
 		cerr << "Not implemented" << endl;
 	}
 	
@@ -21,11 +21,11 @@ public:
 		cerr << "Not implemented" << endl;
 	}
 	
-	virtual void extractFeatures(string filename, vector<pair<string,float>>& features){
+	virtual void extractFeatures(string filename, vector<pair<string,float> >& features){
 		cerr << "Not implemented" << endl;
 	}
 	
-	virtual void extractFeatures(string filename, vector<pair<string,vector<float>>>& features){
+	virtual void extractFeatures(string filename, vector<pair<string,vector<float> > >& features){
 		cerr << "Not implemented" << endl;
 	}
 	

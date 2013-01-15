@@ -10,6 +10,7 @@
 
 #include "../tools/MatrixTools.h"
 #include "IAnalyser.h"
+#include "../../dataModel/IDataModel.h"
 
 #define KEYPOINT_FEATURES_NAME "KeypointFeatures"
 
@@ -23,12 +24,12 @@ public:
 	virtual ~KeypointFeatureExtractor()  {}
 
 	AnalyserDataType* getFeatures(string name){
-		vector<pair<vector<float>,vector<float>>>* features = new vector<pair<vector<float>,vector<float>>>();
+		vector<pair<vector<float>,vector<float> > >* features = new vector<pair<vector<float>,vector<float> > >();
 		extractFeatures(name, *features);
 		return new AnalyserDataType(features,KEYPOINT_FEATURES_NAME);
 	}
 
-	virtual void extractFeatures(string filename, vector<pair<vector<float>,vector<float>>>& features){
+	virtual void extractFeatures(string filename, vector<pair<vector<float>,vector<float> > >& features){
 		Mat source = imread(filename);
 		vector< cv::KeyPoint> keypointsCv;
 		Mat featuresMat;
@@ -52,7 +53,7 @@ public:
 			Mat m = featuresMat.row(i);
 			MatrixTools::matToVector(m, featuresR);
 			
-			pair<vector<float>,vector<float>> pairP = make_pair(point,featuresR);
+			pair<vector<float>,vector<float> > pairP = make_pair(point,featuresR);
 			
 			features.push_back(pairP);
 		}
@@ -65,5 +66,9 @@ public:
 	virtual string getName() = 0;
 	
 	virtual void* createType(string &typeId) = 0;
+	
+		IDataModel::type getType(){
+		return IDataModel::NKeypoint;
+	}
 };
 

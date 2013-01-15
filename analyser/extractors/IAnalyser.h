@@ -6,7 +6,7 @@
 
 #include "../Factory.h"
 #include "AnalyserDataType.h"
-
+#include "../../dataModel/IDataModel.h"
 
 using namespace std;
 
@@ -17,7 +17,9 @@ public:
 	virtual ~IAnalyser(){}
 	
 	virtual void* createType(string &typeId) = 0;
-	
+
+	virtual IDataModel::type getType() = 0;
+		
 	virtual AnalyserDataType* getFeatures(string name) = 0;
 };
 

@@ -16,10 +16,10 @@ public:
 
 class Factory {
 
-private:
+protected:
 
     map<string, FactoryMethod*> objectTypes;
-
+	
 public:
 	
     /**

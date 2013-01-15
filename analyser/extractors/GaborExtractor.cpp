@@ -13,6 +13,8 @@ void* GaborExtractor::createType(string& type){
 		return new GaborExtractor(112,92,4,8);
 	else if (type == "GaborGlobal")
 		return new GaborExtractor(112,92,4,8);
+	cerr << "Error registering type from constructor (this should never happen)" << endl;
+	return NULL;
 }
 
 GaborExtractor::GaborExtractor(int _imageW, int _imageH, int _nScales, int _nOrientations, vector<cv::Rect> rectangularAreas, int _minWaveLength,int _mult, double _sigmaOnf, double _dThetaOnSigma){

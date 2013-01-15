@@ -13,6 +13,8 @@ void* SegmentedHistogramExtractor::createType(string& type){
 		return new SegmentedHistogramExtractor(8,2,2);
 	else if (type == "SegHistogram16")
 		return new SegmentedHistogramExtractor(16,2,2);
+	cerr << "Error registering type from constructor (this should never happen)" << endl;
+	return NULL;
 }
 
 SegmentedHistogramExtractor::SegmentedHistogramExtractor(int _binCount, int _horizontalDivisions, int _verticalDivisions){

@@ -11,6 +11,9 @@ void* SURFExtractor::createType(string& type){
 	//TODO
 	if (type == "SURF1000")
 		return new SURFExtractor(1000);
+		
+	cerr << "Error registering type from constructor (this should never happen)" << endl;
+	return NULL;
 }
 
 SURFExtractor::SURFExtractor(double hessianThreshold, int nOctaves, int nOctaveLayers, bool extended, bool upright){

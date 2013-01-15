@@ -114,6 +114,5 @@ int testFaceDetectScales(){
 			}
 		}
 	}
-	getchar();
 	return 0;
 }

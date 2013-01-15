@@ -4,6 +4,8 @@
 #include <string>
 #include <iostream>
 #include "Factory.h"
+#include "extractors/IAnalyser.h"
+#include "../dataModel/IDataModel.h"
 
 using namespace std;
 
@@ -22,5 +24,9 @@ public:
 	
 	static FactoryAnalyser* getInstance();
 	
-	
+	/**
+       Method to list types registered in the factory.
+     */
+    map<string, IDataModel::type> listTypes();
+
 };

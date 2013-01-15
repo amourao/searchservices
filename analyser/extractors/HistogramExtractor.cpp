@@ -13,6 +13,9 @@ void* HistogramExtractor::createType(string& type){
 		return new HistogramExtractor(8);
 	else if (type == "Histogram16")
 		return new HistogramExtractor(16);
+	cerr << "Error registering type from constructor (this should never happen)" << endl;
+	return NULL;
+	
 }
 
 HistogramExtractor::HistogramExtractor(int _binCount){

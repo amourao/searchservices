@@ -8,6 +8,7 @@
 
 #include "../tools/MatrixTools.h"
 #include "IAnalyser.h"
+#include "../../dataModel/IDataModel.h"
 
 #define VECTOR_FEATURES_NAME "VectorFeatures"
 
@@ -26,6 +27,10 @@ public:
 	
 	virtual void* createType(string &typeId) = 0;
 
+	IDataModel::type getType(){
+		return IDataModel::NVector;
+	}
+
 	AnalyserDataType* getFeatures(string name){
 		vector<float>* features = new vector<float>();
 		extractFeatures(name, *features);
@@ -40,7 +45,7 @@ public:
 		features = vector<float>(array, array + sizeof(float)*dst.cols*dst.rows);
 	}
 	
-	void extractFeatures(string filename, vector<vector<float>>& features){
+	void extractFeatures(string filename, vector<vector<float> >& features){
 		Mat dst;
 		extractFeatures(filename,dst);
 		MatrixTools::matToVectors(dst,features);
@@ -59,7 +64,7 @@ public:
 		extractFeatures(src,dst);	
 	}
 
-	void extractFeatures(vector<float>& src, vector<vector<float>>& features){
+	void extractFeatures(vector<float>& src, vector<vector<float> >& features){
 		Mat srcMat(src,true);
 		srcMat = srcMat.reshape(1,1);
 		Mat dst;

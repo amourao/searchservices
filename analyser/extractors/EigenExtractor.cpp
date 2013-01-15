@@ -11,6 +11,8 @@ void* EigenExtractor::createType(string& type){
 	//TODO
 	if (type == "EigenFace")
 		return new EigenExtractor(100);
+	cerr << "Error registering type from constructor (this should never happen)" << endl;
+	return NULL;
 }
 
 
@@ -59,7 +61,7 @@ void EigenExtractor::createFaceSpace(string trainDataFile){
 Mat EigenExtractor::readFile(string trainDataFile){
 	Mat result;
 	string line,path,id;
-	ifstream myfile (trainDataFile);
+	ifstream myfile (trainDataFile.c_str());
 
 	int maxCount = 100;
 	int count = 0;

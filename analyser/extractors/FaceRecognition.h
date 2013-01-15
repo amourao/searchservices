@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include <string>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -17,8 +16,6 @@ typedef struct {
 	vector<Mat> imgList;
 	bool isInTrainingData;
 	bool isAmbiguous;
-
-
 } trackedPerson;
 
 class FaceRecognition{
@@ -28,7 +25,6 @@ public:
 	FaceRecognition(string xmlFile, string indexFile);
 	~FaceRecognition();
 
-
 	void train(string& trainDataFile);
 	void test(string& testDataFile);
 	
@@ -37,4 +33,3 @@ public:
 	
 	void recognizePeople(vector<Mat>& unknown,vector<cv::Point>& center, vector<trackedPerson>& output);
 };
-

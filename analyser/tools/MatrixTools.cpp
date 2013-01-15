@@ -24,7 +24,7 @@ void MatrixTools::vectorToMat(vector<float>&src, cv::Mat& dst){
 	dst = Mat(src,true);
 }
 
-void MatrixTools::matToVectors(cv::Mat &src, vector<vector<float>>& dst){
+void MatrixTools::matToVectors(cv::Mat &src, vector<vector<float> >& dst){
 	for(int i = 0; i < src.rows; i++){
 		vector<float> tempRow;
 		Mat row = src.row(i);
@@ -33,7 +33,7 @@ void MatrixTools::matToVectors(cv::Mat &src, vector<vector<float>>& dst){
 	}
 }
 
-void MatrixTools::vectorsToMat(vector<vector<float>>&src, cv::Mat& dst){
+void MatrixTools::vectorsToMat(vector<vector<float> >&src, cv::Mat& dst){
 	for(unsigned int i = 0; i < src.size(); i++){
 		Mat tempRow;
 		MatrixTools::vectorToMat(src.at(i),tempRow);

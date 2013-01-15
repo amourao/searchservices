@@ -21,3 +21,16 @@ FactoryAnalyser* FactoryAnalyser::getInstance(){
 	
 	return instance;
 }
+
+map<string, IDataModel::type> FactoryAnalyser::listTypes() {
+
+	map<string, IDataModel::type> ret;
+    map<string, FactoryMethod*>::iterator it;
+
+    for (it = objectTypes.begin(); it != objectTypes.end(); it++) {
+        ret[it->first] = ((IAnalyser*)it->second)->getType();
+    }
+
+	return ret;
+}
+
