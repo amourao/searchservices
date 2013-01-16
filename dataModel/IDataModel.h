@@ -16,12 +16,7 @@ extern const string SQLFile;
 
 class IDataModel {
 
-	enum type {
-		NVector,
-		NKeypoint,
-		NTag,
-		NRoi
-	};
+public:
 
 	struct region{
 		int x;
@@ -29,9 +24,14 @@ class IDataModel {
 		float width;
 		float height;
 	};
-
-public:
-
+	
+	enum type {
+		NVector,
+		NKeypoint,
+		NTag,
+		NRoi
+	};
+	
 	virtual ~IDataModel() {}
 	virtual bool storeSQL() = 0;
 	virtual bool loadSQL(int mediaId) = 0;
