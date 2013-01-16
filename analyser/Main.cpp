@@ -394,7 +394,7 @@ int testFactories(int argc, char *argv[]){
 
 	f->listTypes();
 	
-
+	cout << "bla" << endl;
 	//cout <<  f->createType(featureExtractor->getName()) << endl;
 	
 	return 0;
