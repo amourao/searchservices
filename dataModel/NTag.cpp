@@ -23,7 +23,6 @@ NTag::NTag(string SQLTable, map<string,float>* value)
 	ses << "CREATE TABLE media (id INTEGER PRIMARY KEY AUTOINCREMENT, uri TEXT)", Keywords::now;
 	ses << "CREATE TABLE word (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, type TEXT)", Keywords::now;
 	ses << "CREATE TABLE "<< SQLTable <<" (id INTEGER PRIMARY KEY AUTOINCREMENT, wordId, mediaId, importance REAL, FOREIGN KEY(wordId) REFERENCES word(id), FOREIGN KEY(mediaId) REFERENCES media(id))", Keywords::now;
-
 	ses.close();
 	// }
 }

@@ -67,12 +67,10 @@ void DataModelController::createTables(){
 	for (iter = listOfTypes.begin(); iter != listOfTypes.end(); listOfTypes++)
 	{
 		ses << "DROP TABLE IF EXISTS "<< (*iter).first, Keywords::now;
-		if((*iter).second == IDataModel::NVector)
-			ses << "CREATE TABLE "<< (*iter).first << " (id INTEGER PRIMARY KEY AUTOINCREMENT, mediaId, data BLOB, FOREIGN KEY(mediaId) REFERENCES media(id))", Keywords::now;
-		else if((*iter).second == IDataModel::NKeypoint)
+		if((*iter).second == IDataModel::NVector || (*iter).second == IDataModel::NKeypoint)
 			ses << "CREATE TABLE "<< (*iter).first << " (id INTEGER PRIMARY KEY AUTOINCREMENT, mediaId, data BLOB, FOREIGN KEY(mediaId) REFERENCES media(id))", Keywords::now;
 		else if((*iter).second == IDataModel::NTag)
-			ses << "CREATE TABLE "<< (*iter).first << " (id INTEGER PRIMARY KEY AUTOINCREMENT, mediaId, data BLOB, FOREIGN KEY(mediaId) REFERENCES media(id))", Keywords::now;
+			ses << "CREATE TABLE "<< (*iter).first << " (id INTEGER PRIMARY KEY AUTOINCREMENT, wordId, mediaId, importance REAL, FOREIGN KEY(wordId) REFERENCES word(id), FOREIGN KEY(mediaId) REFERENCES media(id))", Keywords::now;
 		else if((*iter).second == IDataModel::NRoi){
 			ses << "CREATE TABLE "<< (*iter).first << " (id INTEGER PRIMARY KEY AUTOINCREMENT, mediaId, data BLOB, FOREIGN KEY(mediaId) REFERENCES media(id))", Keywords::now;
 		}
