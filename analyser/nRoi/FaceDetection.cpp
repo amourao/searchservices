@@ -1,7 +1,15 @@
 #include "FaceDetection.h"
 
+static FaceDetection faceDetectorFactory;
 
-FaceDetection::FaceDetection(string _cascadePath, string _nestedCascadePath, double _scaleChangeFactor, double _eyeScaleChangeFactor, cv::Size _minSize, cv::Size _maxSize){
+FaceDetection::FaceDetection(){
+	FactoryAnalyser::getInstance()->registerType("FaceDetection",this);
+	FactoryAnalyser::getInstance()->registerType("FastFaceDetection",this);
+}
+
+
+
+FaceDetection::FaceDetection(string _cascadePath, string _nestedCascadePath, double _scaleChangeFactor, double _eyeScaleChangeFactor, cv::Size _minSize, cv::Size _maxSize, bool _preProcess){
 	faceCascade.load( _cascadePath );
 	eyesCascade.load( _nestedCascadePath );
 
@@ -10,14 +18,47 @@ FaceDetection::FaceDetection(string _cascadePath, string _nestedCascadePath, dou
 
 	minSize = _minSize;
 	maxSize = _maxSize;
+
+	preProcess = _preProcess;
 }
 
+void* FaceDetection::createType(string& typeId) {
 
+	if (typeId == "FaceDetection")
+		return new FaceDetection(FACE_DETECTION_CASCADE_PATH + "haarcascade_frontalface_default.xml",FACE_DETECTION_CASCADE_PATH + "haarcascade_eye_tree_eyeglasses.xml",4,1, cv::Size(20,20),cv::Size(50,50),true);
+	else if (typeId == "FastFaceDetection")
+		return new FaceDetection(FACE_DETECTION_CASCADE_PATH + "haarcascade_frontalface_default.xml",FACE_DETECTION_CASCADE_PATH + "haarcascade_eye_tree_eyeglasses.xml",4,1, cv::Size(20,20),cv::Size(50,50),false);
+	cerr << "Error registering type from constructor (this should never happen)" << endl;
+	return NULL;
+}
 FaceDetection::~FaceDetection(){
 
 }
 
-void FaceDetection::detectFaces(Mat& img, vector<Mat>& faceImages, vector<cv::Point>& locations, vector<Rect>& faceRois, bool preProcess){
+void FaceDetection::extractFeatures(Mat& source,
+	map<string, region>& features) {
+
+	vector<Mat> faceImages;
+	vector<cv::Point> locations;
+	vector<cv::Rect> faceRois;
+
+	detectFaces(source,faceImages,locations,faceRois);
+
+	for(unsigned int i = 0; i < faceRois.size(); i++){
+		region r;
+		cv::Rect roi = faceRois.at(i);
+		r.x = roi.x;
+		r.y = roi.y;
+		r.width = roi.width;
+		r.height = roi.height;
+
+		stringstream ss;
+		ss << "Face" << i;
+		features[ss.str()] = r;
+	}
+}
+
+void FaceDetection::detectFaces(Mat& img, vector<Mat>& faceImages, vector<cv::Point>& locations, vector<Rect>& faceRois){
 	Mat imgGrayscale;
 	Mat imgGrayscaleScalled( cvRound (img.rows/scaleChangeFactor ), cvRound(img.cols/scaleChangeFactor), CV_8UC1 );
 	cv::Point eye1, eye2;
@@ -52,8 +93,11 @@ void FaceDetection::detectFaces(Mat& img, vector<Mat>& faceImages, vector<cv::Po
 
 		if (preProcess){
 			Mat preprocessed;
-			preProcessFaceImage(smallImgColorROI,preprocessed);
-			smallImgColorROI = preprocessed;
+			cv::Rect newRoi;
+			if (preProcessFaceImage(smallImgColorROI,preprocessed,newRoi)){
+				smallImgColorROI = preprocessed;
+				newR = newRoi;
+			}
 
 		}
 
@@ -65,7 +109,7 @@ void FaceDetection::detectFaces(Mat& img, vector<Mat>& faceImages, vector<cv::Po
 }
 
 
-bool FaceDetection::preProcessFaceImage(Mat& img, Mat& faceImage){
+bool FaceDetection::preProcessFaceImage(Mat& img, Mat& faceImage, cv::Rect& roi ){
 
 	Mat imgGrayscaleScalled( cvRound (img.rows/eyeScaleChangeFactor ), cvRound(img.cols/eyeScaleChangeFactor), CV_8UC1 );
 	Mat imgGrayscale;
@@ -147,7 +191,7 @@ bool FaceDetection::preProcessFaceImage(Mat& img, Mat& faceImage){
 	rotateEye(center,leftEye.eyeCenter, angle); 
 	rotateEye(center,rigthEye.eyeCenter, angle);
 
-	cv::Rect roi =  computeROI(center, leftEye.eyeCenter, rigthEye.eyeCenter, radius);
+	roi =  computeROI(center, leftEye.eyeCenter, rigthEye.eyeCenter, radius);
 
 	ajustROI(roi, img.size());
 
@@ -243,6 +287,29 @@ cv::Rect FaceDetection::computeROI(cv::Point& center, cv::Point& eye1, cv::Point
 
 	return roi;
 }
+
+void FaceDetection::train(string trainFile) {
+	cout << "Training is not necessary for face detection.";
+	//Trained files are args in the constructor
+}
+
+string FaceDetection::test(string testFile) {
+	//TODO
+	return "TODO";
+}
+
+string FaceDetection::crossValidate(string testFile) {
+	//TODO
+	return "TODO";
+}
+
+string FaceDetection::getName() {
+	return "FaceDetector";
+}
+
+
+
+
 
 void FaceDetection::ajustROI (cv::Rect& roi, cv::Size s){
 	if(roi.x <0)
