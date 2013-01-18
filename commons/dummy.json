@@ -1,0 +1,67 @@
+{
+    "novasearch": {
+        "endpoints": {},
+        "featuresRoi": {
+            "analyser": [
+                {
+                    "name": "FaceDetector",
+                    "annotationType": "face"
+                },
+                {
+                    "name": "MonumentDetector",
+                    "annotationType": "monument"
+                }
+            ]
+        },
+        "featuresText": {
+            "analyser": [
+                {
+                    "name": "MonumentDetector",
+                    "annotationType": "monument"
+                },
+                {
+                    "name": "FaceRecognition",
+                    "annotationType": "person"
+                },
+                {
+                    "name": "FacialExpression",
+                    "annotationType": "expression"
+                },
+                {
+                    "name": "ImageAnnotator",
+                    "annotationType": "expression"
+                }
+            ]
+        },
+        "featuresVec": {
+            "analyser": [
+                {
+                    "name": "SIFT",
+                    "entityType": "Keypoints"
+                },
+                {
+                    "name": "ColorHistogram",
+                    "entityType": "HSVhistogram"
+                },
+                {
+                    "name": "GaborAnalyser",
+                    "entityType": "GaborTextures"
+                }
+            ]
+        },
+        "metadata": {
+            "GameImage": {
+                "pk": "INTEGER",
+                "gameId": "INTEGER",
+                "roundId": "INTEGER",
+                "userId": "INTEGER",
+                "rimerId": "INTEGER",
+                "roundAudience": "INTEGER",
+                "roundExpressionId": "INTEGER",
+                "score": "REAL",
+                "ksvm": "INTEGER",
+                "userName": "TEXT"
+            }
+        }
+    }
+}
