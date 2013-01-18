@@ -102,7 +102,7 @@ int testFaceDetectScales(){
 			for (int j = i; j < 6; j++){
 
 				cout << "scale: " << scale << " minSize: " << minSizes[i]<< " maxSize: " <<minSizes[j] << endl;
-				FaceDetection fd("./data/FaceDetection/haarcascades/haarcascade_frontalface_alt.xml","./data/FaceDetection/haarcascades/haarcascade_eye_tree_eyeglasses.xml",scale,2, minSizes[i],minSizes[j]);
+				FaceDetection fd("./data/FaceDetection/haarcascades/haarcascade_frontalface_alt.xml","./data/FaceDetection/haarcascades/haarcascade_eye_tree_eyeglasses.xml",scale,2, minSizes[i],minSizes[j],true);
 
 				vector<Mat> faces;
 				vector<cv::Point> centers;
