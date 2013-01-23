@@ -7,15 +7,18 @@ class NVector : public IDataModel{
 
 public:
 
-	NVector(string SQLTable, vector<float>* value);
+	NVector(string url, string SQLTable, vector<float> value);
+	NVector(string SQLTable);
+	NVector();
 	~NVector();
 
+	void* getValue();
 	bool storeSQL();
 	bool loadSQL(int mediaId);
 
 private:
 
-	vector<float>* value;
+	vector<float> value;
 	string SQLTable;
 	size_t rawSize;
 

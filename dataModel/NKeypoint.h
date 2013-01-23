@@ -7,15 +7,17 @@ class NKeypoint : public IDataModel{
 
 public:
 
-	NKeypoint(string SQLTable, vector<pair<vector<float>,vector<float> > >* value);
+	NKeypoint(string url, string SQLTable, vector<pair<vector<float>,vector<float> > > value);
+	NKeypoint(string SQLTable);
 	~NKeypoint();
 
+	void* getValue();
 	bool storeSQL();
 	bool loadSQL(int mediaId);
 
 private:
 
-	vector<pair<vector<float>,vector<float> > >* value;
+	vector<pair<vector<float>,vector<float> > > value;
 	string SQLTable;
 	size_t rawSize;
 
