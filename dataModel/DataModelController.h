@@ -1,4 +1,5 @@
 //#include "InterfaceModel.h"
+#include "IDataModel.h"
 #include "Poco/Data/SQLChannel.h"
 #include "Poco/Data/SessionFactory.h"
 #include "Poco/Data/SQLite/Connector.h"
@@ -7,6 +8,8 @@
 #include <string>
 #include <vector>
 #include <map>
+
+#define SQLFILE "slb.db"
 
 using namespace std;
 using namespace Poco::Data;

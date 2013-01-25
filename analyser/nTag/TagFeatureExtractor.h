@@ -11,6 +11,7 @@
 #include "../tools/MatrixTools.h"
 #include "../IAnalyser.h"
 #include "../../dataModel/IDataModel.h"
+#include "../../dataModel/NTag.h"
 
 #define TAG_FEATURES_NAME "TagFeatures"
 
@@ -23,10 +24,11 @@ public:
 	
 	virtual ~TagFeatureExtractor()  {}
 
-	AnalyserDataType* getFeatures(string name){
-		map<string,float>* features = new map<string,float>();
-		extractFeatures(name, *features);
-		return new AnalyserDataType(features,TAG_FEATURES_NAME);
+	IDataModel* getFeatures(string name){
+		map<string,float> features;
+		extractFeatures(name, features);
+		NTag *tag = new NTag(name,features);
+		return tag;
 	}
 
 	virtual void extractFeatures(string filename, map<string,float>& features){
@@ -46,7 +48,7 @@ public:
 	virtual void* createType(string &typeId) = 0;
 	
 	IDataModel::type getType(){
-		return IDataModel::NTag;
+		return IDataModel::NTAG;
 	}
 };
 

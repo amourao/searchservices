@@ -11,6 +11,7 @@
 #include "../tools/MatrixTools.h"
 #include "../IAnalyser.h"
 #include "../../dataModel/IDataModel.h"
+#include "../../dataModel/NRoi.h"
 
 #define ROI_FEATURES_NAME "RoiFeatures"
 
@@ -23,10 +24,11 @@ public:
 	
 	virtual ~RoiFeatureExtractor()  {}
 
-	AnalyserDataType* getFeatures(string name){
-		map<string,region>* features = new map<string,region>();
-		extractFeatures(name, *features);
-		return new AnalyserDataType(features,ROI_FEATURES_NAME);
+	IDataModel* getFeatures(string name){
+		map<string,region> features;
+		extractFeatures(name, features);
+		NRoi* roi = new NRoi(name, features);
+		return roi;
 	}
 
 	virtual void extractFeatures(string filename, map<string,region>& features){
@@ -47,7 +49,7 @@ public:
 	virtual void* createType(string &typeId) = 0;
 	
 	IDataModel::type getType(){
-		return IDataModel::NRoi;
+		return IDataModel::NROI;
 	}
 };
 

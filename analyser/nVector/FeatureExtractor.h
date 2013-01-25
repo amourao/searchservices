@@ -9,6 +9,7 @@
 #include "../tools/MatrixTools.h"
 #include "../IAnalyser.h"
 #include "../../dataModel/IDataModel.h"
+#include "../../dataModel/NVector.h"
 
 #define VECTOR_FEATURES_NAME "VectorFeatures"
 
@@ -28,13 +29,14 @@ public:
 	virtual void* createType(string &typeId) = 0;
 
 	IDataModel::type getType(){
-		return IDataModel::NVector;
+		return IDataModel::NVECTOR;
 	}
 
-	AnalyserDataType* getFeatures(string name){
-		vector<float>* features = new vector<float>();
-		extractFeatures(name, *features);
-		return new AnalyserDataType(features,VECTOR_FEATURES_NAME);
+	IDataModel* getFeatures(string name){
+		vector<float> features;
+		extractFeatures(name, features);
+		NVector *vector = new NVector(name,getName(),features);
+		return vector;
 	}
 	
 	void extractFeatures(string filename, vector<float>& features){

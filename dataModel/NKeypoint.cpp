@@ -5,7 +5,6 @@ const string SQLFILE = "slb.db";
 
 NKeypoint::NKeypoint(string url, string SQLTable, vector<pair<vector<float>,vector<float> > > value) : IDataModel(url)
 {
-	this->url = url;
 	this->value = value;
 	this->SQLTable = SQLTable;
 	this->rawSize = sizeof(int);
