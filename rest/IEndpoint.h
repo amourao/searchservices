@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <iostream>
 
 #include <Poco/Net/HTTPServerResponse.h>
 
@@ -15,8 +16,8 @@ public:
 
 	virtual ~IEndpoint(){}
 	
-	virtual void* createType(string &typeId) = 0;
+	virtual void* createType(string& typeId) = 0;
 	
-	virtual void handleRequest(string method, map<string, string> queryStrings, HTTPServerResponse &resp) = 0;
+	virtual void handleRequest(string method, map<string, string> queryStrings, istream& input, HTTPServerResponse& resp) = 0;
 
 };

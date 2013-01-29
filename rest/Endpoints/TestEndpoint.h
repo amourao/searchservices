@@ -17,7 +17,7 @@ public:
 	
 	void* createType(string &typeId);
 	
-	void handleRequest(string method, map<string, string> queryStrings, HTTPServerResponse &resp);
+	void handleRequest(string method, map<string, string> queryStrings, istream& input,  HTTPServerResponse& resp);
 
 private:
   string type;

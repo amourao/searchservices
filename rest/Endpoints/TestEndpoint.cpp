@@ -7,7 +7,7 @@ TestEndpoint::TestEndpoint(string type){
 }
 
 TestEndpoint::TestEndpoint(){
-	FactoryEndpoint::getInstance()->registerType("Hello",this);
+	FactoryEndpoint::getInstance()->registerType("/Hello",this);
 }
 
 TestEndpoint::~TestEndpoint()
@@ -17,7 +17,7 @@ void* TestEndpoint::createType(string& type){
 	//TODO
 	cout << "New type requested: " << type << endl;
 	
-	if (type == "Hello")
+	if (type == "/Hello")
 		return new TestEndpoint(type);
 		
 	cerr << "Error registering type from constructor (this should never happen)" << endl;
@@ -25,9 +25,12 @@ void* TestEndpoint::createType(string& type){
 }
 
 
-void TestEndpoint::handleRequest(string method, map<string, string> queryStrings, HTTPServerResponse &resp)
+void TestEndpoint::handleRequest(string method, map<string, string> queryStrings, istream& input, HTTPServerResponse& resp)
 {
   resp.setContentType("text/html");
-  resp.send().write("<h2>Hello World!</h2>", strlen("<h2>Hello World!</h2>"));
+
+	ostream& out = resp.send();
+  
+  out << "<h2>Hello World!</h2>";
 }
 
