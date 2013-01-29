@@ -1,20 +1,22 @@
 #include "../dataModel/IDataModel.h"
+#include "../dataModel/NVector.h"
+
 
 class GameImage : public IDataModel{
 
 public:
 
-	GameImage(unsigned int pk, int gameId,int roundId,int userId,
+	GameImage(string url, int gameId,int roundId,int userId,
 			int timeId, int roundAudience, 	int roundExpressionId, int ksvm, float score,
-			string username);
+			string username, NVector gaborFace, NVector histFace, NVector reconFace, NVector gaborShirt,
+			NVector histShirt, NVector reconShirt);
 	GameImage();
 	~GameImage();
 
 	bool storeSQL();
-	bool loadSQL(int pk);
+	bool loadSQL(int mediaId);
 	void* getValue();
 
-	unsigned int getPk();
 	int getGameId();
 	int getKsvm();
 	int getRoundAudience();
@@ -27,7 +29,6 @@ public:
 
 private:
 
-	unsigned int pk;
 	int gameId;
 	int roundId;
 	int userId;
@@ -37,5 +38,10 @@ private:
 	int ksvm;
 	float score;
 	string username;
-
+	NVector gaborFace;
+	NVector histFace;
+	NVector reconFace;
+	NVector gaborShirt;
+	NVector histShirt;
+	NVector reconShirt;
 };

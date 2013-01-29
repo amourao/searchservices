@@ -36,16 +36,20 @@
         "featuresVec": {
             "analyser": [
                 {
-                    "name": "SIFT",
-                    "entityType": "Keypoints"
+                    "name": "GaborAnalyser",
+                    "entityType": "FACE_GABOR"
                 },
                 {
-                    "name": "ColorHistogram",
-                    "entityType": "HSVhistogram"
+                    "name": "ColorAnalyser",
+                    "entityType": "FACE_HIST"
                 },
                 {
                     "name": "GaborAnalyser",
-                    "entityType": "GaborTextures"
+                    "entityType": "SHIRT_GABOR"
+                },
+                {
+                    "name": "ColorAnalyser",
+                    "entityType": "SHIRT_HIST"
                 }
             ]
         },

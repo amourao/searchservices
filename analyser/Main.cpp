@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <cstdlib>
 #include <opencv2/features2d/features2d.hpp>
 
 #include <opencv2/core/core.hpp>
@@ -394,7 +395,7 @@ int testFactories(int argc, char *argv[]){
 
 	f->listTypes();
 	
-	cout << "bla" << endl;
+	cout << "bla2" << endl;
 	//cout <<  f->createType(featureExtractor->getName()) << endl;
 	
 	return 0;
