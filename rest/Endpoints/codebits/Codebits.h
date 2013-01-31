@@ -2,25 +2,24 @@
 
 #include <iostream>
 #include <sstream>
+#include <vector>
+#include <flann/flann.hpp>
 
 #include <Poco/RegularExpression.h>
 
-#include "finder.h"
-#include "ksvd_finder.h"
-#include "ksvd_index.h"
-#include "omp.h"
+#include "../../../appData/GameImage.h"
 #include "../../FactoryEndpoint.h"
 #include "../../IEndpoint.h"
-//#include "../../../appData/GameImage.h"
 
 using namespace std;
 using namespace Poco;
-using namespace bits;
+using namespace flann;
 
 class Codebits : public IEndpoint
 {
 
 public:
+
 	Codebits();
 	Codebits(string type);
 	~Codebits();
@@ -31,13 +30,41 @@ public:
 
 private:
   string type;
+
+  static Index<L2<float>> face_gabor;  //FACE_GABOR
+  static Index<L2<float>> face_hist;   //FACE_HIST
+  static Index<L2<float>> face_recon;  //FACE_RECON
+  static Index<L2<float>> shirt_gabor;  //SHIRT_GABOR
+  static Index<L2<float>> shirt_hist;  //SHIRT_HIST
+  static Index<L2<float>> shirt_recon;  //SHIRT_RECON
+  
+  static int last_face_gabor_id;
+  static int last_face_hist_id;
+  static int last_face_recon_id;
+  static int last_shirt_gabor_id;
+  static int last_shirt_hist_id;
+  static int last_shirt_recon_id;
   
   void index(istream& in);
   //TODO: change to vector<GameImage>
-  string search(map<string, string> parameters);
-  string latests(map<string, string> parameters);
-  string best(map<string, string> parameters);
-  string scoreboard(map<string, string> parameters);
-  string mybestsmile(map<string, string> parameters);
+  vector<GameImage> search(map<string, string> parameters);
+  vector<GameImage> latests(map<string, string> parameters);
+  vector<GameImage> best(map<string, string> parameters);
+  vector<GameImage> scoreboard(map<string, string> parameters);
+  vector<GameImage> mybestsmile(map<string, string> parameters);
 };
 
+int Codebits::last_face_gabor_id = 0;
+int Codebits::last_face_hist_id = 0;
+int Codebits::last_face_recon_id = 0;
+int Codebits::last_shirt_gabor_id = 0;
+int Codebits::last_shirt_hist_id = 0;
+int Codebits::last_shirt_recon_id = 0;
+
+
+Index<L2<float>> Codebits::face_gabor(Matrix<float>(new float[288*1], 288, 1), KDTreeIndexParams(4));
+/*Index<L2<float>> Codebits::face_hist(Matrix<float>(new float[288*1], 288, 1), KDTreeIndexParams(4));
+Index<L2<float>> Codebits::face_recon(Matrix<float>(new float[288*1], 288, 1), KDTreeIndexParams(4));
+Index<L2<float>> Codebits::shirt_gabor(Matrix<float>(new float[288*1], 288, 1), KDTreeIndexParams(4));
+Index<L2<float>> Codebits::shirt_hist(Matrix<float>(new float[288*1], 288, 1), KDTreeIndexParams(4));
+Index<L2<float>> Codebits::shirt_recon(Matrix<float>(new float[288*1], 288, 1), KDTreeIndexParams(4));*/
