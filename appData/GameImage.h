@@ -8,8 +8,8 @@ public:
 
 	GameImage(string url, int gameId,int roundId,int userId,
 			int timeId, int roundAudience, 	int roundExpressionId, int ksvm, float score,
-			string username, NVector gaborFace, NVector histFace, NVector reconFace, NVector gaborShirt,
-			NVector histShirt, NVector reconShirt);
+			string username, vector<float> gaborFace, vector<float> histFace, vector<float> reconFace, vector<float> gaborShirt,
+			vector<float> histShirt, vector<float> reconShirt);
 	GameImage();
 	~GameImage();
 
@@ -26,6 +26,10 @@ public:
 	int getUserId();
 	float getScore();
 	string getUsername();
+	bool serialize(std::ostream &os);
+	bool deserialize(std::istream &is);
+	void setFlannId(int flannId);
+	//static vector<GameImage> executeQuery(int id, vector<string> params);
 
 private:
 
@@ -36,6 +40,7 @@ private:
 	int roundAudience;
 	int roundExpressionId;
 	int ksvm;
+	int flannId;
 	float score;
 	string username;
 	NVector gaborFace;
