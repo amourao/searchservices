@@ -68,3 +68,16 @@ vector<float> NVector::unserializeVector(const unsigned char* buffer)
     memcpy(&(v[0]), buffer+sizeof(int), size*sizeof(float));
 	return v;
 }
+
+unsigned char* NVector::serialize()
+{
+	return serializeVector(&value);
+}
+
+void NVector::unserialize(std::istream &is)
+{
+	int vlen;
+    is.read((char*)&vlen, sizeof(int));
+    value.resize(vlen);
+    is.read((char*)&value[0],vlen);
+}

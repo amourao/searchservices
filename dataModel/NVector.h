@@ -15,6 +15,9 @@ public:
 	void* getValue();
 	bool storeSQL();
 	bool loadSQL(int mediaId);
+	unsigned char* serialize();
+	void unserialize(std::istream &is);
+
 
 private:
 
