@@ -5,7 +5,7 @@ const string URL = "url";
 
 RestRequestHandler::RestRequestHandler()
 {
-    controller = new DataModelController();
+    //controller = new DataModelController();
 };
 
 RestRequestHandler::~RestRequestHandler()
@@ -25,10 +25,29 @@ void RestRequestHandler::handleRequest(HTTPServerRequest &req, HTTPServerRespons
 
     map<string,string> parameters = getParams(query);
 
-    vector<string> features = getFeatures(parameters[FEATURES]);
+    cout << "#########################################################" << endl;
+    cout << "\t" << method << " @ " << endpoint << endl;
+    cout << "\tQuery: " << query << endl;
+    cout << "#########################################################" << endl;
+    
+    //endpoint.erase(0,1); //Erase the first /
+    
+    FactoryEndpoint* fact = FactoryEndpoint::getInstance();
+    IEndpoint* endpt = (IEndpoint*)(fact->createType(endpoint));
+    
+    if(endpt == NULL){
+      resp.setStatus(HTTPResponse::HTTP_NOT_FOUND);
+      resp.send();
+      return ;
+    }
+    
+    endpt->handleRequest(method, parameters, req.stream(), resp);
+    
+    /*vector<string> features = getFeatures(parameters[FEATURES]);
     cout << "1" << endl;
     controller->newRequest(method, endpoint, parameters[URL], features); 
-    cout << "2" << endl;
+    cout << "2" << endl;*/
+    
 };
 
 map<string,string> RestRequestHandler::getParams(string params)
@@ -58,7 +77,7 @@ map<string,string> RestRequestHandler::getParams(string params)
     return result;
 }
 
-vector<string> RestRequestHandler::getFeatures(string features){
+/*vector<string> RestRequestHandler::getFeatures(string features){
     string part1 = features;
     string part2 = features;
     vector<string> result;
@@ -73,4 +92,4 @@ vector<string> RestRequestHandler::getFeatures(string features){
     }
     result.push_back(part2);
     return result;
-}
+}*/

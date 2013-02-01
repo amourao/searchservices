@@ -1,4 +1,6 @@
-#include "InterfaceController.h"
+#include "FactoryEndpoint.h"
+#include "IEndpoint.h"
+
 #include <Poco/Net/ServerSocket.h>
 #include <Poco/Net/HTTPServer.h>
 #include <Poco/Net/HTTPRequestHandler.h>
@@ -9,9 +11,9 @@
 #include <Poco/Util/ServerApplication.h>
 #include "Poco/URI.h"
 
-#include <iostream>
+//#include <iostream>
 #include <string>
-#include <vector>
+//#include <vector>
 #include <map>
 
 using namespace Poco::Net;
@@ -26,8 +28,8 @@ class RestRequestHandler : public HTTPRequestHandler
         virtual void handleRequest(HTTPServerRequest &req, HTTPServerResponse &resp);
 
     private:
-        DataModelController* controller;
+        //DataModelController* controller;
 
         map<string,string> getParams(string params);
-        vector<string> getFeatures(string features);
+        //vector<string> getFeatures(string features);
 };
