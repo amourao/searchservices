@@ -196,6 +196,31 @@ string GameImage::getUsername(){
 	return username;
 }
 
+vector<float> GameImage::getGaborFace(){
+  return gaborFace.getRawVector();
+}
+
+vector<float> GameImage::getHistFace(){
+  return histFace.getRawVector();
+}
+
+vector<float> GameImage::getReconFace(){
+  return reconFace.getRawVector();
+}
+
+vector<float> GameImage::getGaborShirt(){
+  return gaborShirt.getRawVector();
+}
+
+vector<float> GameImage::getHistShirt(){
+  return histShirt.getRawVector();
+}
+
+vector<float> GameImage::getReconShirt(){
+  return reconShirt.getRawVector();
+}
+
+//
 //static vector<GameImage> GameImage::executeQuery(int id, vector<string> params)
 //{
 //	vector<GameImage> gms;

@@ -17,6 +17,7 @@ public:
 	bool loadSQL(int mediaId);
 	unsigned char* serialize();
 	void unserialize(std::istream &is);
+	vector<float> getRawVector();
 
 
 private:

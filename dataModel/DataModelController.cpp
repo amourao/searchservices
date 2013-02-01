@@ -43,7 +43,6 @@ void DataModelController::createTables(){
 	Session ses("SQLite", SQLFILE);
 
 	ses << "BEGIN", Keywords::now;
-	ses << "CREATE TABLE gameImage (pk INTEGER, gameId INTEGER, roundId INTEGER, userId INTEGER, timeId INTEGER, roundAudience INTEGER, roundExpressionId INTEGER,ksvm INTEGER,score REAL,username TEXT)", Keywords::now;
 	ses << "CREATE TABLE media (id INTEGER PRIMARY KEY AUTOINCREMENT, uri TEXT, partOf, FOREIGN KEY(partOf) REFERENCES media(id))", Keywords::now;
 	ses << "CREATE TABLE annotationType (id INTEGER PRIMARY KEY AUTOINCREMENT, description TEXT, typeName TEXT)", Keywords::now;
 	ses << "CREATE TABLE word (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, type TEXT, annotationTypeId, FOREIGN KEY(annotationTypeId) REFERENCES annotationType(id))", Keywords::now;
@@ -56,12 +55,11 @@ void DataModelController::createTables(){
 	ses << "CREATE TABLE SHIRT_GABOR (id INTEGER PRIMARY KEY AUTOINCREMENT, mediaId, data BLOB, FOREIGN KEY(mediaId) REFERENCES media(id))", Keywords::now;
 	ses << "CREATE TABLE SHIRT_HIST (id INTEGER PRIMARY KEY AUTOINCREMENT, mediaId, data BLOB, FOREIGN KEY(mediaId) REFERENCES media(id))", Keywords::now;
 	ses << "CREATE TABLE SHIRT_RECON (id INTEGER PRIMARY KEY AUTOINCREMENT, mediaId, data BLOB, FOREIGN KEY(mediaId) REFERENCES media(id))", Keywords::now;
-
 	ses << "CREATE TABLE region (mediaId PRIMARY KEY, x INTEGER, y INTEGER, height REAL, width REAL, annotationTypeId, FOREIGN KEY(mediaId) REFERENCES media(id), FOREIGN KEY(annotationTypeId) REFERENCES annotationType(id))", Keywords::now;
 	ses << "INSERT INTO annotationType VALUES(null,\"face\",\"face\")", Keywords::now;
 	ses << "INSERT INTO annotationType VALUES(null,\"carro\",\"carro\")", Keywords::now;
+	ses << "CREATE TABLE gameImage (pk INTEGER, gameId INTEGER, roundId INTEGER, userId INTEGER, timeId INTEGER, roundAudience INTEGER, roundExpressionId INTEGER,ksvm INTEGER,score REAL,username TEXT,flannId, FOREIGN KEY(mediaId) REFERENCES media(id))", Keywords::now;
 	ses << "END", Keywords::now;
-
 	for (iter = listOfTypes.begin(); iter != listOfTypes.end(); iter++)
 	{
 		ses << "DROP TABLE IF EXISTS "<< (*iter).first, Keywords::now;

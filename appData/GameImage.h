@@ -27,6 +27,12 @@ public:
 	int getUserId();
 	float getScore();
 	string getUsername();
+	vector<float> getGaborFace();
+	vector<float> getHistFace();
+	vector<float> getReconFace();
+	vector<float> getGaborShirt();
+	vector<float> getHistShirt();
+	vector<float> getReconShirt();
 	bool serialize(std::ostream &os);
 	bool deserialize(std::istream &is);
 	void setFlannId(int flannId);

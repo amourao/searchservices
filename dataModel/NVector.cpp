@@ -28,6 +28,10 @@ void* NVector::getValue(){
 	return &value;
 }
 
+vector<float> NVector::getRawVector(){
+  return value;
+}
+
 bool NVector::storeSQL()
 {
 
@@ -79,5 +83,5 @@ void NVector::unserialize(std::istream &is)
 	int vlen;
     is.read((char*)&vlen, sizeof(int));
     value.resize(vlen);
-    is.read((char*)&value[0],vlen);
+    is.read((char*)&value[0],vlen*sizeof(int));
 }
