@@ -1,5 +1,6 @@
 #include "../dataModel/IDataModel.h"
 #include "../dataModel/NVector.h"
+#include "../commons/AppConfig.h"
 
 
 class GameImage : public IDataModel{
@@ -29,7 +30,7 @@ public:
 	bool serialize(std::ostream &os);
 	bool deserialize(std::istream &is);
 	void setFlannId(int flannId);
-	//static vector<GameImage> executeQuery(int id, vector<string> params);
+	static vector<GameImage> executeQuery(int id, vector<string> params);
 
 private:
 

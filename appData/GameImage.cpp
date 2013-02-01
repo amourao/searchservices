@@ -93,12 +93,12 @@ bool GameImage::serialize(std::ostream &os)
 	os.write((char*)&vlen,sizeof(int));
 	os.write(username.c_str(),vlen);
 
-	char* serializeGaborFace = gaborFace.serialize();
-	char* serializeHistFace = histFace.serialize();
-	char* serializeReconFace = reconFace.serialize();
-	char* serializeGaborShirt = gaborShirt.serialize();
-	char* serializeHistShirt = histShirt.serialize();
-	char* serializeReconShirt = reconShirt.serialize();
+	char* serializeGaborFace = reinterpret_cast<char*>(gaborFace.serialize());
+	char* serializeHistFace = reinterpret_cast<char*>(histFace.serialize());
+	char* serializeReconFace = reinterpret_cast<char*>(reconFace.serialize());
+	char* serializeGaborShirt = reinterpret_cast<char*>(gaborShirt.serialize());
+	char* serializeHistShirt = reinterpret_cast<char*>(histShirt.serialize());
+	char* serializeReconShirt = reinterpret_cast<char*>(reconShirt.serialize());
 
 	vlen = sizeof(serializeGaborFace) / sizeof(serializeGaborFace[0]);
 	os.write((char*)&vlen,sizeof(int));
@@ -195,7 +195,7 @@ int GameImage::getUserId(){
 string GameImage::getUsername(){
 	return username;
 }
-//
+
 //static vector<GameImage> GameImage::executeQuery(int id, vector<string> params)
 //{
 //	vector<GameImage> gms;
@@ -208,23 +208,37 @@ string GameImage::getUsername(){
 //	vector<int> roundExpressionId;
 //	vector<int> ksvms;
 //	vector<float> scores;
+//	NVector gaborFace;
+//	NVector histFace;
+//	NVector reconFace;
+//	NVector gaborShirt;
+//	NVector histShirt;
+//	NVector reconShirt;
 //	vector<string> usernames;
 //	Session ses("SQLite", SQLFILE);
-//	ses << AppConfig::getInstance()->instance->querys[id];
+//	ses << (AppConfig::getInstance()->instance)->queries[id];
 //	vector<string>::iterator it;
 //	for(it = params.begin(); it != params.end(); it++)
 //	{
 //		ses << Keywords::use(*it);
 //	}
-//	ses << mediaId, Keywords::into(mediaId), Keywords::into(gameId),Keywords::into(roundId),
-//			Keywords::into(userId),Keywords::into(timeId),Keywords::into(roundAudience),
-//			Keywords::into(roundExpressionId), Keywords::into(ksvm), Keywords::into(score),
-//			Keywords::into(username), Keywords::now;
+//	ses <<  Keywords::into(mediaIds), Keywords::into(gameIds),Keywords::into(roundIds),
+//			Keywords::into(userIds),Keywords::into(timeIds),Keywords::into(roundAudience),
+//			Keywords::into(roundExpressionId), Keywords::into(ksvms), Keywords::into(scores),
+//			Keywords::into(usernames), Keywords::now;
 //	for(int i = 0; i < mediaIds.size(); i++)
 //	{
 //		string url;
-//		ses << "SELECT url FROM media WHERE id=" << mediaId[i], Keywords::into(url),Keywords::now;
-//		GameImage gm = new GameImage(url,gameIds[i], roundIds[i], userIds[i], timeIds[i], roundAudience[i], roundExpressionId[i], ksvms[i], scores[i], usernames[i]);
+//		ses << "SELECT url FROM media WHERE id=" << mediaIds[i], Keywords::into(url),Keywords::now;
+//		gaborFace.loadSQL(mediaIds[i]);
+//		histFace.loadSQL(mediaIds[i]);
+//		reconFace.loadSQL(mediaIds[i]);
+//		gaborShirt.loadSQL(mediaIds[i]);
+//		histShirt.loadSQL(mediaIds[i]);
+//		reconShirt.loadSQL(mediaIds[i]);
+//		GameImage gm(url,gameIds[i], roundIds[i], userIds[i], timeIds[i], roundAudience[i],
+//				roundExpressionId[i], ksvms[i], scores[i], usernames[i], gaborFace, histFace, reconFace,
+//				gaborShirt, histShirt, reconShirt);
 //		gms.push_back(gm);
 //	}
 //	ses.close();

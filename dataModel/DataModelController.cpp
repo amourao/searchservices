@@ -10,42 +10,9 @@ const string DELETE = "DELETE";
 
 DataModelController::DataModelController(){
 	SQLite::Connector::registerConnector();
-	/*ifstream f;
-	f.open(SQLFILE.c_str());
-	if(!f.good())
-	 {*/
 	dropTables();
 	createTables();
 
-}
-
-void DataModelController::newRequest(string method, string endpoint, string url, vector<string> features){
-	//TODO
-	//FactoryEndpoints
-
-	/*if(!method.compare(GET)){
-		if(!endpoint.compare(ANALYSE)){
-			//TODO
-		}
-	}
-	else if(!method.compare(PUT)){
-		if(!endpoint.compare(STORE)){
-			//TODO
-		}
-		else if(!endpoint.compare(INDEX)){
-			//TODO
-		}
-	}
-	else if(!method.compare(POST)){
-		//Nothing to be done, yet!
-	}
-	else if(!method.compare(DELETE)){
-		//Nothing to be done, yet!
-	}
-	else {
-		//TODO
-		//No such endpoint
-	}*/
 }
 
 void DataModelController::dropTables(){

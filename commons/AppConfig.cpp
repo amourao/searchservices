@@ -1,6 +1,4 @@
 #include "AppConfig.h"
-#include <jsoncpp/json/json.h>
-#include <jsoncpp/json/autolink.h>
 
 AppConfig* AppConfig::instance = NULL;
 
@@ -22,6 +20,7 @@ AppConfig::AppConfig()
 	featuresVec = parseFeatures(root["novasearch"]["featuresVec"]);
 	featuresText = parseFeatures(root["novasearch"]["featuresText"]);
 	featuresRoi = parseFeatures(root["novasearch"]["featuresRoi"]);
+	parseQuerys(root["novasearch"]["queries"]);
 }
 
 AppConfig::~AppConfig()
@@ -83,6 +82,17 @@ map<string,vector<map<string,string> > > AppConfig::parseFeatures(Value feature)
 		features["analyser"].push_back(map);
 	}
 	return features;
+}
+
+void AppConfig::parseQuerys(Value queries){
+	for(int i = 0; i < queries.size(); i++)
+	{
+		this->queries[i] = queries[i].asString();
+	}
+}
+
+string AppConfig::getQuery(int index){
+	return queries[index];
 }
 
 //int main(){

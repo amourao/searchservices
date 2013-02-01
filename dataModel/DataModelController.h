@@ -20,8 +20,6 @@ class DataModelController {
         DataModelController();
         ~DataModelController();
 
-        void newRequest(string method, string endpoint, string url, vector<string> features);
-
     private:
         void dropTables();
         void createTables();
