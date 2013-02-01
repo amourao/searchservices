@@ -6,7 +6,9 @@ RestServer::RestServer(int port)
       HTTPServer s(new RequestHandlerFactory, ServerSocket(port), new HTTPServerParams);
       s.start();
       cout << "Server started" << endl;
-
+      
+      //DataModelController dmc;
+      
       waitForTerminationRequest();
       
       s.stop();

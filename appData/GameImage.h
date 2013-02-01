@@ -11,13 +11,14 @@ public:
 			int timeId, int roundAudience, 	int roundExpressionId, int ksvm, float score,
 			string username, vector<float> gaborFace, vector<float> histFace, vector<float> reconFace, vector<float> gaborShirt,
 			vector<float> histShirt, vector<float> reconShirt);
-	GameImage();
+	GameImage(string url);
 	~GameImage();
 
 	bool storeSQL();
 	bool loadSQL(int mediaId);
 	void* getValue();
 
+  int getId();
 	int getGameId();
 	int getKsvm();
 	int getRoundAudience();
@@ -56,4 +57,6 @@ private:
 	NVector gaborShirt;
 	NVector histShirt;
 	NVector reconShirt;
+	
+	static bool replace(std::string& str, const std::string& from, const std::string& to);
 };

@@ -51,7 +51,7 @@ private:
   static int last_shirt_hist_id;
   static int last_shirt_recon_id;
   
-  void index(istream& in);
+  void index(istream& in, map<string, string> parameters);
   vector<GameImage> search(map<string, string> parameters);
   vector<GameImage> latests(map<string, string> parameters);
   vector<GameImage> best(map<string, string> parameters);

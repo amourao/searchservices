@@ -71,12 +71,13 @@ void dump_json(/*const*/ vector<GameImage>& result, ostream& out) {
     out << "{ \"rank\": [" << endl;
     for (size_t i = 0; i != result.size(); i++) {
         out << "{\"GameId\": \"" << result[i].getGameId() << "\"," << endl;
+        out << "\"MediaId\": \"" << result[i].getId() << "\"," << endl;
         out << "\"RoundId\": \"" << result[i].getRoundId() << "\"," << endl;
         out << "\"UserId\": \"" << result[i].getUserId() << "\"," << endl;
         out << "\"TimeId\": \"" << result[i].getTimeId() << "\"," << endl;
         out << "\"RoundAudience\": \"" << result[i].getRoundAudience() << "\"," << endl;
         out << "\"RoundExpression\": \"" << result[i].getRoundExpressionId() << "\"," << endl;
-        out << "\"Score\": \"" << int(result[i].getScore() * 100) << "\"," << endl;
+        out << "\"Score\": \"" << result[i].getScore() << "\"," << endl;
         out << "\"Expression\": \"" << result[i].getKsvm() << "\"," << endl;
         out << "\"Permalink\": \"" << result[i].getUsername() << "\"}";
         if (i == result.size() - 1) {
@@ -114,7 +115,7 @@ void Codebits::handleRequest(string method, map<string, string> queryStrings, is
   }
   
   if(method == "PUT" && type == "/index"){
-    index(input);
+    index(input, queryStrings);
     resp.send();
     return;
   }
@@ -139,10 +140,14 @@ void Codebits::handleRequest(string method, map<string, string> queryStrings, is
   out.flush();
 }
 
-//TODO: Check if all parameters are present
-void Codebits::index(istream& in)
-{
-  GameImage gm;
+void Codebits::index(istream& in, map<string, string> parameters)
+{ 
+  if(parameters.count("url") == 0){
+    cout << "/index: error: Missing parameter 'url'" << endl;
+    return ;
+  }
+  
+  GameImage gm(parameters["url"]);
   
   gm.deserialize(in);
   
@@ -181,6 +186,7 @@ void Codebits::index(istream& in)
   gm.setFlannId(last_face_gabor_id);
   
   gm.storeSQL();
+  
 }
 
 Index<L2<float>>* Codebits::getIndex(int id){
@@ -197,7 +203,7 @@ Index<L2<float>>* Codebits::getIndex(int id){
 }
 
 vector<float> Codebits::getVectorForIndex(int id, int media_id){
-  GameImage gm;
+  GameImage gm("");
   
   if(!gm.loadSQL(media_id)){
     return vector<float>();
@@ -230,7 +236,7 @@ vector<GameImage> Codebits::search(map<string, string> parameters)
     Index<L2<float>>* index = getIndex(criteria);
     vector<float> vector = getVectorForIndex(criteria, id);
     
-    
+    //Matrix<float> query(&vector[0], vector.size(), 1);
     
     // do a knn search, using 128 checks
     //index.knnSearch(query, indices, dists, nn, flann::SearchParams(128));
@@ -270,6 +276,13 @@ vector<GameImage> Codebits::best(map<string, string> parameters)
   if (error) {
     cout << "/best: error: Invalid parameter 'criteria'" << endl;
   } else {
+  
+    //2
+    vector<string> pars;
+    std::stringstream sstm;
+    sstm << criteria;
+    pars.push_back(sstm.str());
+    result = GameImage::executeQuery(2, pars);
     //db << "SELECT * FROM GameImages WHERE RoundExpressionId == :criteria ORDER BY Score DESC LIMIT 50", use(criteria), into(result), limit(50), now;	
     cout << "/best: 'criteria'= " << criteria << " OK" << endl;
   }
@@ -280,7 +293,7 @@ vector<GameImage> Codebits::best(map<string, string> parameters)
 vector<GameImage> Codebits::scoreboard(map<string, string> parameters)
 {
   vector<GameImage> result;
-	 
+	
   //db << "SELECT * FROM GameImages ORDER BY Score DESC LIMIT 50", into(result), limit(50), now;
   return result;
 }

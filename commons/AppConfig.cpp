@@ -87,7 +87,7 @@ map<string,vector<map<string,string> > > AppConfig::parseFeatures(Value feature)
 void AppConfig::parseQuerys(Value queries){
 	for(int i = 0; i < queries.size(); i++)
 	{
-		this->queries[i] = queries[i].asString();
+	  this->queries.push_back(queries[i].asString());
 	}
 }
 

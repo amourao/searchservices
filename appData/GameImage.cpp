@@ -24,14 +24,14 @@ GameImage::GameImage(string url,int gameId,int roundId,int userId,
 	this->reconShirt = *(new NVector(url,"SHIRT_RECON",reconShirt));
 }
 
-GameImage::GameImage() : IDataModel()
+GameImage::GameImage(string url) : IDataModel(url)
 {
-	gaborFace = *(new NVector("FACE_GABOR"));
-	histFace = *(new NVector("FACE_HIST"));
-	reconFace = *(new NVector("FACE_RECON"));
-	gaborShirt = *(new NVector("SHIRT_GABOR"));
-	histShirt = *(new NVector("SHIRT_HIST"));
-	reconShirt = *(new NVector("SHIRT_RECON"));
+	gaborFace = *(new NVector(url, "FACE_GABOR"));
+	histFace = *(new NVector(url, "FACE_HIST"));
+	reconFace = *(new NVector(url, "FACE_RECON"));
+	gaborShirt = *(new NVector(url, "SHIRT_GABOR"));
+	histShirt = *(new NVector(url, "SHIRT_HIST"));
+	reconShirt = *(new NVector(url, "SHIRT_RECON"));
 }
 
 GameImage::~GameImage(){
@@ -47,6 +47,7 @@ bool GameImage::storeSQL()
 {
 	int mediaId = getMediaId();
 	Session ses("SQLite", SQLFILE);
+	ses << "BEGIN" << Keywords::now;
 	ses << "INSERT INTO gameImage VALUES(:mediaId,:gameId,:roundId,:userId,:timeId,:roundAudience,:roundExpressionId,:ksvm,:score,:username,:flannId)",
 			Keywords::use(mediaId),Keywords::use(gameId),Keywords::use(roundId), Keywords::use(userId), Keywords::use(timeId),Keywords::use(roundAudience),
 			Keywords::use(roundExpressionId), Keywords::use(ksvm), Keywords::use(score), Keywords::use(username),Keywords::use(flannId), Keywords::now;
@@ -56,6 +57,7 @@ bool GameImage::storeSQL()
 	gaborShirt.storeSQL();
 	histShirt.storeSQL();
 	reconShirt.storeSQL();
+	ses << "END" << Keywords::now;
 	ses.close();
 	return true;
 }
@@ -160,6 +162,10 @@ void* GameImage::getValue(){
 	return this;
 }
 
+int GameImage::getId(){
+  return getMediaId();
+}
+
 int GameImage::getGameId(){
 	return gameId;
 }
@@ -220,52 +226,93 @@ vector<float> GameImage::getReconShirt(){
   return reconShirt.getRawVector();
 }
 
-//
-//static vector<GameImage> GameImage::executeQuery(int id, vector<string> params)
-//{
-//	vector<GameImage> gms;
-//	vector<int> mediaIds;
-//	vector<int> gameIds;
-//	vector<int> roundIds;
-//	vector<int> userIds;
-//	vector<int> timeIds;
-//	vector<int> roundAudience;
-//	vector<int> roundExpressionId;
-//	vector<int> ksvms;
-//	vector<float> scores;
-//	NVector gaborFace;
-//	NVector histFace;
-//	NVector reconFace;
-//	NVector gaborShirt;
-//	NVector histShirt;
-//	NVector reconShirt;
-//	vector<string> usernames;
-//	Session ses("SQLite", SQLFILE);
-//	ses << (AppConfig::getInstance()->instance)->queries[id];
-//	vector<string>::iterator it;
-//	for(it = params.begin(); it != params.end(); it++)
-//	{
-//		ses << Keywords::use(*it);
-//	}
-//	ses <<  Keywords::into(mediaIds), Keywords::into(gameIds),Keywords::into(roundIds),
-//			Keywords::into(userIds),Keywords::into(timeIds),Keywords::into(roundAudience),
-//			Keywords::into(roundExpressionId), Keywords::into(ksvms), Keywords::into(scores),
-//			Keywords::into(usernames), Keywords::now;
-//	for(int i = 0; i < mediaIds.size(); i++)
-//	{
-//		string url;
-//		ses << "SELECT url FROM media WHERE id=" << mediaIds[i], Keywords::into(url),Keywords::now;
-//		gaborFace.loadSQL(mediaIds[i]);
-//		histFace.loadSQL(mediaIds[i]);
-//		reconFace.loadSQL(mediaIds[i]);
-//		gaborShirt.loadSQL(mediaIds[i]);
-//		histShirt.loadSQL(mediaIds[i]);
-//		reconShirt.loadSQL(mediaIds[i]);
-//		GameImage gm(url,gameIds[i], roundIds[i], userIds[i], timeIds[i], roundAudience[i],
-//				roundExpressionId[i], ksvms[i], scores[i], usernames[i], gaborFace, histFace, reconFace,
-//				gaborShirt, histShirt, reconShirt);
-//		gms.push_back(gm);
-//	}
-//	ses.close();
-//	return gms;
-//}
+vector<GameImage> GameImage::executeQuery(int id, vector<string> params)
+{
+	vector<GameImage> gms;
+	vector<int> mediaIds;
+	vector<int> gameIds;
+	vector<int> roundIds;
+	vector<int> userIds;
+	vector<int> timeIds;
+	vector<int> roundAudience;
+	vector<int> roundExpressionId;
+	vector<int> ksvms;
+	vector<int> flannIds;
+	vector<float> scores;
+	NVector gaborFace;
+	NVector histFace;
+	NVector reconFace;
+	NVector gaborShirt;
+	NVector histShirt;
+	NVector reconShirt;
+	vector<string> usernames;
+	Session ses("SQLite", SQLFILE);
+	cout << "0x" << endl;
+	//ses << AppConfig::getInstance()->getQuery(id);
+	vector<string>::iterator it;
+	string q = AppConfig::getInstance()->getQuery(id);
+	for(it = params.begin(); it != params.end(); it++)
+	{
+		int pos = q.find(":",0);
+		int pos2 = q.find(" ", pos);
+		if(pos2 == q.npos)
+			pos2 = q.size();
+		string param = q.substr(pos, pos2-pos);
+		replace(q, param, *it);
+	}
+	cout << "1" << endl;
+	//for(it = params.begin(); it != params.end(); it++)
+	//{
+	//	ses << Keywords::use(*it);
+	// }
+	cout << "2" << endl;
+	//int x = 5;
+	cout << "QUERYY: " << q << endl;
+	ses << q, Keywords::into(mediaIds), Keywords::into(gameIds), Keywords::into(roundIds),
+			Keywords::into(userIds), Keywords::into(timeIds), Keywords::into(roundAudience),
+			Keywords::into(roundExpressionId), Keywords::into(ksvms), Keywords::into(scores),
+			Keywords::into(usernames), Keywords::into(flannIds), Keywords::now;
+	cout << "3" << endl;
+	cout << "siziiiii: " << mediaIds.size() << endl;
+	gms.reserve(mediaIds.size());
+	for(int i = 0; i < mediaIds.size(); i++)
+	{
+	cout << "4" << endl;
+		string url;
+		ses << "SELECT uri FROM media WHERE id=" << mediaIds[i], Keywords::into(url),Keywords::now;
+		cout << "urleee: " << url << endl;
+		
+	gaborFace = *(new NVector(url, "FACE_GABOR"));
+	histFace = *(new NVector(url, "FACE_HIST"));
+	reconFace = *(new NVector(url, "FACE_RECON"));
+	gaborShirt = *(new NVector(url, "SHIRT_GABOR"));
+	histShirt = *(new NVector(url, "SHIRT_HIST"));
+	reconShirt = *(new NVector(url, "SHIRT_RECON"));
+
+		gaborFace.loadSQL(mediaIds[i]);
+		cout << "just checking! " << endl;
+ 		histFace.loadSQL(mediaIds[i]);
+		reconFace.loadSQL(mediaIds[i]);
+		gaborShirt.loadSQL(mediaIds[i]);
+		histShirt.loadSQL(mediaIds[i]);
+		reconShirt.loadSQL(mediaIds[i]);
+		cout << "just checking done! " << endl;
+		GameImage gm(url,gameIds[i], roundIds[i], userIds[i], timeIds[i], roundAudience[i],
+				roundExpressionId[i], ksvms[i], scores[i], usernames[i], gaborFace.getRawVector(), histFace.getRawVector(),
+				reconFace.getRawVector(),gaborShirt.getRawVector(), histShirt.getRawVector(), reconShirt.getRawVector());
+		gm.setFlannId(flannIds[i]);
+		gms.push_back(gm);
+	}
+	cout << "5" << endl;
+	ses.close();
+	return gms;
+}
+
+bool GameImage::replace(std::string& str, const std::string& from, const std::string& to) {
+    size_t start_pos = str.find(from);
+    if(start_pos == std::string::npos)
+        return false;
+    str.replace(start_pos, from.length(), to);
+    return true;
+}
+

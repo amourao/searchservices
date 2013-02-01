@@ -1,3 +1,4 @@
+#include "../dataModel/DataModelController.h"
 #include "RestRequestHandler.h"
 #include <iostream>
 #include <string>
@@ -13,6 +14,7 @@
 #include <Poco/Net/HTTPServerResponse.h>
 #include "Poco/Net/NetException.h"
 #include <Poco/Util/ServerApplication.h>
+
 
 using namespace Poco::Net;
 using namespace Poco::Util;
