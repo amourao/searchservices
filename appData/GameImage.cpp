@@ -93,12 +93,12 @@ bool GameImage::serialize(std::ostream &os)
 	os.write((char*)&vlen,sizeof(int));
 	os.write(username.c_str(),vlen);
 
-	char* serializeGaborFace = gaborFace.serialize();
-	char* serializeHistFace = histFace.serialize();
-	char* serializeReconFace = reconFace.serialize();
-	char* serializeGaborShirt = gaborShirt.serialize();
-	char* serializeHistShirt = histShirt.serialize();
-	char* serializeReconShirt = reconShirt.serialize();
+	char* serializeGaborFace = reinterpret_cast<char*>(gaborFace.serialize());
+	char* serializeHistFace = reinterpret_cast<char*>(histFace.serialize());
+	char* serializeReconFace = reinterpret_cast<char*>(reconFace.serialize());
+	char* serializeGaborShirt = reinterpret_cast<char*>(gaborShirt.serialize());
+	char* serializeHistShirt = reinterpret_cast<char*>(histShirt.serialize());
+	char* serializeReconShirt = reinterpret_cast<char*>(reconShirt.serialize());
 
 	vlen = sizeof(serializeGaborFace) / sizeof(serializeGaborFace[0]);
 	os.write((char*)&vlen,sizeof(int));
@@ -195,6 +195,31 @@ int GameImage::getUserId(){
 string GameImage::getUsername(){
 	return username;
 }
+
+vector<float> GameImage::getGaborFace(){
+  return gaborFace.getRawVector();
+}
+
+vector<float> GameImage::getHistFace(){
+  return histFace.getRawVector();
+}
+
+vector<float> GameImage::getReconFace(){
+  return reconFace.getRawVector();
+}
+
+vector<float> GameImage::getGaborShirt(){
+  return gaborShirt.getRawVector();
+}
+
+vector<float> GameImage::getHistShirt(){
+  return histShirt.getRawVector();
+}
+
+vector<float> GameImage::getReconShirt(){
+  return reconShirt.getRawVector();
+}
+
 //
 //static vector<GameImage> GameImage::executeQuery(int id, vector<string> params)
 //{

@@ -66,6 +66,12 @@
                 "ksvm": "INTEGER",
                 "userName": "TEXT"
             }
-        }
+        },
+        "queries" : [
+            "SELECT * FROM GameImages where flann_id == :rk",
+            "SELECT * FROM GameImages ORDER BY TimerId DESC LIMIT 50",
+            "SELECT * FROM GameImages WHERE RoundExpressionId == :criteria ORDER BY Score DESC LIMIT 50",
+            "SELECT * FROM GameImages ORDER BY Score DESC LIMIT 50",
+            "SELECT * FROM GameImages WHERE UserName == :username AND Ksvm == 5 ORDER BY Score DESC LIMIT 1"]
     }
 }
