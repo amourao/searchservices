@@ -20,6 +20,13 @@ Codebits::Codebits(){
   shirt_gabor.buildIndex();
   shirt_hist.buildIndex();
   shirt_recon.buildIndex();
+	
+  face_gabor.removePoint(0);
+  face_hist.removePoint(0);
+  face_recon.removePoint(0);
+  shirt_gabor.removePoint(0);
+  shirt_hist.removePoint(0);
+  shirt_recon.removePoint(0);
 }
 
 Codebits::~Codebits()
@@ -71,7 +78,7 @@ void dump_json(/*const*/ vector<GameImage>& result, ostream& out) {
     out << "{ \"rank\": [" << endl;
     for (size_t i = 0; i != result.size(); i++) {
         out << "{\"GameId\": \"" << result[i].getGameId() << "\"," << endl;
-        out << "\"MediaId\": \"" << result[i].getId() << "\"," << endl;
+        out << "\"pk\": \"" << result[i].getFlannId() << "\"," << endl;
         out << "\"RoundId\": \"" << result[i].getRoundId() << "\"," << endl;
         out << "\"UserId\": \"" << result[i].getUserId() << "\"," << endl;
         out << "\"TimeId\": \"" << result[i].getTimeId() << "\"," << endl;
@@ -152,35 +159,27 @@ void Codebits::index(istream& in, map<string, string> parameters)
   gm.deserialize(in);
   
   vector<float> gabor = gm.getGaborFace();
-  face_gabor.addPoints(Matrix<float>(&gabor[0], gabor.size(), 1));
+  face_gabor.addPoints(Matrix<float>(&gabor[0], 1, gabor.size()));
   last_face_gabor_id++;
   
-  float counter = 0.0f;
-  int i;
-  for(i = 0; i < gabor.size(); i++){
-    counter += gabor[i];
-  }
-  
-  cout << " sum: " << counter << endl;
-  
   vector<float> hist = gm.getHistFace();
-  face_hist.addPoints(Matrix<float>(&hist[0], hist.size(), 1));
+  face_hist.addPoints(Matrix<float>(&hist[0], 1, hist.size()));
   last_face_hist_id++;
   
   vector<float> recon = gm.getReconFace();
-  face_recon.addPoints(Matrix<float>(&recon[0], recon.size(), 1));
+  face_recon.addPoints(Matrix<float>(&recon[0], 1, recon.size()));
   last_face_recon_id++;
   
   gabor = gm.getGaborShirt();
-  shirt_gabor.addPoints(Matrix<float>(&gabor[0], gabor.size(), 1));
+  shirt_gabor.addPoints(Matrix<float>(&gabor[0], 1, gabor.size()));
   last_shirt_gabor_id++;
   
   hist = gm.getHistShirt();
-  shirt_hist.addPoints(Matrix<float>(&hist[0], hist.size(), 1));
+  shirt_hist.addPoints(Matrix<float>(&hist[0], 1, hist.size()));
   last_shirt_hist_id++;
   
   recon = gm.getReconShirt();
-  shirt_recon.addPoints(Matrix<float>(&recon[0], recon.size(), 1));
+  shirt_recon.addPoints(Matrix<float>(&recon[0], 1, recon.size()));
   last_shirt_recon_id++;
   
   gm.setFlannId(last_face_gabor_id);
@@ -236,15 +235,31 @@ vector<GameImage> Codebits::search(map<string, string> parameters)
     Index<L2<float>>* index = getIndex(criteria);
     vector<float> vector = getVectorForIndex(criteria, id);
     
-    //Matrix<float> query(&vector[0], vector.size(), 1);
+    int nn = 10;
+    Matrix<float> query(&vector[0], 1, vector.size());
+    
+    Matrix<int> indices(new int[nn], 1, nn);
+    
+    Matrix<float> dists(new float[nn], 1, nn);
     
     // do a knn search, using 128 checks
-    //index.knnSearch(query, indices, dists, nn, flann::SearchParams(128));
+    int found = index->knnSearch(query, indices, dists, nn, flann::SearchParams(128));
     
-    //vector<Finder::id_type> rank = _index.find(id, criteria);
-    //if (!rank.empty()) {
-      //db << "SELECT * FROM GameImages where PK == :rk", use(rank), into(result), now;                        
-    //}
+    cout << "Unknown: " << found << endl;
+    
+    int j;
+    for(j = 0; j < found; j++)
+      cout << "indice: " << indices[0][j] << " dist: " << dists[0][j] << endl;
+    
+    int i;
+    for(i = 0; i < found; i++){
+      std::vector<std::string> pars;
+      std::stringstream sstm;
+      sstm << indices[0][i];
+      pars.push_back(sstm.str());
+      result.push_back(GameImage::executeQuery(0, pars)[0]);
+    }
+    
     cout << "/search: 'id'= " << id << " 'criteria'= " << criteria << " OK" << endl;
   }
   
@@ -254,8 +269,10 @@ vector<GameImage> Codebits::search(map<string, string> parameters)
 vector<GameImage> Codebits::latests(map<string, string> parameters)
 {
   vector<GameImage> result;
+  
+  vector<string> pars;
+  result = GameImage::executeQuery(1, pars);
 	
-	//db << "SELECT * FROM GameImages ORDER BY TimerId DESC LIMIT 50", into(result), limit(50), now;
   return result;
 }
 
@@ -277,13 +294,12 @@ vector<GameImage> Codebits::best(map<string, string> parameters)
     cout << "/best: error: Invalid parameter 'criteria'" << endl;
   } else {
   
-    //2
     vector<string> pars;
     std::stringstream sstm;
     sstm << criteria;
     pars.push_back(sstm.str());
     result = GameImage::executeQuery(2, pars);
-    //db << "SELECT * FROM GameImages WHERE RoundExpressionId == :criteria ORDER BY Score DESC LIMIT 50", use(criteria), into(result), limit(50), now;	
+
     cout << "/best: 'criteria'= " << criteria << " OK" << endl;
   }
     
@@ -293,8 +309,10 @@ vector<GameImage> Codebits::best(map<string, string> parameters)
 vector<GameImage> Codebits::scoreboard(map<string, string> parameters)
 {
   vector<GameImage> result;
-	
-  //db << "SELECT * FROM GameImages ORDER BY Score DESC LIMIT 50", into(result), limit(50), now;
+  
+  vector<string> pars;
+  result = GameImage::executeQuery(3, pars);
+
   return result;
 }
 
@@ -309,7 +327,11 @@ vector<GameImage> Codebits::mybestsmile(map<string, string> parameters)
   if (error) {
     cout << "/mybestsmile: error: Invalid parameter 'user'" << endl;
   } else {
-    //db << "SELECT * FROM GameImages WHERE UserName == :username AND Ksvm == 5 ORDER BY Score DESC LIMIT 1", use(username), into(result), limit(1), now;
+  
+    vector<string> pars;
+    pars.push_back(username);
+    result = GameImage::executeQuery(4, pars);
+
     cout << "/mybestsmile: 'user'= " << username << " OK" << endl;	
   }
   

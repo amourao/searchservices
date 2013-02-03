@@ -7,7 +7,7 @@ RestServer::RestServer(int port)
       s.start();
       cout << "Server started" << endl;
       
-      //DataModelController dmc;
+      DataModelController dmc;
       
       waitForTerminationRequest();
       

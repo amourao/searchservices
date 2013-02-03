@@ -70,9 +70,9 @@ int Codebits::last_shirt_hist_id = 0;
 int Codebits::last_shirt_recon_id = 0;
 
 
-Index<L2<float>> Codebits::face_gabor(Matrix<float>(new float[288*1], 288, 1), KDTreeIndexParams(4));
-Index<L2<float>> Codebits::face_hist(Matrix<float>(new float[288*1], 288, 1), KDTreeIndexParams(4));
-Index<L2<float>> Codebits::face_recon(Matrix<float>(new float[288*1], 288, 1), KDTreeIndexParams(4));
-Index<L2<float>> Codebits::shirt_gabor(Matrix<float>(new float[288*1], 288, 1), KDTreeIndexParams(4));
-Index<L2<float>> Codebits::shirt_hist(Matrix<float>(new float[288*1], 288, 1), KDTreeIndexParams(4));
-Index<L2<float>> Codebits::shirt_recon(Matrix<float>(new float[288*1], 288, 1), KDTreeIndexParams(4));
+Index<L2<float>> Codebits::face_gabor(Matrix<float>(new float[4*1], 1, 4), KDTreeIndexParams(4));
+Index<L2<float>> Codebits::face_hist(Matrix<float>(new float[4*1], 1, 4), KDTreeIndexParams(4));
+Index<L2<float>> Codebits::face_recon(Matrix<float>(new float[4*1], 1, 4), KDTreeIndexParams(4));
+Index<L2<float>> Codebits::shirt_gabor(Matrix<float>(new float[4*1], 1, 4), KDTreeIndexParams(4));
+Index<L2<float>> Codebits::shirt_hist(Matrix<float>(new float[4*1], 1, 4), KDTreeIndexParams(4));
+Index<L2<float>> Codebits::shirt_recon(Matrix<float>(new float[4*1], 1, 4), KDTreeIndexParams(4));

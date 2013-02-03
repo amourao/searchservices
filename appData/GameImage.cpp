@@ -162,8 +162,8 @@ void* GameImage::getValue(){
 	return this;
 }
 
-int GameImage::getId(){
-  return getMediaId();
+int GameImage::getFlannId(){
+  return flannId;
 }
 
 int GameImage::getGameId(){
@@ -247,7 +247,6 @@ vector<GameImage> GameImage::executeQuery(int id, vector<string> params)
 	NVector reconShirt;
 	vector<string> usernames;
 	Session ses("SQLite", SQLFILE);
-	cout << "0x" << endl;
 	//ses << AppConfig::getInstance()->getQuery(id);
 	vector<string>::iterator it;
 	string q = AppConfig::getInstance()->getQuery(id);
@@ -260,27 +259,20 @@ vector<GameImage> GameImage::executeQuery(int id, vector<string> params)
 		string param = q.substr(pos, pos2-pos);
 		replace(q, param, *it);
 	}
-	cout << "1" << endl;
 	//for(it = params.begin(); it != params.end(); it++)
 	//{
 	//	ses << Keywords::use(*it);
 	// }
-	cout << "2" << endl;
 	//int x = 5;
-	cout << "QUERYY: " << q << endl;
 	ses << q, Keywords::into(mediaIds), Keywords::into(gameIds), Keywords::into(roundIds),
 			Keywords::into(userIds), Keywords::into(timeIds), Keywords::into(roundAudience),
 			Keywords::into(roundExpressionId), Keywords::into(ksvms), Keywords::into(scores),
 			Keywords::into(usernames), Keywords::into(flannIds), Keywords::now;
-	cout << "3" << endl;
-	cout << "siziiiii: " << mediaIds.size() << endl;
 	gms.reserve(mediaIds.size());
 	for(int i = 0; i < mediaIds.size(); i++)
 	{
-	cout << "4" << endl;
 		string url;
 		ses << "SELECT uri FROM media WHERE id=" << mediaIds[i], Keywords::into(url),Keywords::now;
-		cout << "urleee: " << url << endl;
 		
 	gaborFace = *(new NVector(url, "FACE_GABOR"));
 	histFace = *(new NVector(url, "FACE_HIST"));
@@ -290,20 +282,17 @@ vector<GameImage> GameImage::executeQuery(int id, vector<string> params)
 	reconShirt = *(new NVector(url, "SHIRT_RECON"));
 
 		gaborFace.loadSQL(mediaIds[i]);
-		cout << "just checking! " << endl;
  		histFace.loadSQL(mediaIds[i]);
 		reconFace.loadSQL(mediaIds[i]);
 		gaborShirt.loadSQL(mediaIds[i]);
 		histShirt.loadSQL(mediaIds[i]);
 		reconShirt.loadSQL(mediaIds[i]);
-		cout << "just checking done! " << endl;
 		GameImage gm(url,gameIds[i], roundIds[i], userIds[i], timeIds[i], roundAudience[i],
 				roundExpressionId[i], ksvms[i], scores[i], usernames[i], gaborFace.getRawVector(), histFace.getRawVector(),
 				reconFace.getRawVector(),gaborShirt.getRawVector(), histShirt.getRawVector(), reconShirt.getRawVector());
 		gm.setFlannId(flannIds[i]);
 		gms.push_back(gm);
 	}
-	cout << "5" << endl;
 	ses.close();
 	return gms;
 }

@@ -18,7 +18,7 @@ public:
 	bool loadSQL(int mediaId);
 	void* getValue();
 
-  int getId();
+  int getFlannId();
 	int getGameId();
 	int getKsvm();
 	int getRoundAudience();
