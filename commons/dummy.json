@@ -68,10 +68,10 @@
             }
         },
         "queries" : [
-            "SELECT * FROM GameImage WHERE flann_id = :rk",
-            "SELECT * FROM GameImage ORDER BY TimerId DESC LIMIT 50",
-            "SELECT * FROM GameImage WHERE RoundExpressionId = :criteria ORDER BY Score DESC LIMIT 50",
-            "SELECT * FROM GameImage ORDER BY Score DESC LIMIT 50",
-            "SELECT * FROM GameImage WHERE UserName = :username AND Ksvm = 5 ORDER BY Score DESC LIMIT 1"]
+            "SELECT * FROM GameImage WHERE flannId = :rk",
+            "SELECT * FROM GameImage ORDER BY timeId DESC LIMIT 50",
+            "SELECT * FROM GameImage WHERE roundExpressionId = :criteria ORDER BY score DESC LIMIT 50",
+            "SELECT * FROM GameImage ORDER BY score DESC LIMIT 50",
+            "SELECT * FROM GameImage WHERE username = :AND username ksvm = 5 ORDER BY score DESC LIMIT 1"]
     }
 }
