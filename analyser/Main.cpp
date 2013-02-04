@@ -4,6 +4,8 @@
 #include <cstdlib>
 #include <opencv2/features2d/features2d.hpp>
 
+
+
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -72,13 +74,25 @@ void extractAllFeaturesImEmotion(string testPath, string output){
 	//HistogramExtractor histogramExtractor (8);
 
 	vector<cv::Rect> rectangleRois = vector<cv::Rect>();
+	/*
 	rectangleRois.push_back(cv::Rect(0,0,46,64));
 	rectangleRois.push_back(cv::Rect(46,64,46,112-64));
 	rectangleRois.push_back(cv::Rect(46,0,46,64));
 	rectangleRois.push_back(cv::Rect(0,64,46,112-64));
 	rectangleRois.push_back(cv::Rect(0,10,92,30));
 	rectangleRois.push_back(cv::Rect(20,65,52,30)); 
+*/
 
+	rectangleRois.push_back(cv::Rect(11,4,37,12));
+	rectangleRois.push_back(cv::Rect(52,4,34,12));
+	rectangleRois.push_back(cv::Rect(30,15,35,18));
+	rectangleRois.push_back(cv::Rect(32,28,11,17));
+	rectangleRois.push_back(cv::Rect(57,34,14,19));
+	rectangleRois.push_back(cv::Rect(10,58,26,19));
+	rectangleRois.push_back(cv::Rect(10,77,31,18)); 
+	rectangleRois.push_back(cv::Rect(64,59,21,19)); 
+	rectangleRois.push_back(cv::Rect(50,78,33,22)); 
+	
 	GaborExtractor faceGaborExtractor (92,112,4,6,rectangleRois);
 
 
@@ -230,15 +244,15 @@ int testEverything(int argc, char *argv[]){
 	string file(argv[1]);
 	TextFileSource is (file);
 	
-	//FeatureExtractor* s = new SegmentedHistogramExtractor(atoi(argv[3]),atoi(argv[4]),atoi(argv[5]));
-	FeatureExtractor* s = new HistogramExtractor(atoi(argv[3]));
+	FeatureExtractor* s = new SegmentedHistogramExtractor(atoi(argv[3]),atoi(argv[4]),atoi(argv[5]));
+	//FeatureExtractor* s = new NullExtractor();
 
 	cv::Mat src;
 	cv::Mat dst;
 	cv::Mat features;
 	cv::Mat labels;
 	int i = 0;
-	for(int k = 0; k < 200/*is.getImageCount()*/; k++){
+	for(int k = 0; k < is.getImageCount(); k++){
 	if(!(src = is.nextImage()).empty()){
 		
 		cv::Mat featuresRow;
@@ -280,6 +294,32 @@ int testEverything(int argc, char *argv[]){
 	
 	return 0;
 }
+
+
+int testEverythingBin(int argc, char *argv[]){
+
+	string file(argv[1]);
+	
+	Mat features;
+	Mat labels;
+	
+	MatrixTools::readBin(file,features,labels);
+	
+	vector<IClassifier*> classi;
+	classi.push_back(new SRClassifier());
+	//classi.push_back(new kNNClassifier());
+	//classi.push_back(new SVMClassifier());
+	
+	
+	//cout << features.rows << " " << features.cols << " " << labels.rows << " " << labels.cols << endl;
+	TrainTestFeaturesTools ttft(features,labels,classi);
+
+	ttft.splitDataForTest(0.3);
+	cout << ttft.testAll() << endl;
+	
+	return 0;
+}
+
 
 void readFile(string file, Mat& dataR, Mat& labelsR,FeatureExtractor* s){
 		cv::Mat features;
@@ -401,10 +441,11 @@ int testFactories(int argc, char *argv[]){
 	return 0;
 }
 
+
+
 int main(int argc, char *argv[]){
 	
-	testFactories(argc,argv);
-	
+	testEverythingBin(argc,argv);
 	
 	getchar();
 	return 0;

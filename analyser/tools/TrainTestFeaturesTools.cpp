@@ -2,19 +2,19 @@
 
 TrainTestFeaturesTools::TrainTestFeaturesTools(cv::Mat _data, cv::Mat _labels, vector<IClassifier*> _classifiers){
 	data = _data;
-	labels = _labels;
+	labels = _labels.col(0);
 	
 	classifiers = _classifiers;
 }
 
 TrainTestFeaturesTools::TrainTestFeaturesTools(cv::Mat _data, cv::Mat _labels, cv::Mat _dataTest, cv::Mat _labelsTest, vector<IClassifier*> _classifiers){
 	data = _data;
-	labels = _labels;
+	labels = _labels.col(0);
 	
 	classifiers = _classifiers;
 	
 	dataTest = _dataTest;
-	labelsTest = _labelsTest;
+	labelsTest = _labelsTest.col(0);
 
 }
 
@@ -41,12 +41,22 @@ Mat TrainTestFeaturesTools::getTestLabels(){
 string TrainTestFeaturesTools::crossValidateAll(int numberOfDivisions){
 	stringstream ss;
 		
-	double min, max;
-	int minInd, maxInd;
-	cv::minMaxIdx(labels, &min, &max, &minInd, &maxInd, Mat());
-		
-	int numberOfClasses = max+1;
+	double* min = new double();
+	double* max = new double();
 	
+	int* minInd  = new int();
+	int* maxInd  = new int();
+	
+	//cout << labels << endl;
+	cv::minMaxIdx(labels.col(0), min, max, minInd, maxInd, Mat());
+		
+	int numberOfClasses = (*max)+1;
+	
+	delete min;
+	delete max;
+	delete minInd;
+	delete maxInd;
+
 	ss << "Validate all" << endl << endl;
 	for(unsigned int i = 0; i < classifiers.size(); i++){
 		vector<int> correctGuesses(numberOfClasses,0);
@@ -58,13 +68,12 @@ string TrainTestFeaturesTools::crossValidateAll(int numberOfDivisions){
 		for(int j = 0; j < numberOfDivisions; j++){
 			Mat newTrainData, newTrainLabels, testData, testLabels;
 			divideByClass(data,labels,numberOfDivisions,j,newTrainData,newTrainLabels,testData,testLabels);
-			//cout << "FINAL train: " << newTrainData.rows << " test: " << testData.rows << endl;
-			//getchar();
-			test(newTrainData,newTrainLabels,testData,testLabels,classifiers.at(i), correctGuesses, falsePositives, confusionMatrix);
 			
+			test(newTrainData,newTrainLabels,testData,testLabels,classifiers.at(i), correctGuesses, falsePositives, confusionMatrix);
 		}
 		ss << resultsToString(correctGuesses, falsePositives, confusionMatrix) << endl;
 	}
+	cout << ss.str() << endl;
 	return ss.str();
 }
 
@@ -89,7 +98,6 @@ string TrainTestFeaturesTools::testAll(){
 		test(data,labels,dataTest,labelsTest,classifiers.at(i), correctGuesses, falsePositives, confusionMatrix);
 		
 		ss << resultsToString(correctGuesses, falsePositives, confusionMatrix) << endl;
-		
 	}
 	return ss.str();
 }
@@ -99,21 +107,22 @@ string TrainTestFeaturesTools::crossValidate(string name,int numberOfDivisions){
 	return "";
 }
 
+
 string TrainTestFeaturesTools::test(string name){
 	//TODO
 	return "";
 }
 
 void TrainTestFeaturesTools::test(Mat trainData, Mat trainLabels, Mat testData, Mat testLabels, IClassifier* classifier, vector<int>& correctGuesses, vector<int>& falsePositives, Mat& confusionMatrix){
-
 	classifier->train(trainData,trainLabels);
-
 	for(int i = 0; i < testData.rows; i++){
+		cout << "correct label: " << (int)testLabels.at<float>(i,0) << endl;
 		float label = classifier->classify(testData.row(i));
 		if(label == testLabels.at<float>(i,0))
 			correctGuesses.at(testLabels.at<float>(i,0))++;
 		else
 			falsePositives.at(testLabels.at<float>(i,0))++;
+			//cout << label << " " << testLabels.at<float>(i,0) << endl;
 		confusionMatrix.at<float>(testLabels.at<float>(i,0),label)++;	
 	}
 }
@@ -125,7 +134,7 @@ IClassifier* TrainTestFeaturesTools::getClassifier(string name){
 
 
 
-void TrainTestFeaturesTools::divideByClass(Mat trainData, Mat trainLabels, int numberOfDivisions, int currentDivision,Mat& newTrainData,Mat& newTrainLabels, Mat& testData, Mat& testLabels){
+void TrainTestFeaturesTools::divideByClass(Mat trainData, Mat trainLabels, double numberOfDivisions, int currentDivision,Mat& newTrainData,Mat& newTrainLabels, Mat& testData, Mat& testLabels){
 		
 		
 	double ratio = 1.0/numberOfDivisions;
@@ -141,6 +150,7 @@ void TrainTestFeaturesTools::divideByClass(Mat trainData, Mat trainLabels, int n
 	}
 	
 	for(int i = 0; i < numberOfClasses; i++){
+		
 		Mat data = divisionByClass.at(i);
 		if(!data.empty()){
 			//TODO check if division is correct
@@ -149,7 +159,7 @@ void TrainTestFeaturesTools::divideByClass(Mat trainData, Mat trainLabels, int n
 			Mat label(1,1,CV_32F);
 			label.at<float>(0,0) = i;
 			
-			//cout << endl << "train starts at 0 and ends at " << (currentDivision-1)*divisionSize << endl;
+			//cout << endl << "train starts at 0 and ends at " << (currentDivision)*divisionSize << endl;
 			for(int j = 0; j < (currentDivision)*divisionSize; j++){
 				newTrainData.push_back(data.row(j));
 				newTrainLabels.push_back(label);
@@ -198,4 +208,16 @@ string TrainTestFeaturesTools::resultsToString(vector<int>& correctGuesses, vect
 	ss << "Accuracy: " << tp / (double)(fp+tp) << endl;
 	ss << endl;
 	return ss.str();
+}
+
+void TrainTestFeaturesTools::splitDataForTest(double ratio){
+
+	Mat newTrainData, newTrainLabels, newTestData, newTestLabels;
+	divideByClass(data,labels,1.0/ratio,0,newTrainData,newTrainLabels,newTestData,newTestLabels);
+	
+	data = newTrainData;
+	labels = newTrainLabels;
+	
+	dataTest = newTestData;
+	labelsTest = newTestLabels;
 }

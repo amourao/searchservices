@@ -57,7 +57,7 @@ float SRClassifier::classify(arma::fmat query){
 	vector<int> correctGuesses(numberOfClasses,0);
 	vector<float> weightGuesses(numberOfClasses,0);
 	arma::fvec res = (*omp)(trainData,query);
-
+	arma::fvec bestRes;
 	arma::uvec indexes = find(abs(res) > 0);
 
 	arma::fvec labelsRight = labelsCute.elem(indexes);
@@ -70,6 +70,8 @@ float SRClassifier::classify(arma::fmat query){
 
 	float minFromReconstruct = FLT_MAX;
 	float detectedLabelFromReconstruct= -1;
+
+
 
 	for (int j = 0; j < numberOfClasses; j++){
 		if (correctGuesses.at(j) != 0){
@@ -84,15 +86,26 @@ float SRClassifier::classify(arma::fmat query){
 			arma::fmat reconstruction = trainData * newRes;
 	
 			float reconstructionError = norm(reconstruction-query,2);
-			//cout << "j: " << j << " error: " << reconstructionError << endl;
-			//getchar();
 			if (reconstructionError<minFromReconstruct){
 			
 				minFromReconstruct = reconstructionError;	
 				detectedLabelFromReconstruct = j;
 			}
 		}
+		
+
 	}
+	
+	cout << "detected label: " << (int)detectedLabelFromReconstruct << " error: " <<   minFromReconstruct << endl;
+	cout.precision(10);
+	cout.setf(ios::fixed,ios::floatfield);
+	cout << "[";
+	for(unsigned int k = 0; k < labelsCute.n_rows; k++){
+		cout << (int)labelsCute.row(k) << "," << abs(res.row(k)) << ";";
+	}
+	
+	cout << "]";
+	getchar();
 	return detectedLabelFromReconstruct;
 }
 

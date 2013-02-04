@@ -27,4 +27,5 @@ _ReSharper*
 *.o
 ck+*/
 detectedEmotionCK*/
-
+avgFaces*/
+analyser/data/

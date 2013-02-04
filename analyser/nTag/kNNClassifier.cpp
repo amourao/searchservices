@@ -4,7 +4,7 @@
 
 kNNClassifier::kNNClassifier()
 {
-	flannIndex = new flann::Index();
+	flannIndex = NULL;
 }
 
 
@@ -13,7 +13,7 @@ kNNClassifier::~kNNClassifier()
 
 }
 
-void kNNClassifier::train( cv::Mat trainData, cv::Mat _trainLabels )
+void kNNClassifier::train( cv::Mat _trainData, cv::Mat _trainLabels )
 {
 	
 	double min, max;
@@ -24,9 +24,14 @@ void kNNClassifier::train( cv::Mat trainData, cv::Mat _trainLabels )
 	
 	flann::LinearIndexParams params = flann::LinearIndexParams();
 
-	flannIndex->build(trainData,params);
+	if ( flannIndex != NULL)
+		delete flannIndex;
+	flannIndex = new flann::Index();
+	
+	flannIndex->build(_trainData,params);
 
 	trainLabels = _trainLabels;
+	trainData = _trainData;
 }
 	
 
@@ -49,9 +54,8 @@ float kNNClassifier::classify( cv::Mat query, int neighboursCount )
 
 	//int j = 0;
 
-	cv::Mat indices (1,neighboursCount,CV_32S);
-
-	cv::Mat dists (1,neighboursCount,CV_32F);
+	vector<int> indices (neighboursCount);
+	vector<float> dists (neighboursCount);
 //cout << j++ << endl;
 	flannIndex->knnSearch(query,indices,dists,neighboursCount);
 
@@ -62,8 +66,13 @@ float kNNClassifier::classify( cv::Mat query, int neighboursCount )
 	//cout << trainLabels << endl;
 
 	for (int i = 0; i < neighboursCount; i++){
-		int imageId = indices.at<int>(0,i);
-		int detectedEmotion = trainLabels.at<float>(0,imageId);
+		int imageId = indices.at(i);
+		int detectedEmotion = trainLabels.at<float>(imageId,0);
+		//cout << detectedEmotion << " " << dists.at(i)  << endl;
+		//cout << query.colRange(0,5) << endl;
+		//cout << trainData.row(imageId).colRange(0,5) << endl;
+		//cout << norm(query,trainData.row(imageId)) << endl;
+		//cout << imageId << endl;
 		matches[detectedEmotion]++;
 	}
 //cout << j++ << endl;

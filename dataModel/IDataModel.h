@@ -14,16 +14,18 @@ using namespace Poco::Data;
 
 extern const string SQLFile;
 
-class IDataModel {
-
-public:
-
-	struct region{
+	typedef struct {
 		int x;
 		int y;
 		float width;
 		float height;
-	};
+	} region;
+
+class IDataModel {
+
+public:
+
+
 	
 	enum type {
 		NVector,

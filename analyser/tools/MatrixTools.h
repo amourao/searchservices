@@ -6,6 +6,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <string>
 #include <vector>
+#include <fstream>
 
 using namespace cv;
 using namespace std;
@@ -25,5 +26,7 @@ static void matToVectors(cv::Mat &src, vector<vector<float> >& dst);
 static void vectorToMat(vector<float>&src, cv::Mat& dst);
 
 static void vectorsToMat(vector<vector<float> >&src, cv::Mat& dst);
+
+static void readBin(string& file, cv::Mat& features, cv::Mat& labels);
 
 };
