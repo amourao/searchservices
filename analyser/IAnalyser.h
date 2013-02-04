@@ -5,7 +5,6 @@
 #include <iostream>
 
 #include "../commons/factory/Factory.h"
-#include "AnalyserDataType.h"
 #include "../dataModel/IDataModel.h"
 
 using namespace std;
@@ -20,7 +19,7 @@ public:
 
 	virtual IDataModel::type getType() = 0;
 		
-	virtual AnalyserDataType* getFeatures(string name) = 0;
+	virtual IDataModel* getFeatures(string name) = 0;
 };
 
 

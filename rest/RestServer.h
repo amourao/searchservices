@@ -1,3 +1,4 @@
+#include "../dataModel/DataModelController.h"
 #include "RestRequestHandler.h"
 #include <iostream>
 #include <string>
@@ -11,7 +12,9 @@
 #include <Poco/Net/HTTPResponse.h>
 #include <Poco/Net/HTTPServerRequest.h>
 #include <Poco/Net/HTTPServerResponse.h>
+#include "Poco/Net/NetException.h"
 #include <Poco/Util/ServerApplication.h>
+
 
 using namespace Poco::Net;
 using namespace Poco::Util;
@@ -27,13 +30,9 @@ class RequestHandlerFactory : public HTTPRequestHandlerFactory
 class RestServer : public ServerApplication
 {
     public:
-        static RestServer* getInstance();
 
-        ~RestInterface();
-
-    private:
-        static RestServer* instance;
-
-        RestRestServer();
+        RestServer(int port);
+        
+        ~RestServer();
 
 };

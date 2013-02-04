@@ -3,42 +3,55 @@
 
 const string SQLFILE = "slb.db";
 
-NVector::NVector(string SQLTable, vector<float>* value)
+NVector::NVector(string url, string SQLTable, vector<float> value) : IDataModel(url)
 {
 	this->value = value;
 	this->SQLTable = SQLTable;
-	this->rawSize = sizeof(int)+value->size()*sizeof(float);
-	SQLite::Connector::registerConnector();
+	this->rawSize = sizeof(int)+value.size()*sizeof(float);
 }
+
+NVector::NVector(string url, string SQLTable) : IDataModel(url)
+{
+	this->SQLTable = SQLTable;
+}
+
+NVector::NVector() : IDataModel()
+{
+}
+
 
 NVector::~NVector()
 {
-	SQLite::Connector::unregisterConnector();
 }
 
+void* NVector::getValue(){
+	return &value;
+}
+
+vector<float> NVector::getRawVector(){
+  return value;
+}
 
 bool NVector::storeSQL()
 {
 
-	unsigned char* buffer = serializeVector(value);
+	unsigned char* buffer = serializeVector(&value);
 	BLOB data(buffer, rawSize);
 	Session ses("SQLite", SQLFILE);
-	int mediaId;
-	string t= "http://cenas";
-	ses << "INSERT INTO media VALUES(null,:uri); SELECT last_insert_rowid() FROM media", Keywords::use(t), Keywords::into(mediaId), Keywords::now;
+	int mediaId = getMediaId();
 	ses << "INSERT INTO "<< SQLTable << " VALUES(null,:mediaId, :data)", Keywords::use(mediaId), Keywords::use(data), Keywords::now;
 	ses.close();
 	return true;
 }
 
-bool NVector::loadSQL()
+bool NVector::loadSQL(int mediaId)
 {
-	BLOB b;
+	BLOB blob;
 	Session ses("SQLite", SQLFILE);
-	ses << "SELECT data FROM "<< SQLTable << " WHERE mediaId=1", Keywords::into(b), Keywords::now;
+	ses << "SELECT data FROM "<< SQLTable << " WHERE mediaId="<< mediaId, Keywords::into(blob), Keywords::now;
 	ses.close();
-	const unsigned char* buffer = b.rawContent();
-	vector<float> v = unserializeVector(buffer);
+	const unsigned char* buffer = blob.rawContent();
+	value = unserializeVector(buffer);
 	return true;
 }
 
@@ -53,21 +66,23 @@ unsigned char* NVector::serializeVector(vector<float>* v)
 
 vector<float> NVector::unserializeVector(const unsigned char* buffer)
 {
-	int size;
-	memcpy(&size, buffer, sizeof(int));
-	vector<float> v(size);
-	memcpy(&(v[0]), buffer+sizeof(int), size*sizeof(float));
+    int size;
+    memcpy(&size, buffer, sizeof(int));
+    vector<float> v(size);
+    memcpy(&(v[0]), buffer+sizeof(int), size*sizeof(float));
 	return v;
 }
 
-int main()
+unsigned char* NVector::serialize()
 {
-	string x = "l";
-	vector<float>* v = new vector<float>();
-	v->reserve(2);
-	v->push_back(2.7);
-	v->push_back(3.4);
-	IDataModel* nv = new NVector(x,v);
-	nv->storeSQL();
-	nv->loadSQL();
+	return serializeVector(&value);
+}
+
+void NVector::unserialize(std::istream &is)
+{
+	int vlen;
+    is.read((char*)&vlen, sizeof(int));
+    value.resize(vlen);
+    is.read((char*)&value[0],vlen*sizeof(int));
+	rawSize = sizeof(int)+value.size()*sizeof(float);
 }

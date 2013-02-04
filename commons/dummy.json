@@ -1,0 +1,77 @@
+{
+    "novasearch": {
+        "endpoints": {},
+        "featuresRoi": {
+            "analyser": [
+                {
+                    "name": "FaceDetector",
+                    "annotationType": "face"
+                },
+                {
+                    "name": "MonumentDetector",
+                    "annotationType": "monument"
+                }
+            ]
+        },
+        "featuresText": {
+            "analyser": [
+                {
+                    "name": "MonumentDetector",
+                    "annotationType": "monument"
+                },
+                {
+                    "name": "FaceRecognition",
+                    "annotationType": "person"
+                },
+                {
+                    "name": "FacialExpression",
+                    "annotationType": "expression"
+                },
+                {
+                    "name": "ImageAnnotator",
+                    "annotationType": "expression"
+                }
+            ]
+        },
+        "featuresVec": {
+            "analyser": [
+                {
+                    "name": "GaborAnalyser",
+                    "entityType": "FACE_GABOR"
+                },
+                {
+                    "name": "ColorAnalyser",
+                    "entityType": "FACE_HIST"
+                },
+                {
+                    "name": "GaborAnalyser",
+                    "entityType": "SHIRT_GABOR"
+                },
+                {
+                    "name": "ColorAnalyser",
+                    "entityType": "SHIRT_HIST"
+                }
+            ]
+        },
+        "metadata": {
+            "GameImage": {
+                "pk": "INTEGER",
+                "gameId": "INTEGER",
+                "roundId": "INTEGER",
+                "userId": "INTEGER",
+                "rimerId": "INTEGER",
+                "roundAudience": "INTEGER",
+                "roundExpressionId": "INTEGER",
+                "score": "REAL",
+                "ksvm": "INTEGER",
+                "userName": "TEXT"
+            }
+        },
+        "queries" : [
+            "SELECT * FROM GameImage WHERE flannId = :rk",
+            "SELECT * FROM GameImage ORDER BY timeId DESC LIMIT 50",
+            "SELECT * FROM GameImage WHERE roundExpressionId = :criteria ORDER BY score DESC LIMIT 50",
+            "SELECT * FROM GameImage ORDER BY score DESC LIMIT 50",
+            "SELECT * FROM GameImage WHERE username = :AND username ksvm = 5 ORDER BY score DESC LIMIT 1"]
+    }
+}

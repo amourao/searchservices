@@ -1,16 +1,21 @@
 #include "RestServer.h"
 
-const int port = 9090;
-
-RestServer* RestServer::instance = NULL;
-
-RestServer::RestServer()
+RestServer::RestServer(int port)
 {
-    HTTPServer s(new RequestHandlerFactory, ServerSocket(port), new HTTPServerParams);
-    s.start();
-    cout << endl << "Server started" << endl;
-
-    waitForTerminationRequest(); 
+    try {
+      HTTPServer s(new RequestHandlerFactory, ServerSocket(port), new HTTPServerParams);
+      s.start();
+      cout << "Server started" << endl;
+      
+      DataModelController dmc;
+      
+      waitForTerminationRequest();
+      
+      s.stop();
+	    cout << endl << "Shutting down..." << endl;
+    } catch (Poco::Net::NetException e){
+      cout << endl << "Error while starting server: " << e.message() << endl;
+    } 
 };
 
 RestServer::~RestServer()
@@ -21,11 +26,3 @@ HTTPRequestHandler* RequestHandlerFactory::createRequestHandler(const HTTPServer
 {
     return new RestRequestHandler();
 };
-
-RestServer* RestServer::getInstance()
-{
-    if (instance == NULL)
-        instance = new RestServer();
-    return instance;
-};
-

@@ -11,6 +11,7 @@
 #include "../tools/MatrixTools.h"
 #include "../IAnalyser.h"
 #include "../../dataModel/IDataModel.h"
+#include "../../dataModel/NKeypoint.h"
 
 #define KEYPOINT_FEATURES_NAME "KeypointFeatures"
 
@@ -23,10 +24,11 @@ public:
 	
 	virtual ~KeypointFeatureExtractor()  {}
 
-	AnalyserDataType* getFeatures(string name){
-		vector<pair<vector<float>,vector<float> > >* features = new vector<pair<vector<float>,vector<float> > >();
-		extractFeatures(name, *features);
-		return new AnalyserDataType(features,KEYPOINT_FEATURES_NAME);
+	IDataModel* getFeatures(string name){
+		vector<pair<vector<float>,vector<float> > > features;
+		extractFeatures(name, features);
+		NKeypoint *key = new NKeypoint(name,getName(), features);
+		return key;
 	}
 
 	virtual void extractFeatures(string filename, vector<pair<vector<float>,vector<float> > >& features){
@@ -68,7 +70,7 @@ public:
 	virtual void* createType(string &typeId) = 0;
 	
 		IDataModel::type getType(){
-		return IDataModel::NKeypoint;
+		return IDataModel::NKEYPOINT;
 	}
 };
 
