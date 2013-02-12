@@ -96,16 +96,16 @@ float SRClassifier::classify(arma::fmat query){
 
 	}
 	
-	cout << "detected label: " << (int)detectedLabelFromReconstruct << " error: " <<   minFromReconstruct << endl;
-	cout.precision(10);
-	cout.setf(ios::fixed,ios::floatfield);
-	cout << "[";
-	for(unsigned int k = 0; k < labelsCute.n_rows; k++){
-		cout << (int)labelsCute.row(k) << "," << abs(res.row(k)) << ";";
-	}
+	//cout << "detected label: " << (int)detectedLabelFromReconstruct << " error: " <<   minFromReconstruct << endl;
+	//cout.precision(10);
+	//cout.setf(ios::fixed,ios::floatfield);
+	//cout << "[";
+	//for(unsigned int k = 0; k < labelsCute.n_rows; k++){
+	//	cout << (int)labelsCute.row(k) << "," << abs(res.row(k)) << ";";
+	//}
 	
-	cout << "]";
-	getchar();
+	//cout << "]";
+	//getchar();
 	return detectedLabelFromReconstruct;
 }
 

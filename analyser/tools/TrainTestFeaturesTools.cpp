@@ -116,7 +116,7 @@ string TrainTestFeaturesTools::test(string name){
 void TrainTestFeaturesTools::test(Mat trainData, Mat trainLabels, Mat testData, Mat testLabels, IClassifier* classifier, vector<int>& correctGuesses, vector<int>& falsePositives, Mat& confusionMatrix){
 	classifier->train(trainData,trainLabels);
 	for(int i = 0; i < testData.rows; i++){
-		cout << "correct label: " << (int)testLabels.at<float>(i,0) << endl;
+		//cout << "correct label: " << (int)testLabels.at<float>(i,0) << endl;
 		float label = classifier->classify(testData.row(i));
 		if(label == testLabels.at<float>(i,0))
 			correctGuesses.at(testLabels.at<float>(i,0))++;

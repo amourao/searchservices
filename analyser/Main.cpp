@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <opencv2/features2d/features2d.hpp>
 
+//#include <math>
 
 
 #include <opencv2/core/core.hpp>
@@ -83,15 +84,26 @@ void extractAllFeaturesImEmotion(string testPath, string output){
 	rectangleRois.push_back(cv::Rect(20,65,52,30)); 
 */
 
-	rectangleRois.push_back(cv::Rect(11,4,37,12));
-	rectangleRois.push_back(cv::Rect(52,4,34,12));
-	rectangleRois.push_back(cv::Rect(30,15,35,18));
-	rectangleRois.push_back(cv::Rect(32,28,11,17));
-	rectangleRois.push_back(cv::Rect(57,34,14,19));
-	rectangleRois.push_back(cv::Rect(10,58,26,19));
-	rectangleRois.push_back(cv::Rect(10,77,31,18)); 
-	rectangleRois.push_back(cv::Rect(64,59,21,19)); 
-	rectangleRois.push_back(cv::Rect(50,78,33,22)); 
+	rectangleRois.push_back(cv::Rect(29,13,36,20));
+	rectangleRois.push_back(cv::Rect(10,59,24,28));
+	rectangleRois.push_back(cv::Rect(61,57,24,29));
+	rectangleRois.push_back(cv::Rect(55,38,17,15));
+	rectangleRois.push_back(cv::Rect(32,28,11,16));
+	rectangleRois.push_back(cv::Rect(10,78,26,14));
+	rectangleRois.push_back(cv::Rect(17,61,16,13)); 
+	rectangleRois.push_back(cv::Rect(64,59,15,15)); 
+	rectangleRois.push_back(cv::Rect(62,73,23,18));
+
+	rectangleRois.push_back(cv::Rect(13,60,18,16));
+        rectangleRois.push_back(cv::Rect(64,55,20,20));
+        rectangleRois.push_back(cv::Rect(23,4,25,12));
+        rectangleRois.push_back(cv::Rect(51,5,24,11));
+        rectangleRois.push_back(cv::Rect(34,59,13,6));
+        rectangleRois.push_back(cv::Rect(50,58,14,8));
+        rectangleRois.push_back(cv::Rect(7,4,27,8)); 
+        rectangleRois.push_back(cv::Rect(61,4,26,8)); 
+        rectangleRois.push_back(cv::Rect(25,80,17,23));
+	rectangleRois.push_back(cv::Rect(48,78,20,25)); 
 	
 	GaborExtractor faceGaborExtractor (92,112,4,6,rectangleRois);
 
@@ -299,22 +311,28 @@ int testEverything(int argc, char *argv[]){
 int testEverythingBin(int argc, char *argv[]){
 
 	string file(argv[1]);
-	
+	string fileTest(argv[2]);	
+
 	Mat features;
 	Mat labels;
+
+	Mat testFeatures;
+	Mat testLabels;
 	
 	MatrixTools::readBin(file,features,labels);
+	MatrixTools::readBin(fileTest,testFeatures,testLabels);
 	
 	vector<IClassifier*> classi;
-	classi.push_back(new SRClassifier());
+	//classi.push_back(new SRClassifier());
 	//classi.push_back(new kNNClassifier());
-	//classi.push_back(new SVMClassifier());
+	classi.push_back(new SVMClassifier());
 	
 	
 	//cout << features.rows << " " << features.cols << " " << labels.rows << " " << labels.cols << endl;
-	TrainTestFeaturesTools ttft(features,labels,classi);
+	TrainTestFeaturesTools ttft(features,labels,testFeatures,testLabels,classi);
 
-	ttft.splitDataForTest(0.3);
+	//cout << ttft.crossValidateAll(atoi(argv[2])) << endl;
+	//ttft.splitDataForTest(0.3);
 	cout << ttft.testAll() << endl;
 	
 	return 0;
@@ -442,11 +460,42 @@ int testFactories(int argc, char *argv[]){
 }
 
 
+int generateRandomData(char* filename){
+
+
+	fstream binFile;
+	binFile.open(filename, std::ios::out | std::ios::binary);
+
+	float dims = 10000;
+	binFile.write((const char*)& dims, sizeof(float));
+	float nSamples = 512;
+	binFile.write((const char*)& nSamples, sizeof(float));
+
+
+	for(int s = 0; s < nSamples; s++){
+		
+		float e = (int)floor(nSamples/8);
+		binFile.write( (const char*)& e, sizeof(float));
+	        binFile.write( (const char*)& e, sizeof(float));
+
+		for(int i = 0; i < 10000; i++){
+			float value = 16* e + rand()%8;
+			binFile.write( (const char*)& value, sizeof(float));
+		}
+		binFile.flush();
+	}
+
+	binFile.close();
+
+}
+
 
 int main(int argc, char *argv[]){
 	
-	testEverythingBin(argc,argv);
-	
-	getchar();
+	//extractAllFeaturesImEmotion(
+	//testEverythingBin(argc,argv);
+
+	generateRandomData(argv[1]);
+	//getchar();
 	return 0;
 }
