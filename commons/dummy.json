@@ -66,6 +66,7 @@
                 "ksvm": "INTEGER",
                 "userName": "TEXT"
             }
+<<<<<<< HEAD
         },
         "queries" : [
             "SELECT * FROM GameImage WHERE flannId = :rk",
@@ -75,3 +76,8 @@
             "SELECT * FROM GameImage WHERE username = :AND username ksvm = 5 ORDER BY score DESC LIMIT 1"]
     }
 }
+=======
+        }
+    }
+}
+>>>>>>> 4c67f65989eaf009ed2f9b45b6c33a0fbf1a911d

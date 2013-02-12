@@ -26,6 +26,7 @@
 								<option id="gnu.cpp.compiler.exe.debug.option.optimization.level.2127665642" name="Optimization Level" superClass="gnu.cpp.compiler.exe.debug.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.exe.debug.option.debugging.level.2015120183" name="Debug Level" superClass="gnu.cpp.compiler.exe.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.include.paths.2081629339" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths"/>
+
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.345622479" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.exe.debug.1573551530" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.exe.debug">
@@ -56,6 +57,9 @@
 									<listOptionValue builtIn="false" value="armadillo"/>
 									<listOptionValue builtIn="false" value="lapack"/>
 									<listOptionValue builtIn="false" value="blas"/>
+									<listOptionValue builtIn="false" value="PocoData"/>
+									<listOptionValue builtIn="false" value="PocoDataSQLite"/>
+									<listOptionValue builtIn="false" value="jsoncpp"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.535543161" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -179,6 +183,9 @@
 		</scannerConfigBuildInfo>
 		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.debug.563028870;cdt.managedbuild.config.gnu.exe.debug.563028870.1158568625;cdt.managedbuild.tool.gnu.c.compiler.exe.debug.1650214706;cdt.managedbuild.tool.gnu.c.compiler.input.2013759085">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileC"/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.release.1249511690;cdt.managedbuild.config.gnu.exe.release.1249511690.;cdt.managedbuild.tool.gnu.cpp.compiler.exe.release.735801812;cdt.managedbuild.tool.gnu.cpp.compiler.input.749902763">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 		</scannerConfigBuildInfo>
 	</storageModule>
 </cproject>

@@ -10,7 +10,9 @@ NVector::NVector(string url, string SQLTable, vector<float> value) : IDataModel(
 	this->rawSize = sizeof(int)+value.size()*sizeof(float);
 }
 
+
 NVector::NVector(string url, string SQLTable) : IDataModel(url)
+
 {
 	this->SQLTable = SQLTable;
 }
@@ -31,6 +33,7 @@ void* NVector::getValue(){
 vector<float> NVector::getRawVector(){
   return value;
 }
+
 
 bool NVector::storeSQL()
 {
@@ -86,3 +89,4 @@ void NVector::unserialize(std::istream &is)
     is.read((char*)&value[0],vlen*sizeof(int));
 	rawSize = sizeof(int)+value.size()*sizeof(float);
 }
+

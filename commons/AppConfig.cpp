@@ -1,4 +1,9 @@
 #include "AppConfig.h"
+<<<<<<< HEAD
+=======
+#include <jsoncpp/json/json.h>
+#include <jsoncpp/json/autolink.h>
+>>>>>>> 4c67f65989eaf009ed2f9b45b6c33a0fbf1a911d
 
 AppConfig* AppConfig::instance = NULL;
 
@@ -20,7 +25,10 @@ AppConfig::AppConfig()
 	featuresVec = parseFeatures(root["novasearch"]["featuresVec"]);
 	featuresText = parseFeatures(root["novasearch"]["featuresText"]);
 	featuresRoi = parseFeatures(root["novasearch"]["featuresRoi"]);
+<<<<<<< HEAD
 	parseQuerys(root["novasearch"]["queries"]);
+=======
+>>>>>>> 4c67f65989eaf009ed2f9b45b6c33a0fbf1a911d
 }
 
 AppConfig::~AppConfig()
@@ -84,6 +92,7 @@ map<string,vector<map<string,string> > > AppConfig::parseFeatures(Value feature)
 	return features;
 }
 
+<<<<<<< HEAD
 void AppConfig::parseQuerys(Value queries){
 	for(int i = 0; i < queries.size(); i++)
 	{
@@ -95,6 +104,8 @@ string AppConfig::getQuery(int index){
 	return queries[index];
 }
 
+=======
+>>>>>>> 4c67f65989eaf009ed2f9b45b6c33a0fbf1a911d
 //int main(){
 //	map<string,vector<map<string,string> > > test = AppConfig::getInstance()->getFeaturesVec();
 //	cout << test["analyser"][1]["name"] << endl;
