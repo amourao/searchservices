@@ -51,51 +51,60 @@ void SRClassifier::train(arma::fmat _trainData, arma::fmat trainLabels){
 
 
 
-float SRClassifier::classify(arma::fmat query){
+float SRClassifier::classify(arma::fmat query, double* error, arma::fmat* recErrors){
 		
 	query = trans(query);
 	vector<int> correctGuesses(numberOfClasses,0);
 	vector<float> weightGuesses(numberOfClasses,0);
 	arma::fvec res = (*omp)(trainData,query);
-	arma::fvec bestRes;
 	arma::uvec indexes = find(abs(res) > 0);
 
 	arma::fvec labelsRight = labelsCute.elem(indexes);
 	arma::fvec scoresRight = res.elem(indexes);
-	for (unsigned int j = 0; j < labelsRight.n_rows; j++){
-		float la  = labelsRight.row(j);
-		correctGuesses.at(la)++;
-		weightGuesses.at(la) += abs(scoresRight.row(j));	
-	}
+	for (unsigned int j = 0; j < labelsRight.n_rows; j++)
+		correctGuesses.at(labelsRight.row(j))++;
 
 	float minFromReconstruct = FLT_MAX;
 	float detectedLabelFromReconstruct= -1;
-
-
-
+	arma::fmat bestReconstruction;
+	double bestMultiFactor = -1;
+	recErrors->set_size(labelsCute.n_rows,2);
 	for (int j = 0; j < numberOfClasses; j++){
 		if (correctGuesses.at(j) != 0){
 			//cout << weightGuesses.at(j)/correctGuesses.at(j) << endl;
 			arma::fvec newRes = res;
 			for(unsigned int k = 0; k < labelsCute.n_rows; k++){
 					float la  = labelsCute.row(k);
+
+					recErrors->at(k,0) = newRes.row(k);
+					recErrors->at(k,1) = k;
+
 					if(la != j)
 						newRes.row(k) = 0;
+					//else
+					//	newRes.row(k) = 1;
 			}
-	
 			arma::fmat reconstruction = trainData * newRes;
 	
-			float reconstructionError = norm(reconstruction-query,2);
+
+
+			double multiFactor = arma::mean(arma::mean(reconstruction/query));
+			float reconstructionError;
+			reconstructionError = norm(reconstruction-query*multiFactor,2);
+
+
 			if (reconstructionError<minFromReconstruct){
-			
 				minFromReconstruct = reconstructionError;	
 				detectedLabelFromReconstruct = j;
+				bestReconstruction = reconstruction;
+				bestMultiFactor = multiFactor;
 			}
 		}
 		
 
 	}
-	
+
+
 	//cout << "detected label: " << (int)detectedLabelFromReconstruct << " error: " <<   minFromReconstruct << endl;
 	//cout.precision(10);
 	//cout.setf(ios::fixed,ios::floatfield);
@@ -106,6 +115,11 @@ float SRClassifier::classify(arma::fmat query){
 	
 	//cout << "]";
 	//getchar();
+
+	if(error != NULL)
+		(*error) = minFromReconstruct;
+
+
 	return detectedLabelFromReconstruct;
 }
 

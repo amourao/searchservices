@@ -4,13 +4,9 @@ const string SQLFILE = "slb.db";
 
 GameImage::GameImage(string url,int gameId,int roundId,int userId,
 		int timeId, int roundAudience, 	int roundExpressionId, int ksvm, float score,
-<<<<<<< HEAD
 		string username, vector<float> gaborFace, vector<float> histFace, vector<float> reconFace, vector<float> gaborShirt,
 		vector<float> histShirt, vector<float> reconShirt) : IDataModel(url)
-=======
-		string username, NVector gaborFace, NVector histFace, NVector reconFace, NVector gaborShirt,
-		NVector histShirt, NVector reconShirt) : IDataModel(url)
->>>>>>> 4c67f65989eaf009ed2f9b45b6c33a0fbf1a911d
+
 {
 	this->gameId = gameId;
 	this->roundId = roundId;
@@ -21,7 +17,6 @@ GameImage::GameImage(string url,int gameId,int roundId,int userId,
 	this->ksvm = ksvm;
 	this->score = score;
 	this->username = username;
-<<<<<<< HEAD
 	this->gaborFace = *(new NVector(url,"FACE_GABOR",gaborFace));
 	this->histFace = *(new NVector(url,"FACE_HIST",histFace));
 	this->reconFace = *(new NVector(url,"FACE_RECON",reconFace));
@@ -38,62 +33,36 @@ GameImage::GameImage(string url) : IDataModel(url)
 	gaborShirt = *(new NVector(url, "SHIRT_GABOR"));
 	histShirt = *(new NVector(url, "SHIRT_HIST"));
 	reconShirt = *(new NVector(url, "SHIRT_RECON"));
-=======
-	this->gaborFace = gaborFace;
-	this->histFace = histFace;
-	this->reconFace = reconFace;
-	this->gaborShirt = gaborShirt;
-	this->histShirt = histShirt;
-	this->reconShirt = reconShirt;
-}
 
-GameImage::GameImage() : IDataModel()
-{
-	gaborFace = *(new NVector("FACE_GABOR"));
-	histFace = *(new NVector("FACE_HIST"));
-	reconFace = *(new NVector("FACE_RECON"));
-	gaborShirt = *(new NVector("SHIRT_GABOR"));
-	histShirt = *(new NVector("SHIRT_HIST"));
-	reconShirt = *(new NVector("SHIRT_RECON"));
->>>>>>> 4c67f65989eaf009ed2f9b45b6c33a0fbf1a911d
 }
 
 GameImage::~GameImage(){
 
 }
 
-<<<<<<< HEAD
 void GameImage::setFlannId(int flannId)
 {
 	this->flannId = flannId;
 }
 
-=======
->>>>>>> 4c67f65989eaf009ed2f9b45b6c33a0fbf1a911d
 bool GameImage::storeSQL()
 {
 	int mediaId = getMediaId();
 	Session ses("SQLite", SQLFILE);
-<<<<<<< HEAD
+
 	ses << "BEGIN" << Keywords::now;
 	ses << "INSERT INTO gameImage VALUES(:mediaId,:gameId,:roundId,:userId,:timeId,:roundAudience,:roundExpressionId,:ksvm,:score,:username,:flannId)",
 			Keywords::use(mediaId),Keywords::use(gameId),Keywords::use(roundId), Keywords::use(userId), Keywords::use(timeId),Keywords::use(roundAudience),
 			Keywords::use(roundExpressionId), Keywords::use(ksvm), Keywords::use(score), Keywords::use(username),Keywords::use(flannId), Keywords::now;
-=======
-	ses << "INSERT INTO gameImage VALUES(:mediaId,:gameId,:roundId,:userId,:timeId,:roundAudience,:roundExpressionId,:ksvm,:score,:username)",
-			Keywords::use(mediaId),Keywords::use(gameId),Keywords::use(roundId), Keywords::use(userId), Keywords::use(timeId),Keywords::use(roundAudience),
-			Keywords::use(roundExpressionId), Keywords::use(ksvm), Keywords::use(score), Keywords::use(username), Keywords::now;
->>>>>>> 4c67f65989eaf009ed2f9b45b6c33a0fbf1a911d
+
 	gaborFace.storeSQL();
 	histFace.storeSQL();
 	reconFace.storeSQL();
 	gaborShirt.storeSQL();
 	histShirt.storeSQL();
 	reconShirt.storeSQL();
-<<<<<<< HEAD
 	ses << "END" << Keywords::now;
-=======
->>>>>>> 4c67f65989eaf009ed2f9b45b6c33a0fbf1a911d
+
 	ses.close();
 	return true;
 }
@@ -114,7 +83,7 @@ bool GameImage::loadSQL(int mediaId)
 	return true;
 }
 
-<<<<<<< HEAD
+
 bool GameImage::serialize(std::ostream &os)
 {
 	os.write((char*)&gameId,sizeof(int));
@@ -195,19 +164,14 @@ bool GameImage::deserialize(std::istream &is)
 	return true;
 }
 
-=======
->>>>>>> 4c67f65989eaf009ed2f9b45b6c33a0fbf1a911d
 void* GameImage::getValue(){
 	return this;
 }
 
-<<<<<<< HEAD
 int GameImage::getFlannId(){
   return flannId;
 }
 
-=======
->>>>>>> 4c67f65989eaf009ed2f9b45b6c33a0fbf1a911d
 int GameImage::getGameId(){
 	return gameId;
 }
@@ -243,7 +207,7 @@ int GameImage::getUserId(){
 string GameImage::getUsername(){
 	return username;
 }
-<<<<<<< HEAD
+
 
 vector<float> GameImage::getGaborFace(){
   return gaborFace.getRawVector();
@@ -348,5 +312,3 @@ bool GameImage::replace(std::string& str, const std::string& from, const std::st
     return true;
 }
 
-=======
->>>>>>> 4c67f65989eaf009ed2f9b45b6c33a0fbf1a911d

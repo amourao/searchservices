@@ -31,6 +31,7 @@
 #include "nTag/SVMClassifier.h"
 
 #include "tools/TrainTestFeaturesTools.h"
+#include "tools/MIRFlickrImporter.h"
 
 #include "FactoryAnalyser.h"
 
@@ -489,13 +490,105 @@ int generateRandomData(char* filename){
 
 }
 
+int evaluateMIRFlickr(int argc, char *argv[]){
+
+	//, argv[1] tags, argv[2] trainSize, argv[3] testSize argv[4] features
+	MIRFlickrImporter m;
+	string filename(argv[4]);
+	string tagsFile(argv[1]);
+	string altTagsFile(argv[2]);
+
+
+	arma::fmat features;
+	arma::uvec tags;
+
+	m.readBin(filename,features);
+	m.readTags(tagsFile,tags);
+
+	arma::fmat testFeatures;
+	arma::uvec testTags;
+
+	m.readBin(filename,testFeatures);
+	m.readTags(altTagsFile,testTags);
+
+	arma::uvec withoutTags;
+
+	//the tags must be ordered
+	/*
+	int lastIdOfTheTaggedElement = 0;
+	int tmpIndex = 0;
+	for(unsigned int s = 1; s <= features.n_rows; s++){
+		if(lastIdOfTheTaggedElement >= tags.n_rows || s != tags(lastIdOfTheTaggedElement)) {
+			withoutTags.insert_rows(tmpIndex,1);
+			withoutTags.at(tmpIndex++) = s;
+		} else {
+			lastIdOfTheTaggedElement++;
+		}
+	}
+	*/
+
+	arma::uvec filteredCols(features.n_cols);
+
+	for(unsigned int s = 0; s < features.n_cols; s++)
+		filteredCols(s) = s;
+
+	//arma::uvec filteredColsU = arma::conv_to<arma::uvec>::from(filteredCols);
+
+	arma::fmat featuresTags = features.submat(tags,filteredCols);
+	//arma::fmat featuresWithoutTags = features.submat(withoutTags,filteredCols);
+	arma::fmat featuresWithoutTags = features.submat(testTags,filteredCols);
+
+	SRClassifier sr;
+
+	//arma::fmat tagsF = arma::conv_to<arma::fmat>::from(tags);
+	arma::fmat tagsF = arma::ones<arma::fmat>(tags.n_rows,1);
+
+	sr.train(featuresTags.rows(0,1000),tagsF.rows(0,1000));
+
+
+	arma::fmat* b = new arma::fmat();
+
+
+	//cout << featuresTags.row(0) << endl;
+
+
+	double average = 0;
+	double count = 0;
+
+	for (int i = 0; i < 100; i++){
+		double* a = new double();
+		if (sr.classify(featuresTags.row(1000+1+i),a,b) != -1){
+			average += (*a);
+			count++;
+		}
+		delete a;
+	}
+
+	cout << average/count << endl;
+
+	average = 0;
+	count = 0;
+	for (int i = 0; i < 100; i++){
+		double* a = new double();
+		if (sr.classify(featuresWithoutTags.row(i),a,b)!= -1){
+			average += (*a);
+			count++;
+		}
+		delete a;
+	}
+
+	cout << average/count << endl;
+
+}
 
 int main(int argc, char *argv[]){
 	
+
+	evaluateMIRFlickr(argc,argv);
 	//extractAllFeaturesImEmotion(
 	//testEverythingBin(argc,argv);
 
-	generateRandomData(argv[1]);
+	//generateRandomData(argv[1]);
 	//getchar();
 	return 0;
 }

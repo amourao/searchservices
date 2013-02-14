@@ -20,7 +20,7 @@ public:
 	
 	void train(arma::fmat trainData, arma::fmat trainLabels);
 	void test(arma::fmat testData, arma::fmat testLabels);
-	float classify(arma::fmat query);
+	float classify(arma::fmat query, double* error = NULL, arma::fmat* recErrors = NULL);
 	string getName();
 	
 private:
