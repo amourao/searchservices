@@ -67,6 +67,9 @@
                 "userName": "TEXT"
             }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 3e13f64ef9b5722f6ed80d2b5d5889fb96c65852
         },
         "queries" : [
             "SELECT * FROM GameImage WHERE flannId = :rk",
@@ -74,6 +77,7 @@
             "SELECT * FROM GameImage WHERE roundExpressionId = :criteria ORDER BY score DESC LIMIT 50",
             "SELECT * FROM GameImage ORDER BY score DESC LIMIT 50",
             "SELECT * FROM GameImage WHERE username = :AND username ksvm = 5 ORDER BY score DESC LIMIT 1"]
+<<<<<<< HEAD
     }
 }
 =======
@@ -81,3 +85,7 @@
     }
 }
 >>>>>>> 4c67f65989eaf009ed2f9b45b6c33a0fbf1a911d
+=======
+    }
+}
+>>>>>>> 3e13f64ef9b5722f6ed80d2b5d5889fb96c65852

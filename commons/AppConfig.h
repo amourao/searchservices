@@ -22,6 +22,7 @@ public:
 	map<string,vector<map<string,string> > > getFeaturesRoi();
 	map<string,vector<map<string,string> > > getFeaturesText();
 	map<string,vector<map<string,string> > > getFeaturesVec();
+	string getQuery(int index);
 
 	string getQuery(int index);
 
@@ -33,6 +34,7 @@ private:
 	map<string,vector<map<string,string> > > featuresRoi;
 	map<string,vector<map<string,string> > > featuresText;
 	map<string,vector<map<string,string> > > featuresVec;
+	vector<string> queries;
 
 	vector<string> queries;
 
@@ -40,6 +42,8 @@ private:
 
 	void parseMetadata(Value appMetadata);
 	map<string,vector<map<string,string> > > parseFeatures(Value feature);
+	void parseQuerys(Value querys);
+
 
 	void parseQuerys(Value querys);
 

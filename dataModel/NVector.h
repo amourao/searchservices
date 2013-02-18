@@ -8,9 +8,13 @@ class NVector : public IDataModel{
 public:
 
 	NVector(string url, string SQLTable, vector<float> value);
+<<<<<<< HEAD
 
 	NVector(string url, string SQLTable);
 
+=======
+	NVector(string url, string SQLTable);
+>>>>>>> 3e13f64ef9b5722f6ed80d2b5d5889fb96c65852
 	NVector();
 	~NVector();
 

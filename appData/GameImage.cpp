@@ -6,7 +6,10 @@ GameImage::GameImage(string url,int gameId,int roundId,int userId,
 		int timeId, int roundAudience, 	int roundExpressionId, int ksvm, float score,
 		string username, vector<float> gaborFace, vector<float> histFace, vector<float> reconFace, vector<float> gaborShirt,
 		vector<float> histShirt, vector<float> reconShirt) : IDataModel(url)
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3e13f64ef9b5722f6ed80d2b5d5889fb96c65852
 {
 	this->gameId = gameId;
 	this->roundId = roundId;
@@ -33,7 +36,10 @@ GameImage::GameImage(string url) : IDataModel(url)
 	gaborShirt = *(new NVector(url, "SHIRT_GABOR"));
 	histShirt = *(new NVector(url, "SHIRT_HIST"));
 	reconShirt = *(new NVector(url, "SHIRT_RECON"));
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3e13f64ef9b5722f6ed80d2b5d5889fb96c65852
 }
 
 GameImage::~GameImage(){
@@ -49,12 +55,18 @@ bool GameImage::storeSQL()
 {
 	int mediaId = getMediaId();
 	Session ses("SQLite", SQLFILE);
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3e13f64ef9b5722f6ed80d2b5d5889fb96c65852
 	ses << "BEGIN" << Keywords::now;
 	ses << "INSERT INTO gameImage VALUES(:mediaId,:gameId,:roundId,:userId,:timeId,:roundAudience,:roundExpressionId,:ksvm,:score,:username,:flannId)",
 			Keywords::use(mediaId),Keywords::use(gameId),Keywords::use(roundId), Keywords::use(userId), Keywords::use(timeId),Keywords::use(roundAudience),
 			Keywords::use(roundExpressionId), Keywords::use(ksvm), Keywords::use(score), Keywords::use(username),Keywords::use(flannId), Keywords::now;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3e13f64ef9b5722f6ed80d2b5d5889fb96c65852
 	gaborFace.storeSQL();
 	histFace.storeSQL();
 	reconFace.storeSQL();
@@ -62,7 +74,10 @@ bool GameImage::storeSQL()
 	histShirt.storeSQL();
 	reconShirt.storeSQL();
 	ses << "END" << Keywords::now;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3e13f64ef9b5722f6ed80d2b5d5889fb96c65852
 	ses.close();
 	return true;
 }
@@ -83,7 +98,10 @@ bool GameImage::loadSQL(int mediaId)
 	return true;
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3e13f64ef9b5722f6ed80d2b5d5889fb96c65852
 bool GameImage::serialize(std::ostream &os)
 {
 	os.write((char*)&gameId,sizeof(int));
@@ -208,7 +226,10 @@ string GameImage::getUsername(){
 	return username;
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3e13f64ef9b5722f6ed80d2b5d5889fb96c65852
 vector<float> GameImage::getGaborFace(){
   return gaborFace.getRawVector();
 }

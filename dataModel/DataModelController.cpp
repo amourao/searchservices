@@ -46,8 +46,11 @@ void DataModelController::createTables(){
 	Session ses("SQLite", SQLFILE);
 
 	ses << "BEGIN", Keywords::now;
+<<<<<<< HEAD
 
 	ses << "CREATE TABLE gameImage (pk INTEGER, gameId INTEGER, roundId INTEGER, userId INTEGER, timeId INTEGER, roundAudience INTEGER, roundExpressionId INTEGER,ksvm INTEGER,score REAL,username TEXT)", Keywords::now;
+=======
+>>>>>>> 3e13f64ef9b5722f6ed80d2b5d5889fb96c65852
 	ses << "CREATE TABLE media (id INTEGER PRIMARY KEY AUTOINCREMENT, uri TEXT, partOf, FOREIGN KEY(partOf) REFERENCES media(id))", Keywords::now;
 	ses << "CREATE TABLE annotationType (id INTEGER PRIMARY KEY AUTOINCREMENT, description TEXT, typeName TEXT)", Keywords::now;
 	ses << "CREATE TABLE word (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, type TEXT, annotationTypeId, FOREIGN KEY(annotationTypeId) REFERENCES annotationType(id))", Keywords::now;
@@ -65,8 +68,11 @@ void DataModelController::createTables(){
 	ses << "INSERT INTO annotationType VALUES(null,\"carro\",\"carro\")", Keywords::now;
 	ses << "CREATE TABLE gameImage (pk INTEGER, gameId INTEGER, roundId INTEGER, userId INTEGER, timeId INTEGER, roundAudience INTEGER, roundExpressionId INTEGER,ksvm INTEGER,score REAL,username TEXT,flannId, FOREIGN KEY(pk) REFERENCES media(id))", Keywords::now;
 	ses << "END", Keywords::now;
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 3e13f64ef9b5722f6ed80d2b5d5889fb96c65852
 	for (iter = listOfTypes.begin(); iter != listOfTypes.end(); iter++)
 	{
 		ses << "DROP TABLE IF EXISTS "<< (*iter).first, Keywords::now;
