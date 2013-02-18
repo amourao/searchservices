@@ -13,11 +13,28 @@ public:
 	MIRFlickrImporter();
 	~MIRFlickrImporter();
 
-	void readBin(std::string& file, arma::fmat & features);
-	void readTags(std::string& file, arma::uvec& features);
+	//reads a single binary features file
+	void readBin(std::string file, arma::fmat& features);
+	void readTags(std::string file, arma::uvec& tags);
+	void readAllTags(std::string file);
+	void getTagFeatures(std::string tagName, arma::uvec& features);
 
+	void subtractTags(std::string tagName, std::string tagToSubtract, arma::uvec& tags);
 
+	void getTrainData(arma::fmat& features,std::map<std::string,arma::uvec>& tags);
+	void getTestData(arma::fmat& features,std::map<std::string,arma::uvec>& tags);
 
+private:
 	arma::fmat features;
 
+	std::map<std::string,arma::uvec> tags;
+
+
+	arma::uvec trainDataIndex;
+	arma::uvec testDataIndex;
+
+	std::map<std::string,arma::uvec> tagsTrain;
+	std::map<std::string,arma::uvec> tagsTest;
+
+	double ratio;
 };
