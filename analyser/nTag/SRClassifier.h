@@ -23,6 +23,8 @@ public:
 	float classify(arma::fmat query, double* error = NULL, arma::fmat* recErrors = NULL);
 	string getName();
 	
+
+	void changeLabels(arma::fmat trainLabels);
 private:
 
 	arma::fmat trainData;

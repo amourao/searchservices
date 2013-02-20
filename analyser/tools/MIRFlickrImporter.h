@@ -29,6 +29,7 @@ public:
 
 	std::vector<std::vector<std::string> > testTags;
 	arma::uvec testDataIndex;
+	arma::uvec trainDataIndex;
 private:
 	arma::fmat features;
 
@@ -37,7 +38,7 @@ private:
 	std::map<std::string,arma::uvec> tagsTrain;
 	std::map<std::string,arma::uvec> tagsTest;
 
-	arma::uvec trainDataIndex;
+
 
 	double ratio;
 };

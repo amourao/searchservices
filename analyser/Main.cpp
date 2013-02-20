@@ -525,39 +525,54 @@ int evaluateMIRFlickr(int argc, char *argv[]) {
 	m.getTestData(testFeatures,testTags);
 
 
+	arma::fmat tags = arma::zeros<arma::fmat>((int)trainFeatures.n_rows,1);
+	SRClassifier sr;
+
+	cout << "training..."<< endl;
+	sr.train(features.rows(0,7500),tags.rows(0,7500));
+	cout << " done" << endl;
+
 	vector<priority_queue<tagError, vector<tagError>, CompareTags> > resultingTags(testFeatures.n_rows);
 
 	std::map<std::string, arma::uvec>::iterator iter;
-
 	for (iter = trainTags.begin(); iter != trainTags.end(); ++iter) {
-		int wert = 0;
-		cout << iter->first << endl;
+		//cout << iter->first << endl;
 		arma::uvec indexes = iter->second;
-		arma::fmat tags = arma::zeros<arma::fmat>((int)trainFeatures.n_rows,1);
+
+
+		tags = arma::zeros<arma::fmat>((int)trainFeatures.n_rows,1);
 		for (int i = 0; i < indexes.n_rows; i++){
 			int index = indexes(i);
 			tags.at(index,0) = 1;
+			//indexes.at(m.trainDataIndex.at(index),0) = 1;
 		}
-		//cout << wert++ << " " << trainFeatures.n_rows << " " << trainFeatures.n_cols << endl;
-		SRClassifier sr;
-		sr.train(trainFeatures.rows(0,100),tags.rows(0,100));
+		//cout << trainFeatures.n_rows << " " << trainFeatures.n_cols << endl;
 
-		for (int row = 0; row < 100; row++) {
+		/*
+		arma::uvec filteredCols(features.n_cols);
+		for(unsigned int s = 0; s < features.n_cols; s++)
+			filteredCols(s) = s;
+		arma::fmat featuresTags = features.submat(indexes,filteredCols);
+		arma::fmat tmopTags = arma::ones<arma::fmat>(featuresTags.n_rows,1);
+		sr.train(featuresTags,tmopTags);
+		 */
+
+		sr.changeLabels(tags.rows(0,7500));
+
+		for (int row = 0; row < 1000; row++) {
 			double * error = new double();
 			arma::fmat* featuresTmp = new arma::fmat();
 			sr.classify(testFeatures.row(row),error,featuresTmp);
-			cout << m.testDataIndex.at(row) << " " <<  (*error) << endl;
+			//cout << m.testDataIndex.at(row) << " " <<  (*error) << endl;
 
 			resultingTags.at(m.testDataIndex.at(row)).push({(*error),iter->first});
 
 		}
 	}
 
-	for (int row = 0; row < 100; row++) {
-		cout << row << " detected tags: " << m.testDataIndex.at(row) << endl;
-
+	for (int row = 0; row < 1000; row++) {
+		cout << "detected tags:\t" << m.testDataIndex.at(row)+1 << endl;
 		priority_queue<tagError, vector<tagError>, CompareTags> tagsQueue = resultingTags.at(m.testDataIndex.at(row));
-
 		while (tagsQueue.size() > 0){
 			tagError terr = tagsQueue.top();
 			tagsQueue.pop();
@@ -566,10 +581,13 @@ int evaluateMIRFlickr(int argc, char *argv[]) {
 			vector<string> vec = m.testTags.at( m.testDataIndex.at(row));
 			if(std::find(vec.begin(), vec.end(), terr.tag) != vec.end())
 				contains = true;
-			cout << terr.tag << " " << terr.error << " " << contains << endl;
-			getchar();
+			cout << std::setprecision(5);
+			if(terr.tag.size() > 7)
+				cout << terr.tag << "\t" << terr.error << "\t\t" << contains << endl;
+			else
+				cout << terr.tag << "\t\t" << terr.error << "\t\t" << contains << endl;
 		}
-
+		cout << endl;
 	}
 
 	//m.getTagFeatures("people_r1", people_r1Tags);

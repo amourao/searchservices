@@ -45,7 +45,6 @@ void MIRFlickrImporter::readBin(std::string file, arma::fmat& _features) {
 	}
 	ifs.close();
 	features = _features;
-
 }
 
 // reads the tags file (with an imageId per line) into a arma::uvec vector
@@ -76,23 +75,19 @@ void MIRFlickrImporter::readTags(std::string file, arma::uvec& features) {
 	    arma::uvec tmp;
 		if (index % 5 < 3){
 			tmp =  arma::find(trainDataIndex == index);
-			originalIndex = tmp(0);
+			originalIndex = tmp.at(0);
 			featuresTrain.insert_rows(trainIndex,1);
 			featuresTrain.at(trainIndex++) = originalIndex;
-
 		} else {
 			tmp =  arma::find(testDataIndex == index);
-			originalIndex = tmp(0);
+			originalIndex = tmp.at(0);
 			featuresTest.insert_rows(testIndex,1);
 			featuresTest.at(testIndex++) = originalIndex;
-			if (testTags.size() <= originalIndex){
-				testTags.resize(originalIndex+1);
+			if (testTags.size() <= index){
+				testTags.resize(index+1);
 			}
-			testTags.at(originalIndex).push_back(tagName);
-
+			testTags.at(index).push_back(tagName);
 		}
-
-
 	}
 
 	//std::cout << tagName << " " << features.size() << " " << featuresTrain.size() << " " << featuresTest.size() << std::endl;

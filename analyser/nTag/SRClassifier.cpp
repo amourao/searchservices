@@ -44,7 +44,7 @@ void SRClassifier::train(arma::fmat _trainData, arma::fmat trainLabels){
 	opt.L = max(eig_sym(trans(trainData) * trainData));
 	omp = new l1min::FISTA(opt);
 	labelsCute = arma::fvec(trainLabels);
-	
+
 	numberOfClasses = max(labelsCute)+1;
 	 //= m.n_elem;
 }
@@ -92,7 +92,7 @@ float SRClassifier::classify(arma::fmat query, double* error, arma::fmat* recErr
 
 			double multiFactor = arma::mean(arma::mean(reconstruction/query));
 			float reconstructionError;
-			reconstructionError = norm(reconstruction-query*multiFactor,2);
+			reconstructionError = norm(reconstruction-query,2);
 
 
 			if (reconstructionError<minFromReconstruct){
@@ -132,3 +132,9 @@ void SRClassifier::test(arma::fmat testData, arma::fmat testLabels){
 string SRClassifier::getName(){
 	return "SR";
 }
+
+void SRClassifier::changeLabels(arma::fmat trainLabels) {
+	labelsCute = arma::fvec(trainLabels);
+	numberOfClasses = max(labelsCute)+1;
+}
+
