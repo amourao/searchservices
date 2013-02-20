@@ -35,6 +35,21 @@
 
 using namespace std;
 
+
+struct tagError {
+     double error;
+     string tag;
+ };
+
+class  CompareTags{
+     public:
+     bool operator()(tagError& t1, tagError& t2){
+        return t1.error > t2.error;
+     }
+ };
+
+
+
 void testDetection(int argc, char *argv[]) {
 
 	/*
@@ -503,12 +518,59 @@ int evaluateMIRFlickr(int argc, char *argv[]) {
 	std::map<std::string,arma::uvec> trainTags;
 	std::map<std::string,arma::uvec> testTags;
 
-
 	m.readBin(filename, features);
 	m.readAllTags(tagsFile);
 
 	m.getTrainData(trainFeatures,trainTags);
 	m.getTestData(testFeatures,testTags);
+
+
+	vector<priority_queue<tagError, vector<tagError>, CompareTags> > resultingTags(testFeatures.n_rows);
+
+	std::map<std::string, arma::uvec>::iterator iter;
+
+	for (iter = trainTags.begin(); iter != trainTags.end(); ++iter) {
+		int wert = 0;
+		cout << iter->first << endl;
+		arma::uvec indexes = iter->second;
+		arma::fmat tags = arma::zeros<arma::fmat>((int)trainFeatures.n_rows,1);
+		for (int i = 0; i < indexes.n_rows; i++){
+			int index = indexes(i);
+			tags.at(index,0) = 1;
+		}
+		//cout << wert++ << " " << trainFeatures.n_rows << " " << trainFeatures.n_cols << endl;
+		SRClassifier sr;
+		sr.train(trainFeatures.rows(0,100),tags.rows(0,100));
+
+		for (int row = 0; row < 100; row++) {
+			double * error = new double();
+			arma::fmat* featuresTmp = new arma::fmat();
+			sr.classify(testFeatures.row(row),error,featuresTmp);
+			cout << m.testDataIndex.at(row) << " " <<  (*error) << endl;
+
+			resultingTags.at(m.testDataIndex.at(row)).push({(*error),iter->first});
+
+		}
+	}
+
+	for (int row = 0; row < 100; row++) {
+		cout << row << " detected tags: " << m.testDataIndex.at(row) << endl;
+
+		priority_queue<tagError, vector<tagError>, CompareTags> tagsQueue = resultingTags.at(m.testDataIndex.at(row));
+
+		while (tagsQueue.size() > 0){
+			tagError terr = tagsQueue.top();
+			tagsQueue.pop();
+			bool contains = false;
+
+			vector<string> vec = m.testTags.at( m.testDataIndex.at(row));
+			if(std::find(vec.begin(), vec.end(), terr.tag) != vec.end())
+				contains = true;
+			cout << terr.tag << " " << terr.error << " " << contains << endl;
+			getchar();
+		}
+
+	}
 
 	//m.getTagFeatures("people_r1", people_r1Tags);
 	//m.getTagFeatures("female_r1", female_r1Tags);

@@ -61,6 +61,11 @@ void MIRFlickrImporter::readTags(std::string file, arma::uvec& features) {
 
 	arma::uvec featuresTrain;
 	arma::uvec featuresTest;
+
+	unsigned found = file.find_last_of("/\\");
+	unsigned foundDot = file.find_last_of(".");
+	std::string tagName= file.substr(found+1,foundDot-found-1);
+
 	while (getline(backstory,line)){
 		int index = atoi(line.c_str())-1;
 
@@ -74,20 +79,23 @@ void MIRFlickrImporter::readTags(std::string file, arma::uvec& features) {
 			originalIndex = tmp(0);
 			featuresTrain.insert_rows(trainIndex,1);
 			featuresTrain.at(trainIndex++) = originalIndex;
+
 		} else {
 			tmp =  arma::find(testDataIndex == index);
 			originalIndex = tmp(0);
 			featuresTest.insert_rows(testIndex,1);
 			featuresTest.at(testIndex++) = originalIndex;
+			if (testTags.size() <= originalIndex){
+				testTags.resize(originalIndex+1);
+			}
+			testTags.at(originalIndex).push_back(tagName);
+
 		}
 
 
 	}
-	unsigned found = file.find_last_of("/\\");
-	unsigned foundDot = file.find_last_of(".");
-	std::string tagName= file.substr(found+1,foundDot-found-1);
 
-	std::cout << tagName << " " << features.size() << " " << featuresTrain.size() << " " << featuresTest.size() << std::endl;
+	//std::cout << tagName << " " << features.size() << " " << featuresTrain.size() << " " << featuresTest.size() << std::endl;
 	tags[tagName]=features;
 	tagsTrain[tagName]=featuresTrain;
 	tagsTest[tagName]=featuresTest;

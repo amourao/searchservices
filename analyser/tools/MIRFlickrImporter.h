@@ -24,17 +24,20 @@ public:
 	void getTrainData(arma::fmat& features,std::map<std::string,arma::uvec>& tags);
 	void getTestData(arma::fmat& features,std::map<std::string,arma::uvec>& tags);
 
+
+
+
+	std::vector<std::vector<std::string> > testTags;
+	arma::uvec testDataIndex;
 private:
 	arma::fmat features;
 
 	std::map<std::string,arma::uvec> tags;
 
-
-	arma::uvec trainDataIndex;
-	arma::uvec testDataIndex;
-
 	std::map<std::string,arma::uvec> tagsTrain;
 	std::map<std::string,arma::uvec> tagsTest;
+
+	arma::uvec trainDataIndex;
 
 	double ratio;
 };

@@ -39,7 +39,7 @@ void SRClassifier::train(arma::fmat _trainData, arma::fmat trainLabels){
 
 	l1min::FISTA::option_type opt;
 	//opt.eps = 1e-7;
-	opt.max_iters = 1000;
+	opt.max_iters = 20;
 	opt.lambda = 0.03;
 	opt.L = max(eig_sym(trans(trainData) * trainData));
 	omp = new l1min::FISTA(opt);
@@ -69,7 +69,9 @@ float SRClassifier::classify(arma::fmat query, double* error, arma::fmat* recErr
 	arma::fmat bestReconstruction;
 	double bestMultiFactor = -1;
 	recErrors->set_size(labelsCute.n_rows,2);
-	for (int j = 0; j < numberOfClasses; j++){
+
+	//ignore the "zero" class
+	for (int j = 1; j < numberOfClasses; j++){
 		if (correctGuesses.at(j) != 0){
 			//cout << weightGuesses.at(j)/correctGuesses.at(j) << endl;
 			arma::fvec newRes = res;
