@@ -502,6 +502,12 @@ int generateRandomData(char* filename) {
 
 int evaluateMIRFlickr(int argc, char *argv[]) {
 
+
+	std::ofstream out("out.txt");
+	std::streambuf *coutbuf = std::cout.rdbuf(); //save old buf
+	std::cout.rdbuf(out.rdbuf()); //redirect std::cout to out.txt!
+
+
 	MIRFlickrImporter m;
 
 	//1: alltag list fils
@@ -509,6 +515,7 @@ int evaluateMIRFlickr(int argc, char *argv[]) {
 
 	string tagsFile(argv[1]);
 	string filename(argv[2]);
+	int testSize = atoi(argv[3]);
 
 
 	arma::fmat features;
@@ -528,9 +535,7 @@ int evaluateMIRFlickr(int argc, char *argv[]) {
 	arma::fmat tags = arma::zeros<arma::fmat>((int)trainFeatures.n_rows,1);
 	SRClassifier sr;
 
-	cout << "training..."<< endl;
-	sr.train(features.rows(0,7500),tags.rows(0,7500));
-	cout << " done" << endl;
+	sr.train(trainFeatures,tags);
 
 	vector<priority_queue<tagError, vector<tagError>, CompareTags> > resultingTags(testFeatures.n_rows);
 
@@ -538,7 +543,6 @@ int evaluateMIRFlickr(int argc, char *argv[]) {
 	for (iter = trainTags.begin(); iter != trainTags.end(); ++iter) {
 		//cout << iter->first << endl;
 		arma::uvec indexes = iter->second;
-
 
 		tags = arma::zeros<arma::fmat>((int)trainFeatures.n_rows,1);
 		for (int i = 0; i < indexes.n_rows; i++){
@@ -557,9 +561,9 @@ int evaluateMIRFlickr(int argc, char *argv[]) {
 		sr.train(featuresTags,tmopTags);
 		 */
 
-		sr.changeLabels(tags.rows(0,7500));
+		sr.changeLabels(tags);
 
-		for (int row = 0; row < 1000; row++) {
+		for (int row = 0; row < testSize; row++) {
 			double * error = new double();
 			arma::fmat* featuresTmp = new arma::fmat();
 			sr.classify(testFeatures.row(row),error,featuresTmp);
@@ -570,7 +574,7 @@ int evaluateMIRFlickr(int argc, char *argv[]) {
 		}
 	}
 
-	for (int row = 0; row < 1000; row++) {
+	for (int row = 0; row < testSize; row++) {
 		cout << "detected tags:\t" << m.testDataIndex.at(row)+1 << endl;
 		priority_queue<tagError, vector<tagError>, CompareTags> tagsQueue = resultingTags.at(m.testDataIndex.at(row));
 		while (tagsQueue.size() > 0){

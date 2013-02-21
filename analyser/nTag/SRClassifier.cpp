@@ -33,18 +33,22 @@ float SRClassifier::classify( cv::Mat query){
 	
 void SRClassifier::train(arma::fmat _trainData, arma::fmat trainLabels){
 
-	//int i = 0;
-	
+	int i = 0;
 	trainData = trans(_trainData);
-
 	l1min::FISTA::option_type opt;
 	//opt.eps = 1e-7;
-	opt.max_iters = 20;
+	opt.max_iters = 1000;
 	opt.lambda = 0.03;
-	opt.L = max(eig_sym(trans(trainData) * trainData));
+	opt.L = 43681; //max(eig_sym(trans(trainData) * trainData));
 	omp = new l1min::FISTA(opt);
+	// trainData.n_rows = 35.7771+0.34258 opt.L
+	/*
+	1000 ⁼ 368.408
+	5000 ⁼ 1771.89
+	8000 ⁼ 2763.15
+	25000 ~= 43681
+	 */
 	labelsCute = arma::fvec(trainLabels);
-
 	numberOfClasses = max(labelsCute)+1;
 	 //= m.n_elem;
 }
@@ -61,6 +65,7 @@ float SRClassifier::classify(arma::fmat query, double* error, arma::fmat* recErr
 
 	arma::fvec labelsRight = labelsCute.elem(indexes);
 	arma::fvec scoresRight = res.elem(indexes);
+
 	for (unsigned int j = 0; j < labelsRight.n_rows; j++)
 		correctGuesses.at(labelsRight.row(j))++;
 
