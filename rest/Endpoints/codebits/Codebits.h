@@ -37,12 +37,12 @@ enum IndexType {
 private:
   string type;
 
-  static Index<L2<float>> face_gabor;  //FACE_GABOR
-  static Index<L2<float>> face_hist;   //FACE_HIST
-  static Index<L2<float>> face_recon;  //FACE_RECON
-  static Index<L2<float>> shirt_gabor;  //SHIRT_GABOR
-  static Index<L2<float>> shirt_hist;  //SHIRT_HIST
-  static Index<L2<float>> shirt_recon;  //SHIRT_RECON
+  static Index<L2<float> > face_gabor;  //FACE_GABOR
+  static Index<L2<float> > face_hist;   //FACE_HIST
+  static Index<L2<float> > face_recon;  //FACE_RECON
+  static Index<L2<float> > shirt_gabor;  //SHIRT_GABOR
+  static Index<L2<float> > shirt_hist;  //SHIRT_HIST
+  static Index<L2<float> > shirt_recon;  //SHIRT_RECON
   
   static int last_face_gabor_id;
   static int last_face_hist_id;
@@ -58,7 +58,7 @@ private:
   vector<GameImage> scoreboard(map<string, string> parameters);
   vector<GameImage> mybestsmile(map<string, string> parameters);
   
-  Index<L2<float>>* getIndex(int id);
+  Index<L2<float> >* getIndex(int id);
   vector<float> getVectorForIndex(int id, int media_id);
 };
 
@@ -70,9 +70,9 @@ int Codebits::last_shirt_hist_id = 0;
 int Codebits::last_shirt_recon_id = 0;
 
 
-Index<L2<float>> Codebits::face_gabor(Matrix<float>(new float[4*1], 1, 4), KDTreeIndexParams(4));
-Index<L2<float>> Codebits::face_hist(Matrix<float>(new float[4*1], 1, 4), KDTreeIndexParams(4));
-Index<L2<float>> Codebits::face_recon(Matrix<float>(new float[4*1], 1, 4), KDTreeIndexParams(4));
-Index<L2<float>> Codebits::shirt_gabor(Matrix<float>(new float[4*1], 1, 4), KDTreeIndexParams(4));
-Index<L2<float>> Codebits::shirt_hist(Matrix<float>(new float[4*1], 1, 4), KDTreeIndexParams(4));
-Index<L2<float>> Codebits::shirt_recon(Matrix<float>(new float[4*1], 1, 4), KDTreeIndexParams(4));
+Index<L2<float> > Codebits::face_gabor(Matrix<float>(new float[4*1], 1, 4), KDTreeIndexParams(4));
+Index<L2<float> > Codebits::face_hist(Matrix<float>(new float[4*1], 1, 4), KDTreeIndexParams(4));
+Index<L2<float> > Codebits::face_recon(Matrix<float>(new float[4*1], 1, 4), KDTreeIndexParams(4));
+Index<L2<float> > Codebits::shirt_gabor(Matrix<float>(new float[4*1], 1, 4), KDTreeIndexParams(4));
+Index<L2<float> > Codebits::shirt_hist(Matrix<float>(new float[4*1], 1, 4), KDTreeIndexParams(4));
+Index<L2<float> > Codebits::shirt_recon(Matrix<float>(new float[4*1], 1, 4), KDTreeIndexParams(4));

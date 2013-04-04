@@ -188,7 +188,7 @@ void Codebits::index(istream& in, map<string, string> parameters)
   
 }
 
-Index<L2<float>>* Codebits::getIndex(int id){
+Index<L2<float> >* Codebits::getIndex(int id){
   switch(id){
     case BY_EXPRESSION:
       return &face_gabor;
@@ -232,7 +232,7 @@ vector<GameImage> Codebits::search(map<string, string> parameters)
     cout << "/search: error: Invalid parameter 'id' or 'criteria'" << endl;
   } else {
   
-    Index<L2<float>>* index = getIndex(criteria);
+    Index<L2<float> >* index = getIndex(criteria);
     vector<float> vector = getVectorForIndex(criteria, id);
     
     int nn = 10;

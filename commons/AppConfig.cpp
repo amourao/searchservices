@@ -1,10 +1,8 @@
 #include "AppConfig.h"
-<<<<<<< HEAD
 
 #include <jsoncpp/json/json.h>
 #include <jsoncpp/json/autolink.h>
-=======
->>>>>>> 3e13f64ef9b5722f6ed80d2b5d5889fb96c65852
+
 
 AppConfig* AppConfig::instance = NULL;
 
@@ -27,10 +25,7 @@ AppConfig::AppConfig()
 	featuresText = parseFeatures(root["novasearch"]["featuresText"]);
 	featuresRoi = parseFeatures(root["novasearch"]["featuresRoi"]);
 	parseQuerys(root["novasearch"]["queries"]);
-<<<<<<< HEAD
 
-=======
->>>>>>> 3e13f64ef9b5722f6ed80d2b5d5889fb96c65852
 }
 
 AppConfig::~AppConfig()

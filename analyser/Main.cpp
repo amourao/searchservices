@@ -667,13 +667,13 @@ int evaluateMIRFlickr(int argc, char *argv[]) {
 	return 0;
 }
 
-int main(int argc, char *argv[]) {
-
-	evaluateMIRFlickr(argc, argv);
-	//extractAllFeaturesImEmotion(
-	//testEverythingBin(argc,argv);
-
-	//generateRandomData(argv[1]);
-	//getchar();
-	return 0;
-}
+//int main(int argc, char *argv[]) {
+//
+//	evaluateMIRFlickr(argc, argv);
+//	//extractAllFeaturesImEmotion(
+//	//testEverythingBin(argc,argv);
+//
+//	//generateRandomData(argv[1]);
+//	//getchar();
+//	return 0;
+//}
