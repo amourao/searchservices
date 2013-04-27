@@ -33,8 +33,15 @@ public:
 		NROI
 	};
 	
-	IDataModel(string url) {this->url = url; SQLite::Connector::registerConnector();}
-	IDataModel() {SQLite::Connector::registerConnector();}
+	IDataModel(string url) {this->url = url; mediaId = -1; SQLite::Connector::registerConnector();}
+	IDataModel() {mediaId = -1; SQLite::Connector::registerConnector();}
+	string getUrl(){
+		size_t token = url.find_last_of('/');
+		size_t token2 = url.find_last_of('.');
+		cout << url<< " " << url.substr(token+1, (token2)-(token+1));
+		return url.substr(token+1, (token2)-(token+1));
+	}
+	int getPublicMediaId(){return mediaId;};
 	virtual ~IDataModel() {SQLite::Connector::unregisterConnector();}
 
 	virtual void* getValue() = 0;
@@ -47,19 +54,21 @@ protected:
 
 	string SQLTable;
 	string url;
+	int mediaId;
+
 
 	int getMediaId()
-	{
-		int mediaId;
-		Session ses("SQLite", "slb.db");
-		ses << "BEGIN", Keywords::now;
-		ses << "SELECT EXISTS(SELECT id FROM media WHERE uri=:url AND partOf IS NULL)",Keywords::use(url), Keywords::into(mediaId), Keywords::now;
-		if(mediaId == 0)
-			ses << "INSERT INTO media VALUES(null,:url, null)", Keywords::use(url), Keywords::now;
-		ses << "SELECT id FROM media WHERE uri=:url AND partOf IS NULL",Keywords::use(url), Keywords::into(mediaId), Keywords::now;
-		ses << "END", Keywords::now;
-		ses.close();
-		return mediaId;
-	}
-
+		{
+		if(mediaId != -1)
+			return mediaId;
+			Session ses("SQLite", "slb.db");
+			ses << "BEGIN", Keywords::now;
+			ses << "SELECT EXISTS(SELECT id FROM media WHERE uri=:url AND partOf IS NULL)",Keywords::use(url), Keywords::into(mediaId), Keywords::now;
+			if(mediaId == 0)
+				ses << "INSERT INTO media VALUES(null,:url, null)", Keywords::use(url), Keywords::now;
+			ses << "SELECT id FROM media WHERE uri=:url AND partOf IS NULL",Keywords::use(url), Keywords::into(mediaId), Keywords::now;
+			ses << "END", Keywords::now;
+			ses.close();
+			return mediaId;
+		}
 };

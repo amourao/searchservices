@@ -39,7 +39,8 @@ public:
 	bool serialize(std::ostream &os);
 	bool deserialize(std::istream &is);
 	void setFlannId(int flannId);
-	static vector<GameImage> executeQuery(int id, vector<string> params);
+	static void executeQuery(int id, vector<string> params, vector<GameImage> &result);
+	int size();
 
 private:
 

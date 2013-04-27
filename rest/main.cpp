@@ -3,6 +3,7 @@
 #include <fstream>
 #include <vector>
 
+
 using namespace std;
 
 int str2int (int &i, char const *s, int base = 0)
@@ -37,9 +38,9 @@ int main(int argc, char *argv[])
       cout << "Invalid port" << endl;
       return 1;
     }
-    
+
     RestServer serv(port);
-    
+
     return 0;
 }
 

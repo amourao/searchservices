@@ -48,6 +48,7 @@ void GameImage::setFlannId(int flannId)
 bool GameImage::storeSQL()
 {
 	int mediaId = getMediaId();
+	cout << "MediaID" << mediaId << endl;
 	Session ses("SQLite", SQLFILE);
 
 	ses << "BEGIN" << Keywords::now;
@@ -138,7 +139,9 @@ bool GameImage::deserialize(std::istream &is)
 {
 
 	is.read((char*)&gameId,sizeof(int));
+	cout << gameId << endl;
 	is.read((char*)&roundId,sizeof(int));
+	cout << roundId << endl;
 	is.read((char*)&userId,sizeof(int));
 
 	is.read((char*)&timeId,sizeof(int));
@@ -150,10 +153,16 @@ bool GameImage::deserialize(std::istream &is)
 
 	int vlen;
 	is.read((char*)&vlen,sizeof(int));
+	cout << vlen << endl;
 	username.resize(vlen);
 	is.read(&username[0],vlen);
 
 	gaborFace.unserialize(is);
+    cout << gaborFace.getRawVector().size() << endl;
+    int i =0;
+    for(i = 0; i < gaborFace.getRawVector().size(); i++){
+    	cout << gaborFace.getRawVector()[i] << " ";
+    }
 	histFace.unserialize(is);
 	reconFace.unserialize(is);
 	gaborShirt.unserialize(is);
@@ -231,9 +240,8 @@ vector<float> GameImage::getReconShirt(){
   return reconShirt.getRawVector();
 }
 
-vector<GameImage> GameImage::executeQuery(int id, vector<string> params)
+void GameImage::executeQuery(int id, vector<string> params, vector<GameImage> &result)
 {
-	vector<GameImage> gms;
 	vector<int> mediaIds;
 	vector<int> gameIds;
 	vector<int> roundIds;
@@ -269,11 +277,13 @@ vector<GameImage> GameImage::executeQuery(int id, vector<string> params)
 	//	ses << Keywords::use(*it);
 	// }
 	//int x = 5;
+	cout << q << endl;
 	ses << q, Keywords::into(mediaIds), Keywords::into(gameIds), Keywords::into(roundIds),
 			Keywords::into(userIds), Keywords::into(timeIds), Keywords::into(roundAudience),
 			Keywords::into(roundExpressionId), Keywords::into(ksvms), Keywords::into(scores),
 			Keywords::into(usernames), Keywords::into(flannIds), Keywords::now;
-	gms.reserve(mediaIds.size());
+	cout << "Query done" << endl;
+	result.reserve(mediaIds.size());
 	for(int i = 0; i < mediaIds.size(); i++)
 	{
 		string url;
@@ -296,10 +306,9 @@ vector<GameImage> GameImage::executeQuery(int id, vector<string> params)
 				roundExpressionId[i], ksvms[i], scores[i], usernames[i], gaborFace.getRawVector(), histFace.getRawVector(),
 				reconFace.getRawVector(),gaborShirt.getRawVector(), histShirt.getRawVector(), reconShirt.getRawVector());
 		gm.setFlannId(flannIds[i]);
-		gms.push_back(gm);
+		result.push_back(gm);
 	}
 	ses.close();
-	return gms;
 }
 
 bool GameImage::replace(std::string& str, const std::string& from, const std::string& to) {
@@ -308,5 +317,10 @@ bool GameImage::replace(std::string& str, const std::string& from, const std::st
         return false;
     str.replace(start_pos, from.length(), to);
     return true;
+}
+
+int GameImage::size(){
+	return (8 * sizeof(int)) + sizeof(float) + username.size() + gaborFace.rawSize + histFace.rawSize
+			+ reconFace.rawSize + gaborShirt.rawSize + histFace.rawSize + reconShirt.rawSize;
 }
 

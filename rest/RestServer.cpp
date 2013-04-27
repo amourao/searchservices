@@ -8,9 +8,9 @@ RestServer::RestServer(int port)
       cout << "Server started" << endl;
       
       DataModelController dmc;
-      
+
       waitForTerminationRequest();
-      
+
       s.stop();
 	    cout << endl << "Shutting down..." << endl;
     } catch (Poco::Net::NetException e){

@@ -7,6 +7,8 @@ class NVector : public IDataModel{
 
 public:
 
+	size_t rawSize;
+
 	NVector(string url, string SQLTable, vector<float> value);
 
 	NVector(string url, string SQLTable);
@@ -26,7 +28,7 @@ private:
 
 	vector<float> value;
 	string SQLTable;
-	size_t rawSize;
+
 
 	unsigned char* serializeVector(vector<float>* v);
 	vector<float> unserializeVector(const unsigned char* buffer);

@@ -12,7 +12,7 @@ Codebits::Codebits(){
 	FactoryEndpoint::getInstance()->registerType("/best",this);
 	FactoryEndpoint::getInstance()->registerType("/scoreboard",this);
 	FactoryEndpoint::getInstance()->registerType("/mybestsmile",this);
-	FactoryEndpoint::getInstance()->registerType("/index",this);
+	FactoryEndpoint::getInstance()->registerType("9090",this);
 	
   face_gabor.buildIndex();
   face_hist.buildIndex();
@@ -78,7 +78,8 @@ void dump_json(/*const*/ vector<GameImage>& result, ostream& out) {
     out << "{ \"rank\": [" << endl;
     for (size_t i = 0; i != result.size(); i++) {
         out << "{\"GameId\": \"" << result[i].getGameId() << "\"," << endl;
-        out << "\"pk\": \"" << result[i].getFlannId() << "\"," << endl;
+        out << "\"id\": \"" << result[i].getPublicMediaId() << "\"," << endl;
+        out << "\"pk\": \"" << result[i].getUrl() << "\"," << endl;
         out << "\"RoundId\": \"" << result[i].getRoundId() << "\"," << endl;
         out << "\"UserId\": \"" << result[i].getUserId() << "\"," << endl;
         out << "\"TimeId\": \"" << result[i].getTimeId() << "\"," << endl;
@@ -105,7 +106,7 @@ void* Codebits::createType(string& type){
 	    type == "/best" ||
 	    type == "/scoreboard" || 
 	    type == "/mybestsmile" ||
-	    type == "/index")
+	    type == "9090")
 		return new Codebits(type);
 		
 	cerr << "Error registering type from constructor (this should never happen)" << endl;
@@ -115,13 +116,12 @@ void* Codebits::createType(string& type){
 
 void Codebits::handleRequest(string method, map<string, string> queryStrings, istream& input, HTTPServerResponse &resp)
 {
-  if(method != "GET" && method != "PUT"){
+	if(method != "GET" && method != "PUT"){
     resp.setStatus(HTTPResponse::HTTP_NOT_FOUND);
     resp.send();
     return ;
   }
-  
-  if(method == "PUT" && type == "/index"){
+  if(method == "PUT" && type == "9090"){
     index(input, queryStrings);
     resp.send();
     return;
@@ -132,16 +132,17 @@ void Codebits::handleRequest(string method, map<string, string> queryStrings, is
  
   vector<GameImage> results;
   
+  out.flush();
   if (type == "/search")
-    results = search(queryStrings);
+    search(queryStrings, results);
   else if(type == "/latests")
-    results = latests(queryStrings);
+    latests(queryStrings,results);
 	else if(type == "/best")
-    results = best(queryStrings);
+    best(queryStrings,results);
 	else if(type == "/scoreboard")
-    results = scoreboard(queryStrings);
+    scoreboard(queryStrings,results);
 	else if(type == "/mybestsmile")
-    results = mybestsmile(queryStrings);
+    mybestsmile(queryStrings, results);
   
   dump_json(results, out);
   out.flush();
@@ -155,13 +156,18 @@ void Codebits::index(istream& in, map<string, string> parameters)
   }
   
   GameImage gm(parameters["url"]);
-  
+  //string str(static_cast<stringstream const&>(stringstream() << in.rdbuf()).str());
+  //cout << str << endl;
+
   gm.deserialize(in);
-  
+
+  cout << "1" << endl;
   vector<float> gabor = gm.getGaborFace();
   face_gabor.addPoints(Matrix<float>(&gabor[0], 1, gabor.size()));
   last_face_gabor_id++;
   
+  cout << "2" << endl;
+
   vector<float> hist = gm.getHistFace();
   face_hist.addPoints(Matrix<float>(&hist[0], 1, hist.size()));
   last_face_hist_id++;
@@ -181,7 +187,7 @@ void Codebits::index(istream& in, map<string, string> parameters)
   recon = gm.getReconShirt();
   shirt_recon.addPoints(Matrix<float>(&recon[0], 1, recon.size()));
   last_shirt_recon_id++;
-  
+
   gm.setFlannId(last_face_gabor_id);
   
   gm.storeSQL();
@@ -220,9 +226,8 @@ vector<float> Codebits::getVectorForIndex(int id, int media_id){
   }
 } 
   
-vector<GameImage> Codebits::search(map<string, string> parameters)
+void Codebits::search(map<string, string> parameters, vector<GameImage> &result)
 {
-	vector<GameImage> result;
   bool error = false;
   
   int id = check_int_val(parameters["id"], 0, numeric_limits<int>::max(), error);
@@ -257,33 +262,28 @@ vector<GameImage> Codebits::search(map<string, string> parameters)
       std::stringstream sstm;
       sstm << indices[0][i];
       pars.push_back(sstm.str());
-      result.push_back(GameImage::executeQuery(0, pars)[0]);
+      std::vector<GameImage> gms;
+      GameImage::executeQuery(0, pars,gms);
+      result.push_back(gms[0]);
     }
     
     cout << "/search: 'id'= " << id << " 'criteria'= " << criteria << " OK" << endl;
   }
   
-  return result;
 }
 
-vector<GameImage> Codebits::latests(map<string, string> parameters)
+void Codebits::latests(map<string, string> parameters, vector<GameImage> &result)
 {
-  vector<GameImage> result;
-  
   vector<string> pars;
-  result = GameImage::executeQuery(1, pars);
-	
-  return result;
+  GameImage::executeQuery(1, pars, result);
 }
 
-vector<GameImage> Codebits::best(map<string, string> parameters)
+void Codebits::best(map<string, string> parameters, vector<GameImage> &result)
 {
-  vector<GameImage> result;
 	
   //Error checking
   if(parameters.count("criteria") == 0){
     cout << "/best: error: Missing parameter 'criteria'" << endl;
-    return result;
   }
             
   bool error = false;
@@ -298,27 +298,22 @@ vector<GameImage> Codebits::best(map<string, string> parameters)
     std::stringstream sstm;
     sstm << criteria;
     pars.push_back(sstm.str());
-    result = GameImage::executeQuery(2, pars);
+    GameImage::executeQuery(2, pars,result);
 
     cout << "/best: 'criteria'= " << criteria << " OK" << endl;
   }
-    
-  return result;
 }
 
-vector<GameImage> Codebits::scoreboard(map<string, string> parameters)
+void Codebits::scoreboard(map<string, string> parameters, vector<GameImage> &result)
 {
-  vector<GameImage> result;
-  
   vector<string> pars;
-  result = GameImage::executeQuery(3, pars);
-
-  return result;
+  cout << "aaaaaaaaaaa" << endl;
+  GameImage::executeQuery(3, pars, result);
+  cout << "dddddddddddd" << result.size() << endl;
 }
 
-vector<GameImage> Codebits::mybestsmile(map<string, string> parameters)
+void Codebits::mybestsmile(map<string, string> parameters, vector<GameImage> &result)
 {
-  vector<GameImage> result;
 	
   bool error = false;
 
@@ -330,10 +325,9 @@ vector<GameImage> Codebits::mybestsmile(map<string, string> parameters)
   
     vector<string> pars;
     pars.push_back(username);
-    result = GameImage::executeQuery(4, pars);
+    GameImage::executeQuery(4, pars, result);
 
     cout << "/mybestsmile: 'user'= " << username << " OK" << endl;	
   }
   
-  return result;
 }
