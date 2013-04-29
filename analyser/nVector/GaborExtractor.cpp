@@ -21,7 +21,7 @@ GaborExtractor::GaborExtractor(int _imageW, int _imageH, int _nScales, int _nOri
 
 	// If no rectangles are given, assume the full image must be used
 	if (rectangularAreas.empty()){
-		rectangularAreas.push_back(cv::Rect(0,0,imageW,imageH));
+		rectangularAreas.push_back(cv::Rect(0,0,_imageW,_imageH));
 	}
 
 	rectangleRois = rectangularAreas;

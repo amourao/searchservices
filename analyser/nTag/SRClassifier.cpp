@@ -11,9 +11,11 @@ SRClassifier::~SRClassifier(){
 void SRClassifier::train(cv::Mat trainData, cv::Mat trainLabels){
 	arma::fmat trainDataFMat;
 	arma::fmat trainLabelsFMat;
+	std::cout << "start train" << std::endl;
 	MatrixTools::matToFMat(trainData, trainDataFMat);
 	MatrixTools::matToFMat(trainLabels, trainLabelsFMat);
 	train(trainDataFMat,trainLabelsFMat);
+	std::cout << "ok" << std::endl;
 }
 
 void SRClassifier::test(cv::Mat testData, cv::Mat testLabels){
@@ -37,9 +39,12 @@ void SRClassifier::train(arma::fmat _trainData, arma::fmat trainLabels){
 	trainData = trans(_trainData);
 	l1min::FISTA::option_type opt;
 	//opt.eps = 1e-7;
-	opt.max_iters = 1000;
+	opt.max_iters = 100;
 	opt.lambda = 0.03;
-	opt.L = 43681; //max(eig_sym(trans(trainData) * trainData));
+	//opt.L = 43681; //max(eig_sym(trans(trainData) * trainData));
+	std::cout << "train" << std::endl;
+	opt.L = max(eig_sym(trans(trainData) * trainData));
+	std::cout << "ok: opt.L: " <<  opt.L << std::endl;
 	omp = new l1min::FISTA(opt);
 	// trainData.n_rows = 35.7771+0.34258 opt.L
 	/*
@@ -56,11 +61,14 @@ void SRClassifier::train(arma::fmat _trainData, arma::fmat trainLabels){
 
 
 float SRClassifier::classify(arma::fmat query, double* error, arma::fmat* recErrors){
-		
+	int trash = 0;
+
 	query = trans(query);
 	vector<int> correctGuesses(numberOfClasses,0);
 	vector<float> weightGuesses(numberOfClasses,0);
+
 	arma::fvec res = (*omp)(trainData,query);
+
 	arma::uvec indexes = find(abs(res) > 0);
 
 	arma::fvec labelsRight = labelsCute.elem(indexes);
@@ -73,24 +81,31 @@ float SRClassifier::classify(arma::fmat query, double* error, arma::fmat* recErr
 	float detectedLabelFromReconstruct= -1;
 	arma::fmat bestReconstruction;
 	double bestMultiFactor = -1;
-	recErrors->set_size(labelsCute.n_rows,2);
+	if(recErrors != NULL)
+		recErrors->set_size(labelsCute.n_rows,2);
 
-	//ignore the "zero" class
-	for (int j = 1; j < numberOfClasses; j++){
+	for (int j = 0; j < numberOfClasses; j++){
+		int trash2 = 0;
+
 		if (correctGuesses.at(j) != 0){
+
 			//cout << weightGuesses.at(j)/correctGuesses.at(j) << endl;
 			arma::fvec newRes = res;
+
 			for(unsigned int k = 0; k < labelsCute.n_rows; k++){
+				
 					float la  = labelsCute.row(k);
 
-					recErrors->at(k,0) = newRes.row(k);
-					recErrors->at(k,1) = k;
-
+					if(recErrors != NULL){
+						recErrors->at(k,0) = newRes.row(k);
+						recErrors->at(k,1) = k;
+					}
 					if(la != j)
 						newRes.row(k) = 0;
 					//else
 					//	newRes.row(k) = 1;
 			}
+
 			arma::fmat reconstruction = trainData * newRes;
 	
 

@@ -8,6 +8,12 @@ TextFileSource::TextFileSource(string _filename){
 	imageIndex = 0;
 }
 
+TextFileSource::TextFileSource(string filename, string imageBasePath){
+	baseDir = imageBasePath;
+	readFile(filename);
+	imageIndex = 0;
+}
+
 
 TextFileSource::~TextFileSource(){
 
@@ -29,11 +35,24 @@ void TextFileSource::readFile(string trainDataFile){
 			//./detectedEmotionCKWithNeutalTrain0.png;s130;1;007;d:\\\\datasets\\\\ck+2\\\\cohn-kanade-images\\\\s130\\\\007\\\\s130_007_00000001.png;./detectedEmotionCKWithNeutalTrain0_neutral.png
 			stringstream liness(line);
 
-			getline(liness, path, ';');
-			getline(liness, idStr, '\r');
+			getline(liness, idStr, '\t');
+			getline(liness, path);
+			
+			
+			path.erase(remove(path.begin(), path.end(), '\r'), path.end());
+			path.erase(remove(path.begin(), path.end(), '\n'), path.end());
+			path.erase(remove(path.begin(), path.end(), ' '), path.end());
+		
+			//getline(liness, path, ';');
+			//getline(liness, idStr, '\r');
 			//getline(liness, neutralPath, ');
 			
-			imagesPath.push_back(path );
+			stringstream ss;
+			ss << baseDir << path;
+			
+			//std::cout << line << " " << idStr << " " << ss.str()<< std::endl;
+			
+			imagesPath.push_back(ss.str() );
 			imagesOriginalInfo.push_back(line);
 		}
 	}
@@ -42,15 +61,12 @@ Mat TextFileSource::nextImage(){
 	//cout << imageIndex << " " << !imagesPath.empty() << " " << imagesPath.size() << endl;
 	if (!imagesPath.empty() && (unsigned int) imageIndex < imagesPath.size()) {
 		string s= imagesPath.at(imageIndex);
-		#ifdef __linux__
-			stringstream fullPath;
-			fullPath << baseDir << imagesPath.at(imageIndex);
-			s = fullPath.str();
-		#endif
 		//TODO
 		imageIndex++;
-		Mat frame = imread(s,1);
-		return frame;
+		//std::cout << imageIndex << " " << s << std::endl;
+		Mat frame2 = imread(s,1);
+		//std::cout << s << " OK " << frame2.channels() << " " << frame2.empty() << " " << frame2.rows << " " << frame2.cols << std::endl;
+		return frame2;
 	}
 	return Mat();
 

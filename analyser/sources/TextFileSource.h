@@ -16,6 +16,8 @@ class TextFileSource :
 
 public:
 	TextFileSource(string filename);
+	TextFileSource(string filename, string imageBasePath);
+	
 	~TextFileSource();
 
 	Mat nextImage();

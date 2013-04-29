@@ -73,7 +73,7 @@ string TrainTestFeaturesTools::crossValidateAll(int numberOfDivisions){
 		}
 		ss << resultsToString(correctGuesses, falsePositives, confusionMatrix) << endl;
 	}
-	cout << ss.str() << endl;
+	//cout << ss.str() << endl;
 	return ss.str();
 }
 

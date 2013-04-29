@@ -11,6 +11,10 @@ NVector::NVector(string url, string SQLTable, vector<float> value) : IDataModel(
 }
 
 NVector::NVector(string url, string SQLTable) : IDataModel(url)
+
+
+
+
 {
 	this->SQLTable = SQLTable;
 }

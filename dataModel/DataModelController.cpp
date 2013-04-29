@@ -10,8 +10,8 @@ const string DELETE = "DELETE";
 
 DataModelController::DataModelController(){
 	SQLite::Connector::registerConnector();
-	//dropTables();
-	//createTables();
+	dropTables();
+	createTables();
 
 }
 
@@ -65,6 +65,7 @@ void DataModelController::createTables(){
 	ses << "CREATE TABLE gameImage (pk INTEGER, gameId INTEGER, roundId INTEGER, userId INTEGER, timeId INTEGER, roundAudience INTEGER, roundExpressionId INTEGER,ksvm INTEGER,score REAL,username TEXT,flannId INTEGER, FOREIGN KEY(pk) REFERENCES media(id))", Keywords::now;
 	ses << "END", Keywords::now;
 
+
     for (iter = listOfTypes.begin(); iter != listOfTypes.end(); iter++)
     {
             ses << "DROP TABLE IF EXISTS "<< (*iter).first, Keywords::now;
@@ -72,4 +73,5 @@ void DataModelController::createTables(){
                     ses << "CREATE TABLE "<< (*iter).first << " (id INTEGER PRIMARY KEY AUTOINCREMENT, mediaId, data BLOB, FOREIGN KEY(mediaId) REFERENCES media(id))", Keywords::now;
     }
     ses.close();
+
 }

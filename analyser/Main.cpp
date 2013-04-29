@@ -261,13 +261,98 @@ int testSURF(int argc, char *argv[]) {
 	return 0;
 }
 
-int testEverything(int argc, char *argv[]) {
+int extractHistogram(int argc, char *argv[]){
+
+	int tmpError = 0;
+
+	string imageBasePath(argv[4]);
 
 	string file(argv[1]);
+
+	TextFileSource is(file,imageBasePath);
+
+	FeatureExtractor* s = new HistogramExtractor(atoi(argv[3]));
+
+
+	fstream binFine(argv[2], std::ios::out | std::ios::binary);
+	//FeatureExtractor* s = new NullExtractor();
+
+	float featureVectorCount = is.getImageCount();
+	float dimensionality = s->getFeatureVectorSize(); 
+
+	binFine.write((const char*) &dimensionality,sizeof(float));
+	binFine.write((const char*) &featureVectorCount,sizeof(float));
+
+	cv::Mat src;
+	cv::Mat dst;
+
+	int i = 0;
+	double t = (double)cvGetTickCount();
+	cout << "getImageCount: " << is.getImageCount() << endl;
+	for (int k = 0; k < is.getImageCount(); k++) {
+		if (!(src = is.nextImage()).empty()) {
+			
+			//cout << "ok" << endl;
+			
+			cv::Mat featuresRow;
+			if (src.channels() == 1) {
+				cv::cvtColor(src, dst, CV_GRAY2BGR);
+			} else
+				dst = src;
+
+			s->extractFeatures(dst, featuresRow);
+
+			string path, idStr, tmp1, tmp2;
+
+			stringstream liness(is.getImageInfo());
+
+			getline(liness, idStr, '\t');
+			getline(liness, path);
+
+
+			float label = atoi(idStr.c_str());
+			if ((i - 1) % 50 == 0){
+				cout << "image " << i << " of " << is.getImageCount() << endl;
+				
+				double time = (double)cvGetTickCount()-t;
+				t = cvGetTickCount();
+				int remaining = is.getImageCount() - i;
+				printf( "time remaining = %g h\n", remaining * time/((double)cvGetTickFrequency()*1000000.* 3600. * 50.));
+			}
+			i++;
+
+			binFine.write((const char*) &label,sizeof(float));
+			
+			for (int a = 0; a < dimensionality; a++){
+				float g = featuresRow.at<float>(0,a); 
+				binFine.write((const char*) &g,sizeof(float));
+			}
+			
+
+		}
+	}
+	binFine.close();
+	
+	delete s;
+	return 0;
+}
+
+int testEverything(int argc, char *argv[]) {
+
+// /home/amourao/iclefmed12/fast.hevs.ch/imageclefmed/2012/modality-classfication/tmp.txt
+//"ImageCLEF 2012 Training Set/DVDM/IJD-54-150-g002.jpg";IJD-54-150-g002;DVDM;16
+	
+	int tmpError = 0;
+
+	string file(argv[1]);
+
+
 	TextFileSource is(file);
 
-	FeatureExtractor* s = new SegmentedHistogramExtractor(atoi(argv[3]),
-			atoi(argv[4]), atoi(argv[5]));
+
+	FeatureExtractor* s = new SegmentedHistogramExtractor(atoi(argv[3]),atoi(argv[4]), atoi(argv[5]));
+	//FeatureExtractor* s = new HistogramExtractor(atoi(argv[3]));
+
 	//FeatureExtractor* s = new NullExtractor();
 
 	cv::Mat src;
@@ -275,9 +360,10 @@ int testEverything(int argc, char *argv[]) {
 	cv::Mat features;
 	cv::Mat labels;
 	int i = 0;
+
+	cout << is.getImageCount() << endl;
 	for (int k = 0; k < is.getImageCount(); k++) {
 		if (!(src = is.nextImage()).empty()) {
-
 			cv::Mat featuresRow;
 			if (src.channels() == 1) {
 				cv::cvtColor(src, dst, CV_GRAY2BGR);
@@ -287,11 +373,13 @@ int testEverything(int argc, char *argv[]) {
 
 			cv::Mat label(1, 1, CV_32F);
 
-			string path, idStr;
+			string path, idStr, tmp1, tmp2;
 
 			stringstream liness(is.getImageInfo());
 
 			getline(liness, path, ';');
+			getline(liness, tmp1, ';');
+			getline(liness, tmp2, ';');
 			getline(liness, idStr, '\r');
 
 			label.at<float>(0, 0) = atoi(idStr.c_str());
@@ -301,8 +389,14 @@ int testEverything(int argc, char *argv[]) {
 			i++;
 			features.push_back(featuresRow);
 			labels.push_back(label);
+	//cout <<	tmpError++ << endl;
 		}
 	}
+	//cv::Mat featuresF;
+
+	features.convertTo(features,CV_32F);
+	labels.convertTo(labels,CV_32F);
+
 	IClassifier* sr = new SRClassifier();
 	IClassifier* knn = new kNNClassifier();
 	IClassifier* svm = new SVMClassifier();
@@ -500,6 +594,8 @@ int generateRandomData(char* filename) {
 
 }
 
+
+
 int evaluateMIRFlickr(int argc, char *argv[]) {
 
 
@@ -667,13 +763,30 @@ int evaluateMIRFlickr(int argc, char *argv[]) {
 	return 0;
 }
 
-//int main(int argc, char *argv[]) {
-//
-//	evaluateMIRFlickr(argc, argv);
-//	//extractAllFeaturesImEmotion(
-//	//testEverythingBin(argc,argv);
-//
-//	//generateRandomData(argv[1]);
-//	//getchar();
-//	return 0;
-//}
+
+
+
+
+
+
+
+
+
+
+
+
+int main(int argc, char *argv[]) {
+
+
+
+	extractHistogram(argc, argv);
+	//testEverything(argc, argv);
+	//evaluateMIRFlickr(argc, argv);
+	//extractAllFeaturesImEmotion(
+	//testEverythingBin(argc,argv);
+
+	//generateRandomData(argv[1]);
+	//getchar();
+	return 0;
+}
+
