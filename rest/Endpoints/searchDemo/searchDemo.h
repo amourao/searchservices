@@ -4,6 +4,11 @@
 #include <sstream>
 
 #include <Poco/RegularExpression.h>
+#include <jsoncpp/json/json.h>
+#include <jsoncpp/json/autolink.h>
+#include <flann/flann.hpp>
+#include <flann/io/hdf5.h>
+#include <stdlib.h>
 
 #include "../../FactoryEndpoint.h"
 #include "../../IEndpoint.h"

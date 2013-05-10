@@ -29,4 +29,5 @@ ck+*/
 detectedEmotionCK*/
 avgFaces*/
 analyser/data/
+tmpData/
 .cproject

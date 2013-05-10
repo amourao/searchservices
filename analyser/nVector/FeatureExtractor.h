@@ -44,7 +44,7 @@ public:
 		Mat dst;
 		extractFeatures(src,dst);
 		float* array = (float*)dst.data;
-		features = vector<float>(array, array + sizeof(float)*dst.cols*dst.rows);
+		features = vector<float>(array, array + dst.cols*dst.rows);
 	}
 	
 	void extractFeatures(string filename, vector<vector<float> >& features){

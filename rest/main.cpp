@@ -4,6 +4,7 @@
 #include <vector>
 
 
+
 using namespace std;
 
 int str2int (int &i, char const *s, int base = 0)

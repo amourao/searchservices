@@ -33,9 +33,11 @@ void RestRequestHandler::handleRequest(HTTPServerRequest &req, HTTPServerRespons
     //endpoint.erase(0,1); //Erase the first /
     
     FactoryEndpoint* fact = FactoryEndpoint::getInstance();
+    
     IEndpoint* endpt = (IEndpoint*)(fact->createType(endpoint));
     
     if(endpt == NULL){
+      cout << "\t" << endpoint << " does not exist." << endl;
       resp.setStatus(HTTPResponse::HTTP_NOT_FOUND);
       resp.send();
       return ;

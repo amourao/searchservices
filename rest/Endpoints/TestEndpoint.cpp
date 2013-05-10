@@ -8,7 +8,7 @@ TestEndpoint::TestEndpoint(string type){
 
 TestEndpoint::TestEndpoint(){
 
-	FactoryEndpoint::getInstance()->registerType("Hello",this);
+	FactoryEndpoint::getInstance()->registerType("/Hello",this);
 
 }
 
@@ -34,6 +34,7 @@ void TestEndpoint::handleRequest(string method, map<string, string> queryStrings
 	ostream& out = resp.send();
   
   out << "<h2>Hello World!</h2>";
+
 
 }
 

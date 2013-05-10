@@ -775,7 +775,7 @@ int evaluateMIRFlickr(int argc, char *argv[]) {
 
 
 
-int main(int argc, char *argv[]) {
+int mainAnalyser(int argc, char *argv[]) {
 
 
 
