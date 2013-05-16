@@ -14,9 +14,10 @@
 
 #include "../../../commons/FileDownloader.h"
 
+#include "SearchResult.h"
+#include "CombSearchResult.h"
 
-
-class MedicalSearchEngine : public IEndpoint
+class MedicalSearchEngine: public IEndpoint
 {
 
 public:
@@ -33,8 +34,9 @@ public:
 	void trainIndex(std::string trainData);
 	
 	void indexFeature(std::vector<float> features, int id);
+	void readTrainingData(string textFile);
 	void importIclefData(string textFile);
-	void createKnnIndex(string baseFile);
+	void createKnnIndex();
 
 private:
 
@@ -45,11 +47,15 @@ private:
 	std::map<int,std::string> idToIRI;
 	std::map<std::string,std::string> IRItoDOI;
 	
+	
+	
+	std::map<std::string,cv::flann::Index*> flannIndexes;
 	cv::flann::Index* flannIndex;
 	
 	cv::Mat features;
 	cv::Mat labels; 
 
-  
+
+	std::map<std::string,MedicalSearchEngine*> instances;  
 };
 

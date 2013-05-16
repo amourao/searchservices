@@ -3,12 +3,19 @@
 static MedicalSearchEngine medicalSearchEngineEndpointFactory;
 
 MedicalSearchEngine::MedicalSearchEngine(string type){
-	flannIndex = NULL;
+	//flannIndex = NULL;
 	this->type = type;
 	
+	
+	//importIclefData("./rest/database2.txt");
+	//readTrainingData("/home/amourao/iclef2013Features/SegHistogramLBP/");
+	//createKnnIndex();
+	//extractorName = "SEG_LBP_HIST";
+	
 	importIclefData("./rest/database.txt");
-	createKnnIndex("/home/amourao/iclef2013Features/SegHistogramLBP/");
-	extractorName = "SEG_LBP_HIST";
+	readTrainingData("/home/amourao/code/lire/dataFCTHFull.bin");
+	createKnnIndex();
+	extractorName = "fcth";
 	
  
 }
@@ -25,8 +32,15 @@ void* MedicalSearchEngine::createType(string& type){
 	//TODO
 	std::cout << "New type requested: " << type << std::endl;
 	
-	if (type == "/medicalSearch")
-		return new MedicalSearchEngine(type);
+	
+	
+	if (type == "/medicalSearch"){
+		if (instances.find(type) == instances.end())
+			instances[type] =  new MedicalSearchEngine(type);	
+			
+		return instances[type];
+	}	
+	
 		
 	std::cerr << "Error registering type from constructor (this should never happen)" << std::endl;
 	return NULL;
@@ -67,16 +81,27 @@ std::string MedicalSearchEngine::medicalSearch(map<string, string> parameters){
 	
 	vector<string> filenames = fd.getFiles(parameters["images"]);
 	string queryText = parameters["q"];
-	altHtml << "<html><body><h3>Query text<h3>" << queryText;
+	string searchType = parameters["type"];
+	string combFunction = parameters["comb"];
+
+	altHtml << "<html><body>" << endl;
 		
 	Json::Value root;
 	Json::Value nameArray(Json::arrayValue);
 	
+	std::vector<std::vector<SearchResult> > fullSearchResults;
 	
-	altHtml << "<h3>Query images<h3>";
+	altHtml << "<h3>Query</h3>" << queryText << endl;
+	
+	altHtml << "<h3>Query images</h3>" << endl;
+	
+	for (unsigned int j = 0; j < filenames.size(); j++){	
+		altHtml << "<img src=\"file://" << filenames[j] << "\" height=\"200\">" << endl;
+	}
+	
 	for (unsigned int j = 0; j < filenames.size(); j++){
 		
-		altHtml << "<img src=\"file://" << filenames[j] << "\" height=\"200\">";
+
 		nameArray.append(filenames[j]);
 		vector<float>* features = getFeatures(filenames[j]);
 		
@@ -85,12 +110,13 @@ std::string MedicalSearchEngine::medicalSearch(map<string, string> parameters){
 			query.at<float>(0,a) = features->at(a);
 		}
 		
-		vector<int> indices (100);
-		vector<float> dists (100);
+		vector<int> indices (1000);
+		vector<float> dists (1000);
 		//cout << j++ << endl;
-		flannIndex->knnSearch(query,indices,dists,100);
+		flannIndex->knnSearch(query,indices,dists,1000);
 		Json::Value resultsArray(Json::arrayValue);
-		altHtml << "<h3>Results<h3>";
+		
+		std::vector<SearchResult> singleImageSearchResults;
 		for (unsigned int h = 0; h < indices.size(); h++){
 			
 			Json::Value tag;
@@ -98,17 +124,27 @@ std::string MedicalSearchEngine::medicalSearch(map<string, string> parameters){
 			tag["id"] = id;
 			tag["doi"] = IRItoDOI[idToIRI[id]];
 			tag["iri"] = idToIRI[id];
+			
+			string resultId = "case";
+			
+			if(searchType == "case")
+				resultId = IRItoDOI[idToIRI[id]];
+			else if (searchType == "image")
+				resultId = idToIRI[id];
+			
+			singleImageSearchResults.push_back(SearchResult(resultId,1-(dists.at(h)/(features->size()*7)) /*FCTH*/ , (h+1),idToIRI[id], IRItoDOI[idToIRI[id]]));
+			
 			resultsArray.append(tag);
-			altHtml << "<h3>" << h << "<h3>" << id << " " << IRItoDOI[idToIRI[id]] << " " << idToIRI[id];
-				
-		
-			altHtml << "<img src=\"file:///home/amourao/iclefmed12/fast.hevs.ch/imageclefmed/2012/figures/images/" << idToIRI[id] << ".jpg\" height=\"200\">";
+
 			//cout << detectedEmotion << " " << dists.at(i)  << endl;
 			//cout << query.colRange(0,5) << endl;
 			//cout << trainData.row(imageId).colRange(0,5) << endl;
 			//cout << norm(query,trainData.row(imageId)) << endl;
 			//cout << imageId << endl;
 		}
+		fullSearchResults.push_back(singleImageSearchResults);
+		
+		
 		Json::Value results;
 		Json::Value featureArray(Json::arrayValue);
 		
@@ -136,12 +172,54 @@ std::string MedicalSearchEngine::medicalSearch(map<string, string> parameters){
 	*/
 		root[filenames[j]] = resultsArray;
 	}
-	root["query"] = queryText;
+	//root["query"] = queryText;
 	root["imageUrls"] = nameArray;
 	stringstream ss;
 	ss << root;
 	
-	altHtml << "</body></html>";
+	int minimalResultSetSize = 9999999;
+	
+	std::priority_queue<SearchResult,std::vector<SearchResult>,compareSearchResults> sortedList = CombSearchResult::combineResultsList(fullSearchResults, combFunction);
+	
+	altHtml << "<table><tr>" << endl;
+	altHtml << "<th>Index</th>" << endl;	
+	for (unsigned int i = 0; i < fullSearchResults.size(); i++){
+		//cout << fullSearchResults.at(i).size() << endl;
+		if (minimalResultSetSize > fullSearchResults.at(i).size())
+			minimalResultSetSize = fullSearchResults.at(i).size();
+		altHtml << "<th>Results " << i << "</th>" << endl;	
+	}
+	altHtml << "<th>Combined results</th>" << endl;	
+	altHtml << "</tr>" << endl;
+	
+	if (minimalResultSetSize > sortedList.size())
+		minimalResultSetSize = sortedList.size();
+		
+	minimalResultSetSize = 15;
+	//cout << sortedList.size() << endl;
+	for (unsigned int j = 0; j < minimalResultSetSize; j++){
+		altHtml << "<tr><td>" << j << "</td>" << endl;
+		for (unsigned int i = 0; i < fullSearchResults.size(); i++){
+			SearchResult sr = fullSearchResults.at(i).at(j);
+			altHtml << "<td>" << endl;	
+			altHtml << "<img src=\"file:///home/amourao/iclefmed12/fast.hevs.ch/imageclefmed/2012/figures/images/" << sr.getIRI() << ".jpg\" width=\"200\">" << endl;
+			altHtml << "<br />" << sr.getId() << "<br />"<< sr.getDOI() << "<br />" << sr.getIRI() << "<br />" << sr.getScore() << endl;
+			altHtml << "</td>" << endl;	
+		}
+		
+		SearchResult sr = sortedList.top();
+		sortedList.pop();
+		altHtml << "<td>" << endl;	
+		altHtml << "<img src=\"file:///home/amourao/iclefmed12/fast.hevs.ch/imageclefmed/2012/figures/images/" << sr.getIRI() << ".jpg\" width=\"200\">" << endl;
+		altHtml << "<br />" << sr.getId() << "<br />" << sr.getDOI() << "<br />" << sr.getIRI() << "<br />" << sr.getScore() << endl;
+		altHtml << "</td>" << endl;
+		
+		altHtml << "</tr>" << endl;
+	}
+	altHtml << "</table>" << endl;
+
+	altHtml << "</body></html>" << endl;
+	
 	return altHtml.str();
 	
 }
@@ -151,9 +229,6 @@ void MedicalSearchEngine::indexFeature(vector<float> features, int id){
 }
 
 vector<float>* MedicalSearchEngine::getFeatures(string filename){
-	
-	FileDownloader fd;
-			
 	FactoryAnalyser * f = FactoryAnalyser::getInstance();
 	IAnalyser* extractor= (IAnalyser*)f->createType(extractorName);
 	IDataModel* data = extractor->getFeatures(filename);
@@ -177,13 +252,9 @@ ifstream file(textFile.c_str(), ifstream::in);
 	
 }
 
-void MedicalSearchEngine::createKnnIndex(string baseFile) {
 
-//string baseFileHist(argv[3]);
-//string baseFileSegHist(argv[4]);
-
-
-//void retrieveSimilar( cv::Mat query, int neighboursCount,vector<int>&  _indices, vector<float>& _dists)
+void MedicalSearchEngine::readTrainingData(string baseFile) {
+	/*
 for(int j = 0; j < 24; j++){
 	//Mat featuresRow;
 	//Mat labelsRow;
@@ -198,7 +269,17 @@ for(int j = 0; j < 24; j++){
 	MatrixTools::readBin(filename, features, labels);
 	
 }
+*/
+MatrixTools::readBin(baseFile, features, labels);
+}
 
+void MedicalSearchEngine::createKnnIndex() {
+
+//string baseFileHist(argv[3]);
+//string baseFileSegHist(argv[4]);
+
+
+//void retrieveSimilar( cv::Mat query, int neighboursCount,vector<int>&  _indices, vector<float>& _dists)
 
 /*
 Mat featuresHist;
@@ -248,7 +329,7 @@ for(int j = 0; j < 24; j++){
 
 
 
-cout << flannIndex << " " << features.cols << " " << features.rows << endl;
+//cout << flannIndex << " " << features.cols << " " << features.rows << endl;
 	if ( flannIndex != NULL)
 		delete flannIndex;
 	flannIndex = new cv::flann::Index();

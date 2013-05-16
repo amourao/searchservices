@@ -28,6 +28,14 @@ public:
 	
 	virtual void* createType(string &typeId) = 0;
 
+	virtual void extractFeatures(string filename, vector<float>& features){
+		Mat src = imread(filename);
+		Mat dst;
+		extractFeatures(src,dst);
+		float* array = (float*)dst.data;
+		features = vector<float>(array, array + dst.cols*dst.rows);
+	}
+
 	IDataModel::type getType(){
 		return IDataModel::NVECTOR;
 	}
@@ -38,15 +46,7 @@ public:
 		NVector *vector = new NVector(name,getName(),features);
 		return vector;
 	}
-	
-	void extractFeatures(string filename, vector<float>& features){
-		Mat src = imread(filename);
-		Mat dst;
-		extractFeatures(src,dst);
-		float* array = (float*)dst.data;
-		features = vector<float>(array, array + dst.cols*dst.rows);
-	}
-	
+
 	void extractFeatures(string filename, vector<vector<float> >& features){
 		Mat dst;
 		extractFeatures(filename,dst);
