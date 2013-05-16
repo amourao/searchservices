@@ -9,11 +9,22 @@ GaborExtractor::GaborExtractor(){
 
 void* GaborExtractor::createType(string& type){
 	//TODO
-	if (type == "GaborFace")
-		return new GaborExtractor(112,92,4,8);
-	else if (type == "GaborGlobal")
-		return new GaborExtractor(112,92,4,8);
+	if (type == "GaborFace"){
+		vector<cv::Rect> rectangleRois1 = vector<cv::Rect>();
+		rectangleRois1.push_back(cv::Rect(0,0,46,64));
+		rectangleRois1.push_back(cv::Rect(46,64,46,112-64));
+		rectangleRois1.push_back(cv::Rect(46,0,46,64));
+		rectangleRois1.push_back(cv::Rect(0,64,46,112-64));
+		rectangleRois1.push_back(cv::Rect(0,10,92,30));
+		rectangleRois1.push_back(cv::Rect(20,65,52,30));
+		return new GaborExtractor(112,92,4,8,rectangleRois1);
+		
+	}else if (type == "GaborGlobal"){
+		return new GaborExtractor(640,480,4,8);
+		
+	}
 	cerr << "Error registering type from constructor (this should never happen)" << endl;
+
 	return NULL;
 }
 
@@ -38,6 +49,7 @@ GaborExtractor::GaborExtractor(int _imageW, int _imageH, int _nScales, int _nOri
 	illumFilter = IlluminationCorrectionFilter(imageW,imageH);
 
 	buildFilters();
+	
 }
 
 GaborExtractor::~GaborExtractor(){}
@@ -54,12 +66,14 @@ void GaborExtractor::preProcess(Mat& src, Mat& dst){
 	} else if (src.type() != CV_8U){
 		src.convertTo(src,CV_8U);
 	} 
-	Mat filtered;
-	illumFilter.applyFilter(src,dst);
+	dst = src;
+	
+	//illumFilter.applyFilter(src,dst);
 }
 
 void GaborExtractor::applyFilter(Mat& image, Mat& dst){
-
+cout << "tmp5" << endl;
+getchar();
 	preProcess(image,image);
 	
 	//int i = 0;
@@ -106,7 +120,8 @@ void GaborExtractor::applyFilter(Mat& image, Mat& dst){
 }
 
 void GaborExtractor::extractFeatures(Mat& image, Mat& result){
-	
+	cout << "tmp6" << endl;
+	getchar();
 	//int rectanglesLength=rectangleRois.size();
 
 	// 2 quer dizer que por cada rectângulo é calculada a média e desvio padrão

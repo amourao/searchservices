@@ -50,7 +50,58 @@ void ExtractFeatures::handleRequest(string method, map<string, string> queryStri
 
 }
 
+string ExtractFeatures::indexFeatures(map<string, string > parameters){
+	
+	FileDownloader fd;
+	
+	string filename = fd.getFile(parameters["url"]);
+	string extractorName = parameters["extractor"];
+	
+	
+	FactoryAnalyser * f = FactoryAnalyser::getInstance();
 
+	//f->listTypes();
+
+	IAnalyser* extractor= (IAnalyser*)f->createType(extractorName);
+	
+	IDataModel* data = extractor->getFeatures(filename);
+	vector<float>* features = (vector<float>*) data->getValue();
+	
+	//for (int i = 0; i < features->size(); i++){
+	//	cout << features->at(i) << " " ;
+	//}
+	//cout << endl;
+
+	Json::Value root;
+	Json::Value results;
+	
+	Json::Value featureArray(Json::arrayValue);
+	for (int i = 0; i < features->size(); i++){
+		
+		featureArray.append(features->at(i));
+		//cout << features->at(i) << " " ;
+	}
+	/*
+	for(int i = 0; i < 8; i++)
+	{
+		Json::Value result;
+		Json::Value tags;
+		result["id"] = rand() % 25000;
+		result["rank"] = rand() % 10;
+		result["path"] = "/some/path/";
+		result["title"] = "randomTitle";
+		tags["0"] = "tag1";
+		tags["1"] = "tag2";
+		tags["2"] = "tag3";
+		result["tags"] = tags;
+		results[i] = result;
+	}
+	*/
+	root["result"] = "ok";
+	stringstream ss;
+	ss << root;
+	return ss.str();
+}
 
 string ExtractFeatures::getFeatures(map<string, string > parameters){
 	
@@ -64,7 +115,6 @@ string ExtractFeatures::getFeatures(map<string, string > parameters){
 
 	f->listTypes();
 	IAnalyser* extractor= (IAnalyser*)f->createType(extractorName);
-	
 	IDataModel* data = extractor->getFeatures(filename);
 	vector<float>* features = (vector<float>*) data->getValue();
 	
@@ -82,6 +132,7 @@ string ExtractFeatures::getFeatures(map<string, string > parameters){
 		featureArray.append(features->at(i));
 		//cout << features->at(i) << " " ;
 	}
+	/*
 	for(int i = 0; i < 8; i++)
 	{
 		Json::Value result;
@@ -96,7 +147,8 @@ string ExtractFeatures::getFeatures(map<string, string > parameters){
 		result["tags"] = tags;
 		results[i] = result;
 	}
-	root["results"] = featureArray;
+	*/
+	root["result"] = featureArray;
 	stringstream ss;
 	ss << root;
 	return ss.str();

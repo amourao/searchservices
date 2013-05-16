@@ -17,7 +17,7 @@ using namespace cv;
 using namespace std;
 
 
-class GaborExtractor: public ImageFilter, public  FeatureExtractor
+class GaborExtractor: public  FeatureExtractor
 {
 public:
 	GaborExtractor(int imageW, int imageH, int nScales, int nOrientations, vector<cv::Rect> rectangles = vector<cv::Rect>(),int minWaveLength = 3,int mult = 2, double sigmaOnf = 0.65, double dThetaOnSigma = 1.5);

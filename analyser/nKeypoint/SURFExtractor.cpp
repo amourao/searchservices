@@ -4,7 +4,6 @@ static SURFExtractor surfExtractorFactory;
 
 SURFExtractor::SURFExtractor(){
 	FactoryAnalyser::getInstance()->registerType("SURF1000",this);
-	FactoryAnalyser::getInstance()->registerType("SegHistogram16",this);
 }
 
 void* SURFExtractor::createType(string& type){

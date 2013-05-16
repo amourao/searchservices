@@ -1,0 +1,20 @@
+all:
+
+CC=g++
+CFLAGS=-c -Wall 
+LDFLAGS=-L/home/amourao/myLibs/lib/ -I/home/amourao/myLibs/include/ -lhdf5 -lflann -ljsoncpp -lopencv_core -lopencv_imgproc -lopencv_calib3d -lopencv_video -lopencv_photo -lopencv_features2d -lopencv_ml -lopencv_highgui -lopencv_objdetect -lopencv_contrib -lopencv_legacy -lopencv_nonfree -lfftw3f -lfftw3 -lm -lopencv_legacy -lopencv_flann -larmadillo -llapack -lblas -lPocoFoundation -lPocoData -lPocoDataSQLite -lPocoNet -lPocoUtil -lcurl
+SOURCES=./rest/Endpoints/TestEndpoint.cpp  ./rest/FactoryEndpoint.cpp  ./rest/main.cpp ./rest/RestRequestHandler.cpp ./rest/RestServer.cpp ./commons/FileDownloader.cpp ./commons/factory/Factory.cpp ./dataModel/NTag.cpp ./dataModel/NVector.cpp ./dataModel/NKeypoint.cpp ./dataModel/DataModelController.cpp ./dataModel/NRoi.cpp ./analyser/AnalyserDataType.cpp ./analyser/FactoryAnalyser.cpp ./analyser/Main.cpp ./analyser/nKeypoint/SURFExtractor.cpp ./analyser/nRoi/FaceDetection.cpp ./analyser/nTag/FaceRecognition.cpp ./analyser/nTag/FacialExpressionRecognition.cpp ./analyser/nTag/kNNClassifier.cpp ./analyser/nTag/SRClassifier.cpp ./analyser/nTag/SVMClassifier.cpp ./analyser/nVector/EigenExtractor.cpp ./analyser/nVector/GaborExtractor.cpp ./analyser/nVector/HistogramExtractor.cpp ./analyser/nVector/NullExtractor.cpp ./analyser/nVector/SegmentedHistogramExtractor.cpp ./analyser/sources/CamSource.cpp ./analyser/sources/SingleImageSource.cpp ./analyser/sources/TextFileSource.cpp ./analyser/sources/VideoSource.cpp ./analyser/tools/IlluminationCorrectionFilter.cpp ./analyser/tools/ImageSegmentator.cpp ./analyser/tools/MatrixTools.cpp ./analyser/tools/MIRFlickrImporter.cpp ./analyser/tools/TestFunctions.cpp ./analyser/tools/TrainTestFeaturesTools.cpp ./rest/Endpoints/analyser/ExtractFeatures.cpp ./rest/Endpoints/searchDemo/populateSearchDemo.cpp ./analyser/nVector/lbp.cpp ./analyser/nVector/LBPExtractor.cpp ./rest/Endpoints/analyser/MedicalSearchEngine.cpp ./analyser/nVector/CombinedExtractor.cpp
+TMP=./rest/Endpoints/searchDemo/searchDemo.cpp
+OBJECTS=$(SOURCES:.cpp=.o)
+EXECUTABLE=server
+
+all: $(SOURCES) $(EXECUTABLE)
+	
+$(EXECUTABLE): $(OBJECTS) 
+	$(CC) $(OBJECTS) $(LDFLAGS) -o $@
+
+.cpp.o:
+	$(CC) $(CFLAGS)  $< $(LDFLAGS) -o $@
+    
+clean:
+	rm -f $(EXECUTABLE) $(OBJECTS)

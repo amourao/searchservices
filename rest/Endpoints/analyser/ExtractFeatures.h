@@ -12,6 +12,7 @@
 #include "../../../commons/FileDownloader.h"
 
 
+
 class ExtractFeatures : public IEndpoint
 {
 
@@ -25,6 +26,8 @@ public:
 	void handleRequest(string method, map<string, string> queryStrings, istream&, HTTPServerResponse &resp);
 	
 	string getFeatures(map<string, string> parameters);
+	string indexFeatures(map<string, string> parameters);
+	
 
 private:
   string type;

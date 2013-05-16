@@ -11,8 +11,10 @@ class SegmentedHistogramExtractor :
 	public FeatureExtractor
 {
 public:
+	
 	SegmentedHistogramExtractor();
 	SegmentedHistogramExtractor(int binCount, int horizontalDivisions, int verticalDivisions);
+	SegmentedHistogramExtractor(int binCount, int horizontalDivisions, int verticalDivisions, bool useCenterRegion);
 	~SegmentedHistogramExtractor();
 
 	void extractFeatures(Mat& src, Mat& dst);
@@ -28,5 +30,6 @@ private:
 	int binCount;
 	int horizontalDivisions;
 	int verticalDivisions;
+	bool useCenterRegion;
 };
 

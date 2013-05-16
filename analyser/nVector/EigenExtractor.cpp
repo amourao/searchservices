@@ -4,7 +4,6 @@ static EigenExtractor eigenExtractorFactory;
 
 EigenExtractor::EigenExtractor(){
 	FactoryAnalyser::getInstance()->registerType("EigenFace",this);
-	FactoryAnalyser::getInstance()->registerType("GaborGlobal",this);
 }
 
 void* EigenExtractor::createType(string& type){
