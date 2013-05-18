@@ -17,6 +17,11 @@ MedicalSearchEngine::MedicalSearchEngine(string type){
 	createKnnIndex();
 	extractorName = "fcth";
 	
+	//importIclefData("./rest/database.txt");
+	//readTrainingData("/home/amourao/code/lire/dataCEDDFull.bin");
+	//createKnnIndex();
+	//extractorName = "cedd";
+	
  
 }
 
@@ -55,8 +60,13 @@ void MedicalSearchEngine::handleRequest(string method, map<string, string> query
 		return ;
 	}
 
-	//resp.setContentType("application/json");
 	resp.setContentType("text/html");
+	
+	if(queryStrings["format"] == "json")
+		resp.setContentType("application/json");
+	else if(queryStrings["format"] == "html")
+		resp.setContentType("text/html");
+	
 	std::ostream& out = resp.send();
 
 	std::string response("");
@@ -72,58 +82,44 @@ void MedicalSearchEngine::handleRequest(string method, map<string, string> query
 }
 
 std::string MedicalSearchEngine::medicalSearch(map<string, string> parameters){
-	
-	stringstream altHtml;
-	
-	
-	
 	FileDownloader fd;
 	
 	vector<string> filenames = fd.getFiles(parameters["images"]);
 	string queryText = parameters["q"];
 	string searchType = parameters["type"];
 	string combFunction = parameters["comb"];
-
-	altHtml << "<html><body>" << endl;
-		
-	Json::Value root;
-	Json::Value nameArray(Json::arrayValue);
 	
 	std::vector<std::vector<SearchResult> > fullSearchResults;
 	
-	altHtml << "<h3>Query</h3>" << queryText << endl;
-	
-	altHtml << "<h3>Query images</h3>" << endl;
-	
-	for (unsigned int j = 0; j < filenames.size(); j++){	
-		altHtml << "<img src=\"file://" << filenames[j] << "\" height=\"200\">" << endl;
-	}
-	
-	for (unsigned int j = 0; j < filenames.size(); j++){
-		
+	for (unsigned int j = 0; j < filenames.size(); j++)
+		fullSearchResults.push_back(searchSingleImage(filenames[j],searchType));
 
-		nameArray.append(filenames[j]);
-		vector<float>* features = getFeatures(filenames[j]);
+	std::priority_queue<SearchResult,std::vector<SearchResult>,compareSearchResults> sortedList = CombSearchResult::combineResultsList(fullSearchResults, combFunction);
+
+	if(parameters["format"] == "json")
+		return resultListToJSON(queryText, filenames, combFunction, sortedList);
+	else if(parameters["format"] == "html")
+		return resultListToHTML(queryText, filenames, combFunction, sortedList, fullSearchResults);
+
+	return resultListToHTML(queryText, filenames, combFunction, sortedList, fullSearchResults);
+}
+
+std::vector<SearchResult> MedicalSearchEngine::searchSingleImage(string filename, string searchType){
+	vector<float>* features = getFeatures(filename);
 		
 		cv::Mat query(1,features->size(),CV_32F);
 		for (unsigned int a = 0; a < features->size(); a++){
 			query.at<float>(0,a) = features->at(a);
 		}
 		
-		vector<int> indices (1000);
-		vector<float> dists (1000);
+		vector<int> indices (500);
+		vector<float> dists (500);
 		//cout << j++ << endl;
-		flannIndex->knnSearch(query,indices,dists,1000);
-		Json::Value resultsArray(Json::arrayValue);
+		flannIndex->knnSearch(query,indices,dists,500);
 		
 		std::vector<SearchResult> singleImageSearchResults;
 		for (unsigned int h = 0; h < indices.size(); h++){
-			
-			Json::Value tag;
 			int id = indices.at(h);
-			tag["id"] = id;
-			tag["doi"] = IRItoDOI[idToIRI[id]];
-			tag["iri"] = idToIRI[id];
 			
 			string resultId = "case";
 			
@@ -132,97 +128,11 @@ std::string MedicalSearchEngine::medicalSearch(map<string, string> parameters){
 			else if (searchType == "image")
 				resultId = idToIRI[id];
 			
-			singleImageSearchResults.push_back(SearchResult(resultId,1-(dists.at(h)/(features->size()*7)) /*FCTH*/ , (h+1),idToIRI[id], IRItoDOI[idToIRI[id]]));
-			
-			resultsArray.append(tag);
-
-			//cout << detectedEmotion << " " << dists.at(i)  << endl;
-			//cout << query.colRange(0,5) << endl;
-			//cout << trainData.row(imageId).colRange(0,5) << endl;
-			//cout << norm(query,trainData.row(imageId)) << endl;
-			//cout << imageId << endl;
+			singleImageSearchResults.push_back(SearchResult(resultId,1-(dists.at(h)/(features->size()*7)) /*TODO*/, (h+1),idToIRI[id], IRItoDOI[idToIRI[id]]));
 		}
-		fullSearchResults.push_back(singleImageSearchResults);
-		
-		
-		Json::Value results;
-		Json::Value featureArray(Json::arrayValue);
-		
-		
-		for (unsigned int i = 0; i < features->size(); i++){
-		
-			featureArray.append(features->at(i));
-			//cout << features->at(i) << " " ;
-		}
-	/*
-	for(int i = 0; i < 8; i++)
-	{
-		Json::Value result;
-		Json::Value tags;
-		result["id"] = rand() % 25000;
-		result["rank"] = rand() % 10;
-		result["path"] = "/some/path/";
-		result["title"] = "randomTitle";
-		tags["0"] = "tag1";
-		tags["1"] = "tag2";
-		tags["2"] = "tag3";
-		result["tags"] = tags;
-		results[i] = result;
-	}
-	*/
-		root[filenames[j]] = resultsArray;
-	}
-	//root["query"] = queryText;
-	root["imageUrls"] = nameArray;
-	stringstream ss;
-	ss << root;
-	
-	int minimalResultSetSize = 9999999;
-	
-	std::priority_queue<SearchResult,std::vector<SearchResult>,compareSearchResults> sortedList = CombSearchResult::combineResultsList(fullSearchResults, combFunction);
-	
-	altHtml << "<table><tr>" << endl;
-	altHtml << "<th>Index</th>" << endl;	
-	for (unsigned int i = 0; i < fullSearchResults.size(); i++){
-		//cout << fullSearchResults.at(i).size() << endl;
-		if (minimalResultSetSize > fullSearchResults.at(i).size())
-			minimalResultSetSize = fullSearchResults.at(i).size();
-		altHtml << "<th>Results " << i << "</th>" << endl;	
-	}
-	altHtml << "<th>Combined results</th>" << endl;	
-	altHtml << "</tr>" << endl;
-	
-	if (minimalResultSetSize > sortedList.size())
-		minimalResultSetSize = sortedList.size();
-		
-	minimalResultSetSize = 15;
-	//cout << sortedList.size() << endl;
-	for (unsigned int j = 0; j < minimalResultSetSize; j++){
-		altHtml << "<tr><td>" << j << "</td>" << endl;
-		for (unsigned int i = 0; i < fullSearchResults.size(); i++){
-			SearchResult sr = fullSearchResults.at(i).at(j);
-			altHtml << "<td>" << endl;	
-			altHtml << "<img src=\"file:///home/amourao/iclefmed12/fast.hevs.ch/imageclefmed/2012/figures/images/" << sr.getIRI() << ".jpg\" width=\"200\">" << endl;
-			altHtml << "<br />" << sr.getId() << "<br />"<< sr.getDOI() << "<br />" << sr.getIRI() << "<br />" << sr.getScore() << endl;
-			altHtml << "</td>" << endl;	
-		}
-		
-		SearchResult sr = sortedList.top();
-		sortedList.pop();
-		altHtml << "<td>" << endl;	
-		altHtml << "<img src=\"file:///home/amourao/iclefmed12/fast.hevs.ch/imageclefmed/2012/figures/images/" << sr.getIRI() << ".jpg\" width=\"200\">" << endl;
-		altHtml << "<br />" << sr.getId() << "<br />" << sr.getDOI() << "<br />" << sr.getIRI() << "<br />" << sr.getScore() << endl;
-		altHtml << "</td>" << endl;
-		
-		altHtml << "</tr>" << endl;
-	}
-	altHtml << "</table>" << endl;
-
-	altHtml << "</body></html>" << endl;
-	
-	return altHtml.str();
-	
+		return singleImageSearchResults;
 }
+
 
 void MedicalSearchEngine::indexFeature(vector<float> features, int id){
 	
@@ -430,4 +340,92 @@ for (int k = 0; k < is.getImageCount(); k++) {
 
 return 0;
 */
+}
+
+string MedicalSearchEngine::resultListToJSON(string query, vector<string> images, string combFunction, std::priority_queue<SearchResult,std::vector<SearchResult>,compareSearchResults> sortedList){
+	Json::Value root;
+	Json::Value queryImages(Json::arrayValue);
+	
+	for(unsigned int i = 0; i < images.size(); i++)
+		queryImages.append(images[i]);
+	
+	root["query"] = query;
+	root["combFunction"] = combFunction;
+	root["queryImages"] = queryImages;
+	
+	Json::Value resultArray(Json::arrayValue);
+	
+	for(unsigned int i = 0; i < sortedList.size(); i++){
+		SearchResult sr = sortedList.top();
+		sortedList.pop();
+		Json::Value node;
+		
+		node["id"] = sr.getId();
+		node["iri"] = sr.getIRI();
+		node["doi"] = sr.getDOI();
+		node["score"] = sr.getScore(); 
+		node["rank"] = i+1;
+		
+		resultArray.append(node);
+	}
+	root["results"] = resultArray;
+	stringstream ss;
+	ss << root;
+	return ss.str();
+}
+
+string MedicalSearchEngine::resultListToHTML(string queryText, vector<string> filenames, string combFunction, std::priority_queue<SearchResult,std::vector<SearchResult>,compareSearchResults> sortedList,std::vector<std::vector<SearchResult> > fullSearchResults){
+	int minimalResultSetSize = 9999999;
+	stringstream altHtml;
+	altHtml << "<html><body>" << endl;
+	altHtml << "<h3>Query</h3>" << queryText << endl;
+	
+	altHtml << "<h3>Query images</h3>" << endl;
+	
+	for (unsigned int j = 0; j < filenames.size(); j++){	
+		altHtml << "<img src=\"file://" << filenames[j] << "\" height=\"200\">" << endl;
+	}
+	
+	altHtml << "<h3>Combination Function</h3>" << combFunction << endl;
+	
+	altHtml << "<table><tr>" << endl;
+	altHtml << "<th>Index</th>" << endl;	
+	for (unsigned int i = 0; i < fullSearchResults.size(); i++){
+		//cout << fullSearchResults.at(i).size() << endl;
+		if (minimalResultSetSize > fullSearchResults.at(i).size())
+			minimalResultSetSize = fullSearchResults.at(i).size();
+		altHtml << "<th>Results " << i << "</th>" << endl;	
+	}
+	altHtml << "<th>Combined results</th>" << endl;	
+	altHtml << "</tr>" << endl;
+	
+	if (minimalResultSetSize > sortedList.size())
+		minimalResultSetSize = sortedList.size();
+		
+	minimalResultSetSize = 50;
+	//cout << sortedList.size() << endl;
+	for (unsigned int j = 0; j < minimalResultSetSize; j++){
+		altHtml << "<tr><td>" << j << "</td>" << endl;
+		for (unsigned int i = 0; i < fullSearchResults.size(); i++){
+			SearchResult sr = fullSearchResults.at(i).at(j);
+			altHtml << "<td>" << endl;	
+			altHtml << "<img src=\"file:///home/amourao/iclefmed12/fast.hevs.ch/imageclefmed/2012/figures/images/" << sr.getIRI() << ".jpg\" width=\"200\">" << endl;
+			altHtml << "<br />" << sr.getId() << "<br />"<< sr.getDOI() << "<br />" << sr.getIRI() << "<br />" << sr.getScore() << endl;
+			altHtml << "</td>" << endl;	
+		}
+		
+		SearchResult sr = sortedList.top();
+		sortedList.pop();
+		altHtml << "<td>" << endl;	
+		altHtml << "<img src=\"file:///home/amourao/iclefmed12/fast.hevs.ch/imageclefmed/2012/figures/images/" << sr.getIRI() << ".jpg\" width=\"200\">" << endl;
+		altHtml << "<br />" << sr.getId() << "<br />" << sr.getDOI() << "<br />" << sr.getIRI() << "<br />" << sr.getScore() << endl;
+		altHtml << "</td>" << endl;
+		
+		altHtml << "</tr>" << endl;
+	}
+	altHtml << "</table>" << endl;
+
+	altHtml << "</body></html>" << endl;
+	
+	return altHtml.str();
 }

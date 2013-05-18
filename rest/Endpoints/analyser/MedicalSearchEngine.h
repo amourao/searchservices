@@ -34,10 +34,16 @@ public:
 	void trainIndex(std::string trainData);
 	
 	void indexFeature(std::vector<float> features, int id);
+	
+	
+	std::vector<SearchResult> searchSingleImage(string filename, string searchType);
+	
 	void readTrainingData(string textFile);
 	void importIclefData(string textFile);
 	void createKnnIndex();
 
+	string resultListToJSON(string query, vector<string> images, string combFunction, std::priority_queue<SearchResult,std::vector<SearchResult>,compareSearchResults> sortedList);
+	string resultListToHTML(string queryText, vector<string> filenames, string combFunction, std::priority_queue<SearchResult,std::vector<SearchResult>,compareSearchResults> sortedList,std::vector<std::vector<SearchResult> > fullSearchResults);
 private:
 
 
