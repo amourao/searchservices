@@ -28,6 +28,8 @@ public:
 	void* createType(std::string &typeId);
 	
 	void handleRequest(string method, map<string, string> queryStrings, istream&, HTTPServerResponse &resp);
+	
+	
 	std::string medicalSearch(map<string, string> queryStrings);
 	std::vector<float>* getFeatures(std::string filename);
 	

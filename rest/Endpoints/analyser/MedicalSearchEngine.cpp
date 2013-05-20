@@ -11,12 +11,12 @@ MedicalSearchEngine::MedicalSearchEngine(string type){
 	//readTrainingData("/home/amourao/iclef2013Features/SegHistogramLBP/");
 	//createKnnIndex();
 	//extractorName = "SEG_LBP_HIST";
-	
-	importIclefData("./rest/database.txt");
-	readTrainingData("/home/amourao/code/lire/dataFCTHFull.bin");
-	createKnnIndex();
-	extractorName = "fcth";
-	
+	if (type == "/medicalSearch"){
+		importIclefData("./rest/database.txt");
+		readTrainingData("/home/amourao/code/lire/dataFCTHFull.bin");
+		createKnnIndex();
+		extractorName = "fcth";
+	}
 	//importIclefData("./rest/database.txt");
 	//readTrainingData("/home/amourao/code/lire/dataCEDDFull.bin");
 	//createKnnIndex();
@@ -28,6 +28,7 @@ MedicalSearchEngine::MedicalSearchEngine(string type){
 MedicalSearchEngine::MedicalSearchEngine(){
 
 	FactoryEndpoint::getInstance()->registerType("/medicalSearch",this);
+	FactoryEndpoint::getInstance()->registerType("/imageClefImage",this);
 
 }
 
@@ -44,7 +45,8 @@ void* MedicalSearchEngine::createType(string& type){
 			instances[type] =  new MedicalSearchEngine(type);	
 			
 		return instances[type];
-	}	
+	} else if (type == "/imageClefImage")
+		return new MedicalSearchEngine(type);	
 	
 		
 	std::cerr << "Error registering type from constructor (this should never happen)" << std::endl;
@@ -60,24 +62,32 @@ void MedicalSearchEngine::handleRequest(string method, map<string, string> query
 		return ;
 	}
 
-	resp.setContentType("text/html");
-	
-	if(queryStrings["format"] == "json")
-		resp.setContentType("application/json");
-	else if(queryStrings["format"] == "html")
+	if (type == "/medicalSearch"){
 		resp.setContentType("text/html");
 	
-	std::ostream& out = resp.send();
+		if(queryStrings["format"] == "json")
+			resp.setContentType("application/json");
+		else if(queryStrings["format"] == "html")
+			resp.setContentType("text/html");
+	
+		std::ostream& out = resp.send();
 
-	std::string response("");
+		std::string response("");
 
-	if (type == "/medicalSearch")
-		response = medicalSearch(queryStrings);
+		if (type == "/medicalSearch")
+			response = medicalSearch(queryStrings);
 
 	//std::cout << response << std::endl;
-	out << response;
-	out.flush();
-
+		out << response;
+		out.flush();
+	} else if (type == "/imageClefImage"){
+		
+		std::string fileName = queryStrings["iri"];
+		std::stringstream ss;
+		ss << "/home/amourao/iclefmed12/fast.hevs.ch/imageclefmed/2012/figures/images/" << fileName << ".jpg";
+		resp.sendFile(ss.str(),"image/jpeg");
+		
+	}
 
 }
 
@@ -409,7 +419,7 @@ string MedicalSearchEngine::resultListToHTML(string queryText, vector<string> fi
 		for (unsigned int i = 0; i < fullSearchResults.size(); i++){
 			SearchResult sr = fullSearchResults.at(i).at(j);
 			altHtml << "<td>" << endl;	
-			altHtml << "<img src=\"file:///home/amourao/iclefmed12/fast.hevs.ch/imageclefmed/2012/figures/images/" << sr.getIRI() << ".jpg\" width=\"200\">" << endl;
+			altHtml << "<img src=\"http://localhost:9090/imageClefImage?iri=" << sr.getIRI() << "\" width=\"200\">" << endl;
 			altHtml << "<br />" << sr.getId() << "<br />"<< sr.getDOI() << "<br />" << sr.getIRI() << "<br />" << sr.getScore() << endl;
 			altHtml << "</td>" << endl;	
 		}
@@ -417,7 +427,7 @@ string MedicalSearchEngine::resultListToHTML(string queryText, vector<string> fi
 		SearchResult sr = sortedList.top();
 		sortedList.pop();
 		altHtml << "<td>" << endl;	
-		altHtml << "<img src=\"file:///home/amourao/iclefmed12/fast.hevs.ch/imageclefmed/2012/figures/images/" << sr.getIRI() << ".jpg\" width=\"200\">" << endl;
+		altHtml << "<img src=\"http://localhost:9090/imageClefImage?iri=" << sr.getIRI() << "\" width=\"200\">" << endl;
 		altHtml << "<br />" << sr.getId() << "<br />" << sr.getDOI() << "<br />" << sr.getIRI() << "<br />" << sr.getScore() << endl;
 		altHtml << "</td>" << endl;
 		
@@ -429,3 +439,5 @@ string MedicalSearchEngine::resultListToHTML(string queryText, vector<string> fi
 	
 	return altHtml.str();
 }
+
+
