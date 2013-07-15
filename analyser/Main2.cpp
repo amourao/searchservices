@@ -141,7 +141,7 @@ int testAllClassifiersBin(int argc, char *argv[]) {
 
 
 	if(argc < 3){
-		cout << "usage: analyser <trainBinFile> <testBinFile>"  << endl;
+		cout << "usage: analyser <trainBinFile> <testBinFile> ";
 		cout << "OR analyser <allDataBinFile> <nrOfDivisions>"  << endl;
 		cout << "nrOfDivisions == 9 leads to crossvalidation: 9 parts for train, 1 for test"  << endl;
 		exit(1);
@@ -149,20 +149,16 @@ int testAllClassifiersBin(int argc, char *argv[]) {
 
 	
 	int divisions =  atoi(argv[2]);
-	
-	stringstream ss;
-	ss << divisions;
-	
-	string tmp = ss.str();
-	if (tmp.c_str()==argv[2]){ //crossvalidation
+
+	if (isdigit(argv[2][0])){ //crossvalidation
 		
 		string file(argv[1]);
 
-		Mat features, labels;
+		Mat features;
+		Mat labels;
 	
 		MatrixTools::readBin(file, features, labels);
-
-
+		
 		vector<IClassifier*> classi; //choose the classifiers to test
 		//classi.push_back(new SRClassifier());
 		classi.push_back(new kNNClassifier());

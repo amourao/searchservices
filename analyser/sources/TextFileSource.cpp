@@ -35,24 +35,9 @@ void TextFileSource::readFile(string trainDataFile){
 			//./detectedEmotionCKWithNeutalTrain0.png;s130;1;007;d:\\\\datasets\\\\ck+2\\\\cohn-kanade-images\\\\s130\\\\007\\\\s130_007_00000001.png;./detectedEmotionCKWithNeutalTrain0_neutral.png
 			stringstream liness(line);
 
-			getline(liness, idStr, '\t');
-			getline(liness, path);
-			
-			
-			path.erase(remove(path.begin(), path.end(), '\r'), path.end());
-			path.erase(remove(path.begin(), path.end(), '\n'), path.end());
-			path.erase(remove(path.begin(), path.end(), ' '), path.end());
-		
-			//getline(liness, path, ';');
-			//getline(liness, idStr, '\r');
-			//getline(liness, neutralPath, ');
-			
-			stringstream ss;
-			ss << baseDir << path;
-			
-			//std::cout << line << " " << idStr << " " << ss.str()<< std::endl;
-			
-			imagesPath.push_back(ss.str() );
+			getline(liness, path, ';');
+
+			imagesPath.push_back(path );
 			imagesOriginalInfo.push_back(line);
 		}
 	}

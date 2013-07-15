@@ -72,7 +72,6 @@ public:
 		Mat dst;
 		extractFeatures(srcMat,dst);
 		MatrixTools::matToVectors(dst,features);
-
 	}
 
 	
