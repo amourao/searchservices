@@ -17,10 +17,10 @@ void* GaborExtractor::createType(string& type){
 		rectangleRois1.push_back(cv::Rect(0,64,46,112-64));
 		rectangleRois1.push_back(cv::Rect(0,10,92,30));
 		rectangleRois1.push_back(cv::Rect(20,65,52,30));
-		return new GaborExtractor(112,92,4,8,rectangleRois1);
+		return new GaborExtractor(92,112,4,6,rectangleRois1);
 		
 	}else if (type == "GaborGlobal"){
-		return new GaborExtractor(640,480,4,8);
+		return new GaborExtractor(640,480,4,6);
 		
 	}
 	cerr << "Error registering type from constructor (this should never happen)" << endl;
@@ -72,8 +72,7 @@ void GaborExtractor::preProcess(Mat& src, Mat& dst){
 }
 
 void GaborExtractor::applyFilter(Mat& image, Mat& dst){
-cout << "tmp5" << endl;
-getchar();
+
 	preProcess(image,image);
 	
 	//int i = 0;
@@ -120,15 +119,17 @@ getchar();
 }
 
 void GaborExtractor::extractFeatures(Mat& image, Mat& result){
-	cout << "tmp6" << endl;
-	getchar();
-	//int rectanglesLength=rectangleRois.size();
 
-	// 2 quer dizer que por cada rectângulo é calculada a média e desvio padrão
+	int temotempo = 0;
+	
+	
+	cout << temotempo++ << endl;
+	
+	resize(image,image,cv::Size(imageW,imageH),0,0,INTER_CUBIC);
+
 	//int i = 0;
 	//double rows = image.rows;
 	//double cols = image.cols;
-
 	result = Mat::zeros(1,getFeatureVectorSize(),CV_32F);
 	Mat imagefft;
 
@@ -138,11 +139,11 @@ void GaborExtractor::extractFeatures(Mat& image, Mat& result){
 
 
 	int pos = 0;
+
 	for (unsigned int k = 0; k < filters.size(); k++){
-
-
+			cout << temotempo++ << endl;
 			fftw_complex* tmpResultC = (fftw_complex* )fftw_malloc(sizeof(fftw_complex)*filters.at(k).rows*filters.at(k).cols);
-
+			cout << temotempo++ << endl;
 			int l = 0;
 			for (int i = 0; i < filters.at(k).rows; i++){
 				for (int j = 0; j < filters.at(k).cols; j++){
@@ -151,11 +152,11 @@ void GaborExtractor::extractFeatures(Mat& image, Mat& result){
 					l++;
 				}
 			}
-			
+			cout << temotempo++ << " "   << filters.at(k).cols << " " << filters.at(k).rows<< endl;
 			Mat tmpResult = newIFFTW(tmpResultC,filters.at(k).cols,filters.at(k).rows);
 
 			fftw_free( tmpResultC );
-
+			cout << rectangleRois.size() << endl;
 			for (unsigned int i = 0; i < rectangleRois.size(); i++){
 				Scalar_<double> mean, stdDev;
 				Mat tmpResultROI = tmpResult(rectangleRois[i]);
@@ -166,6 +167,7 @@ void GaborExtractor::extractFeatures(Mat& image, Mat& result){
 				result.at<float>(0,pos++) = s;
 			}
 	}
+
 	fftw_free( fft );
 	//normalize(result, result, 0,1, CV_MINMAX);
 }
@@ -280,23 +282,32 @@ fftw_complex* GaborExtractor::newFFTW(Mat image){
 
 Mat GaborExtractor::newIFFTW(fftw_complex* image, int width, int height){
 
+
+	int temotempo = 0;
+
+	cout << temotempo++ << endl;
 	fftw_complex    *ifft;    
 	fftw_plan       plan_b;
 
+cout << temotempo++ << endl;
 	Mat result (height,width,CV_32F);
 
+
+cout << temotempo++ << endl;
 	ifft    = ( fftw_complex* )fftw_malloc( sizeof( fftw_complex ) * width * height );
 
+cout << temotempo++ << endl;
 	plan_b = fftw_plan_dft_2d(  height , width, image,ifft, FFTW_BACKWARD, FFTW_ESTIMATE);
 
 	fftw_execute( plan_b );
 
+cout << temotempo++ << endl;
 	/* normalize IFFT result */
 	for(int i = 0 ; i < ( width * height ) ; i++ ) {
 		ifft[i][0] /= ( double )( width * height );
 		ifft[i][1] /= ( double )( width * height );
 	}
-
+cout << temotempo++ << endl;
 
 	int k = 0;
 	/* copy IFFT result to img2's data */
@@ -306,10 +317,10 @@ Mat GaborExtractor::newIFFTW(fftw_complex* image, int width, int height){
 			k++;
 		}
 	}
-
+cout << temotempo++ << endl;
 	fftw_destroy_plan( plan_b );
 	fftw_free( ifft );
-
+cout << temotempo++ << endl;
 	return result;
 }
 

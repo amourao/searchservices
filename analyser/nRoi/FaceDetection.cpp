@@ -25,9 +25,9 @@ FaceDetection::FaceDetection(string _cascadePath, string _nestedCascadePath, dou
 void* FaceDetection::createType(string& typeId) {
 
 	if (typeId == "FaceDetection")
-		return new FaceDetection(FACE_DETECTION_CASCADE_PATH + "haarcascade_frontalface_default.xml",FACE_DETECTION_CASCADE_PATH + "haarcascade_eye_tree_eyeglasses.xml",4,1, cv::Size(20,20),cv::Size(50,50),true);
+		return new FaceDetection(FACE_DETECTION_CASCADE_PATH + "haarcascade_frontalface_default.xml",FACE_DETECTION_CASCADE_PATH + "haarcascade_eye.xml",4,1, cv::Size(20,20),cv::Size(50,50),true);
 	else if (typeId == "FastFaceDetection")
-		return new FaceDetection(FACE_DETECTION_CASCADE_PATH + "haarcascade_frontalface_default.xml",FACE_DETECTION_CASCADE_PATH + "haarcascade_eye_tree_eyeglasses.xml",4,1, cv::Size(20,20),cv::Size(50,50),false);
+		return new FaceDetection(FACE_DETECTION_CASCADE_PATH + "haarcascade_frontalface_default.xml",FACE_DETECTION_CASCADE_PATH + "haarcascade_eye.xml",4,1, cv::Size(20,20),cv::Size(50,50),false);
 	cerr << "Error registering type from constructor (this should never happen)" << endl;
 	return NULL;
 }
@@ -74,9 +74,6 @@ void FaceDetection::detectFaces(Mat& img, vector<Mat>& faceImages, vector<cv::Po
 	faceCascade.detectMultiScale( imgGrayscaleScalled, facesVectorCascade, 1.2, 3, 0|CV_HAAR_SCALE_IMAGE,minSize,maxSize);
 	t = (double)(cvGetTickCount()-t)/((double)cvGetTickFrequency());
 	
-
-
-
 	for (unsigned int q = 0; q < facesVectorCascade.size(); q++){	
 		Rect r = facesVectorCascade.at(q);
 		cv::Rect newR = cv::Rect(r.x,r.y,r.width,r.height);
@@ -95,7 +92,11 @@ void FaceDetection::detectFaces(Mat& img, vector<Mat>& faceImages, vector<cv::Po
 			Mat preprocessed;
 			cv::Rect newRoi;
 			if (preProcessFaceImage(smallImgColorROI,preprocessed,newRoi)){
-				smallImgColorROI = preprocessed;
+
+				smallImgColorROI = preprocessed;				
+				newRoi.x += newR.x;
+				newRoi.y += newR.y;
+				
 				newR = newRoi;
 			}
 
@@ -120,28 +121,29 @@ bool FaceDetection::preProcessFaceImage(Mat& img, Mat& faceImage, cv::Rect& roi 
 	equalizeHist( imgGrayscaleScalled, imgGrayscaleScalled );
 	std::vector<Rect> eyesVectorCascade;
 
-	eyesCascade.detectMultiScale( img, eyesVectorCascade,	1.2, 2, 0
+	eyesCascade.detectMultiScale( img, eyesVectorCascade,	1.1, 2, 0
 		//|CV_HAAR_FIND_BIGGEST_OBJECT
 		//|CV_HAAR_DO_ROUGH_SEARCH
 		//|CV_HAAR_DO_CANNY_PRUNING
 		|CV_HAAR_SCALE_IMAGE
 		
-		,
-		cv::Size(10,10),
-		cv::Size(50,50)
 		);
 
 	vector<Eye> leftEyes;
 	vector<Eye> rightEyes;
 
+	
 	cv::Point center;
 	center.x = cvRound((img.cols*0.5));
 	center.y = cvRound((img.rows*0.5));
 
+	
+	
 	double radius = (img.cols + img.rows)*0.25;
 	for (unsigned int q = 0; q < eyesVectorCascade.size(); q++){	
 		Rect r = eyesVectorCascade.at(q);
 
+		cout << r << endl;
 
 		cv::Rect newR = cv::Rect(r.x,r.y,r.width,r.height);
 		newR.x *= eyeScaleChangeFactor;
@@ -162,11 +164,15 @@ bool FaceDetection::preProcessFaceImage(Mat& img, Mat& faceImage, cv::Rect& roi 
 
 	}
 
-	Eye leftEye;
-	Eye rigthEye;
 
-	if (!detectBestEyepair (center, radius, leftEyes, rightEyes, leftEye, rigthEye))
+
+	if (leftEyes.size() == 0 || rightEyes.size() == 0)
 		return false;
+	
+	Eye leftEye = leftEyes.front();
+	Eye rigthEye = rightEyes.front();
+	//if (!detectBestEyepair (center, radius, leftEyes, rightEyes, leftEye, rigthEye))
+	//	return false;
 
 	double y;
 	double x;
@@ -180,8 +186,8 @@ bool FaceDetection::preProcessFaceImage(Mat& img, Mat& faceImage, cv::Rect& roi 
 
 	double angle = atan2(y,x) * 180 / PI;
 
-	if (abs(angle) > 15)
-		return false;
+	//if (abs(angle) > 15)
+	//	return false;
 
 	Mat rotatedImage;
 
@@ -196,11 +202,10 @@ bool FaceDetection::preProcessFaceImage(Mat& img, Mat& faceImage, cv::Rect& roi 
 	ajustROI(roi, img.size());
 
 	faceImage=Mat(img,roi);
+			
 	resize(faceImage,faceImage,cv::Size(92,112),0,0,INTER_CUBIC);
-
-	imshow("a",faceImage);
-	waitKey(1);
-	return 0;
+	cout << faceImage.size() << endl;
+	return true;
 }
 
 bool FaceDetection::detectBestEyepair (Point& center, double faceRadius, vector<Eye>& leftEyes, vector<Eye>& rightEyes, Eye& bestLeftEye, Eye& bestRightEye){
