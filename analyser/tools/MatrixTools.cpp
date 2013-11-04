@@ -82,3 +82,43 @@ void MatrixTools::readBin(string& file, cv::Mat& features, cv::Mat& labels){
 	}
 	ifs.close();
 }
+
+void MatrixTools::writeBin(string& filename, cv::Mat& features, cv::Mat& labels){
+	std::fstream binFile;
+	binFile.open(filename.c_str(), std::ios::out | std::ios::binary);
+	
+	float dims = features.cols;
+	binFile.write((const char*) &dims, sizeof(float));
+	float nSamples = features.rows;
+	binFile.write((const char*) &nSamples, sizeof(float));
+	
+	std::cout << features.cols << " " << features.rows << endl;
+	
+	for (int s = 0; s < nSamples; s++) {
+
+
+		float label;
+		float id;
+		
+		if (labels.cols > 1){
+			label = (int) labels.at<float>(nSamples,0);
+			id = (int) labels.at<float>(nSamples,1);
+		}
+		else {
+			label = (int) labels.at<float>(nSamples,0);
+			id = label;
+		}
+		
+		binFile.write((const char*) &id, sizeof(float));
+		binFile.write((const char*) &label, sizeof(float));
+
+		for (int i = 0; i < dims; i++) {
+			float value = features.at<float>(s,i);
+			binFile.write((const char*) &value, sizeof(float));
+		}
+		binFile.flush();
+	}
+
+	binFile.close();
+	
+}

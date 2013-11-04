@@ -1,5 +1,7 @@
 #include "GetObjectFeatures.h"
 
+
+//USAGE: http://localhost:9090/getObjectFeatures?url=file:///localstore/novaemotionData/p01/0000.png&detector=FaceDetection&extractor=GaborFace
 static GetObjectFeatures GetObjectFeaturesEndpointFactory;
 
 GetObjectFeatures::GetObjectFeatures(string type){
@@ -164,6 +166,30 @@ string GetObjectFeatures::getFeatures(map<string, string > parameters){
 
 		featuresJ[iter->first] = featureArray;
     }
+    /*
+    Mat image2;
+    
+    cv::cvtColor(image, image2, COLOR_RGB2GRAY);
+    image2.convertTo(image2,CV_32F);
+    
+    string binPath = "./tmpData/features.bin";
+    
+    MatrixTools::writeBin(binPath,image2,image2);
+        
+    Mat image3;
+    Mat labels3;
+        
+    MatrixTools::readBin(binPath,image3,labels3);
+
+	image2 /=255.0;
+	image3 /=255.0;
+
+    cv::imshow("a",image2);
+    cv::imshow("b",image3);
+    
+    cv::waitKey();
+    */
+    
 	root["features"] = featuresJ;
 
 	stringstream ss;

@@ -5,6 +5,7 @@
 #include "../../FactoryEndpoint.h"
 #include "../../../analyser/FactoryAnalyser.h"
 #include "../../../analyser/nVector/FeatureExtractor.h"
+#include "../../../analyser/tools/MatrixTools.h"
 #include "../../IEndpoint.h"
 
 #include <jsoncpp/json/json.h>
@@ -15,7 +16,7 @@
 #include "../../../commons/FileDownloader.h"
 
 
-
+//USAGE: http://localhost:9090/getObjectFeatures?url=file:///localstore/novaemotionData/p01/0000.png&detector=FaceDetection&extractor=GaborFace
 class GetObjectFeatures : public IEndpoint
 {
 

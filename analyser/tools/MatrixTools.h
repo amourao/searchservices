@@ -29,4 +29,6 @@ static void vectorsToMat(vector<vector<float> >&src, cv::Mat& dst);
 
 static void readBin(string& file, cv::Mat& features, cv::Mat& labels);
 
+static void writeBin(string& file, cv::Mat& features, cv::Mat& labels);
+
 };
