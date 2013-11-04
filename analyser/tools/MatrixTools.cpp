@@ -41,6 +41,7 @@ void MatrixTools::vectorsToMat(vector<vector<float> >&src, cv::Mat& dst){
 	}
 }
 
+//Atention, matrices must be in CV_32F format (single dimensional float matrix)
 void MatrixTools::readBin(string& file, cv::Mat& features, cv::Mat& labels){
 
 	string f = file;
@@ -83,6 +84,7 @@ void MatrixTools::readBin(string& file, cv::Mat& features, cv::Mat& labels){
 	ifs.close();
 }
 
+//Atention, matrices must be in CV_32F format (single dimensional float matrix)
 void MatrixTools::writeBin(string& filename, cv::Mat& features, cv::Mat& labels){
 	std::fstream binFile;
 	binFile.open(filename.c_str(), std::ios::out | std::ios::binary);
@@ -92,7 +94,7 @@ void MatrixTools::writeBin(string& filename, cv::Mat& features, cv::Mat& labels)
 	float nSamples = features.rows;
 	binFile.write((const char*) &nSamples, sizeof(float));
 	
-	std::cout << features.cols << " " << features.rows << endl;
+	//std::cout << features.cols << " " << features.rows << endl;
 	
 	for (int s = 0; s < nSamples; s++) {
 
