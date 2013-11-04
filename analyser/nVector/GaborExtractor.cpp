@@ -120,11 +120,7 @@ void GaborExtractor::applyFilter(Mat& image, Mat& dst){
 
 void GaborExtractor::extractFeatures(Mat& image, Mat& result){
 
-	int temotempo = 0;
-	
-	
-	cout << temotempo++ << endl;
-	
+
 	resize(image,image,cv::Size(imageW,imageH),0,0,INTER_CUBIC);
 
 	//int i = 0;
@@ -141,9 +137,7 @@ void GaborExtractor::extractFeatures(Mat& image, Mat& result){
 	int pos = 0;
 
 	for (unsigned int k = 0; k < filters.size(); k++){
-			cout << temotempo++ << endl;
 			fftw_complex* tmpResultC = (fftw_complex* )fftw_malloc(sizeof(fftw_complex)*filters.at(k).rows*filters.at(k).cols);
-			cout << temotempo++ << endl;
 			int l = 0;
 			for (int i = 0; i < filters.at(k).rows; i++){
 				for (int j = 0; j < filters.at(k).cols; j++){
@@ -152,11 +146,9 @@ void GaborExtractor::extractFeatures(Mat& image, Mat& result){
 					l++;
 				}
 			}
-			cout << temotempo++ << " "   << filters.at(k).cols << " " << filters.at(k).rows<< endl;
 			Mat tmpResult = newIFFTW(tmpResultC,filters.at(k).cols,filters.at(k).rows);
 
 			fftw_free( tmpResultC );
-			cout << rectangleRois.size() << endl;
 			for (unsigned int i = 0; i < rectangleRois.size(); i++){
 				Scalar_<double> mean, stdDev;
 				Mat tmpResultROI = tmpResult(rectangleRois[i]);
@@ -283,32 +275,23 @@ fftw_complex* GaborExtractor::newFFTW(Mat image){
 Mat GaborExtractor::newIFFTW(fftw_complex* image, int width, int height){
 
 
-	int temotempo = 0;
-
-	cout << temotempo++ << endl;
 	fftw_complex    *ifft;    
 	fftw_plan       plan_b;
 
-cout << temotempo++ << endl;
 	Mat result (height,width,CV_32F);
 
 
-cout << temotempo++ << endl;
 	ifft    = ( fftw_complex* )fftw_malloc( sizeof( fftw_complex ) * width * height );
 
-cout << temotempo++ << endl;
 	plan_b = fftw_plan_dft_2d(  height , width, image,ifft, FFTW_BACKWARD, FFTW_ESTIMATE);
 
 	fftw_execute( plan_b );
 
-cout << temotempo++ << endl;
 	/* normalize IFFT result */
 	for(int i = 0 ; i < ( width * height ) ; i++ ) {
 		ifft[i][0] /= ( double )( width * height );
 		ifft[i][1] /= ( double )( width * height );
 	}
-cout << temotempo++ << endl;
-
 	int k = 0;
 	/* copy IFFT result to img2's data */
 	for(int i = 0; i <  height ; i++ ) {
@@ -317,10 +300,8 @@ cout << temotempo++ << endl;
 			k++;
 		}
 	}
-cout << temotempo++ << endl;
 	fftw_destroy_plan( plan_b );
 	fftw_free( ifft );
-cout << temotempo++ << endl;
 	return result;
 }
 

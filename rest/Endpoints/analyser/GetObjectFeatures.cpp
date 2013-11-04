@@ -151,10 +151,11 @@ string GetObjectFeatures::getFeatures(map<string, string > parameters){
 		IDataModel* featuresGen = extractor->getFeatures(newFilename);
 		vector<float>* features = (vector<float>*) featuresGen->getValue();
 	
-		for (int i = 0; i < features->size(); i++){
-			cout << features->at(i) << " " ;
-		}
-		cout << endl;
+
+		//for (int i = 0; i < features->size(); i++){
+		//	cout << features->at(i) << " " ;
+		//}
+		//cout << endl;
 		
 		Json::Value featureArray(Json::arrayValue);
 		for (int i = 0; i < features->size(); i++){

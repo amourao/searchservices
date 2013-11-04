@@ -143,7 +143,7 @@ bool FaceDetection::preProcessFaceImage(Mat& img, Mat& faceImage, cv::Rect& roi 
 	for (unsigned int q = 0; q < eyesVectorCascade.size(); q++){	
 		Rect r = eyesVectorCascade.at(q);
 
-		cout << r << endl;
+		//cout << r << endl;
 
 		cv::Rect newR = cv::Rect(r.x,r.y,r.width,r.height);
 		newR.x *= eyeScaleChangeFactor;
@@ -204,7 +204,7 @@ bool FaceDetection::preProcessFaceImage(Mat& img, Mat& faceImage, cv::Rect& roi 
 	faceImage=Mat(img,roi);
 			
 	resize(faceImage,faceImage,cv::Size(92,112),0,0,INTER_CUBIC);
-	cout << faceImage.size() << endl;
+	//cout << faceImage.size() << endl;
 	return true;
 }
 
