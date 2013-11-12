@@ -36,8 +36,16 @@ void TextFileSource::readFile(string trainDataFile){
 			stringstream liness(line);
 
 			getline(liness, path, ';');
-
-			imagesPath.push_back(path );
+			
+			stringstream ss2;
+			
+			ss2 << baseDir << "/" << path;
+			
+			string fullPath = ss2.str();
+			
+			//cout << fullPath << endl;
+			
+			imagesPath.push_back(fullPath );
 			imagesOriginalInfo.push_back(line);
 		}
 	}
@@ -52,8 +60,8 @@ Mat TextFileSource::nextImage(){
 		Mat frame2 = imread(s,1);
 		//std::cout << s << " OK " << frame2.channels() << " " << frame2.empty() << " " << frame2.rows << " " << frame2.cols << std::endl;
 		return frame2;
-	}
-	return Mat();
+	} else 
+		return Mat();
 
 }
 
