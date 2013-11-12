@@ -25,8 +25,12 @@ public:
 	string getName();
 	
 	void* createType(string &typeId);
+
+	
 private:
 	
+	string genRandom(int len);
 	string type;
+	
 };
 

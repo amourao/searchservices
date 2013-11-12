@@ -27,8 +27,48 @@ LireExtractor::~LireExtractor(){
 
 }
 
+string LireExtractor::genRandom(int len) {
+    stringstream ss;
+    static const char alphanum[] =
+        "0123456789"
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        "abcdefghijklmnopqrstuvwxyz";
+
+    for (int i = 0; i < len; ++i) {
+        ss << alphanum[rand() % (sizeof(alphanum) - 1)];
+    }
+    return ss.str();
+}
+
 void LireExtractor::extractFeatures(Mat& src, Mat& dst){
-	//not necessary
+	
+	stringstream ss6;
+	ss6 << "/home/amourao/code/searchservices/tmpData/" << genRandom(12) << ".png";
+	
+	string filename = ss6.str();
+	
+	imwrite(filename,src);
+	
+	stringstream filenameNew;
+	
+	filenameNew << filename  << "." << type << ".bin";
+	
+	stringstream ss;
+	
+	
+	ss << "java -cp /home/amourao/code/lire/:/home/amourao/code/lire/lire.jar:/home/amourao/code/lire/lucene-core-4.0.0.jar:/home/amourao/code/lire/lucene-analyzers-common-4.0.0.jar SimpleExtractor " << 
+	filename << " " << type << " " << filenameNew.str();
+			
+	//cout << ss.str() << endl;
+	std::system(ss.str().c_str());
+	
+	cv::Mat featuresMat;
+	cv::Mat labels;
+	
+	std::string name = filenameNew.str();
+	MatrixTools::readBin(name, featuresMat,labels);
+
+	dst = featuresMat;
 }
 
 void LireExtractor::extractFeatures(string filename, vector<float>& features){
@@ -42,6 +82,7 @@ void LireExtractor::extractFeatures(string filename, vector<float>& features){
 	ss << "java -cp /home/amourao/code/lire/:/home/amourao/code/lire/lire.jar:/home/amourao/code/lire/lucene-core-4.0.0.jar:/home/amourao/code/lire/lucene-analyzers-common-4.0.0.jar SimpleExtractor " << 
 	filename << " " << type << " " << filenameNew.str();
 			
+	cout << ss.str() << endl;
 	std::system(ss.str().c_str());
 	
 	cv::Mat featuresMat;
