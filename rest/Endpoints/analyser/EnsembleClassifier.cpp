@@ -79,11 +79,15 @@ void EnsembleClassifier::readData(string filename, string extractorName){
 		getline(liness, id, ';');
 		getline(liness, emo, '\n');
 		
-		Mat label(1,2,CV_32F);
+		
+		Mat label(1,3,CV_32F);
 		label.at<float>(0,0) = atoi(emo.c_str());
 		label.at<float>(0,1) = atoi(id.c_str());
+		label.at<float>(0,2) = atoi(path.c_str());//DANGER, it relies on having the name of the file starting with a number
 		labels.push_back(label);
+		 
 	}
+	//cout << labels;
 }
 
 string EnsembleClassifier::getFeatures(map<string, string > parameters){
@@ -93,22 +97,20 @@ string EnsembleClassifier::getFeatures(map<string, string > parameters){
 	
 	readData(filename,extractorName);
 	
-	
-	
+		
 	stringstream ss5;
 	
-	ss5 << features.rows << " " << features.cols << " " << labels.rows << " " << labels.cols;
 	
-	string sadsa = ss5.str();
+	
 	
 	//cout << sadsa << endl;
-	crossValidateAll(2);
+	ss5 << crossValidateAll(2,extractorName);
 	
-	return sadsa;
+	return ss5.str();
 }
 
 
-string EnsembleClassifier::crossValidateAll(int numberOfDivisions){
+string EnsembleClassifier::crossValidateAll(int numberOfDivisions, string extractorName){
 	stringstream ss;
 		
 	double* min = new double();
@@ -127,7 +129,7 @@ string EnsembleClassifier::crossValidateAll(int numberOfDivisions){
 	delete minInd;
 	delete maxInd;
 
-	ss << "Validate all" << endl << endl;
+	//ss << "Validate all" << endl << endl;
 	
 	vector<int> correctGuesses(numberOfClasses,0);
 	vector<int> falsePositives(numberOfClasses,0);
@@ -139,10 +141,12 @@ string EnsembleClassifier::crossValidateAll(int numberOfDivisions){
 		Mat newTrainData, newTrainLabels, testData, testLabels;
 		divideByClass(features,labels,numberOfDivisions,j,newTrainData,newTrainLabels,testData,testLabels);
 		
-		
-		//ss << test(newTrainData,newTrainLabels,testData,testLabels);
+		//ss << newTrainData.rows << " " << newTrainData.cols << " " << testData.rows << " " << testData.cols << endl;
+		//ss << newTrainLabels.rows << " " << newTrainLabels.cols << " " << testLabels.rows << " " << testLabels.cols << endl;
+		index(newTrainData);
+		ss << test(newTrainData,newTrainLabels,testData,testLabels,extractorName);
 	}
-	//cout << ss.str() << endl;
+	//cout << ss.str();
 	return ss.str();
 }
 
@@ -157,37 +161,38 @@ void EnsembleClassifier::divideByClass(Mat trainData, Mat trainLabels, double nu
 	
 	int numberOfClasses = max-min+1;
 	vector<Mat> divisionByClass(numberOfClasses);
+	vector<Mat> divisionByClassID(numberOfClasses);
 	for(int j = 0; j < trainLabels.rows; j++){
 		float label = trainLabels.at<float>(j,0);
 		divisionByClass.at(label).push_back(trainData.row(j));
+		divisionByClassID.at(label).push_back(trainLabels.row(j));
 	}
 	
 	for(int i = 0; i < numberOfClasses; i++){
 		
 		Mat data = divisionByClass.at(i);
+		Mat labels = divisionByClassID.at(i);
 		if(!data.empty()){
 			//TODO check if division is correct
 			int divisionSize = ratio * data.rows;
 		
-			Mat label(1,1,CV_32F);
-			label.at<float>(0,0) = i;
-			
+
 			//cout << endl << "train starts at 0 and ends at " << (currentDivision)*divisionSize << endl;
 			for(int j = 0; j < (currentDivision)*divisionSize; j++){
 				newTrainData.push_back(data.row(j));
-				newTrainLabels.push_back(label);
+				newTrainLabels.push_back(labels.row(j));
 			}
 		
 			//cout << "test starts at " <<  currentDivision*divisionSize << " and ends at " << ((currentDivision+1)*divisionSize) << " or " << data.rows << endl;
 			for(int j = currentDivision*divisionSize; j < ((currentDivision+1)*divisionSize) && (j < data.rows); j++){
 				testData.push_back(data.row(j));
-				testLabels.push_back(label);
+				testLabels.push_back(labels.row(j));
 			}
 		
 			//cout << "train starts at " <<  (currentDivision+1)*divisionSize << " and ends at " << data.rows << endl;
 			for(int j = (currentDivision+1)*divisionSize; j < data.rows; j++){
 				newTrainData.push_back(data.row(j));
-				newTrainLabels.push_back(label);
+				newTrainLabels.push_back(labels.row(j));
 			}
 			//cout << "train: " << newTrainData.rows << " test: " << testData.rows << endl;
 		}
@@ -196,7 +201,63 @@ void EnsembleClassifier::divideByClass(Mat trainData, Mat trainLabels, double nu
 	
 }
 
+void EnsembleClassifier::index(const Mat& trainData){
+	cv::flann::LinearIndexParams params = cv::flann::LinearIndexParams();
+	flannIndex = new cv::flann::Index();
+	flannIndex->build(trainData,params);
+}
 
-string EnsembleClassifier::test(Mat& trainData, Mat& trainLabels, Mat& testData, Mat& testLabels){
+string EnsembleClassifier::test(const Mat& trainData, const Mat& trainLabels, const Mat& testData, const Mat& testLabels,string extractorName){
+	
+	stringstream ss;
+	
+	FactoryAnalyser * f = FactoryAnalyser::getInstance();
+	IAnalyser* extractor= (IAnalyser*)f->createType(extractorName);
+	FeatureExtractor* fextractor = (FeatureExtractor*) extractor;
 
+	for (int row = 0; row < testData.rows; row++){
+		int rankSize = 10;
+		vector<int> indices (rankSize);
+		vector<float> dists (rankSize);
+		flannIndex->knnSearch(testData.row(row),indices,dists,rankSize);
+		
+		for (unsigned int h = 0; h < rankSize; h++){
+			int id = indices.at(h);
+			float dist = 1-(dists.at(h)/(fextractor->getFeatureVectorSize()*7));
+			
+			ss << (int)testLabels.at<float>(row,2) << "\t1\t" << (int)trainLabels.at<float>(id,2) << "\t" << h+1 << "\t" << dist << "\t" << extractorName << endl;
+		}
+	}
+	return ss.str();
+	
+	
+	/*
+		vector<float>* features = getFeatures(filename);
+		
+		cv::Mat query(1,features->size(),CV_32F);
+		for (unsigned int a = 0; a < features->size(); a++){
+			query.at<float>(0,a) = features->at(a);
+		}
+		
+		vector<int> indices (500);
+		vector<float> dists (500);
+		//cout << j++ << endl;
+		flannIndex->knnSearch(query,indices,dists,500);
+		
+		std::vector<SearchResult> singleImageSearchResults;
+		for (unsigned int h = 0; h < indices.size(); h++){
+			int id = indices.at(h);
+			
+			string resultId = "case";
+			
+			if(searchType == "case")
+				resultId = IRItoDOI[idToIRI[id]];
+			else if (searchType == "image")
+				resultId = idToIRI[id];
+			
+			singleImageSearchResults.push_back(SearchResult(resultId,1-(dists.at(h)/(features->size()*7)) , (h+1),idToIRI[id], IRItoDOI[idToIRI[id]]));
+		}
+		return singleImageSearchResults;
+		
+		*/
 }

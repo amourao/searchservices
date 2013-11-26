@@ -11,12 +11,16 @@
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include <opencv2/ml/ml.hpp>
+#include <opencv2/flann/flann.hpp>
 #include <string>
 #include <vector>
 #include <algorithm>    // std::random_shuffle
 #include <vector>       // std::vector
 #include <ctime>        // std::time
 #include <cstdlib>      // std::rand, std::srand
+
+
 #include "../../../analyser/nTag/IClassifier.h"
 
 #include "../../../analyser/nVector/FeatureExtractor.h"
@@ -42,13 +46,14 @@ public:
 	string getFeatures(map<string, string> parameters);	
 	
 	void divideByClass(Mat trainData, Mat trainLabels, double numberOfDivisions, int currentDivision,Mat& newTrainData,Mat& newTrainLabels, Mat& testData, Mat& testLabels);
-	string crossValidateAll(int numberOfDivisions);
+	string crossValidateAll(int numberOfDivisions,string extractorName);
 	void readData(string filename, string extractorName);
-	string test(Mat& trainData, Mat& trainLabels, Mat& testData, Mat& testLabels);
-
+	string test(const Mat& trainData, const Mat& trainLabels, const Mat& testData, const Mat& testLabels,string extractorName);
+	void index(const Mat& trainData);
 
 private:
   string type;
   cv::Mat labels, features;
+  cv::flann::Index* flannIndex;
 };
 

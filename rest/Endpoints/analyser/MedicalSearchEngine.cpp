@@ -121,7 +121,7 @@ std::vector<SearchResult> MedicalSearchEngine::searchSingleImage(string filename
 		for (unsigned int a = 0; a < features->size(); a++){
 			query.at<float>(0,a) = features->at(a);
 		}
-		
+
 		vector<int> indices (500);
 		vector<float> dists (500);
 		//cout << j++ << endl;
@@ -249,7 +249,7 @@ for(int j = 0; j < 24; j++){
 
 
 
-//cout << flannIndex << " " << features.cols << " " << features.rows << endl;
+    cout << flannIndex << " " << features.cols << " " << features.rows << endl;
 	if ( flannIndex != NULL)
 		delete flannIndex;
 	flannIndex = new cv::flann::Index();
