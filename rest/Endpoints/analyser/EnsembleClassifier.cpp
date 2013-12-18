@@ -216,7 +216,7 @@ string EnsembleClassifier::test(const Mat& trainData, const Mat& trainLabels, co
 	FeatureExtractor* fextractor = (FeatureExtractor*) extractor;
 
 	for (int row = 0; row < testData.rows; row++){
-		int rankSize = 10;
+		int rankSize = 100;
 		vector<int> indices (rankSize);
 		vector<float> dists (rankSize);
 		flannIndex->knnSearch(testData.row(row),indices,dists,rankSize);

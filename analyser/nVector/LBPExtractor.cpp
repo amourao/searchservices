@@ -4,6 +4,7 @@ static LBPExtractor lbpExtractorFactory;
 
 LBPExtractor::LBPExtractor(){
 	FactoryAnalyser::getInstance()->registerType("LBP",this);
+	
 }
 
 void* LBPExtractor::createType(string& type){
