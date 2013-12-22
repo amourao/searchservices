@@ -27,6 +27,7 @@
 
 #include "nTag/kNNClassifier.h"
 #include "nTag/SVMClassifier.h"
+#include "nTag/VWBasicClassifier.h"
 
 #include "tools/TrainTestFeaturesTools.h"
 #include "tools/MIRFlickrImporter.h"
@@ -160,9 +161,10 @@ int testAllClassifiersBin(int argc, char *argv[]) {
 		MatrixTools::readBin(file, features, labels);
 		
 		vector<IClassifier*> classi; //choose the classifiers to test
-		//classi.push_back(new SRClassifier());
+		//classi.push_back(new SRClassifier())
+		//classi.push_back(new SVMClassifier());
 		classi.push_back(new kNNClassifier());
-		classi.push_back(new SVMClassifier());
+		classi.push_back(new VWBasicClassifier());
 
 		TrainTestFeaturesTools ttft(features, labels,classi);
 				
@@ -185,6 +187,7 @@ int testAllClassifiersBin(int argc, char *argv[]) {
 		//classi.push_back(new SRClassifier());
 		classi.push_back(new kNNClassifier());
 		classi.push_back(new SVMClassifier());
+		classi.push_back(new VWBasicClassifier());
 
 		TrainTestFeaturesTools ttft(features, labels, testFeatures, testLabels,classi);
 				
@@ -196,12 +199,13 @@ int testAllClassifiersBin(int argc, char *argv[]) {
 	return 0;
 }
 
-int main(int argc, char *argv[]) {
 
-	testAllClassifiersBin(argc, argv);
-	//testAllClassifiers(argc, argv);
-	
-	getchar();
-	return 0;
+int main(int argc, char *argv[])
+{
+	getchar();	
+    testAllClassifiersBin(argc, argv);
+
+    getchar();
+
+    return 0;
 }
-
