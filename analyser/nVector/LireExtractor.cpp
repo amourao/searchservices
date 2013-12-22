@@ -43,7 +43,7 @@ string LireExtractor::genRandom(int len) {
 void LireExtractor::extractFeatures(Mat& src, Mat& dst){
 	
 	stringstream ss6;
-	ss6 << "/home/amourao/code/searchservices/tmpData/" << genRandom(12) << ".png";
+	ss6 << "./tmpData/" << genRandom(12) << ".png";
 	
 	string filename = ss6.str();
 	
@@ -56,7 +56,7 @@ void LireExtractor::extractFeatures(Mat& src, Mat& dst){
 	stringstream ss;
 	
 	
-	ss << "java -cp /home/amourao/code/lire/:/home/amourao/code/lire/lire.jar:/home/amourao/code/lire/lucene-core-4.0.0.jar:/home/amourao/code/lire/lucene-analyzers-common-4.0.0.jar SimpleExtractor " << 
+	ss << "java -cp ./analyser/data/lire/:./analyser/data/lire/lire.jar:./analyser/data/lire/lucene-core-4.0.0.jar:./analyser/data/lire/lucene-analyzers-common-4.0.0.jar SimpleExtractor " << 
 	filename << " " << type << " " << filenameNew.str();
 			
 	//cout << ss.str() << endl;
@@ -79,7 +79,7 @@ void LireExtractor::extractFeatures(string filename, vector<float>& features){
 	stringstream ss;
 	
 	
-	ss << "java -cp /home/amourao/code/lire/:/home/amourao/code/lire/lire.jar:/home/amourao/code/lire/lucene-core-4.0.0.jar:/home/amourao/code/lire/lucene-analyzers-common-4.0.0.jar SimpleExtractor " << 
+	ss << "java -cp ./analyser/data/lire/:./analyser/data/lire/lire.jar:./analyser/data/lire/lucene-core-4.0.0.jar:./analyser/data/lire/lucene-analyzers-common-4.0.0.jar SimpleExtractor " << 
 	filename << " " << type << " " << filenameNew.str();
 			
 	cout << ss.str() << endl;

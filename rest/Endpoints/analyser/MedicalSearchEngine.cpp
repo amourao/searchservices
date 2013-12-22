@@ -13,7 +13,7 @@ MedicalSearchEngine::MedicalSearchEngine(string type){
 	//extractorName = "SEG_LBP_HIST";
 	if (type == "/medicalSearch"){
 		importIclefData("./rest/database.txt");
-		readTrainingData("/home/amourao/code/lire/dataFCTHFull.bin");
+		readTrainingData("./analyser/data/dataFCTHFull.bin");
 		createKnnIndex();
 		extractorName = "fcth";
 	}
@@ -84,7 +84,7 @@ void MedicalSearchEngine::handleRequest(string method, map<string, string> query
 		
 		std::string fileName = queryStrings["iri"];
 		std::stringstream ss;
-		ss << "/home/amourao/iclefmed12/fast.hevs.ch/imageclefmed/2012/figures/images/" << fileName << ".jpg";
+		ss << "/localstore/novameds/iclefmed12/fast.hevs.ch/imageclefmed/2012/figures/images/" << fileName << ".jpg";
 		resp.sendFile(ss.str(),"image/jpeg");
 		
 	}

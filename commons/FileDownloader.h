@@ -11,7 +11,7 @@
 #include <time.h>       /* time */
 
 
-#define DOWNLOAD_FOLDER "/home/amourao/code/searchservices/tmpData/"
+#define DOWNLOAD_FOLDER "./tmpData/"
 #define RANDOM_NAME_SIZE 32
 
 class FileDownloader {
