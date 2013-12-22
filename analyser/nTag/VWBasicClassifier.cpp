@@ -2,12 +2,15 @@
 
 
 VWBasicClassifier::VWBasicClassifier(){
-
+	modelName = "a";
 }
 
+VWBasicClassifier::VWBasicClassifier(string _modelName){
+	modelName = _modelName;
+}
 
 VWBasicClassifier::~VWBasicClassifier(){
-		VW::finish(*vwTest);
+
 }
 
 void VWBasicClassifier::shuffleTrainingData (cv::Mat& trainData, cv::Mat& trainLabels) {
@@ -54,38 +57,21 @@ void VWBasicClassifier::train( cv::Mat trainData, cv::Mat trainLabels ){
 
 	numberOfClasses = uniqueCount-1;
 	
+
+	importTxtToVowpalFormat(trainData,trainLabels);
+
 	stringstream ss;
 	
-	ss << "-f train.model --oaa " << numberOfClasses << " --passes 1000 -c " ; 
-	//ss << "
-	string params = ss.str();
-			
-	vwModel = VW::initialize(params);
-	{
-		
-		//cout << 'a' << dego++ << endl;
-		importToVowpalFormat(trainData,trainLabels);		
-		//cout << 'a' << dego++ << endl;
-	}
-	VW::finish(*vwModel);
-
-		
-	stringstream ss1;
-	ss1 << "-t -i train.model"; 
-	//ss << "
-	string params1 = ss1.str();
-	vwTest = VW::initialize(params1);
+	ss << "vw -d ./tmpData/" <<  modelName << ".txt --oaa " << numberOfClasses << " --passes 1000 -c -f ./tmpData/" << modelName <<".model"; 
+	//ss << <
+	//string params = ss.str();
+	std::system(ss.str().c_str());
 
 }
 
 float VWBasicClassifier::classify( cv::Mat query){
-	float label = 0;
-	{
-		
-		label = importToVowpalFormatTest(query);	
-	}
-	return label;
-
+	exportTxtToVowpalFormatClassification(query);
+	return predictFromFile();
 }
 
 void VWBasicClassifier::test( cv::Mat testData, cv::Mat testLabels ){
@@ -99,9 +85,11 @@ string VWBasicClassifier::getName(){
 
 void VWBasicClassifier::importTxtToVowpalFormat(cv::Mat trainData, cv::Mat trainLabels){
 	//1 1.0 1|cedd 1:7.0 25:3.0 26:1.0 49:7.0 50:3.0 73:6.0 74:5.0 75:1.0 97:2.0 98:1.0 121:2.0 122:1.0 +
-	stringstream vwData;
+	stringstream ss;
+	ss << "./tmpData/" + modelName + ".txt";
+  	ofstream vwData(ss.str().c_str());
 	vwData.setf(std::ios_base::fixed, std::ios_base::floatfield);
-	vwData.precision(2);
+	vwData.precision(5);
 	for(int i = 0; i < trainData.rows; i++){
 	
 		vwData << ((int) initLabelToVowpalLabel[trainLabels.at<float>(i,0)]) << " 1.0 " << ((int) initLabelToVowpalLabel[trainLabels.at<float>(i,0)]) << "|a ";
@@ -109,48 +97,37 @@ void VWBasicClassifier::importTxtToVowpalFormat(cv::Mat trainData, cv::Mat train
 		for(int j = 0; j < trainData.cols; j++)
 			if (trainData.at<float>(i,j) != 0)
 				vwData << (j+1) << ":" <<(trainData.at<float>(i,j)) << " ";
-		
-		cout << vwData.str() << endl;
-		const char* line = vwData.str().c_str();
-		vwData.str("");
-		vwData.clear();
-		char* line2;
-		line2 = const_cast<char *>(line);
-		example* e = VW::read_example(*vwModel, line2);
-		vwModel->learn(e);
-		VW::finish_example(*vwModel, e);
+		vwData << endl;
 	}
+	vwData.flush();
+	vwData.close();
 }
 
-void VWBasicClassifier::importToVowpalFormat(cv::Mat trainData, cv::Mat trainLabels){
-	{
-	ezexample ex(vwModel, false);
-	for(int i = 0; i < trainData.rows; i++){
-	
-		for(int j = 0; j < trainData.cols; j++)
-			ex(vw_namespace('a'))(j+1)(trainData.at<float>(i,j));
-				
-		stringstream ss;
-		ss << ((int) initLabelToVowpalLabel[trainLabels.at<float>(i,0)]) << " 1.0 " << i;
-		//cout << ss.str() << " " << trainLabels.at<float>(i,0) << " " << initLabelToVowpalLabel[trainLabels.at<float>(i,0)] << endl;
-		//getchar();
-		ex.set_label(ss.str());
-		ex.train();	
-	}
-	
-	}
-}
 
-float VWBasicClassifier::importToVowpalFormatTest(cv::Mat testData){
-	ezexample ex(vwTest, false);
+void VWBasicClassifier::exportTxtToVowpalFormatClassification(cv::Mat testData){
+	
+	stringstream ss; 
+	ss << "./tmpData/" + modelName + ".p.txt";
+  	ofstream vwData(ss.str().c_str());
+	vwData.setf(std::ios_base::fixed, std::ios_base::floatfield);
+	vwData.precision(5);
+	vwData << "1.0 |a ";
 	for(int j = 0; j < testData.cols; j++)
-		ex(vw_namespace('a'))(j+1)(testData.at<float>(0,j));
-				
+		if (testData.at<float>(0,j) != 0)
+			vwData << (j+1) << ":" << testData.at<float>(0,j) << " ";
+	vwData.flush();
+	vwData.close();
+}
+
+float VWBasicClassifier::predictFromFile(){
+	
 	stringstream ss;
-		
-	ss << "1.0 ";
-		
-	ex.set_label(ss.str());
-	//cout << ex.predict() << endl;
-	return (float)vowpalLabelToinitLabel[ex.predict()];
+
+	ss << "vw -d ./tmpData/" << modelName <<".p.txt -t -i ./tmpData/" << modelName <<".model -p " << modelName << ".predict"; 
+	//ss << <
+	//string params = ss.str();
+	std::system(ss.str().c_str());
+
+	float predict = 0;
+	return (float)vowpalLabelToinitLabel[predict];
 }
