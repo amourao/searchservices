@@ -62,7 +62,7 @@ void VWBasicClassifier::train( cv::Mat trainData, cv::Mat trainLabels ){
 
 	stringstream ss;
 	
-	ss << "vw -d ./tmpData/" <<  modelName << ".txt --oaa " << numberOfClasses << " --passes 1000 -c -f ./tmpData/" << modelName <<".model"; 
+	ss << "vw -d ./tmpData/" <<  modelName << ".txt --oaa " << numberOfClasses << " -f ./tmpData/" << modelName <<".model --quiet"; 
 	//ss << <
 	//string params = ss.str();
 	std::system(ss.str().c_str());
@@ -123,11 +123,23 @@ float VWBasicClassifier::predictFromFile(){
 	
 	stringstream ss;
 
-	ss << "vw -d ./tmpData/" << modelName <<".p.txt -t -i ./tmpData/" << modelName <<".model -p " << modelName << ".predict"; 
+	ss << "vw -d ./tmpData/" << modelName <<".p.txt -t -i ./tmpData/" << modelName <<".model -p ./tmpData/" << modelName << ".predict --quiet"; 
 	//ss << <
 	//string params = ss.str();
 	std::system(ss.str().c_str());
-
+ 
 	float predict = 0;
+
+	stringstream ss2;
+
+	ss2 << "./tmpData/" << modelName <<".predict";
+
+	ifstream prection(ss2.str().c_str());
+
+	std::string line; 
+	std::getline(prection, line);
+    std::istringstream in(line);
+    in >> predict;       //now read the whitespace-separated floats
+	
 	return (float)vowpalLabelToinitLabel[predict];
 }

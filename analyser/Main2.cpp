@@ -186,7 +186,7 @@ int testAllClassifiersBin(int argc, char *argv[]) {
 		vector<IClassifier*> classi;
 		//classi.push_back(new SRClassifier());
 		classi.push_back(new kNNClassifier());
-		classi.push_back(new SVMClassifier());
+		//classi.push_back(new SVMClassifier());
 		classi.push_back(new VWBasicClassifier());
 
 		TrainTestFeaturesTools ttft(features, labels, testFeatures, testLabels,classi);
@@ -202,10 +202,7 @@ int testAllClassifiersBin(int argc, char *argv[]) {
 
 int main(int argc, char *argv[])
 {
-	getchar();	
     testAllClassifiersBin(argc, argv);
-
-    getchar();
 
     return 0;
 }
