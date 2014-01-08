@@ -35,7 +35,6 @@ void VWBasicClassifier::shuffleTrainingData (cv::Mat& trainData, cv::Mat& trainL
 
 
 void VWBasicClassifier::train( cv::Mat trainData, cv::Mat trainLabels ){
-
 	
 	shuffleTrainingData(trainData,trainLabels);
 
@@ -62,7 +61,7 @@ void VWBasicClassifier::train( cv::Mat trainData, cv::Mat trainLabels ){
 
 	stringstream ss;
 	
-	ss << "vw -d ./tmpData/" <<  modelName << ".txt --oaa " << numberOfClasses << " -f ./tmpData/" << modelName <<".model --quiet"; 
+	ss << "vw -d ./tmpData/" <<  modelName << ".txt -k -c -f ./tmpData/" << modelName <<".model --ect " << numberOfClasses  << " --quiet"; 
 	//ss << <
 	//string params = ss.str();
 	std::system(ss.str().c_str());
@@ -91,8 +90,7 @@ void VWBasicClassifier::importTxtToVowpalFormat(cv::Mat trainData, cv::Mat train
 	vwData.setf(std::ios_base::fixed, std::ios_base::floatfield);
 	vwData.precision(5);
 	for(int i = 0; i < trainData.rows; i++){
-	
-		vwData << ((int) initLabelToVowpalLabel[trainLabels.at<float>(i,0)]) << " 1.0 " << ((int) initLabelToVowpalLabel[trainLabels.at<float>(i,0)]) << "|a ";
+		vwData << ((int) initLabelToVowpalLabel[trainLabels.at<float>(i,0)]) << " | ";
 
 		for(int j = 0; j < trainData.cols; j++)
 			if (trainData.at<float>(i,j) != 0)
@@ -105,13 +103,13 @@ void VWBasicClassifier::importTxtToVowpalFormat(cv::Mat trainData, cv::Mat train
 
 
 void VWBasicClassifier::exportTxtToVowpalFormatClassification(cv::Mat testData){
-	
+
 	stringstream ss; 
 	ss << "./tmpData/" + modelName + ".p.txt";
   	ofstream vwData(ss.str().c_str());
 	vwData.setf(std::ios_base::fixed, std::ios_base::floatfield);
 	vwData.precision(5);
-	vwData << "1.0 |a ";
+	vwData << "1.0 | "; 
 	for(int j = 0; j < testData.cols; j++)
 		if (testData.at<float>(0,j) != 0)
 			vwData << (j+1) << ":" << testData.at<float>(0,j) << " ";
@@ -123,7 +121,7 @@ float VWBasicClassifier::predictFromFile(){
 	
 	stringstream ss;
 
-	ss << "vw -d ./tmpData/" << modelName <<".p.txt -t -i ./tmpData/" << modelName <<".model -p ./tmpData/" << modelName << ".predict --quiet"; 
+	ss << "vw -t -d ./tmpData/" << modelName <<".p.txt -i ./tmpData/" << modelName <<".model -p ./tmpData/" << modelName << ".predict --quiet"; 
 	//ss << <
 	//string params = ss.str();
 	std::system(ss.str().c_str());
@@ -139,7 +137,8 @@ float VWBasicClassifier::predictFromFile(){
 	std::string line; 
 	std::getline(prection, line);
     std::istringstream in(line);
-    in >> predict;       //now read the whitespace-separated floats
+    in >> predict;
 	
+	//cout << predict << " " << vowpalLabelToinitLabel[predict] << endl;
 	return (float)vowpalLabelToinitLabel[predict];
 }
