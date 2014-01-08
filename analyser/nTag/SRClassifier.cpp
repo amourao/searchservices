@@ -158,3 +158,12 @@ void SRClassifier::changeLabels(arma::fmat trainLabels) {
 	numberOfClasses = max(labelsCute)+1;
 }
 
+bool SRClassifier::save(string basePath){
+	//TODO do the function
+	return false;
+}
+
+bool SRClassifier::load(string basePath){
+	//TODO do the function
+	return false;
+}

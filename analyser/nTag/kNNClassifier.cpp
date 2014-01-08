@@ -92,3 +92,13 @@ float kNNClassifier::classify( cv::Mat query, int neighboursCount )
 //query.colRange(0,5);
 	return maxEmotion;
 }
+
+bool kNNClassifier::save(string basePath){
+	//TODO do the function
+	return false;
+}
+
+bool kNNClassifier::load(string basePath){
+	//TODO do the function
+	return false;
+}

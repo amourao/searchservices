@@ -142,3 +142,13 @@ float VWBasicClassifier::predictFromFile(){
 	//cout << predict << " " << vowpalLabelToinitLabel[predict] << endl;
 	return (float)vowpalLabelToinitLabel[predict];
 }
+
+bool VWBasicClassifier::save(string basePath){
+	//TODO do the function
+	return false;
+}
+
+bool VWBasicClassifier::load(string basePath){
+	//TODO do the function
+	return false;
+}

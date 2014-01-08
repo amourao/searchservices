@@ -17,6 +17,9 @@ public:
 	void train(cv::Mat trainData, cv::Mat trainLabels);
 	void test(cv::Mat testData, cv::Mat testLabels);
 	float classify( cv::Mat query);
+
+	bool save(string basePath);
+	bool load(string basePath);
 	
 	void train(arma::fmat trainData, arma::fmat trainLabels);
 	void test(arma::fmat testData, arma::fmat testLabels);

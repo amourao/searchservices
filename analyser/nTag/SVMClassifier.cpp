@@ -31,3 +31,13 @@ void SVMClassifier::test( cv::Mat testData, cv::Mat testLabels ){
 string SVMClassifier::getName(){
 	return "SVM";
 }
+
+bool SVMClassifier::save(string basePath){
+	//TODO do the function
+	return false;
+}
+
+bool SVMClassifier::load(string basePath){
+	//TODO do the function
+	return false;
+}

@@ -32,7 +32,8 @@ public:
 	}
 
 	virtual void extractFeatures(string filename, map<string,float>& features){
-
+		Mat source = imread(filename);
+		extractFeatures(source,features);
 	}
 	
 	virtual void extractFeatures(Mat& source, map<string,float>& features) = 0;

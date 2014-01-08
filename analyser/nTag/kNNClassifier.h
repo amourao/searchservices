@@ -23,6 +23,9 @@ public:
 	float classify( cv::Mat query, int neighboursCount = 1);
 	
 	string getName();
+
+	bool save(string basePath);
+	bool load(string basePath);
 private:
 
 	cv::Mat trainLabels;

@@ -3,6 +3,10 @@
 #include <armadillo>
 #include "../tools/MatrixTools.h"
 
+#ifndef CLASSIFIER_BASE_SAVE_PATH
+#define CLASSIFIER_BASE_SAVE_PATH "./analyser/data/classifiers/"
+#endif
+
 using namespace std;
 
 class IClassifier
@@ -12,6 +16,10 @@ public:
 	
 	virtual void train(cv::Mat trainData, cv::Mat trainLabels) = 0;
 	virtual void test(cv::Mat testData, cv::Mat testLabels) = 0;
+
+	virtual bool save(string basePath) = 0;
+	virtual bool load(string basePath) = 0;
+
 	virtual float classify( cv::Mat query) = 0;
 	virtual string getName() = 0;
 	

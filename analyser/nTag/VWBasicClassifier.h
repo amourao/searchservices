@@ -25,6 +25,9 @@ public:
 	void test(cv::Mat testData, cv::Mat testLabels);
 	float classify( cv::Mat query);
 	string getName();
+
+	bool save(string basePath);
+	bool load(string basePath);
 	
 	//void importToVowpalFormat(cv::Mat trainData, cv::Mat trainLabels);
 	//void importTxtToVowpalFormat(cv::Mat trainData, cv::Mat trainLabels);
