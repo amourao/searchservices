@@ -68,8 +68,8 @@ void MatrixTools::readBin(string& file, cv::Mat& features, cv::Mat& labels){
 		ifs.read( (char*) &label, sizeof(label) );
 
 		
-		labelsRow.at<float>(0,0) = label;
-		labelsRow.at<float>(0,1) = id;
+		labelsRow.at<float>(0,1) = label;
+		labelsRow.at<float>(0,0) = id;
 					
 		for (int j = 0; j < dimensions; j++){
 			float feature = 0;
