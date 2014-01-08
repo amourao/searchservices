@@ -2,7 +2,7 @@
 
 
 VWBasicClassifier::VWBasicClassifier(){
-	modelName = "a";
+	modelName = "./tmpData/vwTmpModel";
 }
 
 VWBasicClassifier::VWBasicClassifier(string _modelName){
@@ -61,12 +61,11 @@ void VWBasicClassifier::train( cv::Mat trainData, cv::Mat trainLabels ){
 
 	stringstream ss;
 	
-	ss << "vw -d ./tmpData/" <<  modelName << ".txt -k -c -f ./tmpData/" << modelName <<".model --ect " << numberOfClasses  << " --quiet"; 
-	//ss << <
-	//string params = ss.str();
+	ss << "vw -d " <<  modelName << TRAINDATA_EXTENSION << " -k -c -f " << modelName << MODEL_EXTENSION <<" --ect " << numberOfClasses  << " --quiet"; 
 	std::system(ss.str().c_str());
 
 }
+
 
 float VWBasicClassifier::classify( cv::Mat query){
 	exportTxtToVowpalFormatClassification(query);
@@ -80,12 +79,10 @@ string VWBasicClassifier::getName(){
 	return "VWBasicClassifier";
 }
 
-
-
 void VWBasicClassifier::importTxtToVowpalFormat(cv::Mat trainData, cv::Mat trainLabels){
 	//1 1.0 1|cedd 1:7.0 25:3.0 26:1.0 49:7.0 50:3.0 73:6.0 74:5.0 75:1.0 97:2.0 98:1.0 121:2.0 122:1.0 +
 	stringstream ss;
-	ss << "./tmpData/" + modelName + ".txt";
+	ss << modelName << TRAINDATA_EXTENSION;
   	ofstream vwData(ss.str().c_str());
 	vwData.setf(std::ios_base::fixed, std::ios_base::floatfield);
 	vwData.precision(5);
@@ -105,7 +102,7 @@ void VWBasicClassifier::importTxtToVowpalFormat(cv::Mat trainData, cv::Mat train
 void VWBasicClassifier::exportTxtToVowpalFormatClassification(cv::Mat testData){
 
 	stringstream ss; 
-	ss << "./tmpData/" + modelName + ".p.txt";
+	ss << modelName << PREDICTION_EXTENSION;
   	ofstream vwData(ss.str().c_str());
 	vwData.setf(std::ios_base::fixed, std::ios_base::floatfield);
 	vwData.precision(5);
@@ -121,7 +118,7 @@ float VWBasicClassifier::predictFromFile(){
 	
 	stringstream ss;
 
-	ss << "vw -t -d ./tmpData/" << modelName <<".p.txt -i ./tmpData/" << modelName <<".model -p ./tmpData/" << modelName << ".predict --quiet"; 
+	ss << "vw -t -d " << modelName  << PREDICTION_EXTENSION <<" -i " << modelName << MODEL_EXTENSION <<" -p " << modelName << PREDICTION_READ_EXTENSION <<" --quiet"; 
 	//ss << <
 	//string params = ss.str();
 	std::system(ss.str().c_str());
@@ -130,7 +127,7 @@ float VWBasicClassifier::predictFromFile(){
 
 	stringstream ss2;
 
-	ss2 << "./tmpData/" << modelName <<".predict";
+	ss2 << modelName << PREDICTION_READ_EXTENSION;
 
 	ifstream prection(ss2.str().c_str());
 
@@ -144,11 +141,73 @@ float VWBasicClassifier::predictFromFile(){
 }
 
 bool VWBasicClassifier::save(string basePath){
-	//TODO do the function
-	return false;
+	stringstream ssO;
+	stringstream ssD;
+
+	ssO << modelName << MODEL_EXTENSION;
+
+	ssD << CLASSIFIER_BASE_SAVE_PATH << basePath << MODEL_EXTENSION;
+
+	std::ifstream  src(ssO.str().c_str(), std::ios::binary);
+    std::ofstream  dst(ssD.str().c_str(), std::ios::binary);
+
+    dst << src.rdbuf();
+
+	saveLabelMap(basePath);
+    //update the model to use the new dir to save and load stuff
+	load(basePath);
+
+	return true;
 }
 
 bool VWBasicClassifier::load(string basePath){
-	//TODO do the function
-	return false;
+	stringstream ssD;
+	ssD << CLASSIFIER_BASE_SAVE_PATH << basePath;
+
+	modelName = ssD.str();
+
+	loadLabelMap(basePath);
+
+	return true;
+}
+
+void VWBasicClassifier::loadLabelMap(string basePath){
+	stringstream ssD;
+	ssD << CLASSIFIER_BASE_SAVE_PATH << basePath << LABEL_FILE_EXTENSION;
+    
+    initLabelToVowpalLabel.clear();
+	vowpalLabelToinitLabel.clear();
+
+	ifstream file(ssD.str().c_str(), ifstream::in);
+	string line, path, numberOfClassesStr,id1,id2;
+	
+	getline(file, line);
+	stringstream liness(line);
+	getline(liness, numberOfClassesStr);	
+	numberOfClasses = atoi(numberOfClassesStr.c_str());
+	//int i = 0;
+	while (getline(file, line)) {
+		stringstream liness(line);
+		getline(liness, id1, ',');
+		getline(liness, id2);
+
+		int label = atoi(id1.c_str());
+		int vwLabel = atoi(id2.c_str());
+
+		initLabelToVowpalLabel.insert(std::pair<int,int>(label,vwLabel));
+		vowpalLabelToinitLabel.insert(std::pair<int,int>(vwLabel,label));
+
+	}
+}
+void VWBasicClassifier::saveLabelMap(string basePath){
+	std::map<int,int>::iterator iter;
+	stringstream ssD;
+	ssD << CLASSIFIER_BASE_SAVE_PATH << basePath << LABEL_FILE_EXTENSION;
+    ofstream labelData(ssD.str().c_str());
+
+    labelData << numberOfClasses << endl;
+    for (iter = initLabelToVowpalLabel.begin(); iter != initLabelToVowpalLabel.end(); ++iter) {
+    	labelData << iter->first << "," << iter->second << endl;
+    }
+	labelData.close();
 }

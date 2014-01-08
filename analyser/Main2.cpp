@@ -17,7 +17,6 @@
 #include "sources/SingleImageSource.h"
 #include "sources/VideoSource.h"
 #include "sources/TextFileSource.h"
-
 #include "nVector/GaborExtractor.h"
 #include "nKeypoint/SURFExtractor.h"
 #include "nVector/HistogramExtractor.h"
@@ -199,10 +198,27 @@ int testAllClassifiersBin(int argc, char *argv[]) {
 	return 0;
 }
 
+void testLoadSaveIClassifier(int argc, char *argv[]){
+
+	string file(argv[1]);
+
+	Mat features;
+	Mat labels;
+	
+	MatrixTools::readBin(file, features, labels);
+
+	IClassifier* vw = new VWBasicClassifier();
+
+	vw->train(features,labels);
+	vw->save("medicalImage_CEDD_VW");
+
+	cout << vw->classify(features.row(0)) << endl;
+}
 
 int main(int argc, char *argv[])
-{
-    testAllClassifiersBin(argc, argv);
+{	
+	testLoadSaveIClassifier(argc, argv);
+    //testAllClassifiersBin(argc, argv);
 
     return 0;
 }

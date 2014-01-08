@@ -1,15 +1,33 @@
 #pragma once
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/ml/ml.hpp>
-#include <vowpalwabbit/vw.h>
-#include <vowpalwabbit/example.h>
 #include "IClassifier.h"
-#include "ezexample.h"
 #include <cstdlib>      // std::rand, std::srand
 #include <iostream>
 #include <fstream>
 #include <algorithm>    // std::random_shuffle
 #include <vector>       // std::vector
+
+#ifndef MODEL_EXTENSION
+#define MODEL_EXTENSION ".model"
+#endif
+
+#ifndef TRAINDATA_EXTENSION
+#define TRAINDATA_EXTENSION ".train.tmp"
+#endif
+
+#ifndef PREDICTION_EXTENSION
+#define PREDICTION_EXTENSION ".test.tmp"
+#endif
+
+#ifndef PREDICTION_READ_EXTENSION
+#define PREDICTION_READ_EXTENSION ".prediction.tmp"
+#endif
+
+#ifndef LABEL_FILE_EXTENSION
+#define LABEL_FILE_EXTENSION ".labels"
+#endif
+
 
 using namespace std;
 
@@ -39,6 +57,10 @@ private:
 	void exportTxtToVowpalFormatClassification(cv::Mat testData);
 	void shuffleTrainingData(cv::Mat& trainData, cv::Mat& trainLabels);
 	float predictFromFile();
+
+	void loadLabelMap(string basePath);
+	void saveLabelMap(string basePath);
+
 	std::map<int,int> initLabelToVowpalLabel;
 	std::map<int,int> vowpalLabelToinitLabel;
 	int numberOfClasses;
