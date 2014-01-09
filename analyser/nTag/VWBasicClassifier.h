@@ -8,24 +8,24 @@
 #include <algorithm>    // std::random_shuffle
 #include <vector>       // std::vector
 
-#ifndef MODEL_EXTENSION
-#define MODEL_EXTENSION ".model"
+#ifndef MODEL_EXTENSION_VW
+#define MODEL_EXTENSION_VW ".model"
 #endif
 
-#ifndef TRAINDATA_EXTENSION
-#define TRAINDATA_EXTENSION ".train.tmp"
+#ifndef TRAINDATA_EXTENSION_VW
+#define TRAINDATA_EXTENSION_VW ".train.tmp"
 #endif
 
-#ifndef PREDICTION_EXTENSION
-#define PREDICTION_EXTENSION ".test.tmp"
+#ifndef PREDICTION_EXTENSION_VW
+#define PREDICTION_EXTENSION_VW ".test.tmp"
 #endif
 
-#ifndef PREDICTION_READ_EXTENSION
-#define PREDICTION_READ_EXTENSION ".prediction.tmp"
+#ifndef PREDICTION_READ_EXTENSION_VW
+#define PREDICTION_READ_EXTENSION_VW ".prediction.tmp"
 #endif
 
-#ifndef LABEL_FILE_EXTENSION
-#define LABEL_FILE_EXTENSION ".labels"
+#ifndef LABEL_FILE_EXTENSION_VW
+#define LABEL_FILE_EXTENSION_VW ".labels"
 #endif
 
 

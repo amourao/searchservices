@@ -67,7 +67,7 @@ float kNNClassifier::classify( cv::Mat query, int neighboursCount )
 
 	for (int i = 0; i < neighboursCount; i++){
 		int imageId = indices.at(i);
-		int detectedEmotion = trainLabels.at<float>(imageId,0);
+		int detectedEmotion = trainLabels.at<float>(imageId,1);
 		//cout << detectedEmotion << " " << dists.at(i)  << endl;
 		//cout << query.colRange(0,5) << endl;
 		//cout << trainData.row(imageId).colRange(0,5) << endl;
@@ -94,11 +94,42 @@ float kNNClassifier::classify( cv::Mat query, int neighboursCount )
 }
 
 bool kNNClassifier::save(string basePath){
-	//TODO do the function
-	return false;
+	stringstream ss;
+	ss << CLASSIFIER_BASE_SAVE_PATH << basePath << TRAINDATA_EXTENSION_KNN;
+
+	FileStorage fs(ss.str().c_str(), FileStorage::WRITE);
+
+	fs << "numberOfClasses" << numberOfClasses;
+	fs << "trainLabels" << trainLabels;
+	fs << "trainData" << trainData;
+	fs.release();
+
+	//stringstream ssF;
+	//ssF << CLASSIFIER_BASE_SAVE_PATH << basePath << FLANN_EXTENSION_KNN;
+	//flannIndex->save(ssF.str().c_str());
+	//flannIndex->release();
+	
+	return true;
 }
 
 bool kNNClassifier::load(string basePath){
-	//TODO do the function
-	return false;
+	
+	stringstream ss;
+	ss << CLASSIFIER_BASE_SAVE_PATH << basePath << TRAINDATA_EXTENSION_KNN;
+
+	FileStorage fs(ss.str().c_str(), FileStorage::READ);
+
+	fs["numberOfClasses"] >> numberOfClasses;
+	fs["trainLabels"] >> trainLabels;
+	fs["trainData"] >> trainData;
+
+	flann::LinearIndexParams params = flann::LinearIndexParams();
+
+	if ( flannIndex != NULL)
+		delete flannIndex;
+	flannIndex = new flann::Index();
+	
+	flannIndex->build(trainData,params);
+	
+	return true;
 }

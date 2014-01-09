@@ -212,6 +212,11 @@ void testLoadSaveIClassifier(int argc, char *argv[]){
 	vw->train(features,labels);
 	vw->save("medicalImage_CEDD_VW");
 
+	delete vw;
+	vw = new VWBasicClassifier();
+
+	vw->load("medicalImage_CEDD_VW");
+
 	cout << vw->classify(features.row(0)) << endl;
 }
 

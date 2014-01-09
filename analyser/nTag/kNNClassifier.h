@@ -8,6 +8,16 @@
 using namespace cv;
 using namespace std;
 
+
+#ifndef TRAINDATA_EXTENSION_KNN
+#define TRAINDATA_EXTENSION_KNN ".xml"
+#endif
+
+#ifndef FLANN_EXTENSION_KNN
+#define FLANN_EXTENSION_KNN ".flann"
+#endif
+
+
 class kNNClassifier: public IClassifier
 {
 public:

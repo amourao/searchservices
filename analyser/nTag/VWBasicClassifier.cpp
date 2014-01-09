@@ -61,7 +61,7 @@ void VWBasicClassifier::train( cv::Mat trainData, cv::Mat trainLabels ){
 
 	stringstream ss;
 	
-	ss << "vw -d " <<  modelName << TRAINDATA_EXTENSION << " -k -c -f " << modelName << MODEL_EXTENSION <<" --ect " << numberOfClasses  << " --quiet"; 
+	ss << "vw -d " <<  modelName << TRAINDATA_EXTENSION_VW << " -k -c -f " << modelName << MODEL_EXTENSION_VW <<" --ect " << numberOfClasses  << " --quiet"; 
 	std::system(ss.str().c_str());
 
 }
@@ -82,7 +82,7 @@ string VWBasicClassifier::getName(){
 void VWBasicClassifier::importTxtToVowpalFormat(cv::Mat trainData, cv::Mat trainLabels){
 	//1 1.0 1|cedd 1:7.0 25:3.0 26:1.0 49:7.0 50:3.0 73:6.0 74:5.0 75:1.0 97:2.0 98:1.0 121:2.0 122:1.0 +
 	stringstream ss;
-	ss << modelName << TRAINDATA_EXTENSION;
+	ss << modelName << TRAINDATA_EXTENSION_VW;
   	ofstream vwData(ss.str().c_str());
 	vwData.setf(std::ios_base::fixed, std::ios_base::floatfield);
 	vwData.precision(5);
@@ -102,7 +102,7 @@ void VWBasicClassifier::importTxtToVowpalFormat(cv::Mat trainData, cv::Mat train
 void VWBasicClassifier::exportTxtToVowpalFormatClassification(cv::Mat testData){
 
 	stringstream ss; 
-	ss << modelName << PREDICTION_EXTENSION;
+	ss << modelName << PREDICTION_EXTENSION_VW;
   	ofstream vwData(ss.str().c_str());
 	vwData.setf(std::ios_base::fixed, std::ios_base::floatfield);
 	vwData.precision(5);
@@ -118,7 +118,7 @@ float VWBasicClassifier::predictFromFile(){
 	
 	stringstream ss;
 
-	ss << "vw -t -d " << modelName  << PREDICTION_EXTENSION <<" -i " << modelName << MODEL_EXTENSION <<" -p " << modelName << PREDICTION_READ_EXTENSION <<" --quiet"; 
+	ss << "vw -t -d " << modelName  << PREDICTION_EXTENSION_VW <<" -i " << modelName << MODEL_EXTENSION_VW <<" -p " << modelName << PREDICTION_READ_EXTENSION_VW <<" --quiet"; 
 	//ss << <
 	//string params = ss.str();
 	std::system(ss.str().c_str());
@@ -127,7 +127,7 @@ float VWBasicClassifier::predictFromFile(){
 
 	stringstream ss2;
 
-	ss2 << modelName << PREDICTION_READ_EXTENSION;
+	ss2 << modelName << PREDICTION_READ_EXTENSION_VW;
 
 	ifstream prection(ss2.str().c_str());
 
@@ -144,9 +144,9 @@ bool VWBasicClassifier::save(string basePath){
 	stringstream ssO;
 	stringstream ssD;
 
-	ssO << modelName << MODEL_EXTENSION;
+	ssO << modelName << MODEL_EXTENSION_VW;
 
-	ssD << CLASSIFIER_BASE_SAVE_PATH << basePath << MODEL_EXTENSION;
+	ssD << CLASSIFIER_BASE_SAVE_PATH << basePath << MODEL_EXTENSION_VW;
 
 	std::ifstream  src(ssO.str().c_str(), std::ios::binary);
     std::ofstream  dst(ssD.str().c_str(), std::ios::binary);
@@ -173,7 +173,7 @@ bool VWBasicClassifier::load(string basePath){
 
 void VWBasicClassifier::loadLabelMap(string basePath){
 	stringstream ssD;
-	ssD << CLASSIFIER_BASE_SAVE_PATH << basePath << LABEL_FILE_EXTENSION;
+	ssD << CLASSIFIER_BASE_SAVE_PATH << basePath << LABEL_FILE_EXTENSION_VW;
     
     initLabelToVowpalLabel.clear();
 	vowpalLabelToinitLabel.clear();
@@ -202,7 +202,7 @@ void VWBasicClassifier::loadLabelMap(string basePath){
 void VWBasicClassifier::saveLabelMap(string basePath){
 	std::map<int,int>::iterator iter;
 	stringstream ssD;
-	ssD << CLASSIFIER_BASE_SAVE_PATH << basePath << LABEL_FILE_EXTENSION;
+	ssD << CLASSIFIER_BASE_SAVE_PATH << basePath << LABEL_FILE_EXTENSION_VW;
     ofstream labelData(ssD.str().c_str());
 
     labelData << numberOfClasses << endl;
