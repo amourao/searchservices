@@ -8,6 +8,13 @@
 
 using namespace std;
 
+
+#ifndef TRAINDATA_EXTENSION_SR
+#define TRAINDATA_EXTENSION_SR ".xml"
+#endif
+
+
+
 class SRClassifier: public IClassifier
 {
 public:
@@ -33,6 +40,7 @@ private:
 	arma::fmat trainData;
 	arma::fvec labelsCute;
 	l1min::FISTA* omp;
+	l1min::FISTA::option_type opt;
 	
 	int numberOfClasses;
 };

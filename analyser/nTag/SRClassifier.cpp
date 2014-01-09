@@ -37,7 +37,7 @@ void SRClassifier::train(arma::fmat _trainData, arma::fmat trainLabels){
 
 	int i = 0;
 	trainData = trans(_trainData);
-	l1min::FISTA::option_type opt;
+	//l1min::FISTA::option_type opt;
 	//opt.eps = 1e-7;
 	opt.max_iters = 100;
 	opt.lambda = 0.03;
@@ -159,11 +159,63 @@ void SRClassifier::changeLabels(arma::fmat trainLabels) {
 }
 
 bool SRClassifier::save(string basePath){
-	//TODO do the function
-	return false;
+	stringstream ss;
+	ss << CLASSIFIER_BASE_SAVE_PATH << basePath << TRAINDATA_EXTENSION_SR;
+
+	FileStorage fs(ss.str().c_str(), FileStorage::WRITE);
+
+
+	cv::Mat trainDataCV;
+	MatrixTools::fmatToMat(trainData,trainDataCV);  
+
+	cv::Mat labelsCuteCV;
+	MatrixTools::fmatToMat(labelsCute,labelsCuteCV);  
+
+	fs << "trainDataCV" << trainDataCV;
+	fs << "labelsCuteCV" << labelsCuteCV;
+	fs << "numberOfClasses" << numberOfClasses;
+
+	int max_iters = opt.max_iters;
+	fs << "max_iters" << max_iters;
+	fs << "lambda" << opt.lambda;
+	fs << "L" << opt.L;
+	fs.release();
+
+	return true;
 }
 
 bool SRClassifier::load(string basePath){
-	//TODO do the function
-	return false;
+	stringstream ss;
+	ss << CLASSIFIER_BASE_SAVE_PATH << basePath << TRAINDATA_EXTENSION_SR;
+
+	cv::Mat trainDataCV;
+	cv::Mat labelsCuteCV;
+
+	FileStorage fs(ss.str().c_str(), FileStorage::READ);
+
+	fs["trainDataCV"] >> trainDataCV;
+	fs["labelsCuteCV"] >> labelsCuteCV;
+	fs["numberOfClasses"] >> numberOfClasses;
+
+	int max_iters,L;
+	float lambda;
+
+	fs["max_iters"] >> max_iters;
+	fs["lambda"] >> lambda;
+	fs["L"] >> L;
+
+	opt.max_iters = max_iters;
+	opt.lambda = lambda;
+	opt.L = L;
+
+	arma::fmat labelsCuteFmat;
+	MatrixTools::matToFMat(labelsCuteCV,labelsCuteFmat);
+	labelsCute = arma::fvec(labelsCuteFmat);
+
+	MatrixTools::matToFMat(trainDataCV,trainData);
+	
+
+	omp = new l1min::FISTA(opt);
+
+	return true;
 }
