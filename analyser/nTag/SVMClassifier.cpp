@@ -15,14 +15,15 @@ void SVMClassifier::train( cv::Mat trainData, cv::Mat trainLabels ){
 	//params.gamma = 0.03375;
 	//params.C = 62.5;
 	//params.p = 1.1920928955078125e-007;
-	svm.train_auto(trainData,trainLabels,cv::Mat(),cv::Mat(),params);
+	svm = new CvSVM();
+	svm->train_auto(trainData,trainLabels,cv::Mat(),cv::Mat(),params);
 	
 	//TODO
 	//svm.train(trainData,trainLabels);
 }
 
 float SVMClassifier::classify( cv::Mat query){
-	return svm.predict(query);
+	return svm->predict(query);
 }
 
 void SVMClassifier::test( cv::Mat testData, cv::Mat testLabels ){
@@ -33,11 +34,22 @@ string SVMClassifier::getName(){
 }
 
 bool SVMClassifier::save(string basePath){
-	//TODO do the function
-	return false;
+	stringstream ss;
+	ss << CLASSIFIER_BASE_SAVE_PATH << basePath << TRAINDATA_EXTENSION_SVM;
+
+	if (svm != NULL)
+		svm->save(ss.str().c_str());
+	return true;
+
+
+				
 }
 
 bool SVMClassifier::load(string basePath){
-	//TODO do the function
-	return false;
+	stringstream ss;
+	ss << CLASSIFIER_BASE_SAVE_PATH << basePath << TRAINDATA_EXTENSION_SVM;
+
+	svm = new CvSVM();
+	svm->load(ss.str().c_str());
+	return true;
 }

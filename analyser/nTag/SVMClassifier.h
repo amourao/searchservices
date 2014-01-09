@@ -3,6 +3,10 @@
 #include <opencv2/ml/ml.hpp>
 #include "IClassifier.h"
 
+#ifndef TRAINDATA_EXTENSION_SVM
+#define TRAINDATA_EXTENSION_SVM ".xml"
+#endif
+
 using namespace std;
 
 class SVMClassifier: public IClassifier
@@ -21,6 +25,6 @@ public:
 	string getName();
 private:
 
-	CvSVM svm;
+	CvSVM* svm;
 };
 

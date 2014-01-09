@@ -207,17 +207,17 @@ void testLoadSaveIClassifier(int argc, char *argv[]){
 	
 	MatrixTools::readBin(file, features, labels);
 
-	IClassifier* vw = new SRClassifier();
+	IClassifier* vw = new SVMClassifier();
 
 	vw->train(features,labels.col(0));
-	vw->save("medicalImage_CEDD_SR");
+	vw->save("medicalImage_CEDD_SVM");
 	
 	cout << vw->classify(features.row(0)) << endl;
 
 	delete vw;
-	vw = new SRClassifier();
+	vw = new SVMClassifier();
 
-	vw->load("medicalImage_CEDD_SR");
+	vw->load("medicalImage_CEDD_SVM");
 
 	cout << vw->classify(features.row(0)) << endl;
 }
