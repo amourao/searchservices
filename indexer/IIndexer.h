@@ -18,8 +18,8 @@ using namespace std;
 #endif
 
 
-#ifndef INDEX_LABELS_EXTENSION_KNN
-#define INDEX_LABELS_EXTENSION_KNN ".labels"
+#ifndef INDEXER_LABELS_EXTENSION
+#define INDEXER_LABELS_EXTENSION ".labels"
 #endif
 
 class IIndexer: public FactoryMethod {

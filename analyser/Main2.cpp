@@ -33,6 +33,10 @@
 
 #include "FactoryAnalyser.h"
 
+#include "../indexer/FactoryIndexer.h"
+#include "../indexer/IIndexer.h"
+#include "../indexer/LinearkNNIndexer.h"
+
 using namespace std;
 
 
@@ -222,9 +226,40 @@ void testLoadSaveIClassifier(int argc, char *argv[]){
 	cout << vw->classify(features.row(0)) << endl;
 }
 
+void testLoadSaveIIndexer(int argc, char *argv[]){
+	string file(argv[1]);
+
+	Mat features;
+	Mat labels;
+	
+	MatrixTools::readBin(file, features, labels);
+	IIndexer* vw = new LinearkNNIndexer();
+
+	vw->index(features);
+	vw->save("medicalImage_CEDD_kNN");
+	Mat q = features.row(0);
+	
+	vector<std::pair<float,float> > r = vw->knnSearchId(q,10);
+	for(uint i = 0; i < r.size(); i++){
+		cout << r.at(i).first << "\t" << r.at(i).second << endl;
+	}
+	cout  << endl;
+	delete vw;
+	vw = new LinearkNNIndexer();
+
+	vw->load("medicalImage_CEDD_kNN");
+
+	r = vw->knnSearchId(q,10);
+
+	for(uint i = 0; i < r.size(); i++){
+		cout << r.at(i).first << "\t" << r.at(i).second << endl;
+	}
+}
+
 int main(int argc, char *argv[])
 {	
-	testLoadSaveIClassifier(argc, argv);
+	//testLoadSaveIClassifier(argc, argv);
+	testLoadSaveIIndexer(argc, argv);
     //testAllClassifiersBin(argc, argv);
 
     return 0;

@@ -23,57 +23,54 @@ void* LinearkNNIndexer::createType(string &typeId){
 void LinearkNNIndexer::index(cv::Mat features){
 	flann::LinearIndexParams params = flann::LinearIndexParams();
 
-	if ( flannIndex != NULL)
-		delete flannIndex;
 	flannIndex = new flann::Index();
 	
-	flannIndex->build(features,params);
-
 	indexData = features;
+	flannIndex->build(indexData,params);
 }
 
 vector<std::pair<float,float> > LinearkNNIndexer::knnSearchId(cv::Mat query, int n){
-	vector<float> indices (n);
+	vector<int> indices (n);
 	vector<float> dists (n);
 	//cout << j++ << endl;
 
 	flannIndex->knnSearch(query,indices,dists,n);
 
-	
-	return mergeVectors(indices,dists);
+	std::vector<float> indicesFloat(indices.begin(), indices.end());
+	return mergeVectors(indicesFloat,dists);
 }
 
 vector<std::pair<string,float> > LinearkNNIndexer::knnSearchName(cv::Mat query, int n){
-	vector<float> indices (n);
+	vector<int> indices (n);
 	vector<float> dists (n);
 	//cout << j++ << endl;
 
 	flannIndex->knnSearch(query,indices,dists,n);
 
-	
-	return mergeVectors(idToLabels(indices),dists);
+	std::vector<float> indicesFloat(indices.begin(), indices.end());
+	return mergeVectors(idToLabels(indicesFloat),dists);
 }
 
 vector<std::pair<float,float> > LinearkNNIndexer::radiusSearchId(cv::Mat query, double radius, int n){
-	vector<float> indices (n);
+	vector<int> indices (n);
 	vector<float> dists (n);
 	//cout << j++ << endl;
 
 	flannIndex->radiusSearch(query,indices,dists,radius,n);
 
-	
-	return mergeVectors(indices,dists);
+	std::vector<float> indicesFloat(indices.begin(), indices.end());
+	return mergeVectors(indicesFloat,dists);
 }
 
 vector<std::pair<string,float> > LinearkNNIndexer::radiusSearchName(cv::Mat query, double radius, int n){
-	vector<float> indices (n);
+	vector<int> indices (n);
 	vector<float> dists (n);
 	//cout << j++ << endl;
 
 	flannIndex->radiusSearch(query,indices,dists,radius,n);
 
-	
-	return mergeVectors(idToLabels(indices),dists);
+	std::vector<float> indicesFloat(indices.begin(), indices.end());
+	return mergeVectors(idToLabels(indicesFloat),dists);
 }
 
 bool LinearkNNIndexer::save(string basePath){
@@ -86,7 +83,7 @@ bool LinearkNNIndexer::save(string basePath){
 	fs.release();
 
 	stringstream ssL;
-	ssL << INDEXER_BASE_SAVE_PATH << basePath << INDEX_LABELS_EXTENSION;
+	ssL << INDEXER_BASE_SAVE_PATH << basePath << INDEXER_LABELS_EXTENSION;
 
 	saveLabels(ssL.str());
 
@@ -111,7 +108,7 @@ bool LinearkNNIndexer::load(string basePath){
 	flannIndex->build(indexData,params);
 	
 	stringstream ssL;
-	ssL << INDEXER_BASE_SAVE_PATH << basePath << INDEX_LABELS_EXTENSION;
+	ssL << INDEXER_BASE_SAVE_PATH << basePath << INDEXER_LABELS_EXTENSION;
 
 	loadLabels(ssL.str());
 
