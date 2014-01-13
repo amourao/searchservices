@@ -17,6 +17,11 @@ using namespace std;
 #define INDEXER_BASE_SAVE_PATH "./indexer/data/"
 #endif
 
+
+#ifndef INDEX_LABELS_EXTENSION_KNN
+#define INDEX_LABELS_EXTENSION_KNN ".labels"
+#endif
+
 class IIndexer: public FactoryMethod {
 
 public:

@@ -17,9 +17,6 @@ using namespace std;
 #define INDEX_DATA_EXTENSION_KNN ".xml"
 #endif
 
-#ifndef INDEX_LABELS_EXTENSION_KNN
-#define INDEX_LABELS_EXTENSION_KNN ".labels"
-#endif
 
 #ifndef INDEX_FLANN_EXTENSION_KNN
 #define INDEX_FLANN_EXTENSION_KNN ".flann"

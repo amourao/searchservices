@@ -85,6 +85,11 @@ bool LinearkNNIndexer::save(string basePath){
 	fs << "indexData" << indexData;
 	fs.release();
 
+	stringstream ssL;
+	ssL << INDEXER_BASE_SAVE_PATH << basePath << INDEX_LABELS_EXTENSION;
+
+	saveLabels(ssL.str());
+
 	return true;
 }
 
@@ -105,6 +110,11 @@ bool LinearkNNIndexer::load(string basePath){
 	
 	flannIndex->build(indexData,params);
 	
+	stringstream ssL;
+	ssL << INDEXER_BASE_SAVE_PATH << basePath << INDEX_LABELS_EXTENSION;
+
+	loadLabels(ssL.str());
+
 	return true;
 }
 
