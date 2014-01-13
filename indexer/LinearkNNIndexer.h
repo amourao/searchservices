@@ -36,11 +36,11 @@ public:
 	
 	void index(cv::Mat features);
 
-	vector<float> knnSearchId(string name, int n);
-	vector<string> knnSearchName(string name, int n);
+	vector<std::pair<float,float> > knnSearchId(cv::Mat name, int n);
+	vector<std::pair<string,float> > knnSearchName(cv::Mat name, int n);
 
-	vector<float> radiusSearchId(string name, double radius);
-	vector<string> radiusSearchName(string name, double radius);
+	vector<std::pair<float,float> > radiusSearchId(cv::Mat name, double radius, int n);
+	vector<std::pair<string,float> > radiusSearchName(cv::Mat name, double radius, int n);
 
 	bool save(string basePath);
 	bool load(string basePath);
@@ -52,5 +52,5 @@ private:
 	string type;
 	cv::Mat indexData;
 	flann::Index* flannIndex;
-	std::vector<string> labels;
+	
 };

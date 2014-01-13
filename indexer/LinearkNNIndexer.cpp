@@ -21,35 +21,91 @@ void* LinearkNNIndexer::createType(string &typeId){
 }
 
 void LinearkNNIndexer::index(cv::Mat features){
+	flann::LinearIndexParams params = flann::LinearIndexParams();
 
+	if ( flannIndex != NULL)
+		delete flannIndex;
+	flannIndex = new flann::Index();
+	
+	flannIndex->build(features,params);
+
+	indexData = features;
 }
 
-vector<float> LinearkNNIndexer::knnSearchId(string name, int n){
-	vector<float> v;
-	return v;
+vector<std::pair<float,float> > LinearkNNIndexer::knnSearchId(cv::Mat query, int n){
+	vector<float> indices (n);
+	vector<float> dists (n);
+	//cout << j++ << endl;
+
+	flannIndex->knnSearch(query,indices,dists,n);
+
+	
+	return mergeVectors(indices,dists);
 }
 
-vector<string> LinearkNNIndexer::knnSearchName(string name, int n){
-	vector<string> v;
-	return v;
+vector<std::pair<string,float> > LinearkNNIndexer::knnSearchName(cv::Mat query, int n){
+	vector<float> indices (n);
+	vector<float> dists (n);
+	//cout << j++ << endl;
+
+	flannIndex->knnSearch(query,indices,dists,n);
+
+	
+	return mergeVectors(idToLabels(indices),dists);
 }
 
-vector<float> LinearkNNIndexer::radiusSearchId(string name, double radius){
-	vector<float> v;
-	return v;
+vector<std::pair<float,float> > LinearkNNIndexer::radiusSearchId(cv::Mat query, double radius, int n){
+	vector<float> indices (n);
+	vector<float> dists (n);
+	//cout << j++ << endl;
+
+	flannIndex->radiusSearch(query,indices,dists,radius,n);
+
+	
+	return mergeVectors(indices,dists);
 }
 
-vector<string> LinearkNNIndexer::radiusSearchName(string name, double radius){
-	vector<string> v;
-	return v;
+vector<std::pair<string,float> > LinearkNNIndexer::radiusSearchName(cv::Mat query, double radius, int n){
+	vector<float> indices (n);
+	vector<float> dists (n);
+	//cout << j++ << endl;
+
+	flannIndex->radiusSearch(query,indices,dists,radius,n);
+
+	
+	return mergeVectors(idToLabels(indices),dists);
 }
 
 bool LinearkNNIndexer::save(string basePath){
-	return false;
+	stringstream ss;
+	ss << INDEXER_BASE_SAVE_PATH << basePath << INDEX_DATA_EXTENSION_KNN;
+
+	FileStorage fs(ss.str().c_str(), FileStorage::WRITE);
+
+	fs << "indexData" << indexData;
+	fs.release();
+
+	return true;
 }
 
 bool LinearkNNIndexer::load(string basePath){
-	return false;
+	
+	stringstream ss;
+	ss << INDEXER_BASE_SAVE_PATH << basePath << INDEX_DATA_EXTENSION_KNN;
+
+	FileStorage fs(ss.str().c_str(), FileStorage::READ);
+
+	fs["indexData"] >> indexData;
+
+	flann::LinearIndexParams params = flann::LinearIndexParams();
+
+	if ( flannIndex != NULL)
+		delete flannIndex;
+	flannIndex = new flann::Index();
+	
+	flannIndex->build(indexData,params);
+	
+	return true;
 }
 
 string LinearkNNIndexer::getName(){

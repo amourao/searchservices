@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <utility>
 
 #include <opencv2/highgui/highgui.hpp>
 #include "../analyser/tools/MatrixTools.h"
@@ -24,17 +25,82 @@ public:
 	
 	virtual void* createType(string &typeId) = 0;
 	
-	virtual vector<float> knnSearchId(string name, int n) = 0;
-	virtual vector<string> knnSearchName(string name, int n) = 0;
+	virtual vector<std::pair<float,float> > knnSearchId(cv::Mat features, int n) = 0;
+	virtual vector<std::pair<string,float> > knnSearchName(cv::Mat features, int n) = 0;
 
-	virtual vector<float> radiusSearchId(string name, double radius) = 0;
-	virtual vector<string> radiusSearchName(string name, double radius) = 0;
+	virtual vector<std::pair<float,float> > radiusSearchId(cv::Mat features, double radius, int n = 1000) = 0;
+	virtual vector<std::pair<string,float> > radiusSearchName(cv::Mat features, double radius, int n = 1000) = 0;
 
 	virtual void index(cv::Mat features) = 0;
+
+	template <typename Type1, typename Type2>
+	vector<std::pair<Type1,Type2> > mergeVectors(vector<Type1> v1, vector<Type2> v2){
+		vector<std::pair<Type1,Type2> > result;
+
+		for(uint i = 0; i < v1.size(); i++){
+			std::pair<Type1,Type2> p (v1.at(i),v2.at(i));
+			result.push_back(p);
+		}
+
+		return result;
+	}
+
+	vector<string> idToLabels(vector<float> v1){
+		vector<string> result;
+
+		for(uint i = 0; i < v1.size(); i++){
+			result.push_back(labels[v1.at(i)]);
+		}
+
+		return result;
+	}
+	
+	virtual void loadLabels(string basePath){
+    
+	    labels.clear();
+
+		ifstream file(basePath.c_str(), ifstream::in);
+		string line, numberOfClassesStr,id1,id2;
+		
+		getline(file, line);
+		stringstream liness(line);
+		getline(liness, numberOfClassesStr);	
+		numberOfElements = atoi(numberOfClassesStr.c_str());
+		//int i = 0;
+		while (getline(file, line)) {
+			stringstream liness(line);
+			getline(liness, id1, ',');
+			getline(liness, id2);
+
+			float labelFloat = atof(id1.c_str());
+			string label = id2;
+
+			labels.insert(std::pair<float,string>(labelFloat,label));
+
+		}
+	}
+
+	virtual void saveLabels(string basePath){
+		std::map<float,string>::iterator iter;
+
+	    ofstream labelData(basePath.c_str());
+
+	    labelData << numberOfElements << endl;
+	    for (iter = labels.begin(); iter != labels.end(); ++iter) {
+	    	labelData << iter->first << "," << iter->second << endl;
+	    }
+		labelData.close();
+	}
+
 	virtual bool save(string basePath) = 0;
 	virtual bool load(string basePath) = 0;
 
 	virtual string getName() = 0;
+
+private:
+
+	std::map<float,string> labels;
+	int numberOfElements;
 };
 
 
