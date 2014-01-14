@@ -3,6 +3,7 @@
 #include <armadillo>
 #include "../tools/MatrixTools.h"
 
+
 #ifndef CLASSIFIER_BASE_SAVE_PATH
 #define CLASSIFIER_BASE_SAVE_PATH "./analyser/data/classifiers/"
 #endif
@@ -42,6 +43,12 @@ public:
 	virtual float classify(arma::fmat query){
 		cv::Mat queryMat;
 		MatrixTools::fmatToMat(query, queryMat);
+		return classify(queryMat);
+	}
+
+	virtual float classify(vector<float> query){
+		cv::Mat queryMat;
+		MatrixTools::vectorToMat(query, queryMat);
 		return classify(queryMat);
 	}
 };
