@@ -4,6 +4,8 @@
 #include <sstream>
 #include "../../FactoryEndpoint.h"
 #include "../../../analyser/FactoryAnalyser.h"
+#include "../../../analyser/tools/MatrixTools.h"
+#include "../../../analyser/sources/TextFileSource.h"
 #include "../../IEndpoint.h"
 #include <jsoncpp/json/json.h>
 #include <jsoncpp/json/autolink.h>
@@ -26,7 +28,7 @@ public:
 	void handleRequest(string method, map<string, string> queryStrings, istream&, HTTPServerResponse &resp);
 	
 	string getFeatures(map<string, string> parameters);
-	string indexFeatures(map<string, string> parameters);
+	string getFeaturesSingle(map<string, string> parameters);
 	
 
 private:
