@@ -17,11 +17,12 @@ void MatrixTools::matToFMat(cv::Mat &src, arma::fmat& dst){
 
 void MatrixTools::matToVector(cv::Mat &src, vector<float>& dst){	
 	float* array = (float*)src.data;
-	dst = vector<float>(array, array + sizeof(float)*src.cols*src.rows);
+	dst = vector<float>(array, array + src.cols*src.rows);
 }
 
 void MatrixTools::vectorToMat(vector<float>&src, cv::Mat& dst){	
 	dst = Mat(src,true);
+	transpose(dst,dst);
 }
 
 void MatrixTools::matToVectors(cv::Mat &src, vector<vector<float> >& dst){
