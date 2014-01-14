@@ -82,7 +82,7 @@ void LireExtractor::extractFeatures(string filename, vector<float>& features){
 	ss << "java -cp ./analyser/data/lire/:./analyser/data/lire/lire.jar:./analyser/data/lire/lucene-core-4.0.0.jar:./analyser/data/lire/lucene-analyzers-common-4.0.0.jar SimpleExtractor " << 
 	filename << " " << type << " " << filenameNew.str();
 			
-	cout << ss.str() << endl;
+	//cout << ss.str() << endl;
 	std::system(ss.str().c_str());
 	
 	cv::Mat featuresMat;
