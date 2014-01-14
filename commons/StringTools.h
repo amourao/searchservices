@@ -6,11 +6,15 @@
 #include <iostream>
 #include <stdlib.h>     /* srand, rand */
 
+
+using namespace std;
+
 class StringTools {
 
 public:
 
     static std::string genRandom(int len);
+    static std::string replaceAll(string input, string search, string replace);
 
 };
 
