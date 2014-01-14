@@ -111,7 +111,7 @@ float VWBasicClassifier::predictFromFile(cv::Mat testData){
 	string randomAppend = StringTools::genRandom(BASIC_VW_RANDOM_SIZE);
 	stringstream ss;
 
-	ss << "echo \"" << vwData.str() << "\" | "  << "vw -t -i " << modelName << MODEL_EXTENSION_VW <<" -p " << modelName << "." << randomAppend << PREDICTION_READ_EXTENSION_VW <<" --quiet"; 
+	ss << "echo \"" << vwData.str() << "\" | vw -t -i " << modelName << MODEL_EXTENSION_VW <<" -p " << modelName << "." << randomAppend << PREDICTION_READ_EXTENSION_VW <<" --quiet"; 
 	//ss << <
 	//string params = ss.str();
 	float predict = 0;
