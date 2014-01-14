@@ -59,9 +59,8 @@ public:
 private:
 
 	void importTxtToVowpalFormat(cv::Mat trainData, cv::Mat trainLabels);
-	void exportTxtToVowpalFormatClassification(cv::Mat testData);
 	void shuffleTrainingData(cv::Mat& trainData, cv::Mat& trainLabels);
-	float predictFromFile();
+	float predictFromFile(cv::Mat testData);
 
 	void loadLabelMap(string basePath);
 	void saveLabelMap(string basePath);

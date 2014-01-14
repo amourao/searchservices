@@ -68,8 +68,7 @@ void VWBasicClassifier::train( cv::Mat trainData, cv::Mat trainLabels ){
 
 
 float VWBasicClassifier::classify( cv::Mat query){
-	exportTxtToVowpalFormatClassification(query);
-	return predictFromFile();
+	return predictFromFile(query);
 }
 
 void VWBasicClassifier::test( cv::Mat testData, cv::Mat testLabels ){
@@ -98,45 +97,36 @@ void VWBasicClassifier::importTxtToVowpalFormat(cv::Mat trainData, cv::Mat train
 	vwData.close();
 }
 
+float VWBasicClassifier::predictFromFile(cv::Mat testData){
 
-void VWBasicClassifier::exportTxtToVowpalFormatClassification(cv::Mat testData){
-
-	stringstream ss; 
-	ss << modelName << PREDICTION_EXTENSION_VW;
-  	ofstream vwData(ss.str().c_str());
+	stringstream vwData;
 	vwData.setf(std::ios_base::fixed, std::ios_base::floatfield);
 	vwData.precision(5);
 	vwData << "1.0 | "; 
 	for(int j = 0; j < testData.cols; j++)
 		if (testData.at<float>(0,j) != 0)
 			vwData << (j+1) << ":" << testData.at<float>(0,j) << " ";
-	vwData.flush();
-	vwData.close();
-}
-
-float VWBasicClassifier::predictFromFile(){
 	
+
+	string randomAppend = StringTools::genRandom(BASIC_VW_RANDOM_SIZE);
 	stringstream ss;
 
-	ss << "vw -t -d " << modelName  << PREDICTION_EXTENSION_VW <<" -i " << modelName << MODEL_EXTENSION_VW <<" -p " << modelName << PREDICTION_READ_EXTENSION_VW <<" --quiet"; 
+	ss << "echo \"" << vwData.str() << "\" | "  << "vw -t -i " << modelName << MODEL_EXTENSION_VW <<" -p " << modelName << "." << randomAppend << PREDICTION_READ_EXTENSION_VW <<" --quiet"; 
 	//ss << <
 	//string params = ss.str();
+	float predict = 0;
+	stringstream ss2;
+	ss2 << modelName << "." << randomAppend << PREDICTION_READ_EXTENSION_VW;
+
 	std::system(ss.str().c_str());
  
-	float predict = 0;
-
-	stringstream ss2;
-
-	ss2 << modelName << PREDICTION_READ_EXTENSION_VW;
-
 	ifstream prection(ss2.str().c_str());
 
 	std::string line; 
 	std::getline(prection, line);
     std::istringstream in(line);
     in >> predict;
-	
-	//cout << predict << " " << vowpalLabelToinitLabel[predict] << endl;
+
 	return (float)vowpalLabelToinitLabel[predict];
 }
 
