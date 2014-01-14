@@ -56,8 +56,8 @@ void LireExtractor::extractFeatures(Mat& src, Mat& dst){
 	stringstream ss;
 	
 	
-	ss << "java -cp ./analyser/data/lire/:./analyser/data/lire/lire.jar:./analyser/data/lire/lucene-core-4.0.0.jar:./analyser/data/lire/lucene-analyzers-common-4.0.0.jar SimpleExtractor " << 
-	filename << " " << type << " " << filenameNew.str();
+	ss << "java -cp ./analyser/data/lire/:./analyser/data/lire/lire.jar:./analyser/data/lire/lucene-core-4.0.0.jar:./analyser/data/lire/lucene-analyzers-common-4.0.0.jar SimpleExtractor \"" << 
+	filename << "\" " << type << " \"" << filenameNew.str() << "\"";
 			
 	//cout << ss.str() << endl;
 	std::system(ss.str().c_str());
@@ -79,8 +79,8 @@ void LireExtractor::extractFeatures(string filename, vector<float>& features){
 	stringstream ss;
 	
 	
-	ss << "java -cp ./analyser/data/lire/:./analyser/data/lire/lire.jar:./analyser/data/lire/lucene-core-4.0.0.jar:./analyser/data/lire/lucene-analyzers-common-4.0.0.jar SimpleExtractor " << 
-	filename << " " << type << " " << filenameNew.str();
+	ss << "java -cp ./analyser/data/lire/:./analyser/data/lire/lire.jar:./analyser/data/lire/lucene-core-4.0.0.jar:./analyser/data/lire/lucene-analyzers-common-4.0.0.jar SimpleExtractor \"" << 
+	filename << "\" " << type << " \"" << filenameNew.str() << "\"";
 			
 	//cout << ss.str() << endl;
 	std::system(ss.str().c_str());
