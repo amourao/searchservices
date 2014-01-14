@@ -42,24 +42,13 @@ std::vector<std::string> FileDownloader::getFiles(std::string url){
 std::string FileDownloader::getFile(std::string url){
   std::stringstream ss;
   std::string name;
-  ss << DOWNLOAD_FOLDER << genRandom(RANDOM_NAME_SIZE) << "." << getExtension(url);
+  ss << DOWNLOAD_FOLDER << StringTools::genRandom(RANDOM_NAME_SIZE) << "." << getExtension(url);
   name = ss.str();
   getFile(url,name);
   return name;
 }
 
-std::string FileDownloader::genRandom(int len) {
-    std::stringstream ss;
-    static const char alphanum[] =
-        "0123456789"
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        "abcdefghijklmnopqrstuvwxyz";
 
-    for (int i = 0; i < len; ++i) {
-        ss << alphanum[rand() % (sizeof(alphanum) - 1)];
-    }
-    return ss.str();
-}
 
 
 std::string FileDownloader::getExtension(std::string name) {

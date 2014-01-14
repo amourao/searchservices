@@ -9,7 +9,7 @@
 #include <stdio.h>      /* printf, scanf, puts, NULL */
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
-
+#include "StringTools.h"
 
 #define DOWNLOAD_FOLDER "./tmpData/"
 #define RANDOM_NAME_SIZE 32
@@ -29,7 +29,7 @@ public:
 	
 private:
     std::string getExtension(std::string name);
-    std::string genRandom(int len);
+    
     
     std::vector<std::string> split(const std::string &s, char delim);
     

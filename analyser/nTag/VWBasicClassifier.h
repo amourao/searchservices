@@ -2,6 +2,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/ml/ml.hpp>
 #include "IClassifier.h"
+#include "../../commons/StringTools.h"
 #include <cstdlib>      // std::rand, std::srand
 #include <iostream>
 #include <fstream>
@@ -10,6 +11,10 @@
 
 #ifndef MODEL_EXTENSION_VW
 #define MODEL_EXTENSION_VW ".model"
+#endif
+
+#ifndef BASIC_VW_RANDOM_SIZE
+#define BASIC_VW_RANDOM_SIZE 32
 #endif
 
 #ifndef TRAINDATA_EXTENSION_VW
