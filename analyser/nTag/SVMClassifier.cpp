@@ -1,9 +1,23 @@
 #include "SVMClassifier.h"
 
 
+static SVMClassifier SVMClassifierFactory;
+
 SVMClassifier::SVMClassifier(){
+	FactoryClassifier::getInstance()->registerType("SVMClassifier",this);
 }
 
+void* SVMClassifier::createType(string& type){
+	if (type == "SVMClassifier")
+		return new SVMClassifier(type);
+	cerr << "Error registering type from constructor (this should never happen)" << endl;
+	return NULL;
+}
+
+
+SVMClassifier::SVMClassifier(string& type){
+	
+}
 
 SVMClassifier::~SVMClassifier(){
 }
@@ -30,7 +44,7 @@ void SVMClassifier::test( cv::Mat testData, cv::Mat testLabels ){
 	//TODO
 }
 string SVMClassifier::getName(){
-	return "SVM";
+	return "SVMClassifier";
 }
 
 bool SVMClassifier::save(string basePath){

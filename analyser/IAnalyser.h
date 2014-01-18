@@ -14,7 +14,7 @@ class IAnalyser: public FactoryMethod {
 public:
 
 	virtual ~IAnalyser(){}
-	
+
 	virtual void* createType(string &typeId) = 0;
 
 	virtual IDataModel::type getType() = 0;

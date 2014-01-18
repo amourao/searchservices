@@ -1,6 +1,21 @@
 #include "SRClassifier.h"
 
+static SRClassifier SRClassifierFactory;
+
 SRClassifier::SRClassifier(){
+	FactoryClassifier::getInstance()->registerType("SRClassifier",this);
+}
+
+void* SRClassifier::createType(string& type){
+	if (type == "SRClassifier")
+		return new SRClassifier(type);
+	cerr << "Error registering type from constructor (this should never happen)" << endl;
+	return NULL;
+	
+}
+
+
+SRClassifier::SRClassifier(string& type){
 	
 }
 
@@ -11,11 +26,9 @@ SRClassifier::~SRClassifier(){
 void SRClassifier::train(cv::Mat trainData, cv::Mat trainLabels){
 	arma::fmat trainDataFMat;
 	arma::fmat trainLabelsFMat;
-	std::cout << "start train" << std::endl;
 	MatrixTools::matToFMat(trainData, trainDataFMat);
 	MatrixTools::matToFMat(trainLabels, trainLabelsFMat);
 	train(trainDataFMat,trainLabelsFMat);
-	std::cout << "ok" << std::endl;
 }
 
 void SRClassifier::test(cv::Mat testData, cv::Mat testLabels){
@@ -150,7 +163,7 @@ void SRClassifier::test(arma::fmat testData, arma::fmat testLabels){
 }
 
 string SRClassifier::getName(){
-	return "SR";
+	return "SRClassifier";
 }
 
 void SRClassifier::changeLabels(arma::fmat trainLabels) {

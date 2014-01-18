@@ -4,6 +4,7 @@
 #include <queue>
 #include <opencv2/flann/flann.hpp>
 #include "IClassifier.h"
+#include "../FactoryClassifier.h"
 
 using namespace cv;
 using namespace std;
@@ -22,6 +23,7 @@ class kNNClassifier: public IClassifier
 {
 public:
 	kNNClassifier();
+	kNNClassifier(string& type);
 	~kNNClassifier();
 
 	void train(cv::Mat trainData, cv::Mat trainLabels);
@@ -33,6 +35,8 @@ public:
 	float classify( cv::Mat query, int neighboursCount = 1);
 	
 	string getName();
+
+	void* createType(string &typeId);
 
 	bool save(string basePath);
 	bool load(string basePath);

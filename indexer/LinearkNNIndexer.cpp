@@ -3,7 +3,7 @@
 static LinearkNNIndexer linearkNNIndexerFactory;
 
 LinearkNNIndexer::LinearkNNIndexer(){
-	FactoryIndexer::getInstance()->registerType("MedicalRetrieval",this);
+	FactoryIndexer::getInstance()->registerType("medicalRetrieval",this);
 }
 
 LinearkNNIndexer::~LinearkNNIndexer(){
@@ -11,7 +11,7 @@ LinearkNNIndexer::~LinearkNNIndexer(){
 }
 
 void* LinearkNNIndexer::createType(string &typeId){
-	if (typeId == "MedicalRetrieval"){
+	if (typeId == "medicalRetrieval"){
 		LinearkNNIndexer* index = new LinearkNNIndexer();
 		index->load("");
 		return index;

@@ -2,7 +2,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <armadillo>
 #include "../tools/MatrixTools.h"
-
+#include "../../commons/factory/Factory.h"
 
 #ifndef CLASSIFIER_BASE_SAVE_PATH
 #define CLASSIFIER_BASE_SAVE_PATH "./analyser/data/classifiers/"
@@ -10,10 +10,12 @@
 
 using namespace std;
 
-class IClassifier
-{
+class IClassifier: public FactoryMethod {
 public:
+
 	virtual ~IClassifier() {}
+
+	virtual void* createType(string &typeId) = 0;
 	
 	virtual void train(cv::Mat trainData, cv::Mat trainLabels) = 0;
 	virtual void test(cv::Mat testData, cv::Mat testLabels) = 0;

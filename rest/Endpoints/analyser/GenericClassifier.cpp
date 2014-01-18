@@ -68,18 +68,8 @@ string GenericClassifier::classify(map<string, string> parameters){
 	IDataModel* data = analyser->getFeatures(filename);
 	vector<float>* features = (vector<float>*) data->getValue();
 
-	IClassifier* classifier;
-
-	//TODO: add to factory
-	if (classifierName == "svm"){
-		classifier = new SVMClassifier();
-	} else if (classifierName == "knn"){
-		classifier = new kNNClassifier();
-	} else if (classifierName == "vw"){
-		classifier = new VWBasicClassifier();
-	} else if (classifierName == "sr"){
-		classifier = new SRClassifier();
-	}
+	FactoryClassifier * fc = FactoryClassifier::getInstance();
+	IClassifier* classifier = (IClassifier*)fc->createType(classifierName);
 
 	stringstream ss;
 
@@ -115,18 +105,8 @@ string GenericClassifier::create(map<string, string> parameters){
 	
 	MatrixTools::readBin(file, features, labels);
 
-	IClassifier* classifier;
-
-	//TODO: add to factory
-	if (classifierName == "svm"){
-		classifier = new SVMClassifier();
-	} else if (classifierName == "knn"){
-		classifier = new kNNClassifier();
-	} else if (classifierName == "vw"){
-		classifier = new VWBasicClassifier();
-	} else if (classifierName == "sr"){
-		classifier = new SRClassifier();
-	}
+	FactoryClassifier * fc = FactoryClassifier::getInstance();
+	IClassifier* classifier = (IClassifier*)fc->createType(classifierName);
 
 	classifier->train(features,labels.col(0));
 

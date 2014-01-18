@@ -1,8 +1,21 @@
 #include "kNNClassifier.h"
 
+static kNNClassifier kNNClassifierFactory;
+
+kNNClassifier::kNNClassifier(){
+	FactoryClassifier::getInstance()->registerType("kNNClassifier",this);
+}
+
+void* kNNClassifier::createType(string& type){
+	if (type == "kNNClassifier")
+		return new kNNClassifier(type);
+	cerr << "Error registering type from constructor (this should never happen)" << endl;
+	return NULL;
+	
+}
 
 
-kNNClassifier::kNNClassifier()
+kNNClassifier::kNNClassifier(string& type)
 {
 	flannIndex = NULL;
 }
@@ -45,7 +58,7 @@ float kNNClassifier::classify( cv::Mat query){
 }
 
 string kNNClassifier::getName(){
-	return "kNN";
+	return "kNNClassifier";
 }
 
 float kNNClassifier::classify( cv::Mat query, int neighboursCount )

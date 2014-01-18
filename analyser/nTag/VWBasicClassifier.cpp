@@ -1,12 +1,25 @@
 #include "VWBasicClassifier.h"
 
 
+static VWBasicClassifier VWBasicClassifierFactory;
+
 VWBasicClassifier::VWBasicClassifier(){
-	modelName = "./tmpData/vwTmpModel";
+	FactoryClassifier::getInstance()->registerType("VWBasicClassifier",this);
+}
+
+void* VWBasicClassifier::createType(string& type){
+	if (type == "VWBasicClassifier")
+		return new VWBasicClassifier("");
+	cerr << "Error registering type from constructor (this should never happen)" << endl;
+	return NULL;
+	
 }
 
 VWBasicClassifier::VWBasicClassifier(string _modelName){
-	modelName = _modelName;
+	if (_modelName == "")
+		modelName = "./tmpData/vwTmpModel";
+	else
+		modelName = _modelName;
 }
 
 VWBasicClassifier::~VWBasicClassifier(){

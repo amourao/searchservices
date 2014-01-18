@@ -7,11 +7,10 @@
 #include "../../FactoryEndpoint.h"
 
 #include "../../../analyser/FactoryAnalyser.h"
+#include "../../../analyser/FactoryClassifier.h"
 
-#include "../../../analyser/nTag/SRClassifier.h"
-#include "../../../analyser/nTag/SVMClassifier.h"
-#include "../../../analyser/nTag/kNNClassifier.h"
-#include "../../../analyser/nTag/VWBasicClassifier.h"
+#include "../../../analyser/nTag/IClassifier.h"
+
 #include "../../../analyser/tools/MatrixTools.h"
 
 #include <jsoncpp/json/json.h>
@@ -40,4 +39,3 @@ private:
 
 	std::string type;
 };
-

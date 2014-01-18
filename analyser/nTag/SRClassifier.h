@@ -5,6 +5,7 @@
 #include "thresholding.h"
 #include "IClassifier.h"
 #include <opencv2/highgui/highgui.hpp>
+#include "../FactoryClassifier.h"
 
 using namespace std;
 
@@ -19,6 +20,7 @@ class SRClassifier: public IClassifier
 {
 public:
 	SRClassifier();
+	SRClassifier(string& type);
 	~SRClassifier();
 
 	void train(cv::Mat trainData, cv::Mat trainLabels);
@@ -33,6 +35,7 @@ public:
 	float classify(arma::fmat query, double* error = NULL, arma::fmat* recErrors = NULL);
 	string getName();
 	
+	void* createType(string &typeId);
 
 	void changeLabels(arma::fmat trainLabels);
 private:
@@ -44,4 +47,5 @@ private:
 	
 	int numberOfClasses;
 };
+
 

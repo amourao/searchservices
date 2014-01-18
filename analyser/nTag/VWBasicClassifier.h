@@ -8,6 +8,7 @@
 #include <fstream>
 #include <algorithm>    // std::random_shuffle
 #include <vector>       // std::vector
+#include "../FactoryClassifier.h"
 
 #ifndef MODEL_EXTENSION_VW
 #define MODEL_EXTENSION_VW ".model"
@@ -48,6 +49,8 @@ public:
 	void test(cv::Mat testData, cv::Mat testLabels);
 	float classify( cv::Mat query);
 	string getName();
+
+	void* createType(string &typeId);
 
 	bool save(string basePath);
 	bool load(string basePath);
