@@ -29,7 +29,33 @@ public:
 	virtual ~IIndexer(){}
 	
 	virtual void* createType(string &typeId) = 0;
+
+
+	virtual vector<std::pair<float,float> > knnSearchId(std::vector<float>& v, int n = 1000){
+		cv::Mat vMat;
+		MatrixTools::vectorToMat(v, vMat);
+		return knnSearchId(vMat,n);
+	}
+
+	virtual vector<std::pair<string,float> > knnSearchName(std::vector<float>& v, int n = 1000){
+		cv::Mat vMat;
+		MatrixTools::vectorToMat(v, vMat);
+		return knnSearchName(vMat,n);
+	}
+
+	virtual vector<std::pair<float,float> > radiusSearchId(std::vector<float>& v, double radius, int n = 1000){
+		cv::Mat vMat;
+		MatrixTools::vectorToMat(v, vMat);
+		return radiusSearchId(vMat,radius,n);
+	}
+
+	virtual vector<std::pair<string,float> > radiusSearchName(std::vector<float>& v, double radius, int n = 1000){
+		cv::Mat vMat;
+		MatrixTools::vectorToMat(v, vMat);
+		return radiusSearchName(vMat,radius,n);
+	}
 	
+
 	virtual vector<std::pair<float,float> > knnSearchId(cv::Mat features, int n) = 0;
 	virtual vector<std::pair<string,float> > knnSearchName(cv::Mat features, int n) = 0;
 
@@ -54,7 +80,14 @@ public:
 		vector<string> result;
 
 		for(uint i = 0; i < v1.size(); i++){
-			result.push_back(labels[v1.at(i)]);
+			if (labels.size() > 0)
+				result.push_back(labels[v1.at(i)]);
+			else {
+				stringstream ss;
+				ss << v1.at(i);
+				string s = ss.str();
+				result.push_back(s);
+			}
 		}
 
 		return result;

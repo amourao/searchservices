@@ -2,8 +2,14 @@
 
 static LinearkNNIndexer linearkNNIndexerFactory;
 
+
+
 LinearkNNIndexer::LinearkNNIndexer(){
-	FactoryIndexer::getInstance()->registerType("medicalRetrieval",this);
+	FactoryIndexer::getInstance()->registerType("linearkNNIndexer",this);
+}
+
+LinearkNNIndexer::LinearkNNIndexer(string& type){
+	
 }
 
 LinearkNNIndexer::~LinearkNNIndexer(){
@@ -11,11 +17,10 @@ LinearkNNIndexer::~LinearkNNIndexer(){
 }
 
 void* LinearkNNIndexer::createType(string &typeId){
-	if (typeId == "medicalRetrieval"){
-		LinearkNNIndexer* index = new LinearkNNIndexer();
-		index->load("");
+	if (typeId == "linearkNNIndexer"){
+		LinearkNNIndexer* index = new LinearkNNIndexer(typeId);
 		return index;
-	}
+	}  
 	cerr << "Error registering type from constructor (this should never happen)" << endl;
 	return NULL;
 }
@@ -40,7 +45,8 @@ vector<std::pair<float,float> > LinearkNNIndexer::knnSearchId(cv::Mat query, int
 	return mergeVectors(indicesFloat,dists);
 }
 
-vector<std::pair<string,float> > LinearkNNIndexer::knnSearchName(cv::Mat query, int n){
+vector<std::pair<string,float> > LinearkNNIndexer::knnSearchName(cv::Mat 
+	query, int n){
 	vector<int> indices (n);
 	vector<float> dists (n);
 	//cout << j++ << endl;
@@ -95,23 +101,21 @@ bool LinearkNNIndexer::load(string basePath){
 	stringstream ss;
 	ss << INDEXER_BASE_SAVE_PATH << basePath << INDEX_DATA_EXTENSION_KNN;
 
+	
 	FileStorage fs(ss.str().c_str(), FileStorage::READ);
-
+	
 	fs["indexData"] >> indexData;
-
+	
 	flann::LinearIndexParams params = flann::LinearIndexParams();
 
-	if ( flannIndex != NULL)
-		delete flannIndex;
+	//if ( flannIndex != NULL)
+	//	delete flannIndex;
 	flannIndex = new flann::Index();
 	
 	flannIndex->build(indexData,params);
-	
 	stringstream ssL;
 	ssL << INDEXER_BASE_SAVE_PATH << basePath << INDEXER_LABELS_EXTENSION;
-
 	loadLabels(ssL.str());
-
 	return true;
 }
 

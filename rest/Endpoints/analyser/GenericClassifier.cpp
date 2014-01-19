@@ -8,7 +8,7 @@ GenericClassifier::GenericClassifier(string type){
 
 GenericClassifier::GenericClassifier(){
 
-	FactoryEndpoint::getInstance()->registerType("/GenericClassifier",this);
+	FactoryEndpoint::getInstance()->registerType("/genericClassifier",this);
 
 }
 
@@ -18,7 +18,7 @@ void* GenericClassifier::createType(string& type){
 	std::cout << "New type requested: " << type << std::endl;
 	
 	
-	if (type == "/GenericClassifier"){
+	if (type == "/genericClassifier"){
 		return new GenericClassifier(type);	
 	}	
 	std::cerr << "Error registering type from constructor (this should never happen)" << std::endl;
@@ -33,7 +33,7 @@ void GenericClassifier::handleRequest(string method, map<string, string> querySt
 		resp.send();
 		return ;
 	} 
-	if (type == "/GenericClassifier"){
+	if (type == "/genericClassifier"){
 
 		string response("");
 		string action = queryStrings["action"];

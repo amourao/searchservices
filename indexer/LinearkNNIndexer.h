@@ -27,6 +27,7 @@ class LinearkNNIndexer: public IIndexer {
 public:
 
 	LinearkNNIndexer();
+	LinearkNNIndexer(string& type);
 	~LinearkNNIndexer();
 	
 	void* createType(string &typeId);
