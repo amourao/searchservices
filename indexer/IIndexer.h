@@ -80,8 +80,9 @@ public:
 		vector<string> result;
 
 		for(uint i = 0; i < v1.size(); i++){
-			if (labels.size() > 0)
+			if (labels.size() > 0){
 				result.push_back(labels[v1.at(i)]);
+			}
 			else {
 				stringstream ss;
 				ss << v1.at(i);

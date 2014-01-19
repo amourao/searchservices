@@ -95,14 +95,28 @@ string GenericIndexer::retrieve(map<string, string> parameters){
 	
 	Json::Value featureArray(Json::arrayValue);
 	for (int i = 0; i < resultList.size(); i++){
-		
-		featureArray.append(features->at(i));
-		//cout << features->at(i) << " " ;
+		featureArray.append(resultList.at(i).first);
+	}
+
+	Json::Value distArray(Json::arrayValue);
+	for (int i = 0; i < resultList.size(); i++){
+		distArray.append(resultList.at(i).second);
 	}
 	
 	root["result"] = "ok";
 	root["indexer"] = ss.str();
-	root["list"] = featureArray;
+	root["filename"] = filename;
+	root["analyser"] = parameters["analyser"];
+	root["indexer"] = parameters["indexer"];
+	root["task"] = parameters["task"];
+	root["type"] = parameters["type"];	
+	root["n"] = atoi(parameters["n"].c_str());
+	root["n_true"] = (int)resultList.size();
+	if (retrievalType == "radius")
+		root["n"] = atof(parameters["radius"].c_str());
+	root["idList"] = featureArray;
+	root["distList"] = distArray;
+
 	stringstream ssJ;
 	ssJ << root;
 	return ssJ.str();
@@ -139,6 +153,8 @@ string GenericIndexer::create(map<string, string> parameters){
 	
 	root["result"] = "ok";
 	root["indexer"] = ss.str();
+	root["indexer"] = parameters["indexer"];
+	root["task"] = parameters["task"];
 	stringstream ssJ;
 	ssJ << root;
 	return ssJ.str();
