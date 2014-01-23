@@ -89,17 +89,15 @@ string GenericClassifier::classify(map<string, string> parameters){
 	ssJ << root;
 	return ssJ.str();
 }
-
+//http://localhost:9898/genericClassifier?action=create&trainData=file:///home/amourao/data_facialExpression_lbp.bin&analyser=LBP&classifier=VWBasicClassifier&task=facialExpressionInter
 string GenericClassifier::create(map<string, string> parameters){
 	FileDownloader fd;
 	
-	string filename = fd.getFile(parameters["trainData"]);
+	string file = fd.getFile(parameters["trainData"]);
 	string analyserName = parameters["analyser"];
 	string classifierName = parameters["classifier"];
 	string taskName = parameters["task"];
 	
-	string file(filename);
-
 	Mat features;
 	Mat labels;
 	
@@ -108,7 +106,9 @@ string GenericClassifier::create(map<string, string> parameters){
 	FactoryClassifier * fc = FactoryClassifier::getInstance();
 	IClassifier* classifier = (IClassifier*)fc->createType(classifierName);
 
-	classifier->train(features,labels.col(0));
+	cout << features.cols << " " << features.rows << " " << labels.cols << " " << labels.rows << endl;
+
+	classifier->train(features,labels.col(1));
 
 	stringstream ss;
 

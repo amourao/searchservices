@@ -113,36 +113,54 @@ string ExtractFeatures::getFeatures(map<string, string > parameters){
 	string taskName = parameters["task"];
 	string outputLocation = parameters["output"];
 	
-	
 	FactoryAnalyser * f = FactoryAnalyser::getInstance();
 
 	IAnalyser* analyser= (IAnalyser*)f->createType(analyserName);
 
 	Mat src, features, labels;
 	
-	TextFileSource is(filename);
+	TextFileSourceV2 is(filename);
 	cout << is.getImageCount() << endl;
+
+	int imageInfoFieldCount = is.getImageInfoFieldCount();
+	int classFieldId = is.getClassFieldId();
+	int indexFieldId = is.getIndexFieldId();
+
+	vector<map<string,int> > idsToInternalIds (imageInfoFieldCount);
+
 	for (int k = 0; k < is.getImageCount(); k++) {
 		if (!(src = is.nextImage()).empty()) { // src contains the image, but the IAnalyser interface needs a path 
 			cv::Mat featuresRow;
 
+			cv::Mat label;
+			if (classFieldId == indexFieldId)
+				label = cv::Mat (1, imageInfoFieldCount+1, CV_32F);
+			else
+				label = cv::Mat (1, imageInfoFieldCount, CV_32F);	
 
-			cv::Mat label(1, 2, CV_32F);
 
 			//parse the label from the info in the txt file
 			string path, id1, id2;
+			//stringstream liness(is.getImageInfo());
 
-			stringstream liness(is.getImageInfo());
+			vector<string> info = is.getCurrentImageInfoVector();
 
-			getline(liness, path, ';');
-			getline(liness, id1, ';');
-			getline(liness, id2);
+			for(int i = 0; i < imageInfoFieldCount; i++)
+				if (idsToInternalIds.at(i).count(info.at(i)) == 0)
+ 			 		idsToInternalIds.at(i)[info.at(i)] = idsToInternalIds.at(i).size()-1;
 
-			label.at<float>(0, 0) = atoi(id2.c_str());
-			label.at<float>(0, 1) = atoi(id1.c_str());
+			label.at<float>(0, 0) = idsToInternalIds.at(indexFieldId)[info.at(indexFieldId)];
+			label.at<float>(0, 1) = idsToInternalIds.at(classFieldId)[info.at(classFieldId)];
 
-			//cout << path << endl;
+			int increment = 2; //the first two fields are reserved for index and class lables
+			for(int i = 0; i < imageInfoFieldCount; i++){ // the remaining are saved after them, skipping the index and class indexes
+				if (i == indexFieldId || i == classFieldId)
+					increment--;
+				else
+					label.at<float>(0, i+increment) = idsToInternalIds.at(i)[info.at(i)];
+			}
 
+			path = is.getImagePath();
 			
 			IDataModel* data = analyser->getFeatures(path);
 			vector<float>* v = (vector<float>*) data->getValue();
@@ -160,7 +178,8 @@ string ExtractFeatures::getFeatures(map<string, string > parameters){
 	labels.convertTo(labels,CV_32F);
 
 
-
+	cout << idsToInternalIds.at(indexFieldId).size() << endl;
+	cout << idsToInternalIds.at(classFieldId).size() << endl;
 	MatrixTools::writeBin(outputLocation,features,labels);
 	/*
 	for(int i = 0; i < 8; i++)

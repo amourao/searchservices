@@ -47,9 +47,11 @@ void MatrixTools::readBin(string& file, cv::Mat& features, cv::Mat& labels){
 	int signature;
 	ifs.read( (char*) &signature, sizeof(signature));
 	if (signature == BIN_SIGNATURE_INT){
-		MatrixTools::writeBinV2(file, features, labels);
+		ifs.close();
+		MatrixTools::readBinV2(file, features, labels);
 	} else {
-		MatrixTools::writeBinV1(file, features, labels);
+		ifs.close();
+		MatrixTools::readBinV1(file, features, labels);
 	}
 }
 
@@ -180,7 +182,7 @@ void MatrixTools::readBinV2(string& file, vector<cv::Mat>& features, cv::Mat& la
 
 	ifs.read( (char*) &binV, sizeof(binV));
 
-	if (signature != BIN_VERSION){
+	if (binV != BIN_VERSION){
 		cerr << "Read error: Wrong version" << endl;
 		return;
 	}
@@ -202,11 +204,11 @@ void MatrixTools::readBinV2(string& file, vector<cv::Mat>& features, cv::Mat& la
 		transpose(tmpLabels, tmpLabels);
 		labels.push_back(tmpLabels);
 
-		Mat featureMatrix (dimsX,dimsY,CV_32F);
+		Mat featureMatrix (dimsY,dimsX,CV_32F);
 		for (int x = 0; x < dimsX; x++) {
 			for (int y = 0; y < dimsY; y++) {
 				ifs.read( (char*) &value, sizeof(value));
-				featureMatrix.at<float>(x,y) = value;
+				featureMatrix.at<float>(y,x) = value;
 			}
 		}
 		features.push_back(featureMatrix);
@@ -244,7 +246,7 @@ void MatrixTools::writeBinV2(string& filename, vector<cv::Mat>& features, cv::Ma
 
 		float value;
 		for (int i = 0; i < dimsZ; i++) {
-			value = (float) labels.at<float>(nSamples,i);
+			value = (float) labels.at<float>(s,i);
 			binFile.write((const char*) &value, sizeof(float));
 		}
 		Mat featureSingle = features.at(s);
