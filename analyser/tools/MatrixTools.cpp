@@ -42,8 +42,24 @@ void MatrixTools::vectorsToMat(vector<vector<float> >&src, cv::Mat& dst){
 	}
 }
 
-//Atention, matrices must be in CV_32F format (single dimensional float matrix)
 void MatrixTools::readBin(string& file, cv::Mat& features, cv::Mat& labels){
+	std::fstream ifs( file.c_str(), std::ios::in | std::ios::binary );
+	int signature;
+	ifs.read( (char*) &signature, sizeof(signature));
+	if (signature == BIN_SIGNATURE_INT){
+		MatrixTools::writeBinV2(file, features, labels);
+	} else {
+		MatrixTools::writeBinV1(file, features, labels);
+	}
+}
+
+//Atention, matrices must be in CV_32F format (single dimensional float matrix)
+void MatrixTools::writeBin(string& filename, cv::Mat& features, cv::Mat& labels){
+	MatrixTools::writeBinV2(filename, features, labels);
+}
+
+//Atention, matrices must be in CV_32F format (single dimensional float matrix)
+void MatrixTools::readBinV1(string& file, cv::Mat& features, cv::Mat& labels){
 
 	string f = file;
  
@@ -86,7 +102,7 @@ void MatrixTools::readBin(string& file, cv::Mat& features, cv::Mat& labels){
 }
 
 //Atention, matrices must be in CV_32F format (single dimensional float matrix)
-void MatrixTools::writeBin(string& filename, cv::Mat& features, cv::Mat& labels){
+void MatrixTools::writeBinV1(string& filename, cv::Mat& features, cv::Mat& labels){
 	std::fstream binFile;
 	binFile.open(filename.c_str(), std::ios::out | std::ios::binary);
 	
@@ -118,6 +134,126 @@ void MatrixTools::writeBin(string& filename, cv::Mat& features, cv::Mat& labels)
 		for (int i = 0; i < dims; i++) {
 			float value = features.at<float>(s,i);
 			binFile.write((const char*) &value, sizeof(float));
+		}
+		binFile.flush();
+	}
+
+	binFile.close();
+	
+}
+
+
+void MatrixTools::readBinV2(string& file, cv::Mat& features, cv::Mat& labels){
+	vector<cv::Mat> featuresNew;
+
+	MatrixTools::readBinV2(file, featuresNew, labels);
+	for (uint i = 0; i < featuresNew.size(); i++){
+		Mat row = featuresNew.at(i);
+		features.push_back(row);
+	}
+}
+
+void MatrixTools::writeBinV2(string& file, cv::Mat& features, cv::Mat& labels){
+	vector<cv::Mat> featuresNew;
+
+	for (int i = 0; i < features.rows; i++){
+		Mat row = features.row(i);
+		featuresNew.push_back(row);
+	}
+	MatrixTools::writeBinV2(file, featuresNew, labels);
+}
+
+//Atention, matrices must be in CV_32F format (single dimensional float matrix)
+void MatrixTools::readBinV2(string& file, vector<cv::Mat>& features, cv::Mat& labels){
+	string f = file;
+ 
+ 	int signature,binV,nSamples,dimsX,dimsY,dimsZ;
+ 
+	std::fstream ifs( f.c_str(), std::ios::in | std::ios::binary );
+	
+
+	ifs.read( (char*) &signature, sizeof(signature));
+	if (signature != BIN_SIGNATURE_INT){
+		cerr << "Read error: Wrong signature" << endl;
+		return;
+	}
+
+	ifs.read( (char*) &binV, sizeof(binV));
+
+	if (signature != BIN_VERSION){
+		cerr << "Read error: Wrong version" << endl;
+		return;
+	}
+
+	ifs.read( (char*) &nSamples, sizeof(nSamples));
+	ifs.read( (char*) &dimsX, sizeof(dimsX));
+	ifs.read( (char*) &dimsY, sizeof(dimsY));
+	ifs.read( (char*) &dimsZ, sizeof(dimsZ));
+
+	for (int s = 0; s < nSamples; s++) {
+		float value;
+		Mat tmpLabels;
+
+
+		for (int i = 0; i < dimsZ; i++) {
+			ifs.read( (char*) &value, sizeof(value));
+			tmpLabels.push_back(value);
+		}
+		transpose(tmpLabels, tmpLabels);
+		labels.push_back(tmpLabels);
+
+		Mat featureMatrix (dimsX,dimsY,CV_32F);
+		for (int x = 0; x < dimsX; x++) {
+			for (int y = 0; y < dimsY; y++) {
+				ifs.read( (char*) &value, sizeof(value));
+				featureMatrix.at<float>(x,y) = value;
+			}
+		}
+		features.push_back(featureMatrix);
+	}
+}
+
+//Atention, matrices must be in CV_32F format (single dimensional float matrix)
+void MatrixTools::writeBinV2(string& filename, vector<cv::Mat>& features, cv::Mat& labels){
+	std::fstream binFile;
+	binFile.open(filename.c_str(), std::ios::out | std::ios::binary);
+	
+	int signature = BIN_SIGNATURE_INT;
+	int binV = BIN_VERSION;
+
+	binFile.write((const char*) &signature, sizeof(int));
+	binFile.write((const char*) &binV, sizeof(int));
+
+
+	int nSamples = (int)features.size();
+
+	binFile.write((const char*) &nSamples, sizeof(int));
+
+	int dimsX = features.at(0).cols;
+	int dimsY = features.at(0).rows;
+
+	int dimsZ = labels.cols;
+	
+	binFile.write((const char*) &dimsX, sizeof(int));
+	binFile.write((const char*) &dimsY, sizeof(int));
+	binFile.write((const char*) &dimsZ, sizeof(int));
+		
+	//std::cout << features.cols << " " << features.rows << endl;
+	
+	for (int s = 0; s < nSamples; s++) {
+
+		float value;
+		for (int i = 0; i < dimsZ; i++) {
+			value = (float) labels.at<float>(nSamples,i);
+			binFile.write((const char*) &value, sizeof(float));
+		}
+		Mat featureSingle = features.at(s);
+		for (int x = 0; x < dimsX; x++) {
+			for (int y = 0; y < dimsY; y++) {
+				value = featureSingle.at<float>(x,y);
+				binFile.write((const char*) &value, sizeof(float));
+			}
+			binFile.flush();
 		}
 		binFile.flush();
 	}

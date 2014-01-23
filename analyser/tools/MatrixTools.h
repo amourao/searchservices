@@ -8,6 +8,11 @@
 #include <vector>
 #include <fstream>
 
+#define BIN_SIGNATURE_HEX 4e534e53 
+#define BIN_SIGNATURE_INT 1314082387
+
+#define BIN_VERSION 2
+
 using namespace cv;
 using namespace std;
 
@@ -27,10 +32,26 @@ static void vectorToMat(vector<float>&src, cv::Mat& dst);
 
 static void vectorsToMat(vector<vector<float> >&src, cv::Mat& dst);
 
+
 //Atention, matrices must be in CV_32F format (single dimensional float matrix)
 static void readBin(string& file, cv::Mat& features, cv::Mat& labels);
 
 //Atention, matrices must be in CV_32F format (single dimensional float matrix)
 static void writeBin(string& file, cv::Mat& features, cv::Mat& labels);
+
+//Atention, matrices must be in CV_32F format (single dimensional float matrix)
+static void readBinV1(string& file, cv::Mat& features, cv::Mat& labels);
+
+//Atention, matrices must be in CV_32F format (single dimensional float matrix)
+static void writeBinV1(string& file, cv::Mat& features, cv::Mat& labels);
+
+
+static void readBinV2(string& file, cv::Mat& features, cv::Mat& labels);
+
+static void writeBinV2(string& file, cv::Mat& features, cv::Mat& labels);
+
+static void readBinV2(string& file, vector<cv::Mat>& features, cv::Mat& labels);
+
+static void writeBinV2(string& file, vector<cv::Mat>& features, cv::Mat& labels);
 
 };
