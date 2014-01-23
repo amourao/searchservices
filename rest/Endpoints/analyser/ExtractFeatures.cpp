@@ -142,6 +142,8 @@ string ExtractFeatures::getFeatures(map<string, string > parameters){
 			label.at<float>(0, 1) = atoi(id1.c_str());
 
 			//cout << path << endl;
+
+			
 			IDataModel* data = analyser->getFeatures(path);
 			vector<float>* v = (vector<float>*) data->getValue();
 			vector<float> v2 = *v;
