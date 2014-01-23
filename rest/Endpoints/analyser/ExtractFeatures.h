@@ -14,6 +14,7 @@
 
 #include "../../../commons/FileDownloader.h"
 
+#define LABELS_EXT_EXTRACT_FEATURES ".labels"
 
 
 class ExtractFeatures : public IEndpoint
@@ -34,5 +35,6 @@ public:
 
 private:
   string type;
+  void exportLabels(string filename, vector<map<string, int> > labels);
 };
 

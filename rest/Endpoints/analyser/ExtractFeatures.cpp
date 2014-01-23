@@ -104,6 +104,36 @@ string ExtractFeatures::getFeaturesSingle(map<string, string > parameters){
 	return ss.str();
 }
 
+void ExtractFeatures::exportLabels(string filename, vector<map<string, int> > labels){
+	for (uint i = 0; i < labels.size(); i++){
+		std::map<string,int>::iterator iter;
+		std::map<int,string>::iterator iter2;
+
+		std::map<int,string> sortedMap;
+
+		stringstream ss;
+
+		ss << filename << "_" << i << LABELS_EXT_EXTRACT_FEATURES;
+
+	    ofstream labelData(ss.str().c_str());
+
+	    labelData << labels.at(i).size() << endl;
+	    
+   	    for (iter = labels.at(i).begin(); iter != labels.at(i).end(); ++iter) {
+	    	sortedMap[iter->second] = iter->first;
+	    }
+
+
+	    for (iter2 = sortedMap.begin(); iter2 != sortedMap.end(); ++iter2) {
+	    	labelData << iter2->first << "," << iter2->second << endl;
+	    }
+
+
+		labelData.close();
+	}
+
+}
+
 string ExtractFeatures::getFeatures(map<string, string > parameters){
 	
 	FileDownloader fd;
@@ -180,7 +210,8 @@ string ExtractFeatures::getFeatures(map<string, string > parameters){
 
 	cout << idsToInternalIds.at(indexFieldId).size() << endl;
 	cout << idsToInternalIds.at(classFieldId).size() << endl;
-	MatrixTools::writeBin(outputLocation,features,labels);
+	MatrixTools::writeBinV2(outputLocation,features,labels);
+	exportLabels(filename,idsToInternalIds);
 	/*
 	for(int i = 0; i < 8; i++)
 	{
@@ -204,3 +235,4 @@ string ExtractFeatures::getFeatures(map<string, string > parameters){
 	ss << root;
 	return ss.str();
 }
+

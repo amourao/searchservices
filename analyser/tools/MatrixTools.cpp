@@ -57,7 +57,7 @@ void MatrixTools::readBin(string& file, cv::Mat& features, cv::Mat& labels){
 
 //Atention, matrices must be in CV_32F format (single dimensional float matrix)
 void MatrixTools::writeBin(string& filename, cv::Mat& features, cv::Mat& labels){
-	MatrixTools::writeBinV2(filename, features, labels);
+	MatrixTools::writeBinV1(filename, features, labels);
 }
 
 //Atention, matrices must be in CV_32F format (single dimensional float matrix)
@@ -252,7 +252,7 @@ void MatrixTools::writeBinV2(string& filename, vector<cv::Mat>& features, cv::Ma
 		Mat featureSingle = features.at(s);
 		for (int x = 0; x < dimsX; x++) {
 			for (int y = 0; y < dimsY; y++) {
-				value = featureSingle.at<float>(x,y);
+				value = featureSingle.at<float>(y,x);
 				binFile.write((const char*) &value, sizeof(float));
 			}
 			binFile.flush();
