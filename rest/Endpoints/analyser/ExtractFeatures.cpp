@@ -207,10 +207,38 @@ string ExtractFeatures::getFeatures(map<string, string > parameters){
 	features.convertTo(features,CV_32F);
 	labels.convertTo(labels,CV_32F);
 
+	if(parameters.count("split") > 0){
+		vector<IClassifier*> classifiers;
+		TrainTestFeaturesTools tt (features, labels, classifiers);
+		float ratio = atof(parameters["split"].c_str());
+		tt.splitDataForTest(ratio);
 
-	cout << idsToInternalIds.at(indexFieldId).size() << endl;
-	cout << idsToInternalIds.at(classFieldId).size() << endl;
-	MatrixTools::writeBinV2(outputLocation,features,labels);
+		Mat featuresTrain = tt.getTrainingData();
+		Mat labelsTrain = tt.getTrainingLabels();
+
+		Mat featuresTest = tt.getTestData();	
+		Mat labelsTest = tt.getTestLabels();
+
+		stringstream ss;
+
+		cout << features.rows << " " << features.cols << " " << labels.rows << " " << labels.cols << endl;
+		cout << featuresTrain.rows << " " << featuresTrain.cols << " " << labelsTrain.rows << " " << labelsTrain.cols << endl;
+		cout << featuresTest.rows << " " << featuresTest.cols << " " << labelsTest.rows << " " << labelsTest.cols << endl;
+
+		ss << outputLocation << ".train";
+		
+		string name = ss.str();
+		MatrixTools::writeBinV2(name,featuresTrain,labelsTrain);	
+
+		stringstream ss2;
+		ss2 << outputLocation << ".test";
+		name = ss2.str();
+		MatrixTools::writeBinV2(name,featuresTest,labelsTest);	
+	} else {
+		MatrixTools::writeBinV2(outputLocation,features,labels);	
+	}
+
+	
 	exportLabels(filename,idsToInternalIds);
 	/*
 	for(int i = 0; i < 8; i++)

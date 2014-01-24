@@ -30,8 +30,6 @@ void TextFileSourceV2::readFile(string trainDataFile){
 		tmpStr.erase(remove(tmpStr.begin(), tmpStr.end(), '\r'), tmpStr.end());
 		tmpStr.erase(remove(tmpStr.begin(), tmpStr.end(), '\n'), tmpStr.end());
 		baseDir = tmpStr;
-
-		cout << labelFields << " " << indexIdFields << " " << classIdFields<< " " << baseDir << endl;
 		while (getline(file, line)) {
 			stringstream liness(line);
 
@@ -43,7 +41,6 @@ void TextFileSourceV2::readFile(string trainDataFile){
 			
 			string fullPath = ss2.str();
 
-			cout << baseDir << " " << path << endl;
 			imagesPath.push_back(fullPath );
 			imagesOriginalInfo.push_back(line);
 		}

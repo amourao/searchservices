@@ -8,7 +8,7 @@
 #include <vector>
 #include <fstream>
 
-#define BIN_SIGNATURE_HEX 4e534e53 
+//#define BIN_SIGNATURE_HEX 4e534e53 
 #define BIN_SIGNATURE_INT 1314082387
 
 #define BIN_VERSION 2

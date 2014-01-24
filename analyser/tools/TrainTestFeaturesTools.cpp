@@ -2,19 +2,19 @@
 
 TrainTestFeaturesTools::TrainTestFeaturesTools(cv::Mat _data, cv::Mat _labels, vector<IClassifier*> _classifiers){
 	data = _data;
-	labels = _labels.col(0);
+	labels = _labels;
 	
 	classifiers = _classifiers;
 }
 
 TrainTestFeaturesTools::TrainTestFeaturesTools(cv::Mat _data, cv::Mat _labels, cv::Mat _dataTest, cv::Mat _labelsTest, vector<IClassifier*> _classifiers){
 	data = _data;
-	labels = _labels.col(0);
+	labels = _labels;
 	
 	classifiers = _classifiers;
 	
 	dataTest = _dataTest;
-	labelsTest = _labelsTest.col(0);
+	labelsTest = _labelsTest;
 
 }
 
@@ -48,7 +48,7 @@ string TrainTestFeaturesTools::crossValidateAll(int numberOfDivisions){
 	int* maxInd  = new int();
 	
 	//cout << labels << endl;
-	cv::minMaxIdx(labels.col(0), min, max, minInd, maxInd, Mat());
+	cv::minMaxIdx(labels.col(1), min, max, minInd, maxInd, Mat());
 		
 	int numberOfClasses = (*max)+1;
 	
@@ -81,7 +81,7 @@ string TrainTestFeaturesTools::testAll(){
 	
 	double min, max;
 	int minInd, maxInd;
-	cv::minMaxIdx(labels, &min, &max, &minInd, &maxInd, Mat());
+	cv::minMaxIdx(labels.col(1), &min, &max, &minInd, &maxInd, Mat());
 		
 	int numberOfClasses = max+1;
 	
@@ -114,16 +114,16 @@ string TrainTestFeaturesTools::test(string name){
 }
 
 void TrainTestFeaturesTools::test(Mat trainData, Mat trainLabels, Mat testData, Mat testLabels, IClassifier* classifier, vector<int>& correctGuesses, vector<int>& falsePositives, Mat& confusionMatrix){
-	classifier->train(trainData,trainLabels);
+	classifier->train(trainData,trainLabels.col(1));
 	for(int i = 0; i < testData.rows; i++){
 		//cout << "correct label: " << (int)testLabels.at<float>(i,0) << endl;
 		float label = classifier->classify(testData.row(i));
-		if(label == testLabels.at<float>(i,0))
-			correctGuesses.at(testLabels.at<float>(i,0))++;
+		if(label == testLabels.at<float>(i,1))
+			correctGuesses.at(testLabels.at<float>(i,1))++;
 		else
-			falsePositives.at(testLabels.at<float>(i,0))++;
+			falsePositives.at(testLabels.at<float>(i,1))++;
 			//cout << label << " " << testLabels.at<float>(i,0) << endl;
-		confusionMatrix.at<float>(testLabels.at<float>(i,0),label)++;	
+		confusionMatrix.at<float>(testLabels.at<float>(i,1),label)++;	
 	}
 }
 
@@ -140,41 +140,41 @@ void TrainTestFeaturesTools::divideByClass(Mat trainData, Mat trainLabels, doubl
 	double ratio = 1.0/numberOfDivisions;
 	double min, max;
 	int minInd, maxInd;
-	cv::minMaxIdx(trainLabels, &min, &max, &minInd, &maxInd, Mat());
+	cv::minMaxIdx(trainLabels.col(1), &min, &max, &minInd, &maxInd, Mat());
 	
 	int numberOfClasses = max+1;
 	vector<Mat> divisionByClass(numberOfClasses);
+	vector<Mat> divisionByClassLabels(numberOfClasses);
 	for(int j = 0; j < trainLabels.rows; j++){
-		float label = trainLabels.at<float>(j,0);
+		float label = trainLabels.at<float>(j,1);
 		divisionByClass.at(label).push_back(trainData.row(j));
+		divisionByClassLabels.at(label).push_back(trainLabels.row(j));
 	}
 	
 	for(int i = 0; i < numberOfClasses; i++){
 		
 		Mat data = divisionByClass.at(i);
+		Mat labelss = divisionByClassLabels.at(i);
 		if(!data.empty()){
 			//TODO check if division is correct
 			int divisionSize = ratio * data.rows;
-		
-			Mat label(1,1,CV_32F);
-			label.at<float>(0,0) = i;
 			
 			//cout << endl << "train starts at 0 and ends at " << (currentDivision)*divisionSize << endl;
 			for(int j = 0; j < (currentDivision)*divisionSize; j++){
 				newTrainData.push_back(data.row(j));
-				newTrainLabels.push_back(label);
+				newTrainLabels.push_back(labelss.row(j));
 			}
 		
 			//cout << "test starts at " <<  currentDivision*divisionSize << " and ends at " << ((currentDivision+1)*divisionSize) << " or " << data.rows << endl;
 			for(int j = currentDivision*divisionSize; j < ((currentDivision+1)*divisionSize) && (j < data.rows); j++){
 				testData.push_back(data.row(j));
-				testLabels.push_back(label);
+				testLabels.push_back(labelss.row(j));
 			}
 		
 			//cout << "train starts at " <<  (currentDivision+1)*divisionSize << " and ends at " << data.rows << endl;
 			for(int j = (currentDivision+1)*divisionSize; j < data.rows; j++){
 				newTrainData.push_back(data.row(j));
-				newTrainLabels.push_back(label);
+				newTrainLabels.push_back(labelss.row(j));
 			}
 			//cout << "train: " << newTrainData.rows << " test: " << testData.rows << endl;
 		}

@@ -6,6 +6,7 @@
 #include "../../FactoryEndpoint.h"
 #include "../../../analyser/FactoryAnalyser.h"
 #include "../../../analyser/tools/MatrixTools.h"
+#include "../../../analyser/tools/TrainTestFeaturesTools.h"
 #include "../../../analyser/sources/TextFileSourceV2.h"
 #include "../../IEndpoint.h"
 #include <jsoncpp/json/json.h>
