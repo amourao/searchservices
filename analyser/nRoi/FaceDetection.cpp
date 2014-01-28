@@ -71,7 +71,7 @@ void FaceDetection::detectFaces(Mat& img, vector<Mat>& faceImages, vector<cv::Po
 	std::vector<Rect> facesVectorCascade;
 
 	double t = (double)cvGetTickCount();
-	faceCascade.detectMultiScale( imgGrayscaleScalled, facesVectorCascade, 1.2, 3, 0|CV_HAAR_SCALE_IMAGE,minSize,maxSize);
+	faceCascade.detectMultiScale( imgGrayscaleScalled, facesVectorCascade, 1.1, 3, 0|CV_HAAR_SCALE_IMAGE,minSize,maxSize);
 	t = (double)(cvGetTickCount()-t)/((double)cvGetTickFrequency());
 	
 	for (unsigned int q = 0; q < facesVectorCascade.size(); q++){	

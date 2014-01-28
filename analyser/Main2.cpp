@@ -17,6 +17,7 @@
 #include "sources/SingleImageSource.h"
 #include "sources/VideoSource.h"
 #include "sources/TextFileSource.h"
+#include "sources/TextFileSourceV2.h"
 #include "nVector/GaborExtractor.h"
 #include "nKeypoint/SURFExtractor.h"
 #include "nVector/HistogramExtractor.h"
@@ -256,10 +257,100 @@ void testLoadSaveIIndexer(int argc, char *argv[]){
 	}
 }
 
+int faceDetectionParameterChallenge(int argc, char *argv[]){
+
+
+	TextFileSourceV2 is(argv[1]);
+
+	FaceDetection fd(FACE_DETECTION_CASCADE_PATH + "haarcascade_frontalface_alt_tree.xml",FACE_DETECTION_CASCADE_PATH + "haarcascade_eye_tree_eyeglasses.xml",0.5,1, cv::Size(20,20),cv::Size(1000,1000),true);
+
+	Mat src;
+
+	int u = 0;
+	int step = 100;
+	int size = is.getImageCount();
+	double lastT = cvGetTickCount();
+	double startT = cvGetTickCount();
+
+	int facesDetected = 0;
+
+
+	int angles[] = {-20,20};
+	int anglesLen = 2;
+	while (!(src = is.nextImage()).empty()) {
+
+		vector<Mat> faceImages;
+		vector<cv::Point> locations;
+		vector<Rect> faceRois;
+		fd.detectFaces(src, faceImages, locations, faceRois);
+
+		/*
+		cv::Point center;
+		center.x = cvRound((src.cols*0.5));
+		center.y = cvRound((src.rows*0.5));
+
+		for (int i = 0; i < anglesLen; i++){ 
+
+			vector<Mat> faceImages2;
+			vector<cv::Point> locations2;
+			vector<Rect> faceRois2;
+
+			double angle = angles[i];
+
+			Mat rotatedImage;
+
+			Mat rot_mat = getRotationMatrix2D(center, angle, 1.0);
+			warpAffine(src, rotatedImage, rot_mat, src.size());
+
+			fd.detectFaces(rotatedImage, faceImages, locations, faceRois);
+		}*/
+		Mat newSrc;
+
+		src.copyTo(newSrc);
+		facesDetected += faceRois.size();
+		for (uint i = 0; i < faceRois.size(); i++){
+			stringstream ss;
+			ss << is.getCurrentImageInfoField(0) << "_face_" << i << ".jpg";
+			imwrite(ss.str(), faceImages.at(i));
+			cv::Rect roi = faceRois.at(i);
+			rectangle(newSrc, roi, Scalar(255,255,0));
+		
+		}
+
+		stringstream ss;
+
+		ss << "faces_" <<	 is.getCurrentImageInfoField(0);
+		imwrite(ss.str(), newSrc);
+	
+		u++;
+
+		//	double rem =  ((double) cvGetTickCount() - lastT)
+		//			/ ((double) cvGetTickFrequency() * 1000000);
+		//	cout << rem << " seconds elapsed" << endl;
+		//	lastT = cvGetTickCount();
+
+		if (u % step == 0) {
+			cout << u << endl;
+			double rem = ((size - u) / (60 * step))
+					* ((double) cvGetTickCount() - lastT)
+					/ ((double) cvGetTickFrequency() * 1000000);
+			cout << rem << " minutes remaining" << endl;
+			lastT = cvGetTickCount();
+		}
+	}
+
+	cout << "imageCount " << size << endl; 
+	cout << "facesDetected " << facesDetected << endl; 
+	lastT = cvGetTickCount();
+	double rem = (double)(lastT - startT) / ((double) cvGetTickFrequency() * 1000000);
+	cout << rem << " seconds elapsed" << endl;
+}
+
 int main(int argc, char *argv[])
 {	
 	//testLoadSaveIClassifier(argc, argv);
-	testLoadSaveIIndexer(argc, argv);
+	//testLoadSaveIIndexer(argc, argv);
+	faceDetectionParameterChallenge(argc, argv);
     //testAllClassifiersBin(argc, argv);
 
     return 0;
