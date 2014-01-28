@@ -37,6 +37,9 @@
 #include "../indexer/FactoryIndexer.h"
 #include "../indexer/IIndexer.h"
 #include "../indexer/LinearkNNIndexer.h"
+#include "../indexer/MSIDXIndexer.h"
+
+
 
 using namespace std;
 
@@ -346,12 +349,50 @@ int faceDetectionParameterChallenge(int argc, char *argv[]){
 	cout << rem << " seconds elapsed" << endl;
 }
 
+
+void testMSIDXIndexer(int argc, char *argv[]){
+	string file(argv[1]);
+
+
+	int w = atoi(argv[2]);
+	int k = atoi(argv[3]);
+
+	Mat features;
+	Mat labels;
+	
+	MatrixTools::readBin(file, features, labels);
+
+	string dummy = "";
+	IIndexer* linear = new LinearkNNIndexer();
+	IIndexer* ms = new MSIDXIndexer(dummy,w);
+
+	linear->index(features);
+	ms->index(features);
+
+	
+
+	Mat q = features.row(0);
+	
+	vector<std::pair<float,float> > r = linear->knnSearchId(q,k);
+	for(uint i = 0; i < r.size(); i++){
+		cout << r.at(i).first << "\t" << r.at(i).second << endl;
+	}
+	cout  << endl;
+	cout  << endl;
+	
+	r = ms->knnSearchId(q,k);
+	for(uint i = 0; i < r.size(); i++){
+		cout << r.at(i).first << "\t" << r.at(i).second << endl;
+	}
+	cout  << endl;
+}
+
 int main(int argc, char *argv[])
 {	
 	//testLoadSaveIClassifier(argc, argv);
 	//testLoadSaveIIndexer(argc, argv);
-	faceDetectionParameterChallenge(argc, argv);
+	//faceDetectionParameterChallenge(argc, argv);
     //testAllClassifiersBin(argc, argv);
-
+	testMSIDXIndexer(argc, argv);
     return 0;
 }
