@@ -180,6 +180,10 @@ bool FlannkNNIndexer::save(string basePath){
 
 	saveLabels(ssL.str());
 
+	stringstream ssF;
+	ssF << INDEXER_BASE_SAVE_PATH << basePath << INDEX_FLANN_EXTENSION_KNN;
+	flannIndexs->save(ssF.str());
+
 	return true;
 }
 
@@ -193,16 +197,23 @@ bool FlannkNNIndexer::load(string basePath){
 	
 	fs["indexData"] >> indexData;
 	
-	flann::LinearIndexParams params = flann::LinearIndexParams();
-
 	//if ( flannIndex != NULL)
 	//	delete flannIndex;
-	flannIndexs = new flann::Index();
+
+	stringstream ssF;
+	ssF << INDEXER_BASE_SAVE_PATH << basePath << INDEX_FLANN_EXTENSION_KNN;
+
+	flannParams = new flann::SavedIndexParams(ssF.str());
+
+	flannIndexs = new flann::Index(indexData,*flannParams);
 	
-	flannIndexs->build(indexData,params);
+	//flannIndexs->build(indexData,params);
 	stringstream ssL;
 	ssL << INDEXER_BASE_SAVE_PATH << basePath << INDEXER_LABELS_EXTENSION;
 	loadLabels(ssL.str());
+
+
+
 	return true;
 }
 

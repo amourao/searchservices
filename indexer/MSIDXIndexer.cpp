@@ -152,11 +152,11 @@ vector<std::pair<string,float> > MSIDXIndexer::radiusSearchName(cv::Mat query, d
 }
 
 bool MSIDXIndexer::save(string basePath){
-	return true;
+	return false;
 }
 
 bool MSIDXIndexer::load(string basePath){
-	return true;
+	return false;
 }
 
 string MSIDXIndexer::getName(){

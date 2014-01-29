@@ -371,19 +371,38 @@ void testMSIDXIndexer(int argc, char *argv[]){
 	map<string,string> paramsL;
 	paramsL["algorithm"] = "lsh";
 	paramsL["distance"] = "EUCLIDEAN";
+	paramsL["table_number"] = "10";
+	paramsL["key_size"] = "10";
+	paramsL["multi_probe_level"] = "0";
+	//table_number the number of hash tables to use [10...30]
+    //key_size the size of the hash key in bits [10...20]
+    //multi_probe_level the number of bits to shift to check for neighboring buckets 
+    //(0 is regular LSH, 2 is recommended).
 	IIndexer* lsh = new FlannkNNIndexer(dummy,params);
 	//IIndexer* ms = new FlannkNNIndexer(dummy,params);
 	IIndexer* ms = new MSIDXIndexer(dummy,w);
 
 	linear->index(features);
+	lsh->index(features);
 	ms->index(features);
 
+	lsh->save("L");
+	lsh->load("L");
 	Mat q = features.row(0);
 	
 	vector<std::pair<float,float> > r = linear->knnSearchId(q,k);
 	for(uint i = 0; i < r.size(); i++){
 		cout << r.at(i).first << "\t" << r.at(i).second << endl;
 	}
+
+	cout  << endl;
+	cout  << endl;
+	
+	r = lsh->knnSearchId(q,k);
+	for(uint i = 0; i < r.size(); i++){
+		cout << r.at(i).first << "\t" << r.at(i).second << endl;
+	}
+
 	cout  << endl;
 	cout  << endl;
 	
@@ -391,7 +410,6 @@ void testMSIDXIndexer(int argc, char *argv[]){
 	for(uint i = 0; i < r.size(); i++){
 		cout << r.at(i).first << "\t" << r.at(i).second << endl;
 	}
-	cout  << endl;
 }
 
 int main(int argc, char *argv[])
