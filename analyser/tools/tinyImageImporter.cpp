@@ -28,7 +28,10 @@ void tinyImageImporter::readBin(std::string filenamep, int numberOfRows, cv::Mat
        	/*   mexPrintf("Error opening file: %s\n",filenamep);*/
     }
 
-    features = cv::Mat(numberOfRows, dimensions, CV_32FC1, &datap);
+    features = cv::Mat(numberOfRows,dimensions,CV_32F);
+    for (int i = 0; i < numberOfRows; i++)
+		for (int j = 0; j < dimensions; j++)
+			features.at<float>(i,j) = datap[i*dimensions+j];//cv::Mat(numberOfRows, dimensions, CV_32FC1, &datap);
 }
 
 void tinyImageImporter::readTags(std::string file, int numberOfRows, cv::Mat& tags) {

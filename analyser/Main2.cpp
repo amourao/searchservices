@@ -364,7 +364,6 @@ void testMSIDXIndexer(int argc, char *argv[]){
 	
 	tinyImageImporter::readBin(file,n,features);
 	//MatrixTools::readBin(file, features, labels);
-	cout << features << endl;
 	string dummy = "";
 	map<string,string> params;
 	params["algorithm"] = "linear";
@@ -382,7 +381,6 @@ void testMSIDXIndexer(int argc, char *argv[]){
     //multi_probe_level the number of bits to shift to check for neighboring buckets 
     //(0 is regular LSH, 2 is recommended).
 	IIndexer* lsh = new FlannkNNIndexer(dummy,params);
-	//IIndexer* ms = new FlannkNNIndexer(dummy,params);
 	IIndexer* ms = new MSIDXIndexer(dummy,w);
 
 	linear->index(features);
