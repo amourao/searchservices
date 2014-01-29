@@ -36,7 +36,7 @@
 
 #include "../indexer/FactoryIndexer.h"
 #include "../indexer/IIndexer.h"
-#include "../indexer/LinearkNNIndexer.h"
+#include "../indexer/FlannkNNIndexer.h"
 #include "../indexer/MSIDXIndexer.h"
 
 
@@ -237,7 +237,7 @@ void testLoadSaveIIndexer(int argc, char *argv[]){
 	Mat labels;
 	
 	MatrixTools::readBin(file, features, labels);
-	IIndexer* vw = new LinearkNNIndexer();
+	IIndexer* vw = new FlannkNNIndexer();
 
 	vw->index(features);
 	vw->save("medicalImage_CEDD_kNN");
@@ -249,7 +249,7 @@ void testLoadSaveIIndexer(int argc, char *argv[]){
 	}
 	cout  << endl;
 	delete vw;
-	vw = new LinearkNNIndexer();
+	vw = new FlannkNNIndexer();
 
 	vw->load("medicalImage_CEDD_kNN");
 
@@ -363,13 +363,20 @@ void testMSIDXIndexer(int argc, char *argv[]){
 	MatrixTools::readBin(file, features, labels);
 
 	string dummy = "";
-	IIndexer* linear = new LinearkNNIndexer();
+	map<string,string> params;
+	params["algorithm"] = "linear";
+	params["distance"] = "EUCLIDEAN";
+	IIndexer* linear = new FlannkNNIndexer(dummy,params);
+
+	map<string,string> paramsL;
+	paramsL["algorithm"] = "lsh";
+	paramsL["distance"] = "EUCLIDEAN";
+	IIndexer* lsh = new FlannkNNIndexer(dummy,params);
+	//IIndexer* ms = new FlannkNNIndexer(dummy,params);
 	IIndexer* ms = new MSIDXIndexer(dummy,w);
 
 	linear->index(features);
 	ms->index(features);
-
-	
 
 	Mat q = features.row(0);
 	

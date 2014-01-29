@@ -113,7 +113,7 @@ vector<std::pair<float,float> > MSIDXIndexer::knnSearchId(cv::Mat query, int k){
 		npos = pos - j;
 		if (npos >= 0 && j != 0){
 			Mat oa = featuresList.at(npos).second;
-			float dist = pow(cv::norm(query-oa,NORM_L2),2);
+			float dist = pow(cv::norm(query-oa,NORM_L2),2); //equal to Linear flann metric
 			H.push(std::make_pair (featuresList.at(npos).first,dist));
 		}
 		npos = pos + j;
@@ -160,5 +160,5 @@ bool MSIDXIndexer::load(string basePath){
 }
 
 string MSIDXIndexer::getName(){
-	return "MSIDXIndexer";
+	return "msidxIndexer";
 }

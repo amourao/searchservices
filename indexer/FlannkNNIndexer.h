@@ -22,13 +22,13 @@ using namespace std;
 #define INDEX_FLANN_EXTENSION_KNN ".flann"
 #endif
 
-class LinearkNNIndexer: public IIndexer {
+class FlannkNNIndexer: public IIndexer {
 
 public:
 
-	LinearkNNIndexer();
-	LinearkNNIndexer(string& type);
-	~LinearkNNIndexer();
+	FlannkNNIndexer();
+	FlannkNNIndexer(string& type, map<string,string> params);
+	~FlannkNNIndexer();
 	
 	void* createType(string &typeId);
 	
@@ -49,6 +49,7 @@ private:
 
 	string type;
 	cv::Mat indexData;
-	flann::Index* flannIndex;
-	
+	flann::Index* flannIndexs;
+	flann::IndexParams* flannParams;	
+	cvflann::flann_distance_t flannDistance;
 };
