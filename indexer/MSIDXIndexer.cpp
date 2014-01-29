@@ -89,12 +89,6 @@ int MSIDXIndexer::compareToMatCardinality(const cv::Mat& mat1, const cv::Mat& ma
     return 0;
 }
 
-
-
- 
-
- 
-
 vector<std::pair<float,float> > MSIDXIndexer::knnSearchId(cv::Mat query, int k){
 	std::vector<float> indicesFloat;
 	std::vector<float> dists;

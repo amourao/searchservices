@@ -31,6 +31,7 @@
 
 #include "tools/TrainTestFeaturesTools.h"
 #include "tools/MIRFlickrImporter.h"
+#include "tools/tinyImageImporter.h"
 
 #include "FactoryAnalyser.h"
 
@@ -354,14 +355,16 @@ void testMSIDXIndexer(int argc, char *argv[]){
 	string file(argv[1]);
 
 
-	int w = atoi(argv[2]);
-	int k = atoi(argv[3]);
+	int n = atoi(argv[2]);
+	int w = atoi(argv[3]);
+	int k = atoi(argv[4]);
 
 	Mat features;
-	Mat labels;
+	//Mat labels;
 	
-	MatrixTools::readBin(file, features, labels);
-
+	tinyImageImporter::readBin(file,n,features);
+	//MatrixTools::readBin(file, features, labels);
+	cout << features << endl;
 	string dummy = "";
 	map<string,string> params;
 	params["algorithm"] = "linear";
@@ -371,7 +374,7 @@ void testMSIDXIndexer(int argc, char *argv[]){
 	map<string,string> paramsL;
 	paramsL["algorithm"] = "lsh";
 	paramsL["distance"] = "EUCLIDEAN";
-	paramsL["table_number"] = "10";
+	paramsL["table_number"] = "5";
 	paramsL["key_size"] = "10";
 	paramsL["multi_probe_level"] = "0";
 	//table_number the number of hash tables to use [10...30]

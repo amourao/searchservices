@@ -23,13 +23,22 @@ FlannkNNIndexer::FlannkNNIndexer(string& type, map<string,string> params){
     //FLANN_DIST_KULLBACK_LEIBLER  = 8,
     //FLANN_DIST_KL                = 8,
     //FLANN_DIST_HAMMING          = 9,
-
 	if(params["distance"] == "EUCLIDEAN")
 		flannDistance = cvflann::FLANN_DIST_EUCLIDEAN;
 	else if(params["distance"] == "MANHATTAN")
 		flannDistance = cvflann::FLANN_DIST_MANHATTAN;
 	else if(params["distance"] == "MINKOWSKI")
 		flannDistance = cvflann::FLANN_DIST_MINKOWSKI;
+	else if(params["distance"] == "HIST_INTERSECT")
+		flannDistance = cvflann::FLANN_DIST_HIST_INTERSECT;
+	else if(params["distance"] == "HELLINGER")
+		flannDistance = cvflann::FLANN_DIST_HELLINGER;
+	else if(params["distance"] == "CHI_SQUARE")
+		flannDistance = cvflann::FLANN_DIST_CHI_SQUARE;
+	else if(params["distance"] == "KULLBACK_LEIBLER")
+		flannDistance = cvflann::FLANN_DIST_KULLBACK_LEIBLER;
+	else if(params["distance"] == "HAMMING")
+		flannDistance = cvflann::FLANN_DIST_HAMMING;
 
 	if(params["algorithm"] == "linear"){		
 		flannParams = new flann::LinearIndexParams();
@@ -81,7 +90,8 @@ FlannkNNIndexer::FlannkNNIndexer(string& type, map<string,string> params){
 		flannParams = new flann::LshIndexParams(
         	atoi(params["table_number"].c_str()),
         	atoi(params["key_size"].c_str()),
-        	atoi(params["multi_probe_level"].c_str()));
+        	atoi(params["multi_probe_level"].c_str())
+        	);
 
 	} else if(params["algorithm"] == "auto"){
 
@@ -93,7 +103,8 @@ FlannkNNIndexer::FlannkNNIndexer(string& type, map<string,string> params){
         	atof(params["target_precision"].c_str()),
         	atof(params["build_weight"].c_str()),
         	atof(params["memory_weight"].c_str()),
-        	atof(params["sample_fraction"].c_str()));
+        	atof(params["sample_fraction"].c_str())
+        	);
 	}
 }
 
