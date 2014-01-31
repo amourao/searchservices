@@ -1,7 +1,7 @@
 #include "NullExtractor.h"
 
 
-NullExtractor::NullExtractor(){
+NullExtractor::NullExtractor(void){
 
 }
 
@@ -20,6 +20,7 @@ NullExtractor::~NullExtractor(){
 
 void NullExtractor::extractFeatures(Mat& src, Mat& dst){
 	src.copyTo(dst);
+	dst = dst.reshape(1,1);
 }
 
 int NullExtractor::getFeatureVectorSize(){

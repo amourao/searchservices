@@ -31,6 +31,7 @@ public:
 	int getIndexFieldId();
 
 	string getImagePath();
+	string getBasePath();
 private:
 
 	void readFile(string s);

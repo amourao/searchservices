@@ -106,14 +106,15 @@ void GaborExtractor::applyFilter(Mat& image, Mat& dst){
 			dst += tmpResult;
 	}
 	fftw_free( fft );
-	normalize(dst, dst, 0,255, CV_MINMAX);
+	//normalize(dst, dst, 0,255, CV_MINMAX);
 
 	//stringstream sst;
 	//sst << "D:\\Datasets\\tmpEmotion\\" << tmp2++  <<".bmp";
 	//imwrite(sst.str(),result);
 
-	//dst = dst.reshape(1,1);
-	dst.convertTo(dst,CV_8U);
+	//
+	dst = dst.reshape(1,1);
+	//dst.convertTo(dst,CV_8U);
 
 
 }

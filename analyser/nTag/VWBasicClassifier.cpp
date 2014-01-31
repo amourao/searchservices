@@ -74,7 +74,7 @@ void VWBasicClassifier::train( cv::Mat trainData, cv::Mat trainLabels ){
 
 	stringstream ss;
 	
-	ss << "vw -d " <<  modelName << TRAINDATA_EXTENSION_VW << " -k -c -f " << modelName << MODEL_EXTENSION_VW <<" --ect " << numberOfClasses  << " --quiet"; 
+	ss << "vw -d " <<  modelName << TRAINDATA_EXTENSION_VW << " -k -c -f " << modelName << MODEL_EXTENSION_VW <<" --oaa " << numberOfClasses  << " --passes 1000 --quiet"; 
 	std::system(ss.str().c_str());
 
 }
@@ -95,6 +95,7 @@ void VWBasicClassifier::importTxtToVowpalFormat(cv::Mat trainData, cv::Mat train
 	//1 1.0 1|cedd 1:7.0 25:3.0 26:1.0 49:7.0 50:3.0 73:6.0 74:5.0 75:1.0 97:2.0 98:1.0 121:2.0 122:1.0 +
 	stringstream ss;
 	ss << modelName << TRAINDATA_EXTENSION_VW;
+	
   	ofstream vwData(ss.str().c_str());
 	vwData.setf(std::ios_base::fixed, std::ios_base::floatfield);
 	vwData.precision(5);
@@ -108,7 +109,7 @@ void VWBasicClassifier::importTxtToVowpalFormat(cv::Mat trainData, cv::Mat train
 	}
 	vwData.flush();
 	vwData.close();
-}
+}	
 
 float VWBasicClassifier::predictFromFile(cv::Mat testData){
 

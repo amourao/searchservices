@@ -52,8 +52,8 @@ void SRClassifier::train(arma::fmat _trainData, arma::fmat trainLabels){
 	trainData = trans(_trainData);
 	//l1min::FISTA::option_type opt;
 	//opt.eps = 1e-7;
-	opt.max_iters = 100;
-	opt.lambda = 0.03;
+	opt.max_iters = 2000;
+	opt.lambda = 0.05;
 	//opt.L = 43681; //max(eig_sym(trans(trainData) * trainData));
 	//std::cout << "train" << std::endl;
 	opt.L = max(eig_sym(trans(trainData) * trainData));
@@ -140,7 +140,7 @@ float SRClassifier::classify(arma::fmat query, double* error, arma::fmat* recErr
 	}
 
 
-	cout << "detected label: " << (int)detectedLabelFromReconstruct << " error: " <<   minFromReconstruct << endl;
+	//cout << "detected label: " << (int)detectedLabelFromReconstruct << " error: " <<   minFromReconstruct << endl;
 	//cout.precision(10);
 	//cout.setf(ios::fixed,ios::floatfield);
 	//cout << "[";

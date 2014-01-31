@@ -64,14 +64,14 @@ string TrainTestFeaturesTools::crossValidateAll(int numberOfDivisions){
 	
 		Mat confusionMatrix= Mat::zeros(numberOfClasses,numberOfClasses,CV_32F);		
 		
-		ss << classifiers.at(i)->getName() << endl;
+		cout << classifiers.at(i)->getName() << endl;
 		for(int j = 0; j < numberOfDivisions; j++){
 			Mat newTrainData, newTrainLabels, testData, testLabels;
 			divideByClass(data,labels,numberOfDivisions,j,newTrainData,newTrainLabels,testData,testLabels);
 			
 			test(newTrainData,newTrainLabels,testData,testLabels,classifiers.at(i), correctGuesses, falsePositives, confusionMatrix);
 		}
-		ss << resultsToString(correctGuesses, falsePositives, confusionMatrix) << endl;
+		cout << resultsToString(correctGuesses, falsePositives, confusionMatrix) << endl;
 	}
 	//cout << ss.str() << endl;
 	return ss.str();

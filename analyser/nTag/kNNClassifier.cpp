@@ -41,10 +41,13 @@ void kNNClassifier::train( cv::Mat _trainData, cv::Mat _trainLabels )
 		delete flannIndex;
 	flannIndex = new flann::Index();
 	
-	flannIndex->build(_trainData,params);
+	_trainData.copyTo(trainData);
+	_trainLabels.copyTo(trainLabels);
 
-	trainLabels = _trainLabels;
-	trainData = _trainData;
+	flannIndex->build(trainData,params);
+
+
+	
 }
 	
 
@@ -80,7 +83,7 @@ float kNNClassifier::classify( cv::Mat query, int neighboursCount )
 
 	for (int i = 0; i < neighboursCount; i++){
 		int imageId = indices.at(i);
-		int detectedEmotion = trainLabels.at<float>(imageId,1);
+		int detectedEmotion = trainLabels.at<float>(imageId,0);
 		//cout << detectedEmotion << " " << dists.at(i)  << endl;
 		//cout << query.colRange(0,5) << endl;
 		//cout << trainData.row(imageId).colRange(0,5) << endl;

@@ -16,7 +16,7 @@ class NullExtractor :
 	public FeatureExtractor
 {
 public:
-	NullExtractor();
+	NullExtractor(void);
 	~NullExtractor();
 
 	void extractFeatures(Mat& src, Mat& dst);

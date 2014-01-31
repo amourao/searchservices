@@ -88,15 +88,15 @@ void extractAllFeaturesImEmotion(string testPath, string output) {
 	//HistogramExtractor histogramExtractor (8);
 
 	vector<cv::Rect> rectangleRois = vector<cv::Rect>();
-	/*
+	
 	 rectangleRois.push_back(cv::Rect(0,0,46,64));
 	 rectangleRois.push_back(cv::Rect(46,64,46,112-64));
 	 rectangleRois.push_back(cv::Rect(46,0,46,64));
 	 rectangleRois.push_back(cv::Rect(0,64,46,112-64));
 	 rectangleRois.push_back(cv::Rect(0,10,92,30));
 	 rectangleRois.push_back(cv::Rect(20,65,52,30));
-	 */
-
+	 
+	/*
 	rectangleRois.push_back(cv::Rect(29, 13, 36, 20));
 	rectangleRois.push_back(cv::Rect(10, 59, 24, 28));
 	rectangleRois.push_back(cv::Rect(61, 57, 24, 29));
@@ -117,7 +117,7 @@ void extractAllFeaturesImEmotion(string testPath, string output) {
 	rectangleRois.push_back(cv::Rect(61, 4, 26, 8));
 	rectangleRois.push_back(cv::Rect(25, 80, 17, 23));
 	rectangleRois.push_back(cv::Rect(48, 78, 20, 25));
-
+	*/
 	GaborExtractor faceGaborExtractor(92, 112, 4, 6, rectangleRois);
 
 	fstream faceGaborExtractorF(output.c_str(),

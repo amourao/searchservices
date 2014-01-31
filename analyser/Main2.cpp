@@ -19,6 +19,8 @@
 #include "sources/TextFileSource.h"
 #include "sources/TextFileSourceV2.h"
 #include "nVector/GaborExtractor.h"
+#include "nVector/LBPExtractor.h"
+#include "nVector/NullExtractor.h"
 #include "nKeypoint/SURFExtractor.h"
 #include "nVector/HistogramExtractor.h"
 #include "nVector/SegmentedHistogramExtractor.h"
@@ -39,6 +41,9 @@
 #include "../indexer/IIndexer.h"
 #include "../indexer/FlannkNNIndexer.h"
 #include "../indexer/MSIDXIndexer.h"
+
+#include "../commons/StringTools.h"
+
 
 
 
@@ -146,6 +151,181 @@ int testAllClassifiers(int argc, char *argv[]) {
 	return 0;
 }
 
+
+void extractAllFeaturesCK(int argc, char *argv[]) {
+
+	string testPath = string(argv[1]);
+	TextFileSourceV2 is(testPath);
+
+	//HistogramExtractor histogramExtractor (8);
+
+	vector<cv::Rect> rectangleRois = vector<cv::Rect>();
+	
+	 rectangleRois.push_back(cv::Rect(0,0,46,64));
+	 rectangleRois.push_back(cv::Rect(46,64,46,112-64));
+	 rectangleRois.push_back(cv::Rect(46,0,46,64));
+	 rectangleRois.push_back(cv::Rect(0,64,46,112-64));
+	 rectangleRois.push_back(cv::Rect(0,10,92,30));
+	 rectangleRois.push_back(cv::Rect(20,65,52,30));
+
+	GaborExtractor faceGaborExtractor(92, 112, 4, 6, rectangleRois);
+	LBPExtractor lbpExtractor (59, 5, 6, false);
+
+
+
+	cv::Mat src;
+	cv::Mat gaborNeutral;
+	cv::Mat lbpNeutral;
+
+	cv::Mat labelsAll;
+
+	cv::Mat gaborV0ALL;
+	cv::Mat gaborV1ALL;
+	cv::Mat gaborV2ALL;
+	cv::Mat gaborV3ALL;
+
+	cv::Mat lbpV0ALL;
+	cv::Mat lbpV1ALL;
+	cv::Mat lbpV2ALL;
+	cv::Mat lbpV3ALL;
+
+	map<string,cv::Mat> gaborOwnNeutralD;
+	map<string,cv::Mat> lbpOwnNeutralD;
+
+
+	cv::Mat globalNeutral = imread("/home/amourao/data/facialExpressionFeatures/Images/avgFaces/neutral.png");
+
+	cv::Mat globalNeutralGabor;
+	faceGaborExtractor.extractFeatures(globalNeutral, globalNeutralGabor);
+
+	cv::Mat globalNeutralLbp;
+	lbpExtractor.extractFeatures(globalNeutral, globalNeutralLbp);
+
+	int u = 0;
+	int step = 20;
+	double lastT = cvGetTickCount();
+
+	int size = is.getImageCount();
+	while (!(src = is.nextImage()).empty()) {
+
+		int idI = atoi(is.getCurrentImageInfoField(1).c_str());
+		int idC = atoi(is.getCurrentImageInfoField(2).c_str());
+
+
+		if (gaborOwnNeutralD.find(is.getCurrentImageInfoField(1)) == gaborOwnNeutralD.end() ) {
+			stringstream ss1;
+
+			ss1 << is.getCurrentImageInfoField(6) << is.getCurrentImageInfoField(1) << "/neutral.png";
+
+  			cv::Mat ownNeutralIma = imread(ss1.str());
+			cv::Mat gaborOwnNeutralTmp;
+			cv::Mat lbpOwnNeutralTmp;
+
+			faceGaborExtractor.extractFeatures(ownNeutralIma, gaborOwnNeutralTmp);
+			lbpExtractor.extractFeatures(ownNeutralIma, lbpOwnNeutralTmp);
+
+			gaborOwnNeutralD[is.getCurrentImageInfoField(1)] = gaborOwnNeutralTmp;
+			lbpOwnNeutralD[is.getCurrentImageInfoField(1)] = lbpOwnNeutralTmp;
+		}
+
+		int isd = 0;
+		int isd2 = 50;
+		
+		cv::Mat gaborOwnNeutral = gaborOwnNeutralD[is.getCurrentImageInfoField(1)];
+		cv::Mat lbpOwnNeutral = lbpOwnNeutralD[is.getCurrentImageInfoField(1)];
+		
+		gaborOwnNeutralD[is.getCurrentImageInfoField(1)];
+		//float id;
+		//float detected;
+		float expected;
+
+		stringstream neutralPath;
+
+		neutralPath << is.getBasePath() << is.getCurrentImageInfoField(5);
+		
+		cv::Mat neutral = imread(neutralPath.str());
+		
+		cv::Mat gaborV0;
+		cv::Mat lbpV0;
+
+		faceGaborExtractor.extractFeatures(src, gaborV0);
+		faceGaborExtractor.extractFeatures(neutral, gaborNeutral);
+		
+		cv::Mat gaborV1 = gaborV0 - gaborNeutral;
+		cv::Mat gaborV2 = gaborV0 - gaborOwnNeutral;
+		cv::Mat gaborV3 = gaborV0 - globalNeutralGabor;
+
+		
+		normalize(gaborV1, gaborV1, 0, 1, CV_MINMAX);
+		normalize(gaborV2, gaborV2, 0, 1, CV_MINMAX);
+		normalize(gaborV3, gaborV3, 0, 1, CV_MINMAX);
+
+		
+		lbpExtractor.extractFeatures(src, lbpV0);
+		lbpExtractor.extractFeatures(neutral, lbpNeutral);
+		
+
+		cv::Mat lbpV1 = lbpV0 - lbpNeutral;
+		cv::Mat lbpV2 = lbpV0 - lbpOwnNeutral;
+		cv::Mat lbpV3 = lbpV0 - globalNeutralLbp;
+
+		normalize(lbpV1, lbpV1, 0, 1, CV_MINMAX);
+		normalize(lbpV2, lbpV2, 0, 1, CV_MINMAX);
+		normalize(lbpV3, lbpV3, 0, 1, CV_MINMAX);
+
+		
+		gaborV0ALL.push_back(gaborV0);
+		gaborV1ALL.push_back(gaborV1);
+		gaborV2ALL.push_back(gaborV2);
+		gaborV3ALL.push_back(gaborV3);
+		
+		lbpV0ALL.push_back(lbpV0);
+		lbpV1ALL.push_back(lbpV1);
+		lbpV2ALL.push_back(lbpV2);
+		lbpV3ALL.push_back(lbpV3);
+		
+		Mat labels(1,2,CV_32F);
+		labels.at<float>(0,0) = idI;
+		labels.at<float>(0,1) = idC;
+		
+		labelsAll.push_back(labels);
+
+		u++;
+
+		if (u % step == 0) {
+			cout << u << endl;
+			double rem = ((size - u) / (60 * step))
+					* ((double) cvGetTickCount() - lastT)
+					/ ((double) cvGetTickFrequency() * 1000000);
+			cout << rem << " minutes remaining" << endl;
+			lastT = cvGetTickCount();
+		}
+	}
+
+	cout << labelsAll << endl;
+
+	/*
+	string out = "gaborV0.bin";
+	MatrixTools::writeBinV2(out,gaborV0ALL,labelsAll);
+	out = "gaborV1.bin";
+	MatrixTools::writeBinV2(out,gaborV1ALL,labelsAll);
+	out = "gaborV2.bin";
+	MatrixTools::writeBinV2(out,gaborV2ALL,labelsAll);
+	out = "gaborV3.bin";
+	MatrixTools::writeBinV2(out,gaborV3ALL,labelsAll);
+
+	out = "lbpV0.bin";
+	MatrixTools::writeBinV2(out,lbpV0ALL,labelsAll);
+	out = "lbpV1.bin";
+	MatrixTools::writeBinV2(out,lbpV1ALL,labelsAll);
+	out = "lbpV2.bin";
+	MatrixTools::writeBinV2(out,lbpV2ALL,labelsAll);
+	out = "lbpV3.bin";
+	MatrixTools::writeBinV2(out,lbpV3ALL,labelsAll);
+	*/
+
+}
+
 int testAllClassifiersBin(int argc, char *argv[]) {
 
 
@@ -159,6 +339,17 @@ int testAllClassifiersBin(int argc, char *argv[]) {
 	
 	int divisions =  atoi(argv[2]);
 
+	vector<IClassifier*> classi; //choose the classifiers to test
+	string dummy = "";
+	string randf = StringTools::genRandom(5);
+	stringstream sss;
+	sss << "./tmpData/" << randf << "";
+	randf = sss.str();
+	classi.push_back(new SRClassifier(dummy));
+	classi.push_back(new SVMClassifier(dummy));
+	classi.push_back(new kNNClassifier());
+	classi.push_back(new VWBasicClassifier(randf));
+
 	if (isdigit(argv[2][0])){ //crossvalidation
 		
 		string file(argv[1]);
@@ -167,20 +358,15 @@ int testAllClassifiersBin(int argc, char *argv[]) {
 		Mat labels;
 	
 		MatrixTools::readBin(file, features, labels);
-		
-		vector<IClassifier*> classi; //choose the classifiers to test
-		//classi.push_back(new SRClassifier())
-		//classi.push_back(new SVMClassifier());
-		classi.push_back(new kNNClassifier());
-		classi.push_back(new VWBasicClassifier());
-
+	
 		TrainTestFeaturesTools ttft(features, labels,classi);
 				
-		cout << ttft.crossValidateAll(divisions) << endl;
-			
+		cout << ttft.crossValidateAll(divisions) << endl;	
 	} else { //separated files
+
 		string file(argv[1]);
 		string fileTest(argv[2]);
+
 
 		Mat features;
 		Mat labels;
@@ -191,16 +377,8 @@ int testAllClassifiersBin(int argc, char *argv[]) {
 		MatrixTools::readBin(file, features, labels);
 		MatrixTools::readBin(fileTest, testFeatures, testLabels);
 
-		vector<IClassifier*> classi;
-		//classi.push_back(new SRClassifier());
-		classi.push_back(new kNNClassifier());
-		//classi.push_back(new SVMClassifier());
-		classi.push_back(new VWBasicClassifier());
-
-		TrainTestFeaturesTools ttft(features, labels, testFeatures, testLabels,classi);
-				
+		TrainTestFeaturesTools ttft(features, labels, testFeatures, testLabels,classi);				
 		cout << ttft.testAll() << endl;
-	
 	}
 	
 
@@ -413,12 +591,39 @@ void testMSIDXIndexer(int argc, char *argv[]){
 	}
 }
 
+int merger(int argc, char *argv[]){
+	string a = argv[1];
+	stringstream ss;
+	ss << a << "_";
+	string b = ss.str();
+
+	stringstream ss1;
+	ss1 << "../" << a;
+	string c = ss1.str();
+
+	Mat t1;
+	Mat t2;
+
+	Mat l1;
+	Mat l2;
+
+	MatrixTools::readBin(a,t1,l1);
+	MatrixTools::readBin(b,t2,l2);
+
+	t1.push_back(t2);
+	l1.push_back(l2);
+
+	MatrixTools::writeBinV2(c,t1,l1);
+}
+
 int main(int argc, char *argv[])
 {	
 	//testLoadSaveIClassifier(argc, argv);
 	//testLoadSaveIIndexer(argc, argv);
 	//faceDetectionParameterChallenge(argc, argv);
-    //testAllClassifiersBin(argc, argv);
-	testMSIDXIndexer(argc, argv);
+    testAllClassifiersBin(argc, argv);
+    //merger(argc, argv);
+    //extractAllFeaturesCK(argc, argv);
+	//testMSIDXIndexer(argc, argv);
     return 0;
 }

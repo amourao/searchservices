@@ -95,6 +95,8 @@ string TextFileSourceV2::getCurrentImageInfoField(int field){
 	}
 
 	getline(liness, id);
+	id.erase(remove(id.begin(), id.end(), '\r'), id.end());
+	id.erase(remove(id.begin(), id.end(), '\n'), id.end());
 	return id;
 }
 
@@ -122,4 +124,8 @@ int TextFileSourceV2::getImageCount(){
 
 int TextFileSourceV2::getRemainingImageCount(){
 	return imagesPath.size() - imageIndex;
+}
+
+string TextFileSourceV2::getBasePath(){
+	return baseDir;
 }
