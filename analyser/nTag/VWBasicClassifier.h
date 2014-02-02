@@ -15,7 +15,7 @@
 #endif
 
 #ifndef BASIC_VW_RANDOM_SIZE
-#define BASIC_VW_RANDOM_SIZE 32
+#define BASIC_VW_RANDOM_SIZE 16
 #endif
 
 #ifndef TRAINDATA_EXTENSION_VW
