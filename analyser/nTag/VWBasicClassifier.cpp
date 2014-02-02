@@ -112,9 +112,10 @@ void VWBasicClassifier::importTxtToVowpalFormat(cv::Mat trainData, cv::Mat train
 }	
 
 float VWBasicClassifier::predictFromFile(cv::Mat testData){
+	string randomAppend = StringTools::genRandom(BASIC_VW_RANDOM_SIZE);
 
 	stringstream ss1;
-	ss1 << modelName << PREDICTION_EXTENSION_VW;
+	ss1 << modelName << "." << randomAppend << PREDICTION_EXTENSION_VW;
 	
   	ofstream vwData(ss1.str().c_str());
 	vwData.setf(std::ios_base::fixed, std::ios_base::floatfield);
@@ -127,11 +128,10 @@ float VWBasicClassifier::predictFromFile(cv::Mat testData){
 	vwData.flush();
 	vwData.close();
 
-	string randomAppend = StringTools::genRandom(BASIC_VW_RANDOM_SIZE);
 	stringstream ss;
 
 	//ss << "echo \"" << vwData.str() << "\" | vw -t -i " << modelName << MODEL_EXTENSION_VW <<" -p " << modelName << "." << randomAppend << PREDICTION_READ_EXTENSION_VW <<" --quiet"; 
-	ss << "vw -t -i " << modelName << MODEL_EXTENSION_VW <<" -p " << modelName << "." << randomAppend << PREDICTION_READ_EXTENSION_VW << " " << ss.str() << " --quiet"; 
+	ss << "vw -t -i " << modelName << MODEL_EXTENSION_VW << " " << ss1.str() << " -p " << modelName << "." << randomAppend << PREDICTION_READ_EXTENSION_VW << " --quiet"; 
 	//ss << <
 	//string params = ss.str();
 	float predict = 0;
