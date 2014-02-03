@@ -52,4 +52,5 @@ private:
 	flann::Index* flannIndexs;
 	flann::IndexParams* flannParams;	
 	cvflann::flann_distance_t flannDistance;
+	map<string,string> paramsB;
 };

@@ -9,7 +9,7 @@ FlannkNNIndexer::FlannkNNIndexer(){
 }
 
 FlannkNNIndexer::FlannkNNIndexer(string& type, map<string,string> params){
-
+	paramsB = params; 
     //FLANN_DIST_EUCLIDEAN = 1,
     //FLANN_DIST_L2 = 1,
     //FLANN_DIST_MANHATTAN = 2,
@@ -92,6 +92,7 @@ FlannkNNIndexer::FlannkNNIndexer(string& type, map<string,string> params){
         	atoi(params["key_size"].c_str()),
         	atoi(params["multi_probe_level"].c_str())
         	);
+		flannDistance = cvflann::FLANN_DIST_HAMMING;
 
 	} else if(params["algorithm"] == "auto"){
 
