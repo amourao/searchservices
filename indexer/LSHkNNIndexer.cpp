@@ -1,14 +1,14 @@
-#include "FlannkNNIndexer.h"
+#include "LSHkNNIndexer.h"
 
 //http://docs.opencv.org/2.4.3/modules/flann/doc/flann_fast_approximate_nearest_neighbor_search.html
 
-static FlannkNNIndexer linearkNNIndexerFactory;
+static LSHkNNIndexer linearkNNIndexerFactory;
 
-FlannkNNIndexer::FlannkNNIndexer(){
+LSHkNNIndexer::LSHkNNIndexer(){
 	FactoryIndexer::getInstance()->registerType("linearkNNIndexer",this);
 }
 
-FlannkNNIndexer::FlannkNNIndexer(string& type, map<string,string> params){
+LSHkNNIndexer::LSHkNNIndexer(string& type, map<string,string> params){
 	paramsB = params; 
     //FLANN_DIST_EUCLIDEAN = 1,
     //FLANN_DIST_L2 = 1,
@@ -39,6 +39,9 @@ FlannkNNIndexer::FlannkNNIndexer(string& type, map<string,string> params){
 		flannDistance = cvflann::FLANN_DIST_KULLBACK_LEIBLER;
 	else if(params["distance"] == "HAMMING")
 		flannDistance = cvflann::FLANN_DIST_HAMMING;
+
+
+	
 
 	if(params["algorithm"] == "linear"){		
 		flannParams = new flann::LinearIndexParams();
@@ -107,50 +110,80 @@ FlannkNNIndexer::FlannkNNIndexer(string& type, map<string,string> params){
         	atof(params["sample_fraction"].c_str())
         	);
 	}
+
+	matcher = new FlannBasedMatcher(flannParams);
 }
 
-FlannkNNIndexer::~FlannkNNIndexer(){
+LSHkNNIndexer::~LSHkNNIndexer(){
 
 }
 
-void* FlannkNNIndexer::createType(string &typeId){
+void* LSHkNNIndexer::createType(string &typeId){
 	if (typeId == "linearkNNIndexer"){
 		map<string,string> params;
 		params["algorithm"] = "linear";
 		params["distance"] = "EUCLIDEAN";
-		return new FlannkNNIndexer(typeId,params);
+		return new LSHkNNIndexer(typeId,params);
 	}  
 	cerr << "Error registering type from constructor (this should never happen)" << endl;
 	return NULL;
 }
 
-void FlannkNNIndexer::index(cv::Mat features){
+void LSHkNNIndexer::index(cv::Mat features){
 	//flannIndex = new flann::Index();
 	
 	indexData = features;
 
+	
 	if(paramsB["algorithm"]=="lsh"){
 		//indexData*=255;
-		indexData.convertTo(indexData,CV_8U);
+		//indexData.convertTo(indexData,CV_8U);
 		//cout << indexData.row(0) << endl;
 	}
 
-	flannIndexs = new flann::Index(indexData,*flannParams,flannDistance);
+	
+	for (int i = 0; i < indexData.rows; i++){
+		std::vector<Mat> v;
+		v.push_back(indexData.row(i));
+		matcher->add(v);
+	}
+	
+	matcher->train();
+	//flannIndexs = new flann::Index(indexData,*flannParams,flannDistance);
 	//flannIndex->build(indexData,flannParams);
 }
 
-vector<std::pair<float,float> > FlannkNNIndexer::knnSearchId(cv::Mat query, int n){
-	vector<int> indices (n);
-	vector<float> dists (n);
+vector<std::pair<float,float> > LSHkNNIndexer::knnSearchId(cv::Mat query, int n){
+	std::vector<std::vector< DMatch > > matches;
+	std::vector< std::pair<float,float> > matches2;
 	//cout << j++ << endl;
+	if(paramsB["algorithm"]=="lsh"){
+		//query*=255;
+		//query.convertTo(query,CV_8U);
+		//cout << indexData.row(0) << endl;
+	}
 
-	flannIndexs->knnSearch(query,indices,dists,n);
+	matcher->knnMatch(query,matches,n);
 
-	std::vector<float> indicesFloat(indices.begin(), indices.end());
-	return mergeVectors(indicesFloat,dists);
+	cout << matches.size() << " " << matches[0].size() << endl;
+
+	set<int> known;
+
+	std::set<int>::iterator it;
+	for(int i = 0; i < matches[0].size(); i++ ){
+		int id = matches.at(0).at(i).queryIdx;
+		float distance = matches.at(0).at(i).distance;
+		//if(known.find(id) == known.end()){
+			known.insert(id);
+			matches2.push_back(std::pair<float,float>(id,distance));
+		//}
+	}
+
+	//std::vector<float> indicesFloat(indices.begin(), indices.end());
+	return matches2;
 }
 
-vector<std::pair<string,float> > FlannkNNIndexer::knnSearchName(cv::Mat 
+vector<std::pair<string,float> > LSHkNNIndexer::knnSearchName(cv::Mat 
 	query, int n){
 	vector<int> indices (n);
 	vector<float> dists (n);
@@ -162,7 +195,7 @@ vector<std::pair<string,float> > FlannkNNIndexer::knnSearchName(cv::Mat
 	return mergeVectors(idToLabels(indicesFloat),dists);
 }
 
-vector<std::pair<float,float> > FlannkNNIndexer::radiusSearchId(cv::Mat query, double radius, int n){
+vector<std::pair<float,float> > LSHkNNIndexer::radiusSearchId(cv::Mat query, double radius, int n){
 	vector<int> indices (n);
 	vector<float> dists (n);
 	//cout << j++ << endl;
@@ -173,7 +206,7 @@ vector<std::pair<float,float> > FlannkNNIndexer::radiusSearchId(cv::Mat query, d
 	return mergeVectors(indicesFloat,dists);
 }
 
-vector<std::pair<string,float> > FlannkNNIndexer::radiusSearchName(cv::Mat query, double radius, int n){
+vector<std::pair<string,float> > LSHkNNIndexer::radiusSearchName(cv::Mat query, double radius, int n){
 	vector<int> indices (n);
 	vector<float> dists (n);
 	//cout << j++ << endl;
@@ -184,7 +217,7 @@ vector<std::pair<string,float> > FlannkNNIndexer::radiusSearchName(cv::Mat query
 	return mergeVectors(idToLabels(indicesFloat),dists);
 }
 
-bool FlannkNNIndexer::save(string basePath){
+bool LSHkNNIndexer::save(string basePath){
 	stringstream ss;
 	ss << INDEXER_BASE_SAVE_PATH << basePath << INDEX_DATA_EXTENSION_KNN;
 
@@ -205,7 +238,7 @@ bool FlannkNNIndexer::save(string basePath){
 	return true;
 }
 
-bool FlannkNNIndexer::load(string basePath){
+bool LSHkNNIndexer::load(string basePath){
 	
 	stringstream ss;
 	ss << INDEXER_BASE_SAVE_PATH << basePath << INDEX_DATA_EXTENSION_KNN;
@@ -229,9 +262,12 @@ bool FlannkNNIndexer::load(string basePath){
 	stringstream ssL;
 	ssL << INDEXER_BASE_SAVE_PATH << basePath << INDEXER_LABELS_EXTENSION;
 	loadLabels(ssL.str());
+
+
+
 	return true;
 }
 
-string FlannkNNIndexer::getName(){
-	return paramsB["algorithm"];
+string LSHkNNIndexer::getName(){
+	return "linearKNNIndexer";
 }

@@ -43,8 +43,10 @@
 #include "../indexer/IIndexer.h"
 #include "../indexer/FlannkNNIndexer.h"
 #include "../indexer/MSIDXIndexer.h"
+#include "../indexer/LSHkNNIndexer.h"
 
 #include "../commons/StringTools.h"
+#include "../commons/Timing.h"
 
 
 
@@ -119,12 +121,12 @@ void testMSIDXIndexer(int argc, char *argv[]){
 	paramsL["distance"] = "EUCLIDEAN";
 	paramsL["table_number"] = "5";
 	paramsL["key_size"] = "10";
-	paramsL["multi_probe_level"] = "2";
+	paramsL["multi_probe_level"] = "O";
 	//table_number the number of hash tables to use [10...30]
     //key_size the size of the hash key in bits [10...20]
     //multi_probe_level the number of bits to shift to check for neighboring buckets 
     //(0 is regular LSH, 2 is recommended).
-	IIndexer* lsh = new FlannkNNIndexer(dummy,paramsL);
+	IIndexer* lsh = new LSHkNNIndexer(dummy,paramsL);
 
 	map<string,string> paramsK;
 	paramsK["algorithm"] = "kd";
@@ -132,21 +134,41 @@ void testMSIDXIndexer(int argc, char *argv[]){
 	paramsK["trees"] = "8";
 	IIndexer* kd = new FlannkNNIndexer(dummy,paramsK);
 
+	map<string,string> paramsKM;
+	paramsKM["algorithm"] = "kmeans";
+	paramsKM["distance"] = "EUCLIDEAN";
+	paramsKM["branching"] = "32";
+	paramsKM["iterations"] = "11";
+	paramsKM["cb_index"] = "0.2";
+	paramsKM["centers_init"] = "CENTERS_RANDOM";
+
+	IIndexer* kmeans = new FlannkNNIndexer(dummy,paramsKM);
+
 	IIndexer* ms = new MSIDXIndexer(dummy,w);
 	
 	indexers.push_back(linear);
 	indexers.push_back(kd);
-	indexers.push_back(lsh);
+	indexers.push_back(kmeans);
 	indexers.push_back(ms);
 
+	timestamp_type start, end;
+
+	cout << "Indexing" << endl;	
+	for(int i = 0; i < indexers.size(); i++){
+		get_timestamp(&start);	
+		indexers.at(i)->index(features);
+		get_timestamp(&end);
+		cout << indexers.at(i)->getName() << " " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
+	}
+
+	cout << endl << "Querying" << endl;
 	for(int i = 0; i < indexers.size(); i++){
 		
-		cout << indexers.at(i)->getName() << endl;
-		indexers.at(i)->index(features);
-		
-		Mat q = features.row(0);
-	
+		Mat q = features.row(0);	
+		get_timestamp(&start);	
 		vector<std::pair<float,float> > r = indexers.at(i)->knnSearchId(q,k);
+		get_timestamp(&end);	
+		cout << indexers.at(i)->getName() << " " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
 		for(uint i = 0; i < r.size(); i++){
 			cout << r.at(i).first << "\t" << r.at(i).second << endl;
 		}
