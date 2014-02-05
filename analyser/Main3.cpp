@@ -3,7 +3,7 @@
 #include <sstream>
 #include <cstdlib>
 #include <opencv2/features2d/features2d.hpp>
-#include <time.h> 
+#include <time.h>
 //#include <math>
 
 #include <opencv2/core/core.hpp>
@@ -71,14 +71,14 @@ void testLoadSaveIIndexer(int argc, char *argv[]){
 
 	Mat features;
 	Mat labels;
-	
+
 	MatrixTools::readBin(file, features, labels);
 	IIndexer* vw = new FlannkNNIndexer();
 
 	vw->index(features);
 	vw->save("medicalImage_CEDD_kNN");
 	Mat q = features.row(0);
-	
+
 	vector<std::pair<float,float> > r = vw->knnSearchId(q,10);
 	for(uint i = 0; i < r.size(); i++){
 		cout << r.at(i).first << "\t" << r.at(i).second << endl;
@@ -105,7 +105,7 @@ void testMSIDXIndexer(int argc, char *argv[]){
 
 	Mat features;
 	//Mat labels;
-	
+
 	tinyImageImporter::readBin(file,n,features);
 
 	vector<IIndexer*> indexers;
@@ -124,7 +124,7 @@ void testMSIDXIndexer(int argc, char *argv[]){
 	paramsL["multi_probe_level"] = "O";
 	//table_number the number of hash tables to use [10...30]
     //key_size the size of the hash key in bits [10...20]
-    //multi_probe_level the number of bits to shift to check for neighboring buckets 
+    //multi_probe_level the number of bits to shift to check for neighboring buckets
     //(0 is regular LSH, 2 is recommended).
 	IIndexer* lsh = new LSHkNNIndexer(dummy,paramsL);
 
@@ -145,7 +145,8 @@ void testMSIDXIndexer(int argc, char *argv[]){
 	IIndexer* kmeans = new FlannkNNIndexer(dummy,paramsKM);
 
 	IIndexer* ms = new MSIDXIndexer(dummy,w);
-	
+
+	//indexers.push_back(lsh);
 	indexers.push_back(linear);
 	indexers.push_back(kd);
 	indexers.push_back(kmeans);
@@ -153,9 +154,9 @@ void testMSIDXIndexer(int argc, char *argv[]){
 
 	timestamp_type start, end;
 
-	cout << "Indexing" << endl;	
+	cout << "Indexing" << endl;
 	for(int i = 0; i < indexers.size(); i++){
-		get_timestamp(&start);	
+		get_timestamp(&start);
 		indexers.at(i)->index(features);
 		get_timestamp(&end);
 		cout << indexers.at(i)->getName() << " " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
@@ -163,11 +164,11 @@ void testMSIDXIndexer(int argc, char *argv[]){
 
 	cout << endl << "Querying" << endl;
 	for(int i = 0; i < indexers.size(); i++){
-		
-		Mat q = features.row(0);	
-		get_timestamp(&start);	
+
+		Mat q = features.row(0);
+		get_timestamp(&start);
 		vector<std::pair<float,float> > r = indexers.at(i)->knnSearchId(q,k);
-		get_timestamp(&end);	
+		get_timestamp(&end);
 		cout << indexers.at(i)->getName() << " " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
 		for(uint i = 0; i < r.size(); i++){
 			cout << r.at(i).first << "\t" << r.at(i).second << endl;
@@ -176,7 +177,7 @@ void testMSIDXIndexer(int argc, char *argv[]){
 }
 
 int main(int argc, char *argv[])
-{	
+{
 	//testLoadSaveIClassifier(argc, argv);
 	//testLoadSaveIIndexer(argc, argv);
 	//faceDetectionParameterChallenge(argc, argv);
