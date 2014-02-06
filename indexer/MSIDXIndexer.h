@@ -8,7 +8,7 @@
 //---------------------------------------------------
 
 //If you plan to use MSIDX in your research, please cite the following article:
-//E. Tiakas, D. Rafailidis, A. Dimou, P. Darras, "MSIDX: Multi-Sort Indexing for 
+//E. Tiakas, D. Rafailidis, A. Dimou, P. Darras, "MSIDX: Multi-Sort Indexing for
 //Efficient Content-based Image Search and Retrieval", IEEE Trans. on Multimedia,
 //accepted for publication.
 
@@ -78,11 +78,11 @@ class MSIDXIndexer: public IIndexer {
 public:
 
 	MSIDXIndexer();
-	MSIDXIndexer(string& type, int w);
+	MSIDXIndexer(string& type, map<string,string> params);
 	~MSIDXIndexer();
-	
+
 	void* createType(string &typeId);
-	
+
 	void index(cv::Mat features);
 
 	vector<std::pair<float,float> > knnSearchId(cv::Mat name, int k);
@@ -112,6 +112,6 @@ private:
 
 	int n; //Total number of Objects (cardinality)
 	int d; //Dimensionality of the Objects
-	int w; //Search Radius
-	
+	double w; //Percentage of database to search
+
 };

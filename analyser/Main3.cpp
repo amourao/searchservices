@@ -101,8 +101,7 @@ void testMSIDXIndexer(int argc, char *argv[]){
 	string file(argv[1]);
 
 	int n = atoi(argv[2]);
-	int w = atoi(argv[3]);
-	int k = atoi(argv[4]);
+	int k = atoi(argv[3]);
 
 	Mat features;
 	Mat featuresValidation;
@@ -147,7 +146,9 @@ void testMSIDXIndexer(int argc, char *argv[]){
 
 	IIndexer* kmeans = new FlannkNNIndexer(dummy,paramsKM);
 
-	IIndexer* ms = new MSIDXIndexer(dummy,w);
+    map<string,string> paramsW;
+	paramsW["w"] = "1";
+	IIndexer* ms = new MSIDXIndexer(dummy,paramsW);
 
 
     map<string,string> paramsLSH;
@@ -159,14 +160,11 @@ void testMSIDXIndexer(int argc, char *argv[]){
 
     indexers.push_back(linear);
     indexers.push_back(e2lsh);
-
-    /*
 	//indexers.push_back(lsh);
-
 	indexers.push_back(kd);
 	indexers.push_back(kmeans);
 	indexers.push_back(ms);
-    */
+
 	timestamp_type start, end;
 
 	cout << "Indexing" << endl;

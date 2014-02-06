@@ -6,9 +6,9 @@ MSIDXIndexer::MSIDXIndexer(){
 	FactoryIndexer::getInstance()->registerType("MSIDXIndexer",this);
 }
 
-MSIDXIndexer::MSIDXIndexer(string& _type, int _w){
+MSIDXIndexer::MSIDXIndexer(string& _type, map<string,string> params){
 	type = _type;
-	w = _w;
+	w = atof(params["w"].c_str());
 }
 
 MSIDXIndexer::~MSIDXIndexer(){
@@ -17,8 +17,10 @@ MSIDXIndexer::~MSIDXIndexer(){
 
 void* MSIDXIndexer::createType(string &typeId){
 	if (typeId == "MSIDXIndexer"){
-		return new MSIDXIndexer(typeId,10);
-	}  
+        map<string,string> params;
+        params["w"] = 0.01;
+		return new MSIDXIndexer(typeId,params);
+	}
 	cerr << "Error registering type from constructor (this should never happen)" << endl;
 	return NULL;
 }
@@ -92,18 +94,22 @@ int MSIDXIndexer::compareToMatCardinality(const cv::Mat& mat1, const cv::Mat& ma
 vector<std::pair<float,float> > MSIDXIndexer::knnSearchId(cv::Mat query, int k){
 	std::vector<float> indicesFloat;
 	std::vector<float> dists;
-	
+
 	uint pos = getIndexBinarySearch(query);
 
 	std::priority_queue<pair<float,float>,std::vector<pair<float,float> > ,compareMatDists> H;
 
 	int n = featuresList.size();
 
-	w = std::min(w,n/2+1);
-	k = std::min(k,std::min(n,2*w-1));
+    int searchW = (w*n)/2.0;
+
+	searchW = std::min(searchW,n/2);
+
+	k = std::min(k,n);
 
 	int npos = 0;
-	for (int j = 0; j <= w; j++){
+
+	for (int j = 0; j <= searchW; j++){
 		npos = pos - j;
 		if (npos >= 0 && j != 0){
 			Mat oa = featuresList.at(npos).second;
@@ -117,7 +123,8 @@ vector<std::pair<float,float> > MSIDXIndexer::knnSearchId(cv::Mat query, int k){
 			H.push(std::make_pair (featuresList.at(npos).first,dist));
 		}
 	}
-	for (int i = 0; i < k; i++){
+	int newN = min(k,(int)H.size());
+	for (int i = 0; i < newN; i++){
 		pair<float,float> p = H.top();
 		indicesFloat.push_back(p.first);
 		dists.push_back(p.second);
@@ -126,7 +133,7 @@ vector<std::pair<float,float> > MSIDXIndexer::knnSearchId(cv::Mat query, int k){
 	return mergeVectors(indicesFloat,dists);
 }
 
-vector<std::pair<string,float> > MSIDXIndexer::knnSearchName(cv::Mat 
+vector<std::pair<string,float> > MSIDXIndexer::knnSearchName(cv::Mat
 	query, int k){
 	std::vector<float> indicesFloat;
 	std::vector<float> dists;
