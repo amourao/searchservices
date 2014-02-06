@@ -15,12 +15,12 @@ Factory::~Factory() {
 /**
    Register method.
  */
-bool Factory::registerType(string typeId, FactoryMethod* object) {
+bool Factory::registerType(string typeId, FactoryMethod* object, map<string,string> params) {
 
     if (objectTypes.count(typeId) != 0)
         return false;
 
-    objectTypes[typeId] = object;
+    objectTypes[typeId] = make_pair(object,params);
 
     cout << " Registered new FactoryMethod: " << typeId << endl;
 
@@ -35,9 +35,10 @@ void* Factory::createType(string &typeId) {
     if (objectTypes.count(typeId) == 0)
         return NULL;
 
-    FactoryMethod* object = objectTypes[typeId];
+    FactoryMethod* object = objectTypes[typeId].first;
+    map<string,string> params = objectTypes[typeId].second;
 
-    return object->createType(typeId);
+    return object->createType(typeId,params);
 }
 
 /**
@@ -45,7 +46,7 @@ void* Factory::createType(string &typeId) {
  */
 void Factory::listTypes() {
 
-    map<string, FactoryMethod*>::iterator it;
+    map<string, pair<FactoryMethod*,map<string,string> > >::iterator it;
 
     for (it = objectTypes.begin(); it != objectTypes.end(); it++) {
         cout << "    " << it->first << endl;

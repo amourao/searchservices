@@ -12,16 +12,20 @@ public:
 
     virtual void* createType(string &typeId) = 0;
 
+    virtual void* createType(string &typeId, map<string,string>& params){
+        return createType(typeId);
+    }
+
 };
 
 class Factory {
 
 protected:
 
-    map<string, FactoryMethod*> objectTypes;
-	
+    map<string, pair<FactoryMethod*,map<string,string> > > objectTypes;
+
 public:
-	
+
     /**
        Constructor.
      */
@@ -40,7 +44,7 @@ public:
     /**
        Method to register models in the factory.
      */
-    bool registerType(string typeId, FactoryMethod* object);
+    bool registerType(string typeId, FactoryMethod* object, map<string,string> params = map<string,string>());
 
     /**
        Method to list types registered in the factory.

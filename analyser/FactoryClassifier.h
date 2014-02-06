@@ -14,19 +14,19 @@ class FactoryClassifier: public Factory {
 private:
 
     static FactoryClassifier* instance;
-    
+
     static bool destroyed;
-    
+
     FactoryClassifier();
     ~FactoryClassifier();
 
 public:
-	
+
 	static FactoryClassifier* getInstance();
-	
+
 	/**
        Method to list types registered in the factory.
      */
-    map<string, IDataModel::type> listTypes();
+    //map<string, IDataModel::type> listTypes();
 
 };

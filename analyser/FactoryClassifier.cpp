@@ -11,17 +11,17 @@ FactoryClassifier::FactoryClassifier(){
 FactoryClassifier::~FactoryClassifier(){
 	destroyed = true;
 }
- 
+
 FactoryClassifier* FactoryClassifier::getInstance(){
 	if(destroyed)
 		instance = new FactoryClassifier();
-	
+
 	if (instance == NULL)
 		instance = new FactoryClassifier();
-	
+
 	return instance;
 }
-
+/*
 map<string, IDataModel::type> FactoryClassifier::listTypes() {
 
 	map<string, IDataModel::type> ret;
@@ -33,9 +33,7 @@ map<string, IDataModel::type> FactoryClassifier::listTypes() {
 
 	return ret;
 }
-
-
-
+*/
 
 
 

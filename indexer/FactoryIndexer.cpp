@@ -11,17 +11,18 @@ FactoryIndexer::FactoryIndexer(){
 FactoryIndexer::~FactoryIndexer(){
 	destroyed = true;
 }
- 
+
 FactoryIndexer* FactoryIndexer::getInstance(){
 	if(destroyed)
 		instance = new FactoryIndexer();
-	
+
 	if (instance == NULL)
 		instance = new FactoryIndexer();
-	
+
 	return instance;
 }
 
+/*
 map<string,string> FactoryIndexer::listTypes() {
 
 	map<string, string> ret;
@@ -34,3 +35,4 @@ map<string,string> FactoryIndexer::listTypes() {
 	return ret;
 }
 
+*/

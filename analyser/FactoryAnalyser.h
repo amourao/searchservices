@@ -14,19 +14,19 @@ class FactoryAnalyser: public Factory {
 private:
 
     static FactoryAnalyser* instance;
-    
+
     static bool destroyed;
-    
+
     FactoryAnalyser();
     ~FactoryAnalyser();
 
 public:
-	
+
 	static FactoryAnalyser* getInstance();
-	
+
 	/**
        Method to list types registered in the factory.
      */
-    map<string, IDataModel::type> listTypes();
+   // map<string, IDataModel::type> listTypes();
 
 };
