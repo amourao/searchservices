@@ -13,7 +13,7 @@ class tinyImageImporter {
 
 public:
 	//not random, gets the first "numberOfRows" elements
-	static void readBin(std::string file, int numberOfRows, cv::Mat& features);
+	static void readBin(std::string file, int numberOfRows, cv::Mat& features, long long offsetInRows = 0);
 	static void readTags(std::string file, int numberOfRows, cv::Mat& tags);
 
 private:

@@ -1,9 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
-	<File name="commons/Timing.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="indexer/LSHIndexer.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1127" topLine="26" />
+			<Cursor1 position="4113" topLine="126" />
+		</Cursor>
+	</File>
+	<File name="indexer/e2lsh/SelfTuning.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="970" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="indexer/e2lsh/LocalitySensitiveHashing.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="23354" topLine="584" />
 		</Cursor>
 	</File>
 	<File name="indexer/LSHkNNIndexer.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -11,14 +21,84 @@
 			<Cursor1 position="1058" topLine="19" />
 		</Cursor>
 	</File>
-	<File name="analyser/Main3.cpp" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="225" topLine="48" />
-		</Cursor>
-	</File>
 	<File name="indexer/LSHkNNIndexer.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="7091" topLine="140" />
+		</Cursor>
+	</File>
+	<File name="indexer/LSHIndexer.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1520" topLine="37" />
+		</Cursor>
+	</File>
+	<File name="commons/Timing.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1127" topLine="26" />
+		</Cursor>
+	</File>
+	<File name="indexer/e2lsh/NearNeighbors.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1045" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="indexer/e2lsh/Random.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="725" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="indexer/e2lsh/Geometry.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="306" topLine="7" />
+		</Cursor>
+	</File>
+	<File name="indexer/e2lsh/LocalitySensitiveHashing.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1181" topLine="119" />
+		</Cursor>
+	</File>
+	<File name="indexer/e2lsh/Geometry.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1771" topLine="27" />
+		</Cursor>
+	</File>
+	<File name="analyser/tools/tinyImageImporter.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="391" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="analyser/tools/tinyImageImporter.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="862" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="indexer/e2lsh/NearNeighbors.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="4765" topLine="106" />
+		</Cursor>
+	</File>
+	<File name="indexer/e2lsh/BasicDefinitions.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="4228" topLine="97" />
+		</Cursor>
+	</File>
+	<File name="analyser/Main3.cpp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="904" zoom_1="3" zoom_2="3">
+		<Cursor>
+			<Cursor1 position="4491" topLine="129" />
+		</Cursor>
+	</File>
+	<File name="indexer/e2lsh/LSHMain.cpp" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="9951" topLine="267" />
+		</Cursor>
+	</File>
+	<File name="indexer/IIndexer.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1753" topLine="43" />
+		</Cursor>
+	</File>
+	<File name="indexer/e2lsh/headers.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="912" topLine="3" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

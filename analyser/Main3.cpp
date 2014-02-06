@@ -44,6 +44,7 @@
 #include "../indexer/FlannkNNIndexer.h"
 #include "../indexer/MSIDXIndexer.h"
 #include "../indexer/LSHkNNIndexer.h"
+#include "../indexer/LSHIndexer.h"
 
 #include "../commons/StringTools.h"
 #include "../commons/Timing.h"
@@ -104,9 +105,11 @@ void testMSIDXIndexer(int argc, char *argv[]){
 	int k = atoi(argv[4]);
 
 	Mat features;
+	Mat featuresValidation;
 	//Mat labels;
 
 	tinyImageImporter::readBin(file,n,features);
+	tinyImageImporter::readBin(file,n*0.1,featuresValidation,n);
 
 	vector<IIndexer*> indexers;
 	//MatrixTools::readBin(file, features, labels);
@@ -146,18 +149,35 @@ void testMSIDXIndexer(int argc, char *argv[]){
 
 	IIndexer* ms = new MSIDXIndexer(dummy,w);
 
+
+    map<string,string> paramsLSH;
+	paramsLSH["oneMinusDelta"] = "0.99";
+	paramsLSH["radius"] = "1.2";
+	paramsLSH["trainValSplit"] = "0.95";
+	IIndexer* e2lsh = new LSHIndexer(dummy,paramsLSH);
+
+
+    indexers.push_back(linear);
+    indexers.push_back(e2lsh);
+
+    /*
 	//indexers.push_back(lsh);
-	indexers.push_back(linear);
+
 	indexers.push_back(kd);
 	indexers.push_back(kmeans);
 	indexers.push_back(ms);
-
+    */
 	timestamp_type start, end;
 
 	cout << "Indexing" << endl;
 	for(int i = 0; i < indexers.size(); i++){
 		get_timestamp(&start);
-		indexers.at(i)->index(features);
+
+		if (indexers.at(i)->getName() == "E2LSHIndexer")
+            ((LSHIndexer*)indexers.at(i))->index(features,featuresValidation);
+		else
+            indexers.at(i)->index(features);
+
 		get_timestamp(&end);
 		cout << indexers.at(i)->getName() << " " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
 	}
@@ -176,15 +196,7 @@ void testMSIDXIndexer(int argc, char *argv[]){
 	}
 }
 
-int main(int argc, char *argv[])
-{
-	//testLoadSaveIClassifier(argc, argv);
-	//testLoadSaveIIndexer(argc, argv);
-	//faceDetectionParameterChallenge(argc, argv);
-    //testAllClassifiersBin(argc, argv);
-    //extractAllFeaturesCKv2(argc, argv);
-    //merger(argc, argv);
-    //extractAllFeaturesCK(argc, argv);
+int main(int argc, char *argv[]){
 	testMSIDXIndexer(argc, argv);
     return 0;
 }
