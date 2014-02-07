@@ -6,7 +6,11 @@ MSIDXIndexer::MSIDXIndexer(){
 	FactoryIndexer::getInstance()->registerType("MSIDXIndexer",this);
 }
 
-MSIDXIndexer::MSIDXIndexer(string& _type, map<string,string> params){
+MSIDXIndexer::MSIDXIndexer(string& _type){
+	type = _type;
+}
+
+MSIDXIndexer::MSIDXIndexer(string& _type, map<string,string>& params){
 	type = _type;
 	w = atof(params["w"].c_str());
 }
@@ -15,15 +19,18 @@ MSIDXIndexer::~MSIDXIndexer(){
 
 }
 
+void* MSIDXIndexer::createType(string &typeId, map<string,string>& params){
+    return new MSIDXIndexer(typeId,params);
+}
+
 void* MSIDXIndexer::createType(string &typeId){
 	if (typeId == "MSIDXIndexer"){
-        map<string,string> params;
-        params["w"] = 0.01;
-		return new MSIDXIndexer(typeId,params);
+		return new MSIDXIndexer(typeId);
 	}
 	cerr << "Error registering type from constructor (this should never happen)" << endl;
 	return NULL;
 }
+
 
 void MSIDXIndexer::index(cv::Mat features){
 	cardinalitiesCols = preProcessCardinality(features);
@@ -161,5 +168,5 @@ bool MSIDXIndexer::load(string basePath){
 }
 
 string MSIDXIndexer::getName(){
-	return "msidxIndexer";
+	return type;
 }

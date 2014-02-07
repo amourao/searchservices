@@ -43,7 +43,6 @@
 #include "../indexer/IIndexer.h"
 #include "../indexer/FlannkNNIndexer.h"
 #include "../indexer/MSIDXIndexer.h"
-#include "../indexer/LSHkNNIndexer.h"
 #include "../indexer/LSHIndexer.h"
 
 #include "../commons/StringTools.h"
@@ -97,6 +96,61 @@ void testLoadSaveIIndexer(int argc, char *argv[]){
 	}
 }
 
+void testRegisteringIndeces(int argc, char *argv[]){
+	string file(argv[1]);
+
+	int n = atoi(argv[2]);
+	int k = atoi(argv[3]);
+
+	Mat features;
+	Mat featuresValidation;
+	//Mat labels;
+
+	tinyImageImporter::readBin(file,n,features);
+	tinyImageImporter::readBin(file,n*0.1,featuresValidation,n);
+
+	vector<IIndexer*> indexers;
+	//MatrixTools::readBin(file, features, labels);
+	string newName = "linearIndexer";
+	string originalName = "flannkNNIndexer";
+	map<string,string> params;
+	params["algorithm"] = "linear";
+	params["distance"] = "EUCLIDEAN";
+	IIndexer* flann = (IIndexer*)FactoryIndexer::getInstance()->createType(originalName);
+	FactoryIndexer::getInstance()->registerType(newName,flann,params);
+	IIndexer* linear = (IIndexer*)FactoryIndexer::getInstance()->createType(newName);
+
+    timestamp_type start, end;
+
+    indexers.push_back(linear);
+	cout << "Indexing" << endl;
+	for(int i = 0; i < indexers.size(); i++){
+		get_timestamp(&start);
+
+		if (indexers.at(i)->getName() == "E2LSHIndexer")
+            ((LSHIndexer*)indexers.at(i))->index(features,featuresValidation);
+		else
+            indexers.at(i)->index(features);
+
+		get_timestamp(&end);
+		cout << indexers.at(i)->getName() << " " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
+	}
+
+	cout << endl << "Querying" << endl;
+	for(int i = 0; i < indexers.size(); i++){
+
+		Mat q = features.row(0);
+		get_timestamp(&start);
+		vector<std::pair<float,float> > r = indexers.at(i)->knnSearchId(q,k);
+		get_timestamp(&end);
+		cout << indexers.at(i)->getName() << " " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
+		for(uint i = 0; i < r.size(); i++){
+			cout << r.at(i).first << "\t" << r.at(i).second << endl;
+		}
+	}
+}
+
+
 void testMSIDXIndexer(int argc, char *argv[]){
 	string file(argv[1]);
 
@@ -117,18 +171,6 @@ void testMSIDXIndexer(int argc, char *argv[]){
 	params["algorithm"] = "linear";
 	params["distance"] = "EUCLIDEAN";
 	IIndexer* linear = new FlannkNNIndexer(dummy,params);
-
-	map<string,string> paramsL;
-	paramsL["algorithm"] = "lsh";
-	paramsL["distance"] = "EUCLIDEAN";
-	paramsL["table_number"] = "5";
-	paramsL["key_size"] = "10";
-	paramsL["multi_probe_level"] = "O";
-	//table_number the number of hash tables to use [10...30]
-    //key_size the size of the hash key in bits [10...20]
-    //multi_probe_level the number of bits to shift to check for neighboring buckets
-    //(0 is regular LSH, 2 is recommended).
-	IIndexer* lsh = new LSHkNNIndexer(dummy,paramsL);
 
 	map<string,string> paramsK;
 	paramsK["algorithm"] = "kd";
@@ -195,6 +237,7 @@ void testMSIDXIndexer(int argc, char *argv[]){
 }
 
 int main(int argc, char *argv[]){
-	testMSIDXIndexer(argc, argv);
+    testRegisteringIndeces(argc, argv);
+	//testMSIDXIndexer(argc, argv);
     return 0;
 }

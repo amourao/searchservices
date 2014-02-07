@@ -10,6 +10,7 @@ LSHIndexer::LSHIndexer(){
 
 LSHIndexer::LSHIndexer(const string& type, map<string,string>& params){
 	paramsB = params;
+	typeId = type;
 
 	oneMinusDelta = atof(params["oneMinusDelta"].c_str());
 	r = atof(params["radius"].c_str());
@@ -22,19 +23,22 @@ LSHIndexer::LSHIndexer(const string& type, map<string,string>& params){
 
 }
 
+LSHIndexer::LSHIndexer(const string& type){
+	typeId = type;
+}
 
 
 LSHIndexer::~LSHIndexer(){
 
 }
 
-void* LSHIndexer::createType(string &typeId){
-	if (typeId == "lshIndexer"){
-		map<string,string> params;
-		params["oneMinusDelta"] = "0.95";
-		params["radius"] = "7";
-		params["trainValSplit"] = "0.90";
-		return new LSHIndexer(typeId,params);
+void* LSHIndexer::createType(string &type, map<string,string>& params){
+	return new LSHIndexer(type,params);
+}
+
+void* LSHIndexer::createType(string &type){
+	if (type == "lshIndexer"){
+		return new LSHIndexer(type);
 	}
 	cerr << "Error registering type from constructor (this should never happen)" << endl;
 	return NULL;
@@ -139,7 +143,7 @@ bool LSHIndexer::load(const string basePath){
 }
 
 string LSHIndexer::getName(){
-	return "E2LSHIndexer";
+	return typeId;
 }
 
 /*

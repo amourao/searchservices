@@ -78,10 +78,12 @@ class MSIDXIndexer: public IIndexer {
 public:
 
 	MSIDXIndexer();
-	MSIDXIndexer(string& type, map<string,string> params);
+	MSIDXIndexer(string& type);
+	MSIDXIndexer(string& type, map<string,string>& params);
 	~MSIDXIndexer();
 
 	void* createType(string &typeId);
+	void* createType(string &typeId, map<string,string>& params);
 
 	void index(cv::Mat features);
 

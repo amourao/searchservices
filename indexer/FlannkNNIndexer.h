@@ -27,11 +27,13 @@ class FlannkNNIndexer: public IIndexer {
 public:
 
 	FlannkNNIndexer();
-	FlannkNNIndexer(string& type, map<string,string> params);
+	FlannkNNIndexer(string& type);
+	FlannkNNIndexer(string& type, map<string,string>& params);
 	~FlannkNNIndexer();
-	
+
 	void* createType(string &typeId);
-	
+	void* createType(string &typeId, map<string,string>& params);
+
 	void index(cv::Mat features);
 
 	vector<std::pair<float,float> > knnSearchId(cv::Mat name, int n);
@@ -50,7 +52,7 @@ private:
 	string type;
 	cv::Mat indexData;
 	flann::Index* flannIndexs;
-	flann::IndexParams* flannParams;	
+	flann::IndexParams* flannParams;
 	cvflann::flann_distance_t flannDistance;
 	map<string,string> paramsB;
 };

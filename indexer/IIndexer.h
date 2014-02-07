@@ -27,8 +27,9 @@ class IIndexer: public FactoryMethod {
 public:
 
 	virtual ~IIndexer(){}
-	
+
 	virtual void* createType(string &typeId) = 0;
+	virtual void* createType(string &typeId, map<string,string>& params) = 0;
 
 
 	virtual vector<std::pair<float,float> > knnSearchId(std::vector<float>& v, int n = 1000){
@@ -54,7 +55,7 @@ public:
 		MatrixTools::vectorToMat(v, vMat);
 		return radiusSearchName(vMat,radius,n);
 	}
-	
+
 
 	virtual vector<std::pair<float,float> > knnSearchId(cv::Mat features, int n) = 0;
 	virtual vector<std::pair<string,float> > knnSearchName(cv::Mat features, int n) = 0;
@@ -93,17 +94,17 @@ public:
 
 		return result;
 	}
-	
+
 	virtual void loadLabels(string basePath){
-    
+
 	    labels.clear();
 
 		ifstream file(basePath.c_str(), ifstream::in);
 		string line, numberOfClassesStr,id1,id2;
-		
+
 		getline(file, line);
 		stringstream liness(line);
-		getline(liness, numberOfClassesStr);	
+		getline(liness, numberOfClassesStr);
 		numberOfElements = atoi(numberOfClassesStr.c_str());
 		//int i = 0;
 		while (getline(file, line)) {

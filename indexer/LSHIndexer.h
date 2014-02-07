@@ -32,10 +32,12 @@ class LSHIndexer: public IIndexer {
 public:
 
 	LSHIndexer();
+	LSHIndexer(const string& type);
 	LSHIndexer(const string& type, map<string,string>& params);
 	~LSHIndexer();
 
 	void* createType(string &typeId);
+	void* createType(string &typeId, map<string,string>& params);
 
     void index(cv::Mat features);
 	void index(cv::Mat& features,cv::Mat& featuresVal);
@@ -59,7 +61,7 @@ private:
     vector<float> pPointsTToDists(PPointT *(&input), PPointT query, int d, int n);
     void sortFinalCandidates(PPointT *result, PPointT queryPoint, vector<float>& indicesFloat, vector<float>& dists, int d, int n, int newN);
 
-	string type;
+	string typeId;
 	cv::Mat indexData;
 	map<string,string> paramsB;
 
