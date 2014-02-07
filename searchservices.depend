@@ -408,16 +408,19 @@
 	"IIndexer.h"
 	"FactoryIndexer.h"
 
-1391772778 source:/home/amourao/code/searchservices/analyser/Main3.cpp
+1391799463 source:/home/amourao/code/searchservices/analyser/Main3.cpp
 	<iostream>
 	<string>
 	<sstream>
+	<set>
 	<cstdlib>
 	<opencv2/features2d/features2d.hpp>
 	<time.h>
 	<opencv2/core/core.hpp>
 	<opencv2/highgui/highgui.hpp>
 	<opencv2/imgproc/imgproc.hpp>
+	<jsoncpp/json/json.h>
+	<jsoncpp/json/autolink.h>
 	"nTag/SRClassifier.h"
 	"sources/ImageSource.h"
 	"sources/CamSource.h"

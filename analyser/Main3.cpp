@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <set>
 #include <cstdlib>
 #include <opencv2/features2d/features2d.hpp>
 #include <time.h>
@@ -9,6 +10,9 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+
+#include <jsoncpp/json/json.h>
+#include <jsoncpp/json/autolink.h>
 
 #include "nTag/SRClassifier.h"
 
@@ -96,116 +100,128 @@ void testLoadSaveIIndexer(int argc, char *argv[]){
 	}
 }
 
-void testRegisteringIndeces(int argc, char *argv[]){
-	string file(argv[1]);
+void generatePermutations(Json::Value root, vector<map<string,string> >& result)
+{
+    vector<vector<string> > lists;
 
-	int n = atoi(argv[2]);
-	int k = atoi(argv[3]);
+    vector<string> mapIntName;
 
-	Mat features;
-	Mat featuresValidation;
-	//Mat labels;
 
-	tinyImageImporter::readBin(file,n,features);
-	tinyImageImporter::readBin(file,n*0.1,featuresValidation,n);
+    vector<map<string,string> > combinations;
+    vector<map<string,string> > newCombinations;
 
-	vector<IIndexer*> indexers;
-	//MatrixTools::readBin(file, features, labels);
-	string newName = "linearIndexer";
-	string originalName = "flannkNNIndexer";
-	map<string,string> params;
-	params["algorithm"] = "linear";
-	params["distance"] = "EUCLIDEAN";
-	IIndexer* flann = (IIndexer*)FactoryIndexer::getInstance()->createType(originalName);
-	FactoryIndexer::getInstance()->registerType(newName,flann,params);
-	IIndexer* linear = (IIndexer*)FactoryIndexer::getInstance()->createType(newName);
+    int i = 0;
+    for( Json::ValueIterator itr = root.begin(); itr != root.end(); itr++ ){
+        vector<string> innerList;
+        Json::Value innerArray = root[itr.key().asString()];
+        mapIntName.push_back(itr.key().asString());
 
-    timestamp_type start, end;
+        if (innerArray.isArray()){
+            for ( int j = 0; j < innerArray.size(); j++ ){
+                innerList.push_back(innerArray[j].asString());
+            }
+        } else {
+            innerList.push_back(innerArray.asString());
+        }
+        lists.push_back(innerList);
+        i++;
+    }
 
-    indexers.push_back(linear);
-	cout << "Indexing" << endl;
-	for(int i = 0; i < indexers.size(); i++){
-		get_timestamp(&start);
 
-		if (indexers.at(i)->getName() == "E2LSHIndexer")
-            ((LSHIndexer*)indexers.at(i))->index(features,featuresValidation);
-		else
-            indexers.at(i)->index(features);
 
-		get_timestamp(&end);
-		cout << indexers.at(i)->getName() << " " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
-	}
+    for(int i = 0; i < lists.at(0).size(); i++){
+        map<string,string> inner;
+        inner[mapIntName.at(0)] = lists.at(0).at(i);
+        combinations.push_back(inner);
+    }
 
-	cout << endl << "Querying" << endl;
-	for(int i = 0; i < indexers.size(); i++){
+    for(int i = 1; i < lists.size(); i++){
+        vector<string> next = lists.at(i);
+        newCombinations = vector<map<string,string> >();
+        for (vector<map<string,string> >::iterator it=combinations.begin(); it!=combinations.end(); ++it){ // *it
+            for (vector<string>::iterator it2=next.begin(); it2!=next.end(); ++it2){ // *it2
+                (*it)[mapIntName.at(i)] = (*it2);
+                newCombinations.push_back((*it));
 
-		Mat q = features.row(0);
-		get_timestamp(&start);
-		vector<std::pair<float,float> > r = indexers.at(i)->knnSearchId(q,k);
-		get_timestamp(&end);
-		cout << indexers.at(i)->getName() << " " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
-		for(uint i = 0; i < r.size(); i++){
-			cout << r.at(i).first << "\t" << r.at(i).second << endl;
-		}
-	}
+            }
+        }
+        combinations = newCombinations;
+    }
+
+
+    for (int i = 0; i < combinations.size(); i++){
+        for (map<string,string>::iterator it=combinations.at(i).begin(); it!=combinations.at(i).end(); ++it){
+            cout << it->first << " " << it->second << endl;
+        }
+    }
+    result = combinations;
+}
+
+vector<IIndexer*> testRegisteringIndeces(char *argv){
+
+
+    vector<IIndexer*> indexers;
+
+    Json::Value root;   // will contains the root value after parsing.
+    Json::Reader reader;
+
+    std::fstream file (argv, std::fstream::in | std::fstream::out);
+
+    bool parsingSuccessful = reader.parse( file, root );
+
+    const Json::Value plugins = root["endpoints"]["indexer"];
+
+    for ( int i = 0; i < plugins.size(); i++ ){
+        const Json::Value p = plugins[i];
+
+        string newName = p["newName"].asString();
+        string originalName = p["originalName"].asString();
+
+        Json::Value paramsJSON = p["params"];
+
+        map<string,string> params;
+        vector<map<string,string> > allParams;
+
+        generatePermutations(paramsJSON,allParams);
+
+
+        for( int j = 0; j < allParams.size(); j++){
+            map<string,string> params = allParams.at(j);
+            stringstream ss;
+            ss << newName << "_" << j;
+            string newNameId = ss.str();
+            IIndexer* originalIndex = (IIndexer*)FactoryIndexer::getInstance()->createType(originalName);
+            FactoryIndexer::getInstance()->registerType(newNameId,originalIndex,params);
+            IIndexer* readyIndex = (IIndexer*)FactoryIndexer::getInstance()->createType(newNameId);
+
+            indexers.push_back(readyIndex);
+        }
+    }
+
+    return indexers;
 }
 
 
-void testMSIDXIndexer(int argc, char *argv[]){
+
+
+void testIndeces(int argc, char *argv[]){
 	string file(argv[1]);
 
 	int n = atoi(argv[2]);
+	int nTrain = atoi(argv[2]);
+	int nVal = atoi(argv[2]);
 	int k = atoi(argv[3]);
 
 	Mat features;
 	Mat featuresValidation;
+	Mat featuresTest;
 	//Mat labels;
 
 	tinyImageImporter::readBin(file,n,features);
 	tinyImageImporter::readBin(file,n*0.1,featuresValidation,n);
+	tinyImageImporter::readBin(file,n*0.1,featuresValidation,n);
 
-	vector<IIndexer*> indexers;
-	//MatrixTools::readBin(file, features, labels);
-	string dummy = "";
-	map<string,string> params;
-	params["algorithm"] = "linear";
-	params["distance"] = "EUCLIDEAN";
-	IIndexer* linear = new FlannkNNIndexer(dummy,params);
-
-	map<string,string> paramsK;
-	paramsK["algorithm"] = "kd";
-	paramsK["distance"] = "EUCLIDEAN";
-	paramsK["trees"] = "8";
-	IIndexer* kd = new FlannkNNIndexer(dummy,paramsK);
-
-	map<string,string> paramsKM;
-	paramsKM["algorithm"] = "kmeans";
-	paramsKM["distance"] = "EUCLIDEAN";
-	paramsKM["branching"] = "32";
-	paramsKM["iterations"] = "11";
-	paramsKM["cb_index"] = "0.2";
-	paramsKM["centers_init"] = "CENTERS_RANDOM";
-
-	IIndexer* kmeans = new FlannkNNIndexer(dummy,paramsKM);
-
-    map<string,string> paramsW;
-	paramsW["w"] = "1";
-	IIndexer* ms = new MSIDXIndexer(dummy,paramsW);
-
-
-    map<string,string> paramsLSH;
-	paramsLSH["oneMinusDelta"] = "0.99";
-	paramsLSH["radius"] = "1.2";
-	paramsLSH["trainValSplit"] = "0.95";
-	IIndexer* e2lsh = new LSHIndexer(dummy,paramsLSH);
-
-
-    indexers.push_back(linear);
-    indexers.push_back(e2lsh);
-	//indexers.push_back(lsh);
-	indexers.push_back(kd);
-	indexers.push_back(kmeans);
-	indexers.push_back(ms);
+	vector<IIndexer*> indexers = testRegisteringIndeces("config.json");
 
 	timestamp_type start, end;
 
@@ -237,7 +253,6 @@ void testMSIDXIndexer(int argc, char *argv[]){
 }
 
 int main(int argc, char *argv[]){
-    testRegisteringIndeces(argc, argv);
-	//testMSIDXIndexer(argc, argv);
+	testIndeces(argc, argv);
     return 0;
 }
