@@ -132,22 +132,26 @@ void* FlannkNNIndexer::createType(string &typeId){
 	return NULL;
 }
 
+void FlannkNNIndexer::train(cv::Mat featuresTrain,cv::Mat featuresValidationI,cv::Mat featuresValidationQ){
+
+}
+
+void FlannkNNIndexer::indexWithTrainedParams(cv::Mat features){
+	indexData = features;
+
+	flannIndexs = new flann::Index(indexData,*flannParams,flannDistance);
+}
+
 void FlannkNNIndexer::index(cv::Mat features){
 	//flannIndex = new flann::Index();
 
 	indexData = features;
 
-	if(paramsB["algorithm"]=="lsh"){
-		//indexData*=255;
-		indexData.convertTo(indexData,CV_8U);
-		//cout << indexData.row(0) << endl;
-	}
-
 	flannIndexs = new flann::Index(indexData,*flannParams,flannDistance);
 	//flannIndex->build(indexData,flannParams);
 }
 
-vector<std::pair<float,float> > FlannkNNIndexer::knnSearchId(cv::Mat query, int n){
+std::pair<vector<float>,vector<float> > FlannkNNIndexer::knnSearchId(cv::Mat query, int n){
 	vector<int> indices (n);
 	vector<float> dists (n);
 	//cout << j++ << endl;
@@ -155,22 +159,10 @@ vector<std::pair<float,float> > FlannkNNIndexer::knnSearchId(cv::Mat query, int 
 	flannIndexs->knnSearch(query,indices,dists,n);
 
 	std::vector<float> indicesFloat(indices.begin(), indices.end());
-	return mergeVectors(indicesFloat,dists);
+	return make_pair(indicesFloat,dists);
 }
 
-vector<std::pair<string,float> > FlannkNNIndexer::knnSearchName(cv::Mat
-	query, int n){
-	vector<int> indices (n);
-	vector<float> dists (n);
-	//cout << j++ << endl;
-
-	flannIndexs->knnSearch(query,indices,dists,n);
-
-	std::vector<float> indicesFloat(indices.begin(), indices.end());
-	return mergeVectors(idToLabels(indicesFloat),dists);
-}
-
-vector<std::pair<float,float> > FlannkNNIndexer::radiusSearchId(cv::Mat query, double radius, int n){
+std::pair<vector<float>,vector<float> > FlannkNNIndexer::radiusSearchId(cv::Mat query, double radius, int n){
 	vector<int> indices (n);
 	vector<float> dists (n);
 	//cout << j++ << endl;
@@ -178,18 +170,7 @@ vector<std::pair<float,float> > FlannkNNIndexer::radiusSearchId(cv::Mat query, d
 	flannIndexs->radiusSearch(query,indices,dists,radius,n);
 
 	std::vector<float> indicesFloat(indices.begin(), indices.end());
-	return mergeVectors(indicesFloat,dists);
-}
-
-vector<std::pair<string,float> > FlannkNNIndexer::radiusSearchName(cv::Mat query, double radius, int n){
-	vector<int> indices (n);
-	vector<float> dists (n);
-	//cout << j++ << endl;
-
-	flannIndexs->radiusSearch(query,indices,dists,radius,n);
-
-	std::vector<float> indicesFloat(indices.begin(), indices.end());
-	return mergeVectors(idToLabels(indicesFloat),dists);
+	return make_pair(indicesFloat,dists);
 }
 
 bool FlannkNNIndexer::save(string basePath){

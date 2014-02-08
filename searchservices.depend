@@ -376,7 +376,7 @@
 	"../commons/factory/Factory.h"
 	"IIndexer.h"
 
-1391770758 /home/amourao/code/searchservices/indexer/IIndexer.h
+1391886160 /home/amourao/code/searchservices/indexer/IIndexer.h
 	<map>
 	<string>
 	<iostream>
@@ -386,7 +386,7 @@
 	"../analyser/tools/MatrixTools.h"
 	"../commons/factory/Factory.h"
 
-1391772649 /home/amourao/code/searchservices/indexer/FlannkNNIndexer.h
+1391884840 /home/amourao/code/searchservices/indexer/FlannkNNIndexer.h
 	<map>
 	<string>
 	<iostream>
@@ -397,7 +397,7 @@
 	"IIndexer.h"
 	"FactoryIndexer.h"
 
-1391772866 /home/amourao/code/searchservices/indexer/MSIDXIndexer.h
+1391884886 /home/amourao/code/searchservices/indexer/MSIDXIndexer.h
 	<map>
 	<set>
 	<string>
@@ -408,7 +408,7 @@
 	"IIndexer.h"
 	"FactoryIndexer.h"
 
-1391882746 source:/home/amourao/code/searchservices/analyser/Main3.cpp
+1391894215 source:/home/amourao/code/searchservices/analyser/Main3.cpp
 	<iostream>
 	<string>
 	<sstream>
@@ -713,13 +713,13 @@
 1391725562 source:/home/amourao/code/searchservices/indexer/FactoryIndexer.cpp
 	"FactoryIndexer.h"
 
-1391772959 source:/home/amourao/code/searchservices/indexer/FlannkNNIndexer.cpp
+1391885106 source:/home/amourao/code/searchservices/indexer/FlannkNNIndexer.cpp
 	"FlannkNNIndexer.h"
 
 1391563053 source:/home/amourao/code/searchservices/indexer/LSHkNNIndexer.cpp
 	"LSHkNNIndexer.h"
 
-1391772533 source:/home/amourao/code/searchservices/indexer/MSIDXIndexer.cpp
+1391884772 source:/home/amourao/code/searchservices/indexer/MSIDXIndexer.cpp
 	"MSIDXIndexer.h"
 
 1390951642 source:/home/amourao/code/searchservices/rest/Endpoints/analyser/CombSearchResult.cpp
@@ -859,7 +859,7 @@
 	"../../FactoryEndpoint.h"
 	"../../IEndpoint.h"
 
-1391563053 source:/home/amourao/code/searchservices/rest/Endpoints/indexer/GenericIndexer.cpp
+1391884402 source:/home/amourao/code/searchservices/rest/Endpoints/indexer/GenericIndexer.cpp
 	"GenericIndexer.h"
 
 1391563053 /home/amourao/code/searchservices/rest/Endpoints/indexer/GenericIndexer.h
@@ -3895,10 +3895,10 @@
 1237852534 source:/home/amourao/code/searchservices/indexer/e2lsh/Util.cpp
 	"headers.h"
 
-1391772616 source:/home/amourao/code/searchservices/indexer/LSHIndexer.cpp
+1391885827 source:/home/amourao/code/searchservices/indexer/LSHIndexer.cpp
 	"LSHIndexer.h"
 
-1391772589 /home/amourao/code/searchservices/indexer/LSHIndexer.h
+1391885668 /home/amourao/code/searchservices/indexer/LSHIndexer.h
 	<map>
 	<string>
 	<iostream>
@@ -3924,6 +3924,6 @@
 	"../analyser/IAnalyser.h"
 	<jsoncpp/json/json.h>
 
-1391860459 source:/home/amourao/code/searchservices/commons/LoadConfig.cpp
+1391883008 source:/home/amourao/code/searchservices/commons/LoadConfig.cpp
 	"LoadConfig.h"
 

@@ -1,0 +1,28 @@
+{"parameters": {
+	"file" : "~/dataBig/tiniestgist80million.bin",
+    "nTrain": "100",
+    "nValI": "100",
+    "nValQ": "10",
+    "nTesI": "100",
+    "nTesQ": "10",
+    "k": "10"
+	},
+"endpoints": {
+    "indexer": [
+        {
+            "newName": "linearIndexer",
+            "originalName": "flannkNNIndexer",
+            "params": {
+                "algorithm": "linear",
+                "distance": "EUCLIDEAN"
+            }
+        },
+        {
+            "newName": "msIDXIndexerW",
+            "originalName": "MSIDXIndexer",
+            "params": {
+                "w": ["0.10","0.20","0.30","0.40","0.50","0.60","0.70","0.80","0.90","1.00"]
+            }
+        }
+    ]
+} }    

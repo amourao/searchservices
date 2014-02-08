@@ -83,9 +83,9 @@ void testLoadSaveIIndexer(int argc, char *argv[]){
 	vw->save("medicalImage_CEDD_kNN");
 	Mat q = features.row(0);
 
-	vector<std::pair<float,float> > r = vw->knnSearchId(q,10);
-	for(uint i = 0; i < r.size(); i++){
-		cout << r.at(i).first << "\t" << r.at(i).second << endl;
+	std::pair< vector<float> , vector<float> > r = vw->knnSearchId(q,10);
+	for(uint i = 0; i < r.first.size(); i++){
+		cout << r.first.at(i)<< "\t" << r.second.at(i) << endl;
 	}
 	cout  << endl;
 	delete vw;
@@ -95,45 +95,68 @@ void testLoadSaveIIndexer(int argc, char *argv[]){
 
 	r = vw->knnSearchId(q,10);
 
-	for(uint i = 0; i < r.size(); i++){
-		cout << r.at(i).first << "\t" << r.at(i).second << endl;
+	for(uint i = 0; i < r.first.size(); i++){
+		cout << r.first.at(i) << "\t" << r.second.at(i) << endl;
 	}
 }
 
+
 void testIndeces(int argc, char *argv[]){
+
 	string file(argv[1]);
 
-	int n = atoi(argv[2]);
-	int nTrain = atoi(argv[2]);
-	int nVal = atoi(argv[2]);
-	int k = atoi(argv[3]);
+	map<string,string> parameters;
+	vector<IIndexer*> indexers;
+	vector<IAnalyser*> analysers;
+
+	LoadConfig::load("config.json",parameters,indexers,analysers);
+
+	int nTrain = atoi(parameters["nTrain"].c_str());
+	int nValI = atoi(parameters["nValI"].c_str());
+    int nValQ = atoi(parameters["nValQ"].c_str());
+	int nTesI = atoi(parameters["nTesI"].c_str());
+	int nTesQ = atoi(parameters["nTesQ"].c_str());
+	int k = atoi(parameters["k"].c_str());
 
 	Mat featuresTrain;
-	Mat featuresValidationQ;
 	Mat featuresValidationI;
-	Mat featuresTestQ;
+	Mat featuresValidationQ;
 	Mat featuresTestI;
+	Mat featuresTestQ;
 
-    Mat features;
-	Mat featuresValidation;
 	//Mat labels;
-
-	tinyImageImporter::readBin(file,n,featuresTrain);
+    int currentOffset = 0;
+	tinyImageImporter::readBin(file,nTrain,featuresTrain,currentOffset);
+	currentOffset += nTrain;
+	tinyImageImporter::readBin(file,nValI,featuresValidationI,currentOffset);
+	currentOffset += nValI;
+	tinyImageImporter::readBin(file,nValQ,featuresValidationQ,currentOffset);
+	currentOffset += nValQ;
+	tinyImageImporter::readBin(file,nTesI,featuresTestI,currentOffset);
+	currentOffset += nTesI;
+	tinyImageImporter::readBin(file,nTesQ,featuresTestQ,currentOffset);
 	//tinyImageImporter::readBin(file,n*0.1,featuresValidation,n);
 	//tinyImageImporter::readBin(file,n*0.1,featuresValidation,n);
 
-	vector<IIndexer*> indexers = LoadConfig::getRegisteredIndeces("config.json");
+
 
 	timestamp_type start, end;
+
+	cout << "Training" << endl;
+	for(int i = 0; i < indexers.size(); i++){
+		get_timestamp(&start);
+
+        indexers.at(i)->train(featuresTrain,featuresValidationQ,featuresValidationI);
+
+		get_timestamp(&end);
+		cout << indexers.at(i)->getName() << " " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
+	}
 
 	cout << "Indexing" << endl;
 	for(int i = 0; i < indexers.size(); i++){
 		get_timestamp(&start);
 
-		if (indexers.at(i)->getName() == "E2LSHIndexer")
-            ((LSHIndexer*)indexers.at(i))->index(features,featuresValidation);
-		else
-            indexers.at(i)->index(features);
+        indexers.at(i)->indexWithTrainedParams(featuresTestI);
 
 		get_timestamp(&end);
 		cout << indexers.at(i)->getName() << " " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
@@ -142,18 +165,119 @@ void testIndeces(int argc, char *argv[]){
 	cout << endl << "Querying" << endl;
 	for(int i = 0; i < indexers.size(); i++){
 
-		Mat q = features.row(0);
+		Mat q = featuresTestQ.row(0);
 		get_timestamp(&start);
-		vector<std::pair<float,float> > r = indexers.at(i)->knnSearchId(q,k);
+		std::pair<vector<float>, vector<float> > r = indexers.at(i)->knnSearchId(q,k);
 		get_timestamp(&end);
 		cout << indexers.at(i)->getName() << " " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
-		for(uint i = 0; i < r.size(); i++){
-			cout << r.at(i).first << "\t" << r.at(i).second << endl;
+		for(uint i = 0; i < r.first.size(); i++){
+			cout << r.first.at(i) << "\t" << r.second.at(i) << endl;
 		}
 	}
 }
 
+
+void awesomeIndexTester(int argc, char *argv[]){
+
+	map<string,string> parameters;
+	vector<IIndexer*> indexers;
+	vector<IAnalyser*> analysers;
+
+    string paramFile(argv[1]);
+	LoadConfig::load(paramFile,parameters,indexers,analysers);
+
+    string file(parameters["file"]);
+	int nTrain = atoi(parameters["nTrain"].c_str());
+	int nValI = atoi(parameters["nValI"].c_str());
+    int nValQ = atoi(parameters["nValQ"].c_str());
+	int nTesI = atoi(parameters["nTesI"].c_str());
+	int nTesQ = atoi(parameters["nTesQ"].c_str());
+	int k = atoi(parameters["k"].c_str());
+
+	Mat featuresTrain;
+	Mat featuresValidationI;
+	Mat featuresValidationQ;
+	Mat featuresTestI;
+	Mat featuresTestQ;
+
+	//Mat labels;
+    int currentOffset = 0;
+	tinyImageImporter::readBin(file,nTrain,featuresTrain,currentOffset);
+	currentOffset += nTrain;
+	tinyImageImporter::readBin(file,nValI,featuresValidationI,currentOffset);
+	currentOffset += nValI;
+	tinyImageImporter::readBin(file,nValQ,featuresValidationQ,currentOffset);
+	currentOffset += nValQ;
+	tinyImageImporter::readBin(file,nTesI,featuresTestI,currentOffset);
+	currentOffset += nTesI;
+	tinyImageImporter::readBin(file,nTesQ,featuresTestQ,currentOffset);
+
+	timestamp_type start, end;
+
+	cout << "Training" << endl;
+	for(int i = 0; i < indexers.size(); i++){
+		get_timestamp(&start);
+
+        indexers.at(i)->train(featuresTrain,featuresValidationQ,featuresValidationI);
+
+		get_timestamp(&end);
+		cout << indexers.at(i)->getName() << " " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
+	}
+
+	cout << "Indexing" << endl;
+	for(int i = 0; i < indexers.size(); i++){
+		get_timestamp(&start);
+
+        indexers.at(i)->indexWithTrainedParams(featuresTestI);
+
+		get_timestamp(&end);
+		cout << indexers.at(i)->getName() << " " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
+	}
+
+	cout << endl << "Querying" << endl;
+
+
+
+	vector<std::pair<vector<float>, vector<float> > > linearResults;
+	for(int i = 0; i < indexers.size(); i++){
+        vector<float> precVsLinearTmp;
+        long long tmpTime = 0;
+
+        std::pair<vector<float>, vector<float> > r;
+        vector<std::pair<vector<float>, vector<float> > > rAll;
+        for (int j = 0; j < featuresTestQ.rows; j++){
+            IIndexer* ind = indexers.at(i);
+            Mat q = featuresTestQ.row(i);
+            get_timestamp(&start);
+            r = ind->knnSearchId(q,k);
+            get_timestamp(&end);
+            tmpTime += timestamp_diff_in_milliseconds(start, end);
+            if (i == 0)
+                linearResults.push_back(r);
+            rAll.push_back(r);
+        }
+
+
+        int correct = 0;
+        int incorrect = 0;
+        int kLinear = 0;
+
+        for (int j = 0; j < rAll.size(); j++){
+            for (int k = 0; k < rAll.at(j).first.size(); k++){
+                if (linearResults.at(j).first.at(kLinear) == rAll.at(j).first.at(k)){
+                    kLinear++;
+                    correct++;
+                } else {
+                    incorrect++;
+                }
+            }
+        }
+		cout << indexers.at(i)->getName() << " " << (float)correct/(float)(incorrect+correct) << " " <<  tmpTime <<  " ms" << endl;
+
+	}
+}
+
 int main(int argc, char *argv[]){
-	testIndeces(argc, argv);
+	awesomeIndexTester(argc, argv);
     return 0;
 }

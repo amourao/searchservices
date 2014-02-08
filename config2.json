@@ -1,0 +1,55 @@
+{"parameters": {
+	"file" : "~/dataBig/tiniestgist80million.bin",
+    "nTrain": "100",
+    "nValI": "100",
+    "nValQ": "10",
+    "nTesI": "1000",
+    "nTesQ": "10",
+    "k": "10"
+	},
+ "endpoints": {
+    "indexer": [
+        {
+            "newName": "linearIndexer",
+            "originalName": "flannkNNIndexer",
+            "params": {
+                "algorithm": "linear",
+                "distance": "EUCLIDEAN"
+            }
+        },{
+            "newName": "kdTree",
+            "originalName": "flannkNNIndexer",
+            "params": {
+                "algorithm": "kd",
+                "distance": "EUCLIDEAN",
+                "trees": "8"
+            }
+        },{
+            "newName": "kMeansTree",
+            "originalName": "flannkNNIndexer",
+            "params": {
+                "algorithm": "kmeans",
+                "distance": "EUCLIDEAN",
+                "branching": "32",
+                "iterations": "11",
+                "cb_index": "0.2",
+                "centers_init": "CENTERS_RANDOM"                
+            }
+        },{
+            "newName": "msIDXIndexerW",
+            "originalName": "MSIDXIndexer",
+            "params": {
+                "w": "0.15"
+            }
+        },{
+            "newName": "lshIndexerR",
+            "originalName": "lshIndexer",
+            "params": {
+                "oneMinusDelta": "0.95",
+                "radius": "5",
+                "trainValSplit": "0.1"
+            }
+        }
+
+    ]
+} }    

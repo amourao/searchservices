@@ -34,13 +34,12 @@ public:
 	void* createType(string &typeId);
 	void* createType(string &typeId, map<string,string>& params);
 
+    void train(cv::Mat featuresTrain,cv::Mat featuresValidationI,cv::Mat featuresValidationQ);
+	void indexWithTrainedParams(cv::Mat features);
 	void index(cv::Mat features);
 
-	vector<std::pair<float,float> > knnSearchId(cv::Mat name, int n);
-	vector<std::pair<string,float> > knnSearchName(cv::Mat name, int n);
-
-	vector<std::pair<float,float> > radiusSearchId(cv::Mat name, double radius, int n);
-	vector<std::pair<string,float> > radiusSearchName(cv::Mat name, double radius, int n);
+	std::pair<vector<float>,vector<float> > knnSearchId(cv::Mat name, int n);
+	std::pair<vector<float>,vector<float> > radiusSearchId(cv::Mat name, double radius, int n);
 
 	bool save(string basePath);
 	bool load(string basePath);

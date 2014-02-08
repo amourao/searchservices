@@ -39,15 +39,12 @@ public:
 	void* createType(string &typeId);
 	void* createType(string &typeId, map<string,string>& params);
 
+    void train(cv::Mat featuresTrain,cv::Mat featuresValidationI,cv::Mat featuresValidationQ);
+	void indexWithTrainedParams(cv::Mat features);
     void index(cv::Mat features);
-	void index(cv::Mat& features,cv::Mat& featuresVal);
 
-	vector<std::pair<float,float> > knnSearchId(const cv::Mat name, const int n);
-	vector<std::pair<string,float> > knnSearchName(const cv::Mat name, const int n);
-
-	vector<std::pair<float,float> > radiusSearchId(const cv::Mat name, const double radius, const int n);
-	vector<std::pair<string,float> > radiusSearchName(const cv::Mat name, const double radius, const int n);
-
+	std::pair<vector<float>,vector<float> > knnSearchId(const cv::Mat name, const int n);
+	std::pair<vector<float>,vector<float> > radiusSearchId(const cv::Mat name, const double radius, const int n);
 	bool save(string basePath);
 	bool load(string basePath);
 
@@ -72,4 +69,6 @@ private:
 	Mat featuresSplit;
 	Mat validationSplit;
 	long memoryUpperBound;
+
+	RNNParametersT learnedParams;
 };

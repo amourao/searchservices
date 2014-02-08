@@ -44,33 +44,30 @@ void* LSHIndexer::createType(string &type){
 	return NULL;
 }
 
+void LSHIndexer::train(cv::Mat featuresTrain,cv::Mat featuresValidationI,cv::Mat featuresValidationQ){
+    PPointT* dataSet = matToPPointT(featuresTrain);
+    PPointT* sampleQueries = matToPPointT(featuresValidationQ);
+    learnedParams = computeOptimalParameters(r, oneMinusDelta, featuresTrain.rows, featuresTrain.cols, dataSet, featuresValidationQ.rows, sampleQueries, memoryUpperBound);
+}
+
+void LSHIndexer::indexWithTrainedParams(cv::Mat features){
+    PPointT* dataSet = matToPPointT(features);
+    indexer =  initLSH_WithDataSet(learnedParams,features.rows,dataSet);
+}
+
 void LSHIndexer::index(cv::Mat features){
     featuresSplit = features.rowRange(0,features.rows*trainValSplit);
     validationSplit = features.rowRange(features.rows*trainValSplit,features.rows);
-    index(featuresSplit,validationSplit);
+    PPointT* dataSet = matToPPointT(featuresSplit);
+    PPointT* sampleQueries = matToPPointT(validationSplit);
+    indexer = initSelfTunedRNearNeighborWithDataSet(r, oneMinusDelta, featuresSplit.rows, featuresSplit.cols, dataSet, validationSplit.rows, sampleQueries, memoryUpperBound);
 }
 
-void LSHIndexer::index(cv::Mat& features,cv::Mat& featuresVal){
-    PPointT* dataSet = matToPPointT(features);
-    PPointT* sampleQueries = matToPPointT(featuresVal);
-    //initSelfTunedRNearNeighborWithDataSet(RealT thresholdR, RealT successProbability, Int32T nPoints, IntT dimension, PPointT *dataSet, IntT nSampleQueries, PPointT *sampleQueries, MemVarT memoryUpperBound)
-    indexer = initSelfTunedRNearNeighborWithDataSet(r, oneMinusDelta, features.rows, features.cols, dataSet, featuresVal.rows, sampleQueries, memoryUpperBound);
-}
-
-vector<std::pair<float,float> > LSHIndexer::knnSearchId(const cv::Mat query, const int n){
+std::pair<vector<float>,vector<float> > LSHIndexer::knnSearchId(const cv::Mat query, const int n){
 	return radiusSearchId(query,-1,n);
 }
 
-vector<std::pair<string,float> > LSHIndexer::knnSearchName(cv::Mat
-	query, int n){
-	vector<int> indices (n);
-	vector<float> dists (n);
-
-	std::vector<float> indicesFloat(indices.begin(), indices.end());
-	return mergeVectors(idToLabels(indicesFloat),dists);
-}
-
-vector<std::pair<float,float> > LSHIndexer::radiusSearchId(const cv::Mat query, const double radius, const int n){
+std::pair<vector<float>,vector<float> > LSHIndexer::radiusSearchId(const cv::Mat query, const double radius, const int n){
 
 	/*
 	INDICIES:
@@ -108,7 +105,7 @@ vector<std::pair<float,float> > LSHIndexer::radiusSearchId(const cv::Mat query, 
 
     sortFinalCandidates(result,queryPoint,indicesFloat,dists,d,n,newN);
 
-	return mergeVectors(indicesFloat,dists);
+	return make_pair(indicesFloat,dists);
 }
 
 void LSHIndexer::sortFinalCandidates(PPointT *result,PPointT queryPoint, vector<float>& indicesFloat, vector<float>& dists, int d, int n, int newN){
@@ -126,13 +123,6 @@ void LSHIndexer::sortFinalCandidates(PPointT *result,PPointT queryPoint, vector<
 	}
 }
 
-vector<std::pair<string,float> > LSHIndexer::radiusSearchName(const cv::Mat query, const double radius, const int n){
-	vector<int> indices (n);
-	vector<float> dists (n);
-
-	std::vector<float> indicesFloat(indices.begin(), indices.end());
-	return mergeVectors(idToLabels(indicesFloat),dists);
-}
 
 bool LSHIndexer::save(const string basePath){
 	return true;
