@@ -11,9 +11,10 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="~/dataBig/tiniestgist80million.bin 1500 10" />
+				<Option parameters="config.json" />
 				<Compiler>
 					<Add option="-g" />
+					<Add directory="commons" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -21,9 +22,10 @@
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="~/dataBig/tiniestgist80million.bin 1500 10" />
+				<Option parameters="~/code/searchservices/config.json" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add directory="commons" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -77,8 +79,6 @@
 		<Unit filename="analyser/nTag/kNNClassifier.h" />
 		<Unit filename="analyser/nTag/omp.h" />
 		<Unit filename="analyser/nTag/thresholding.h" />
-		<Unit filename="analyser/nVector/CombinedExtractor.cpp" />
-		<Unit filename="analyser/nVector/CombinedExtractor.h" />
 		<Unit filename="analyser/nVector/EigenExtractor.cpp" />
 		<Unit filename="analyser/nVector/EigenExtractor.h" />
 		<Unit filename="analyser/nVector/FeatureExtractor.h" />
@@ -137,6 +137,8 @@
 		<Unit filename="commons/AppConfig.h" />
 		<Unit filename="commons/FileDownloader.cpp" />
 		<Unit filename="commons/FileDownloader.h" />
+		<Unit filename="commons/LoadConfig.cpp" />
+		<Unit filename="commons/LoadConfig.h" />
 		<Unit filename="commons/StringTools.cpp" />
 		<Unit filename="commons/StringTools.h" />
 		<Unit filename="commons/Timing.h" />
