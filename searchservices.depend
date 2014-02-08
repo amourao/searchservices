@@ -15,7 +15,7 @@
 	<string>
 	<iostream>
 
-1391563053 /home/amourao/code/searchservices/analyser/IAnalyser.h
+1391860749 /home/amourao/code/searchservices/analyser/IAnalyser.h
 	<map>
 	<string>
 	<iostream>
@@ -408,7 +408,7 @@
 	"IIndexer.h"
 	"FactoryIndexer.h"
 
-1391799463 source:/home/amourao/code/searchservices/analyser/Main3.cpp
+1391882746 source:/home/amourao/code/searchservices/analyser/Main3.cpp
 	<iostream>
 	<string>
 	<sstream>
@@ -450,6 +450,7 @@
 	"../indexer/LSHIndexer.h"
 	"../commons/StringTools.h"
 	"../commons/Timing.h"
+	"../commons/LoadConfig.h"
 
 1391563053 /home/amourao/code/searchservices/indexer/LSHkNNIndexer.h
 	<map>
@@ -3915,4 +3916,14 @@
 	<stdlib.h>
 	<sys/times.h>
 	"headers.h"
+
+1391882780 /home/amourao/code/searchservices/commons/LoadConfig.h
+	"../indexer/FactoryIndexer.h"
+	"../indexer/IIndexer.h"
+	"../analyser/FactoryAnalyser.h"
+	"../analyser/IAnalyser.h"
+	<jsoncpp/json/json.h>
+
+1391860459 source:/home/amourao/code/searchservices/commons/LoadConfig.cpp
+	"LoadConfig.h"
 

@@ -11,7 +11,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="~/dataBig/tiniestgist80million.bin 15 100 10" />
+				<Option parameters="~/dataBig/tiniestgist80million.bin 1500 10" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
@@ -21,7 +21,7 @@
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="~/dataBig/tiniestgist80million.bin 150 100 10" />
+				<Option parameters="~/dataBig/tiniestgist80million.bin 1500 10" />
 				<Compiler>
 					<Add option="-O2" />
 				</Compiler>
@@ -160,8 +160,6 @@
 		<Unit filename="indexer/IIndexer.h" />
 		<Unit filename="indexer/LSHIndexer.cpp" />
 		<Unit filename="indexer/LSHIndexer.h" />
-		<Unit filename="indexer/LSHkNNIndexer.cpp" />
-		<Unit filename="indexer/LSHkNNIndexer.h" />
 		<Unit filename="indexer/MSIDXIndexer.cpp" />
 		<Unit filename="indexer/MSIDXIndexer.h" />
 		<Unit filename="indexer/e2lsh/BasicDefinitions.h" />
