@@ -247,7 +247,7 @@ void awesomeIndexTester(int argc, char *argv[]){
         vector<std::pair<vector<float>, vector<float> > > rAll;
         for (int j = 0; j < featuresTestQ.rows; j++){
             IIndexer* ind = indexers.at(i);
-            Mat q = featuresTestQ.row(i);
+            Mat q = featuresTestQ.row(j);
             get_timestamp(&start);
             r = ind->knnSearchId(q,k);
             get_timestamp(&end);
