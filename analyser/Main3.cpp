@@ -194,6 +194,8 @@ void awesomeIndexTester(int argc, char *argv[]){
 	int nTesQ = atoi(parameters["nTesQ"].c_str());
 	int k = atoi(parameters["k"].c_str());
 
+    int tmp = 0;
+
 	Mat featuresTrain;
 	Mat featuresValidationI;
 	Mat featuresValidationQ;
@@ -212,7 +214,7 @@ void awesomeIndexTester(int argc, char *argv[]){
 	currentOffset += nTesI;
 	tinyImageImporter::readBin(file,nTesQ,featuresTestQ,currentOffset);
 
-	timestamp_type start, end;
+    timestamp_type start, end;
 
 	cout << "Training" << endl;
 	for(int i = 0; i < indexers.size(); i++){
@@ -221,7 +223,7 @@ void awesomeIndexTester(int argc, char *argv[]){
         indexers.at(i)->train(featuresTrain,featuresValidationQ,featuresValidationI);
 
 		get_timestamp(&end);
-		cout << indexers.at(i)->getName() << " " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
+		cout << indexers.at(i)->getName() << "\t" << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
 	}
 
 	cout << "Indexing" << endl;
@@ -231,22 +233,23 @@ void awesomeIndexTester(int argc, char *argv[]){
         indexers.at(i)->indexWithTrainedParams(featuresTestI);
 
 		get_timestamp(&end);
-		cout << indexers.at(i)->getName() << " " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
+		cout << indexers.at(i)->getName() << "\t" << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
 	}
 
-	cout << endl << "Querying" << endl;
-
-
+	cout << endl << "Querying " << endl;
 
 	vector<std::pair<vector<float>, vector<float> > > linearResults;
 	for(int i = 0; i < indexers.size(); i++){
-        vector<float> precVsLinearTmp;
-        long long tmpTime = 0;
 
+        int tmp = 0;
+
+        vector<float> precVsLinearTmp;
+        double tmpTime = 0;
+        IIndexer* ind = indexers.at(i);
         std::pair<vector<float>, vector<float> > r;
         vector<std::pair<vector<float>, vector<float> > > rAll;
+
         for (int j = 0; j < featuresTestQ.rows; j++){
-            IIndexer* ind = indexers.at(i);
             Mat q = featuresTestQ.row(j);
             get_timestamp(&start);
             r = ind->knnSearchId(q,k);
@@ -256,23 +259,23 @@ void awesomeIndexTester(int argc, char *argv[]){
                 linearResults.push_back(r);
             rAll.push_back(r);
         }
-
-
         int correct = 0;
         int incorrect = 0;
         int kLinear = 0;
 
         for (int j = 0; j < rAll.size(); j++){
-            for (int k = 0; k < rAll.at(j).first.size(); k++){
-                if (linearResults.at(j).first.at(kLinear) == rAll.at(j).first.at(k)){
-                    kLinear++;
+            int kLinear = 0;
+            for (int m = 0; m < rAll.at(j).first.size(); m++){
+                if (kLinear < rAll.at(j).first.size() && (linearResults.at(j).first.at(kLinear) == rAll.at(j).first.at(m))){
                     correct++;
+                    kLinear++;
                 } else {
                     incorrect++;
+                    kLinear+=2;
                 }
             }
         }
-		cout << indexers.at(i)->getName() << " " << (float)correct/(float)(incorrect+correct) << " " <<  tmpTime <<  " ms" << endl;
+		cout << ind->getName() << "\t" << (float)correct/(incorrect+correct) << "\t" <<  tmpTime <<  " ms" << endl;
 
 	}
 }

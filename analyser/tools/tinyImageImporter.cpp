@@ -11,13 +11,6 @@ void tinyImageImporter::readBin(std::string filenamep, int numberOfRows, cv::Mat
     if( out != NULL ){
 		for (int i=0;i<numberOfRows;i++){
 
-			/* get offset into binary file */ //offset to suport reading vectors from an input set of offsets
-			//offset = (long long) (selectp[i]-1) * (long long) (sizeof(float) * dimensions);
-			/*mexPrintf("ind: %ld offset: %ld\n",i,offset);*/
-			/* seek point in file */
-			/*  */
-
-
 			/* do binary read direct into datap */
 			fread(&(datap[i*dimensions]),sizeof(float),dimensions,out);
       	}
