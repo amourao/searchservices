@@ -47,14 +47,18 @@ void MSIDXIndexer::index(cv::Mat features){
 }
 
 std::vector<pair<int,int> > MSIDXIndexer::preProcessCardinality(cv::Mat& features){
-	std::vector<pair<int,int> > cardinalities;
+	std::vector<pair<int,int> > cardinalities(features.cols);
+
+	Mat featuresT;
+
+	transpose(features,featuresT);
 
 	for (int col = 0; col < features.cols; col++){
 		std::set<float> uniqueValues;
 		for (int row = 0; row < features.rows; row++){
-			uniqueValues.insert(features.at<float>(row,col));
+			uniqueValues.insert(featuresT.at<float>(col,row));
 		}
-		cardinalities.push_back(std::make_pair (col,uniqueValues.size()));
+		cardinalities.at(col) = std::make_pair (col,uniqueValues.size());
 	}
 
 	std::sort(cardinalities.begin(),cardinalities.end(),sortCardinalities());
@@ -64,10 +68,10 @@ std::vector<pair<int,int> > MSIDXIndexer::preProcessCardinality(cv::Mat& feature
 }
 
 std::vector<pair<int,cv::Mat> > MSIDXIndexer::preProcessMultisortFeatures(cv::Mat& features){
-	std::vector<pair<int,cv::Mat> > sortedIndex;
+	std::vector<pair<int,cv::Mat> > sortedIndex(features.rows);
 
 	for (int row = 0; row < features.rows; row++){
-		sortedIndex.push_back(std::make_pair (row,features.row(row)));
+		sortedIndex.at(row) = std::make_pair (row,features.row(row));
 	}
 
 	std::sort(sortedIndex.begin(),sortedIndex.end(),sortByCardinality(cardinalitiesCols));
@@ -140,6 +144,8 @@ std::pair<vector<float>,vector<float> > MSIDXIndexer::knnSearchId(cv::Mat query,
 		}
 	}
 	int newN = min(k,(int)H.size());
+	indicesFloat.reserve(newN);
+	dists.reserve(newN);
 	for (int i = 0; i < newN; i++){
 		pair<float,float> p = H.top();
 		indicesFloat.push_back(p.first);

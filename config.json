@@ -1,10 +1,15 @@
 {"parameters": {
-    "file" : "/home/amourao/dataBig/tiniestgist80million.bin",
-    "nTrain": "100",
-    "nValI": "100",
-    "nValQ": "10",
-    "nTesI": "1000",
-    "nTesQ": "10",
+    "file2" : "/home/amourao/dataBig/1-billion-vectors/gist/gist_base.fvecs",
+    "type2": "billion",
+
+    "file" : "/home/amourao/dataBig/tinygist80millionSample.bin",
+    "type": "tiny",
+
+    "nTrain": "100000",
+    "nValI": "100000",
+    "nValQ": "100",
+    "nTesI": "1000000",
+    "nTesQ": "100",
     "k": "10"
     },
  "endpoints": {
@@ -39,15 +44,7 @@
             "newName": "msIDXIndexerW",
             "originalName": "MSIDXIndexer",
             "params": {
-                "w": "0.15"
-            }
-        },{
-            "newName": "lshIndexerR",
-            "originalName": "lshIndexer",
-            "params": {
-                "oneMinusDelta": "0.95",
-                "radius": "5",
-                "trainValSplit": "0.1"
+                "w": ["0.01","0.05","0.1","0.15","0.20"]
             }
         }
 

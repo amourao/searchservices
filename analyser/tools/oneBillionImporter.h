@@ -10,18 +10,16 @@
 
 #include "IBinImporter.h"
 
-class tinyImageImporter: public IBinImporter {
+class oneBillionImporter: public IBinImporter {
 
 public:
 	//not random, gets the first "numberOfRows" elements
-	tinyImageImporter();
-	~tinyImageImporter();
+	oneBillionImporter();
+    ~oneBillionImporter();
 
 	void readBin(std::string file, int numberOfRows, cv::Mat& features, long long offsetInRows = 0);
 	void readTags(std::string file, int numberOfRows, cv::Mat& tags);
 
 private:
-
-	const static int dimensions = 384;
 
 };

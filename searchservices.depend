@@ -360,7 +360,7 @@
 	<stdlib.h>
 	<time.h>
 
-1391704161 /home/amourao/code/searchservices/analyser/tools/tinyImageImporter.h
+1392074209 /home/amourao/code/searchservices/analyser/tools/tinyImageImporter.h
 	<armadillo>
 	<opencv2/core/core.hpp>
 	<opencv2/highgui/highgui.hpp>
@@ -368,6 +368,7 @@
 	<string>
 	<map>
 	<cstdlib>
+	"IBinImporter.h"
 
 1391725570 /home/amourao/code/searchservices/indexer/FactoryIndexer.h
 	<map>
@@ -408,7 +409,7 @@
 	"IIndexer.h"
 	"FactoryIndexer.h"
 
-1391919326 source:/home/amourao/code/searchservices/analyser/Main3.cpp
+1392074287 source:/home/amourao/code/searchservices/analyser/Main3.cpp
 	<iostream>
 	<string>
 	<sstream>
@@ -442,6 +443,8 @@
 	"tools/TrainTestFeaturesTools.h"
 	"tools/MIRFlickrImporter.h"
 	"tools/tinyImageImporter.h"
+	"tools/oneBillionImporter.h"
+	"tools/IBinImporter.h"
 	"FactoryAnalyser.h"
 	"../indexer/FactoryIndexer.h"
 	"../indexer/IIndexer.h"
@@ -629,7 +632,7 @@
 	"../sources/VideoSource.h"
 	"../nRoi/FaceDetection.h"
 
-1391918334 source:/home/amourao/code/searchservices/analyser/tools/tinyImageImporter.cpp
+1392073776 source:/home/amourao/code/searchservices/analyser/tools/tinyImageImporter.cpp
 	"tinyImageImporter.h"
 
 1391563053 source:/home/amourao/code/searchservices/analyser/tools/TrainTestFeaturesTools.cpp
@@ -719,7 +722,7 @@
 1391563053 source:/home/amourao/code/searchservices/indexer/LSHkNNIndexer.cpp
 	"LSHkNNIndexer.h"
 
-1391884772 source:/home/amourao/code/searchservices/indexer/MSIDXIndexer.cpp
+1392043349 source:/home/amourao/code/searchservices/indexer/MSIDXIndexer.cpp
 	"MSIDXIndexer.h"
 
 1390951642 source:/home/amourao/code/searchservices/rest/Endpoints/analyser/CombSearchResult.cpp
@@ -3895,7 +3898,7 @@
 1237852534 source:/home/amourao/code/searchservices/indexer/e2lsh/Util.cpp
 	"headers.h"
 
-1391885827 source:/home/amourao/code/searchservices/indexer/LSHIndexer.cpp
+1392074305 source:/home/amourao/code/searchservices/indexer/LSHIndexer.cpp
 	"LSHIndexer.h"
 
 1391885668 /home/amourao/code/searchservices/indexer/LSHIndexer.h
@@ -3926,4 +3929,21 @@
 
 1391883008 source:/home/amourao/code/searchservices/commons/LoadConfig.cpp
 	"LoadConfig.h"
+
+1392073827 source:/home/amourao/code/searchservices/analyser/tools/oneBillionImporter.cpp
+	"oneBillionImporter.h"
+
+1392073846 /home/amourao/code/searchservices/analyser/tools/oneBillionImporter.h
+	<armadillo>
+	<opencv2/core/core.hpp>
+	<opencv2/highgui/highgui.hpp>
+	<opencv2/imgproc/imgproc.hpp>
+	<string>
+	<map>
+	<cstdlib>
+	"IBinImporter.h"
+
+1392074350 /home/amourao/code/searchservices/analyser/tools/IBinImporter.h
+	<opencv2/core/core.hpp>
+	<opencv2/highgui/highgui.hpp>
 

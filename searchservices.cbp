@@ -117,6 +117,7 @@
 		<Unit filename="analyser/sources/TextFileSourceV2.h" />
 		<Unit filename="analyser/sources/VideoSource.cpp" />
 		<Unit filename="analyser/sources/VideoSource.h" />
+		<Unit filename="analyser/tools/IBinImporter.h" />
 		<Unit filename="analyser/tools/IlluminationCorrectionFilter.cpp" />
 		<Unit filename="analyser/tools/IlluminationCorrectionFilter.h" />
 		<Unit filename="analyser/tools/ImageFilter.h" />
@@ -129,6 +130,8 @@
 		<Unit filename="analyser/tools/TestFunctions.cpp" />
 		<Unit filename="analyser/tools/TrainTestFeaturesTools.cpp" />
 		<Unit filename="analyser/tools/TrainTestFeaturesTools.h" />
+		<Unit filename="analyser/tools/oneBillionImporter.cpp" />
+		<Unit filename="analyser/tools/oneBillionImporter.h" />
 		<Unit filename="analyser/tools/tinyImageImporter.cpp" />
 		<Unit filename="analyser/tools/tinyImageImporter.h" />
 		<Unit filename="appData/GameImage.cpp" />

@@ -1,5 +1,5 @@
 {"parameters": {
-	"file" : "/home/amourao/dataBig/tiniestgist80million.bin",
+	"file" : "/home/amourao/dataBig/tinygist80millionSample.bin",
     "nTrain": "100",
     "nValI": "100",
     "nValQ": "10",
@@ -40,14 +40,6 @@
             "originalName": "MSIDXIndexer",
             "params": {
                 "w": "0.15"
-            }
-        },{
-            "newName": "lshIndexerR",
-            "originalName": "lshIndexer",
-            "params": {
-                "oneMinusDelta": "0.95",
-                "radius": "5",
-                "trainValSplit": "0.1"
             }
         }
 

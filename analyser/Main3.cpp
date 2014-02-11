@@ -40,6 +40,9 @@
 #include "tools/TrainTestFeaturesTools.h"
 #include "tools/MIRFlickrImporter.h"
 #include "tools/tinyImageImporter.h"
+#include "tools/oneBillionImporter.h"
+#include "tools/IBinImporter.h"
+
 
 #include "FactoryAnalyser.h"
 
@@ -111,6 +114,10 @@ void testIndeces(int argc, char *argv[]){
 
 	LoadConfig::load("config.json",parameters,indexers,analysers);
 
+
+    IBinImporter* importer = new tinyImageImporter();
+
+
 	int nTrain = atoi(parameters["nTrain"].c_str());
 	int nValI = atoi(parameters["nValI"].c_str());
     int nValQ = atoi(parameters["nValQ"].c_str());
@@ -126,17 +133,17 @@ void testIndeces(int argc, char *argv[]){
 
 	//Mat labels;
     int currentOffset = 0;
-	tinyImageImporter::readBin(file,nTrain,featuresTrain,currentOffset);
+	importer->readBin(file,nTrain,featuresTrain,currentOffset);
 	currentOffset += nTrain;
-	tinyImageImporter::readBin(file,nValI,featuresValidationI,currentOffset);
+	importer->readBin(file,nValI,featuresValidationI,currentOffset);
 	currentOffset += nValI;
-	tinyImageImporter::readBin(file,nValQ,featuresValidationQ,currentOffset);
+	importer->readBin(file,nValQ,featuresValidationQ,currentOffset);
 	currentOffset += nValQ;
-	tinyImageImporter::readBin(file,nTesI,featuresTestI,currentOffset);
+	importer->readBin(file,nTesI,featuresTestI,currentOffset);
 	currentOffset += nTesI;
-	tinyImageImporter::readBin(file,nTesQ,featuresTestQ,currentOffset);
-	//tinyImageImporter::readBin(file,n*0.1,featuresValidation,n);
-	//tinyImageImporter::readBin(file,n*0.1,featuresValidation,n);
+	importer->readBin(file,nTesQ,featuresTestQ,currentOffset);
+	//importer->readBin(file,n*0.1,featuresValidation,n);
+	//importer->readBin(file,n*0.1,featuresValidation,n);
 
 
 
@@ -183,10 +190,24 @@ void awesomeIndexTester(int argc, char *argv[]){
 	vector<IIndexer*> indexers;
 	vector<IAnalyser*> analysers;
 
+    IBinImporter* importer;
+
     string paramFile(argv[1]);
 	LoadConfig::load(paramFile,parameters,indexers,analysers);
 
     string file(parameters["file"]);
+    string type(parameters["type"]);
+
+    if(type == "tiny"){
+        importer = new tinyImageImporter();
+    } else if(type == "billion"){
+        importer = new oneBillionImporter();
+    } else {
+        cout << "Unknown parameter value \"type\" = " << type << endl;
+        return;
+    }
+
+
 	int nTrain = atoi(parameters["nTrain"].c_str());
 	int nValI = atoi(parameters["nValI"].c_str());
     int nValQ = atoi(parameters["nValQ"].c_str());
@@ -202,19 +223,39 @@ void awesomeIndexTester(int argc, char *argv[]){
 	Mat featuresTestI;
 	Mat featuresTestQ;
 
+    timestamp_type start, end;
+    cout << "Reading featuresTrain: ";
 	//Mat labels;
     int currentOffset = 0;
-	tinyImageImporter::readBin(file,nTrain,featuresTrain,currentOffset);
+    get_timestamp(&start);
+	importer->readBin(file,nTrain,featuresTrain,currentOffset);
+	get_timestamp(&end);
 	currentOffset += nTrain;
-	tinyImageImporter::readBin(file,nValI,featuresValidationI,currentOffset);
+	cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresValidationI ";
+	get_timestamp(&start);
+	importer->readBin(file,nValI,featuresValidationI,currentOffset);
+	get_timestamp(&end);
 	currentOffset += nValI;
-	tinyImageImporter::readBin(file,nValQ,featuresValidationQ,currentOffset);
+    cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresValidationQ ";
+    get_timestamp(&start);
+	importer->readBin(file,nValQ,featuresValidationQ,currentOffset);
+	get_timestamp(&end);
 	currentOffset += nValQ;
-	tinyImageImporter::readBin(file,nTesI,featuresTestI,currentOffset);
+	cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresTestI ";
+	/*
+	get_timestamp(&start);
+	importer->readBin(file,nTesI,featuresTestI,currentOffset);
+	get_timestamp(&end);
 	currentOffset += nTesI;
-	tinyImageImporter::readBin(file,nTesQ,featuresTestQ,currentOffset);
+	cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresTestQ ";
+	get_timestamp(&start);
+	importer->readBin(file,nTesQ,featuresTestQ,currentOffset);
+	get_timestamp(&end);
+	cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
+    */
 
-    timestamp_type start, end;
+    featuresValidationI.copyTo(featuresTestI);
+    featuresValidationQ.copyTo(featuresTestQ);
 
 	cout << "Training" << endl;
 	for(int i = 0; i < indexers.size(); i++){
@@ -226,7 +267,7 @@ void awesomeIndexTester(int argc, char *argv[]){
 		cout << indexers.at(i)->getName() << "\t" << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
 	}
 
-	cout << "Indexing" << endl;
+	cout << endl << "Indexing" << endl;
 	for(int i = 0; i < indexers.size(); i++){
 		get_timestamp(&start);
 
@@ -236,7 +277,7 @@ void awesomeIndexTester(int argc, char *argv[]){
 		cout << indexers.at(i)->getName() << "\t" << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
 	}
 
-	cout << endl << "Querying " << endl;
+	cout << endl << "Querying" << endl;
 
 	vector<std::pair<vector<float>, vector<float> > > linearResults;
 	for(int i = 0; i < indexers.size(); i++){
@@ -266,7 +307,11 @@ void awesomeIndexTester(int argc, char *argv[]){
         for (int j = 0; j < rAll.size(); j++){
             int kLinear = 0;
             for (int m = 0; m < rAll.at(j).first.size(); m++){
-                if (kLinear < rAll.at(j).first.size() && (linearResults.at(j).first.at(kLinear) == rAll.at(j).first.at(m))){
+                if (kLinear < rAll.at(j).first.size() &&
+
+                (linearResults.at(j).first.at(kLinear) == rAll.at(j).first.at(m))
+
+                ){
                     correct++;
                     kLinear++;
                 } else {
@@ -275,7 +320,7 @@ void awesomeIndexTester(int argc, char *argv[]){
                 }
             }
         }
-		cout << ind->getName() << "\t" << (float)correct/(incorrect+correct) << "\t" <<  tmpTime <<  " ms" << endl;
+		cout << ind->getName() << "\t" << 100.0*correct/(incorrect+correct) << "%\t" <<  tmpTime <<  " ms" << endl;
 
 	}
 }
