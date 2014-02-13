@@ -107,7 +107,7 @@
 	"../tools/MatrixTools.h"
 	"../../commons/factory/Factory.h"
 
-1391563053 /home/amourao/code/searchservices/analyser/tools/MatrixTools.h
+1392144542 /home/amourao/code/searchservices/analyser/tools/MatrixTools.h
 	<armadillo>
 	<opencv2/core/core.hpp>
 	<opencv2/highgui/highgui.hpp>
@@ -115,6 +115,7 @@
 	<string>
 	<vector>
 	<fstream>
+	"IBinImporter.h"
 
 1390951647 /home/amourao/code/searchservices/analyser/sources/ImageSource.h
 	<opencv2/core/core.hpp>
@@ -398,7 +399,7 @@
 	"IIndexer.h"
 	"FactoryIndexer.h"
 
-1391884886 /home/amourao/code/searchservices/indexer/MSIDXIndexer.h
+1392293933 /home/amourao/code/searchservices/indexer/MSIDXIndexer.h
 	<map>
 	<set>
 	<string>
@@ -408,8 +409,9 @@
 	<algorithm>
 	"IIndexer.h"
 	"FactoryIndexer.h"
+	"../commons/Timing.h"
 
-1392074287 source:/home/amourao/code/searchservices/analyser/Main3.cpp
+1392293468 source:/home/amourao/code/searchservices/analyser/Main3.cpp
 	<iostream>
 	<string>
 	<sstream>
@@ -468,7 +470,7 @@
 	"IIndexer.h"
 	"FactoryIndexer.h"
 
-1391563053 /home/amourao/code/searchservices/commons/Timing.h
+1392141438 /home/amourao/code/searchservices/commons/Timing.h
 	<sys/time.h>
 	<time.h>
 
@@ -612,7 +614,7 @@
 	<opencv2/highgui/highgui.hpp>
 	<opencv2/imgproc/imgproc.hpp>
 
-1391563053 source:/home/amourao/code/searchservices/analyser/tools/MatrixTools.cpp
+1392144843 source:/home/amourao/code/searchservices/analyser/tools/MatrixTools.cpp
 	"MatrixTools.h"
 
 1390951642 source:/home/amourao/code/searchservices/analyser/tools/MIRFlickrImporter.cpp
@@ -635,7 +637,7 @@
 1392073776 source:/home/amourao/code/searchservices/analyser/tools/tinyImageImporter.cpp
 	"tinyImageImporter.h"
 
-1391563053 source:/home/amourao/code/searchservices/analyser/tools/TrainTestFeaturesTools.cpp
+1392121840 source:/home/amourao/code/searchservices/analyser/tools/TrainTestFeaturesTools.cpp
 	"TrainTestFeaturesTools.h"
 
 1390951642 source:/home/amourao/code/searchservices/appData/GameImage.cpp
@@ -722,7 +724,7 @@
 1391563053 source:/home/amourao/code/searchservices/indexer/LSHkNNIndexer.cpp
 	"LSHkNNIndexer.h"
 
-1392043349 source:/home/amourao/code/searchservices/indexer/MSIDXIndexer.cpp
+1392209185 source:/home/amourao/code/searchservices/indexer/MSIDXIndexer.cpp
 	"MSIDXIndexer.h"
 
 1390951642 source:/home/amourao/code/searchservices/rest/Endpoints/analyser/CombSearchResult.cpp

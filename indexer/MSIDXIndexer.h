@@ -26,6 +26,8 @@
 #include "IIndexer.h"
 #include "FactoryIndexer.h"
 
+#include "../commons/Timing.h"
+
 using namespace std;
 
 #ifndef INDEX_DATA_EXTENSION_MSIDX
@@ -46,10 +48,18 @@ struct sortCardinalities
     }
 };
 
+ struct compareMatDists2{
+     inline bool operator()(const pair<float,float>& pair1, const pair<float,float>& pair2){
+     	if (pair1.second == pair2.second)
+     		return pair1.first < pair2.first;//optional, sorts by id if equal
+        return (pair1.second < pair2.second);
+     }
+ };
+
 class sortByCardinality {
       vector<pair<int,int> > cardinalities_;
 public:
-      sortByCardinality(vector<pair<int,int> > cardinalities) : cardinalities_(cardinalities) {}
+      sortByCardinality(vector<pair<int,int> >& cardinalities) : cardinalities_(cardinalities) {}
       bool operator()(const pair<int,Mat>& p1, const pair<int,Mat>& p2) const {
       		Mat mat1 = p1.second;
       		Mat mat2 = p2.second;
@@ -72,6 +82,8 @@ class compareMatDists{
         return (pair1.second > pair2.second);
      }
  };
+
+
 
 class MSIDXIndexer: public IIndexer {
 

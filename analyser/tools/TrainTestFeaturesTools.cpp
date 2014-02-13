@@ -166,13 +166,13 @@ void TrainTestFeaturesTools::divideByClass(Mat trainData, Mat trainLabels, doubl
 			}
 		
 			//cout << "test starts at " <<  currentDivision*divisionSize << " and ends at " << ((currentDivision+1)*divisionSize) << " or " << data.rows << endl;
-			for(int j = currentDivision*divisionSize; j < ((currentDivision+1)*divisionSize) && (j < data.rows); j++){
+			for(int j = currentDivision*divisionSize; j < (((currentDivision+1)*divisionSize)+1) && (j < data.rows); j++){
 				testData.push_back(data.row(j));
 				testLabels.push_back(labelss.row(j));
 			}
 		
 			//cout << "train starts at " <<  (currentDivision+1)*divisionSize << " and ends at " << data.rows << endl;
-			for(int j = (currentDivision+1)*divisionSize; j < data.rows; j++){
+			for(int j = ((currentDivision+1)*divisionSize)+1; j < data.rows; j++){
 				newTrainData.push_back(data.row(j));
 				newTrainLabels.push_back(labelss.row(j));
 			}

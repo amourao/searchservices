@@ -8,7 +8,9 @@
 #include <vector>
 #include <fstream>
 
-//#define BIN_SIGNATURE_HEX 4e534e53 
+#include "IBinImporter.h"
+
+//#define BIN_SIGNATURE_HEX 4e534e53
 #define BIN_SIGNATURE_INT 1314082387
 
 #define BIN_VERSION 2
@@ -16,10 +18,15 @@
 using namespace cv;
 using namespace std;
 
-class MatrixTools
-{
+class MatrixTools: public IBinImporter{
 public:
-	
+
+MatrixTools();
+~MatrixTools();
+
+void readBin(std::string file, int numberOfRows, cv::Mat& features, long long offsetInRows = 0);
+void readTags(std::string file, int numberOfRows, cv::Mat& tags);
+
 static void fmatToMat(arma::fmat &src, cv::Mat& dst);
 
 static void matToFMat(cv::Mat &src, arma::fmat& dst);

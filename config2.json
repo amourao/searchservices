@@ -1,10 +1,10 @@
 {"parameters": {
 	"file" : "/home/amourao/dataBig/tinygist80millionSample.bin",
-    "nTrain": "100",
-    "nValI": "100",
-    "nValQ": "10",
-    "nTesI": "1000",
-    "nTesQ": "10",
+    "nTrain": "100000",
+    "nValI": "100000",
+    "nValQ": "100",
+    "nTesI": "1000000",
+    "nTesQ": "100",
     "k": "10"
 	},
  "endpoints": {

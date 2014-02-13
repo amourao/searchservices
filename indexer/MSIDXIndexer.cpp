@@ -56,13 +56,21 @@ std::vector<pair<int,int> > MSIDXIndexer::preProcessCardinality(cv::Mat& feature
 	for (int col = 0; col < features.cols; col++){
 		std::set<float> uniqueValues;
 		for (int row = 0; row < features.rows; row++){
-			uniqueValues.insert(featuresT.at<float>(col,row));
+            stringstream ss;
+            ss.precision(5);
+            ss << featuresT.at<float>(col,row);
+            float value = atof(ss.str().c_str());
+			uniqueValues.insert(value);
 		}
 		cardinalities.at(col) = std::make_pair (col,uniqueValues.size());
 	}
 
 	std::sort(cardinalities.begin(),cardinalities.end(),sortCardinalities());
 
+    /*for (int col = 0; col < cardinalities.size(); col++){
+        cout << cardinalities.at(col).first << " " << cardinalities.at(col).second << endl;
+	}
+    getchar();*/
 	return cardinalities;
 
 }
@@ -112,16 +120,22 @@ int MSIDXIndexer::compareToMatCardinality(const cv::Mat& mat1, const cv::Mat& ma
 }
 
 std::pair<vector<float>,vector<float> > MSIDXIndexer::knnSearchId(cv::Mat query, int k){
+    timestamp_type start, end;
+    //get_timestamp(&start);
 	std::vector<float> indicesFloat;
 	std::vector<float> dists;
 
 	uint pos = getIndexBinarySearch(query);
 
-	std::priority_queue<pair<float,float>,std::vector<pair<float,float> > ,compareMatDists> H;
+	//std::priority_queue<pair<float,float>,std::vector<pair<float,float> > ,compareMatDists> H;
+	std::vector<pair<float,float> > H;
+
+
 
 	int n = featuresList.size();
 
     int searchW = (w*n)/2.0;
+    H.reserve(searchW*2);
 
 	searchW = std::min(searchW,n/2);
 
@@ -129,29 +143,42 @@ std::pair<vector<float>,vector<float> > MSIDXIndexer::knnSearchId(cv::Mat query,
 
 	int npos = 0;
 
+
+
+    //get_timestamp(&end);
+    //cout <<  "searchW " << searchW << " n " << n << " k " << k << endl;
+    //cout << "msidxA " << timestamp_diff_in_milliseconds(start, end) << endl;
+
 	for (int j = 0; j <= searchW; j++){
 		npos = pos - j;
 		if (npos >= 0 && j != 0){
 			Mat oa = featuresList.at(npos).second;
-			float dist = pow(cv::norm(query-oa,NORM_L2),2); //equal to Linear flann metric
-			H.push(std::make_pair (featuresList.at(npos).first,dist));
+			float dist = pow(cv::norm(query,oa,NORM_L2),2); //equal to Linear flann metric
+			H.push_back(std::make_pair (featuresList.at(npos).first,dist));
 		}
 		npos = pos + j;
 		if (npos < n){
 			Mat ob = featuresList.at(npos).second;
-			float dist = pow(cv::norm(query-ob,NORM_L2),2);
-			H.push(std::make_pair (featuresList.at(npos).first,dist));
+			float dist = pow(cv::norm(query,ob,NORM_L2),2);
+			H.push_back(std::make_pair (featuresList.at(npos).first,dist));
 		}
 	}
+	std::sort(H.begin(),H.end(),compareMatDists2());
+
+	//get_timestamp(&end);
+    //cout << "msidxB " << timestamp_diff_in_milliseconds(start, end) << endl;
+	//get_timestamp(&start);
 	int newN = min(k,(int)H.size());
 	indicesFloat.reserve(newN);
 	dists.reserve(newN);
 	for (int i = 0; i < newN; i++){
-		pair<float,float> p = H.top();
+		pair<float,float> p = H.at(i);
 		indicesFloat.push_back(p.first);
 		dists.push_back(p.second);
-		H.pop();
 	}
+	//get_timestamp(&end);
+	//cout << "msidxC " << timestamp_diff_in_milliseconds(start, end) << endl;
+	//getchar();
 	return make_pair(indicesFloat,dists);
 }
 

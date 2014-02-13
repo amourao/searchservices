@@ -5,10 +5,13 @@
     "file" : "/home/amourao/dataBig/tinygist80millionSample.bin",
     "type": "tiny",
 
+    "file3" : "/home/amourao/code/searchservices/analyser/data/dataFCTHFull.bin",
+    "type3": "nsBin",
+
     "nTrain": "100000",
     "nValI": "100000",
-    "nValQ": "100",
-    "nTesI": "1000000",
+    "nValQ": "1000",
+    "nTesI": "100000",
     "nTesQ": "100",
     "k": "10"
     },
@@ -44,7 +47,7 @@
             "newName": "msIDXIndexerW",
             "originalName": "MSIDXIndexer",
             "params": {
-                "w": ["0.01","0.05","0.1","0.15","0.20"]
+                "w": ["0.01","0.025","0.05","0.10","0.15","0.2","0.25"]
             }
         }
 
