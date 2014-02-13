@@ -258,13 +258,14 @@ void awesomeIndexTester(int argc, char *argv[]){
 
     featuresValidationI.copyTo(featuresTestI);
     featuresValidationQ.copyTo(featuresTestQ);
-
+    nTesI = featuresTestI.rows;
+    nTesQ = featuresTestQ.rows;
     vector<std::pair<vector<float>, vector<float> > > linearResults;
 
-    cout << endl << "nTrain;nValI;nValQ;nTesI;nTesQ;k" << endl;
-    cout << nTrain << ";" << nValI << ";" << nValQ << ";" << featuresTestI.rows << ";" << featuresTestQ.rows << ";" << k << endl << endl;
+    cout << endl << "nTrain;nValI;nValQ;nTesI;nTesQ;mAcc;k;d" << endl;
+    cout << nTrain << ";" << nValI << ";" << nValQ << ";" << nTesI << ";" << nTesQ << ";" << k << ";" << featuresTestI.cols << endl << endl;
 
-	cout << "Name;TrainTime;IndexingTime;QueryTime;%Correct;nCorrect;nIncorrect;avgDeltaDistance" << endl;
+	cout << "Name;TrainTime;IndexingTime;QueryTime;%Correct;avgDeltaDistance" << endl;
 	for(int i = 0; i < indexers.size(); i++){
 		get_timestamp(&start);
         indexers.at(i)->train(featuresTrain,featuresValidationQ,featuresValidationI);
@@ -295,31 +296,38 @@ void awesomeIndexTester(int argc, char *argv[]){
                 linearResults.push_back(r);
             rAll.push_back(r);
         }
-        int correct = 0;
-        int incorrect = 0;
-        int kLinear = 0;
-
         double deltaDistance = 0;
 
+        long commonElements = 0;
+
+
+        int relevant = 0;
+        double avgPrec = 0;
         for (int j = 0; j < rAll.size(); j++){
             int kLinear = 0;
+            long relAccum = 0;
+            double precAccum = 0;
+
             for (int m = 0; m < rAll.at(j).first.size(); m++){
-                if (kLinear < linearResults.at(j).first.size() &&
-
-                (linearResults.at(j).first.at(kLinear) == rAll.at(j).first.at(m))
-
-                ){
-                    correct++;
-                    kLinear++;
-                } else {
-                    incorrect++;
-                    kLinear+=2;
-                }
                 deltaDistance += rAll.at(j).second.at(m) - linearResults.at(j).second.at(m);
             }
-            incorrect += k - rAll.at(j).first.size(); //if the indexer returns less than k results, make the difference to k as incorrect
+
+            for (int m = 0; m < rAll.at(j).first.size(); m++){
+
+                for (int n = 0; n < linearResults.at(j).first.size(); n++){
+                    if (rAll.at(j).first.at(m) == linearResults.at(j).first.at(n)){
+                        commonElements++;
+                        relAccum++;
+                        relevant = 1;
+                    }
+                }
+                double precisionAtM = relAccum/(m+1.0);
+                precAccum += precisionAtM*relevant;
+            }
+            avgPrec += precAccum;
         }
-		cout << ";" <<  tmpTime <<  ";" << correct/((float)incorrect+correct) << ";" <<  correct << ";" << incorrect << ";" << deltaDistance << endl;
+		cout << ";" <<  tmpTime <<  ";" << ((double)commonElements)/(k*nTesQ) << ";" << avgPrec/(k*nTesQ) << ";" << deltaDistance << endl;
+		delete indexers.at(i);
 	}
 }
 
