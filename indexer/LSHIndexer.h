@@ -19,12 +19,12 @@ using namespace cv;
 
 
 #ifndef INDEX_DATA_EXTENSION_E2LSH
-#define INDEX_DATA_EXTENSION_E2LSH ".xml"
+#define INDEX_DATA_EXTENSION_E2LSH ".txt"
 #endif
 
 
 #ifndef DEFAULT_MEMORY_MAX_AVAILABLE_E2LSH
-#define DEFAULT_MEMORY_MAX_AVAILABLE_E2LSH 1073741824
+#define DEFAULT_MEMORY_MAX_AVAILABLE_E2LSH 16*1024*1024
 #endif
 
 class LSHIndexer: public IIndexer {
@@ -71,4 +71,5 @@ private:
 	long memoryUpperBound;
 
 	RNNParametersT learnedParams;
+	bool hasParams;
 };

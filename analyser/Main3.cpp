@@ -327,6 +327,9 @@ void awesomeIndexTester(int argc, char *argv[]){
             avgPrec += precAccum;
         }
 		cout << ";" <<  tmpTime <<  ";" << ((double)commonElements)/(k*nTesQ) << ";" << avgPrec/(k*nTesQ) << ";" << deltaDistance << endl;
+
+		indexers.at(i)->save(indexers.at(i)->getName());
+
 		delete indexers.at(i);
 	}
 }

@@ -189,6 +189,7 @@ bool FlannkNNIndexer::save(string basePath){
 
 	stringstream ssF;
 	ssF << INDEXER_BASE_SAVE_PATH << basePath << INDEX_FLANN_EXTENSION_KNN;
+
 	flannIndexs->save(ssF.str());
 
 	return true;

@@ -30,7 +30,7 @@
             "params": {
                 "algorithm": "kd",
                 "distance": "EUCLIDEAN",
-                "trees": "8"
+                "trees": ["4","8","16"]
             }
         },{
             "newName": "kMeansTree",
@@ -38,16 +38,28 @@
             "params": {
                 "algorithm": "kmeans",
                 "distance": "EUCLIDEAN",
-                "branching": "32",
-                "iterations": "11",
-                "cb_index": "0.2",
-                "centers_init": "CENTERS_RANDOM"                
+                "branching": ["16","32","64"],
+                "iterations": ["-1","5","11","20"],
+                "cb_index": ["0","0.2","0,5"],
+                "centers_init": "CENTERS_RANDOM"         
+            }
+        },{
+            "newName": "compositeTree",
+            "originalName": "flannkNNIndexer",
+            "params": {
+                "algorithm": "composite",
+                "distance": "EUCLIDEAN",
+                "branching": ["16","32","64"],
+                "iterations": ["-1","5","11","20"],
+                "cb_index": ["0","0.2","0,5"],
+                "centers_init": "CENTERS_RANDOM",
+                "trees": ["4", "8", "16"]             
             }
         },{
             "newName": "msIDXIndexerW",
             "originalName": "MSIDXIndexer",
             "params": {
-                "w": ["0.01"]
+                "w": ["0.005","0.01","0.025","0.05","0.1","0.15","0.2","0.25"]
             }
         }
 
