@@ -14,7 +14,7 @@
  *
  * Author: Alexandr Andoni (andoni@mit.edu), Piotr Indyk (indyk@mit.edu)
  */
- 
+
 #ifndef BASICDEFINITIONS_INCLUDED
 #define BASICDEFINITIONS_INCLUDED
 
@@ -133,7 +133,7 @@
 #define CR_ASSERTWR(b, reason)
 #endif
 
-#ifdef DEBUG 
+#ifdef DEBUG
 #define DC {fprintf(DEBUG_OUTPUT, "Debug checkpoint. Line %d, file %s.\n", __LINE__, __FILE__);}
 #define DPRINTF1(p1) {fprintf(DEBUG_OUTPUT, p1);}
 #define DPRINTF(p1, p2) {fprintf(DEBUG_OUTPUT, p1, p2);}

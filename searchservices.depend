@@ -411,7 +411,7 @@
 	"FactoryIndexer.h"
 	"../commons/Timing.h"
 
-1392309091 source:/home/amourao/code/searchservices/analyser/Main3.cpp
+1392666904 source:/home/amourao/code/searchservices/analyser/Main3.cpp
 	<iostream>
 	<string>
 	<sstream>
@@ -453,6 +453,7 @@
 	"../indexer/FlannkNNIndexer.h"
 	"../indexer/MSIDXIndexer.h"
 	"../indexer/LSHIndexer.h"
+	"../indexer/sphericalHashing/Main.cpp"
 	"../commons/StringTools.h"
 	"../commons/Timing.h"
 	"../commons/LoadConfig.h"
@@ -718,7 +719,7 @@
 1391725562 source:/home/amourao/code/searchservices/indexer/FactoryIndexer.cpp
 	"FactoryIndexer.h"
 
-1391885106 source:/home/amourao/code/searchservices/indexer/FlannkNNIndexer.cpp
+1392646990 source:/home/amourao/code/searchservices/indexer/FlannkNNIndexer.cpp
 	"FlannkNNIndexer.h"
 
 1391563053 source:/home/amourao/code/searchservices/indexer/LSHkNNIndexer.cpp
@@ -1199,7 +1200,7 @@
 	"Poco/Foundation.h"
 	<ieeefp.h>
 
-1381498924 /home/amourao/myLibs/include//Poco/FPEnvironment_C99.h
+1392318072 /home/amourao/myLibs/include//Poco/FPEnvironment_C99.h
 	"Poco/Foundation.h"
 	<fenv.h>
 	<math.h>
@@ -3197,7 +3198,7 @@
 	"dynamic_bitset.h"
 	"matrix.h"
 
-1343256930 /home/amourao/myLibs/include//opencv2/flann/autotuned_index.h
+1392333464 /home/amourao/myLibs/include//opencv2/flann/autotuned_index.h
 	"general.h"
 	"nn_index.h"
 	"ground_truth.h"
@@ -3860,7 +3861,7 @@
 	<sys/time.h>
 	"GlobalVars.h"
 
-1237852535 /home/amourao/code/searchservices/indexer/e2lsh/BasicDefinitions.h
+1392648628 /home/amourao/code/searchservices/indexer/e2lsh/BasicDefinitions.h
 
 1237852534 /home/amourao/code/searchservices/indexer/e2lsh/Random.h
 
@@ -3900,10 +3901,10 @@
 1237852534 source:/home/amourao/code/searchservices/indexer/e2lsh/Util.cpp
 	"headers.h"
 
-1392074305 source:/home/amourao/code/searchservices/indexer/LSHIndexer.cpp
+1392646990 source:/home/amourao/code/searchservices/indexer/LSHIndexer.cpp
 	"LSHIndexer.h"
 
-1391885668 /home/amourao/code/searchservices/indexer/LSHIndexer.h
+1392646990 /home/amourao/code/searchservices/indexer/LSHIndexer.h
 	<map>
 	<string>
 	<iostream>
@@ -3948,4 +3949,83 @@
 1392074350 /home/amourao/code/searchservices/analyser/tools/IBinImporter.h
 	<opencv2/core/core.hpp>
 	<opencv2/highgui/highgui.hpp>
+
+1392664777 source:/home/amourao/code/searchservices/indexer/sphericalHashing/BinaryHash.cpp
+	"BinaryHash.h"
+	<omp.h>
+
+1392666155 /home/amourao/code/searchservices/indexer/sphericalHashing/BinaryHash.h
+	"Common.h"
+	"Points.h"
+
+1392649243 /home/amourao/code/searchservices/indexer/sphericalHashing/Common.h
+	<cstdio>
+	<cmath>
+	<ctime>
+	<cstdlib>
+	<algorithm>
+	<bitset>
+	"Parameters.h"
+	"Stopwatch.hpp"
+
+1392664850 /home/amourao/code/searchservices/indexer/sphericalHashing/Parameters.h
+
+1308064592 /home/amourao/code/searchservices/indexer/sphericalHashing/Stopwatch.hpp
+	<time.h>
+	<sys/timeb.h>
+	<sys/time.h>
+
+1392646294 /home/amourao/code/searchservices/indexer/sphericalHashing/Points.h
+	"Common.h"
+
+1323266734 source:/home/amourao/code/searchservices/indexer/sphericalHashing/Common.cpp
+	"Common.h"
+
+1392666181 source:/home/amourao/code/searchservices/indexer/sphericalHashing/Main.cpp
+	"BinaryHash.h"
+	"Evaluation.h"
+	<omp.h>
+
+1392664429 /home/amourao/code/searchservices/indexer/sphericalHashing/Evaluation.h
+
+1392645073 source:/home/amourao/code/searchservices/indexer/sphericalHashing/Stopwatch.cpp
+	<stdio.h>
+	"Stopwatch.hpp"
+	<iostream>
+	<windows.h>
+
+1392648034 source:/home/amourao/code/searchservices/indexer/SpericalHashIndexer.cpp
+	"SpericalHashIndexer.h"
+
+1392648199 /home/amourao/code/searchservices/indexer/SpericalHashIndexer.h
+	<map>
+	<string>
+	<iostream>
+	<vector>
+	<set>
+	<opencv2/highgui/highgui.hpp>
+	<opencv2/ml/ml.hpp>
+	"IIndexer.h"
+	"FactoryIndexer.h"
+	"e2lsh/headers.h"
+	"e2lsh/NearNeighbors.h"
+
+1392666181 /home/amourao/code/searchservices/indexer/sphericalHashing/Main.cpp
+	"BinaryHash.h"
+	"Evaluation.h"
+	<omp.h>
+
+1392666887 source:/home/amourao/code/searchservices/indexer/SphericalHashIndexer.cpp
+	"SphericalHashIndexer.h"
+
+1392666647 /home/amourao/code/searchservices/indexer/SphericalHashIndexer.h
+	<string>
+	<iostream>
+	<vector>
+	<opencv2/highgui/highgui.hpp>
+	"IIndexer.h"
+	"FactoryIndexer.h"
+	"FactoryIndexer.h"
+	"./sphericalHashing/BinaryHash.h"
+	"./sphericalHashing/Evaluation.h"
 

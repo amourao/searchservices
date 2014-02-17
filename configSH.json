@@ -9,8 +9,8 @@
     "type3": "nsBin",
 
     "nTrain": "100000",
-    "nValI": "1000",
-    "nValQ": "100",
+    "nValI": "100000",
+    "nValQ": "1000",
     "nTesI": "100000",
     "nTesQ": "100",
     "k": "10"

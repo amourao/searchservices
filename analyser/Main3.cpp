@@ -52,6 +52,8 @@
 #include "../indexer/MSIDXIndexer.h"
 #include "../indexer/LSHIndexer.h"
 
+#include "../indexer/sphericalHashing/Main.cpp"
+
 #include "../commons/StringTools.h"
 #include "../commons/Timing.h"
 #include "../commons/LoadConfig.h"
@@ -334,7 +336,92 @@ void awesomeIndexTester(int argc, char *argv[]){
 	}
 }
 
+void testSphericalHashing(int argc, char *argv[]){
+
+map<string,string> parameters;
+	vector<IIndexer*> indexers;
+	vector<IAnalyser*> analysers;
+
+    IBinImporter* importer;
+
+    string paramFile(argv[1]);
+	LoadConfig::load(paramFile,parameters,indexers,analysers);
+
+    string file(parameters["file"]);
+    string type(parameters["type"]);
+
+    if(type == "tiny"){
+        importer = new tinyImageImporter();
+    } else if(type == "billion"){
+        importer = new oneBillionImporter();
+    } else if(type == "nsBin"){
+        importer = new MatrixTools();
+    } else {
+        cout << "Unknown parameter value \"type\" = " << type << endl;
+        return;
+    }
+
+	int nTrain = atoi(parameters["nTrain"].c_str());
+	int nValI = atoi(parameters["nValI"].c_str());
+    int nValQ = atoi(parameters["nValQ"].c_str());
+	int nTesI = atoi(parameters["nTesI"].c_str());
+	int nTesQ = atoi(parameters["nTesQ"].c_str());
+	int k = atoi(parameters["k"].c_str());
+
+    int tmp = 0;
+
+	Mat featuresTrain;
+	Mat featuresValidationI;
+	Mat featuresValidationQ;
+	Mat featuresTestI;
+	Mat featuresTestQ;
+
+    timestamp_type start, end;
+    cout << "Reading featuresTrain: ";
+	//Mat labels;
+    int currentOffset = 0;
+    get_timestamp(&start);
+	importer->readBin(file,nTrain,featuresTrain,currentOffset);
+	get_timestamp(&end);
+	currentOffset += nTrain;
+	cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresValidationI ";
+	get_timestamp(&start);
+	importer->readBin(file,nValI,featuresValidationI,currentOffset);
+	get_timestamp(&end);
+	currentOffset += nValI;
+    cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresValidationQ ";
+    get_timestamp(&start);
+	importer->readBin(file,nValQ,featuresValidationQ,currentOffset);
+	get_timestamp(&end);
+	currentOffset += nValQ;
+
+    featuresValidationI.copyTo(featuresTestI);
+    featuresValidationQ.copyTo(featuresTestQ);
+
+    float** d1 = new float* [featuresTestI.rows];
+    float** d2 = new float* [featuresTestQ.rows];
+
+    for(int i=0;i<featuresTestI.rows;i++){
+        d1[i] = new float [ featuresTestI.cols ];
+    }
+
+    for(int i=0;i<featuresTestQ.rows;i++){
+        d2[i] = new float [ featuresTestQ.cols ];
+    }
+
+    for (int i = 0; i < featuresTestI.rows; i++)
+        for (int j = 0; j < featuresTestI.cols; j++)
+            d1[i][j] = (float)( featuresTestI.at<float>(i,j) );
+
+    for (int i = 0; i < featuresTestQ.rows; i++)
+        for (int j = 0; j < featuresTestQ.cols; j++)
+            d2[i][j] = (float)( featuresTestQ.at<float>(i,j) );
+
+    //mainSphericalHashing().main(d1,d2,featuresTestI.rows,featuresTestQ.rows,featuresTestQ.cols);
+}
+
 int main(int argc, char *argv[]){
 	awesomeIndexTester(argc, argv);
+	//testSphericalHashing(argc, argv);
     return 0;
 }

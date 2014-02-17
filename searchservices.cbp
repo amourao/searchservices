@@ -167,6 +167,8 @@
 		<Unit filename="indexer/LSHIndexer.h" />
 		<Unit filename="indexer/MSIDXIndexer.cpp" />
 		<Unit filename="indexer/MSIDXIndexer.h" />
+		<Unit filename="indexer/SphericalHashIndexer.cpp" />
+		<Unit filename="indexer/SphericalHashIndexer.h" />
 		<Unit filename="indexer/e2lsh/BasicDefinitions.h" />
 		<Unit filename="indexer/e2lsh/BucketHashing.cpp" />
 		<Unit filename="indexer/e2lsh/BucketHashing.h" />
@@ -186,6 +188,16 @@
 		<Unit filename="indexer/e2lsh/Util.cpp" />
 		<Unit filename="indexer/e2lsh/Util.h" />
 		<Unit filename="indexer/e2lsh/headers.h" />
+		<Unit filename="indexer/sphericalHashing/BinaryHash.cpp" />
+		<Unit filename="indexer/sphericalHashing/BinaryHash.h" />
+		<Unit filename="indexer/sphericalHashing/Common.cpp" />
+		<Unit filename="indexer/sphericalHashing/Common.h" />
+		<Unit filename="indexer/sphericalHashing/Evaluation.h" />
+		<Unit filename="indexer/sphericalHashing/Main.cpp" />
+		<Unit filename="indexer/sphericalHashing/Parameters.h" />
+		<Unit filename="indexer/sphericalHashing/Points.h" />
+		<Unit filename="indexer/sphericalHashing/Stopwatch.cpp" />
+		<Unit filename="indexer/sphericalHashing/Stopwatch.hpp" />
 		<Unit filename="rest/Endpoints/TestEndpoint.cpp" />
 		<Unit filename="rest/Endpoints/TestEndpoint.h" />
 		<Unit filename="rest/Endpoints/analyser/CombSearchResult.cpp" />
