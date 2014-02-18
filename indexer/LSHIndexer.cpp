@@ -89,7 +89,7 @@ void LSHIndexer::train(cv::Mat featuresTrain,cv::Mat featuresValidationI,cv::Mat
         PPointT* sampleQueries = matToPPointT(featuresValidationQ);
         learnedParams = computeOptimalParameters(r, oneMinusDelta, featuresTrain.rows, featuresTrain.cols, dataSet, featuresValidationQ.rows, sampleQueries, memoryUpperBound);
     } else {
-        learnedParams.dimension = featuresTrain.cols;   
+        learnedParams.dimension = featuresTrain.cols;
     }
 
 }

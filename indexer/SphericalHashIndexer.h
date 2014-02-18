@@ -77,6 +77,7 @@ private:
     float *dataCenter;
 
     bool isLSH;
+    bool SHD;
 
 
     bitset<MAX_BCODE_LEN> *bCodeData;
@@ -89,6 +90,7 @@ private:
 	float overRatio;
 	float epsMean;
 	float epsStdDev;
+	float examineRatio;
 	int maxItr;
 
 };

@@ -23,18 +23,48 @@ SphericalHashIndexer::SphericalHashIndexer(const string& type, map<string,string
 
     //#define MAX_NUM_ITERATIONS		50
 
-	bCodeLen = 64;
-	trainSamplesCount = 1000;
-	incRatio = 0.5;
-	overRatio = 0.25;
-	epsMean = 0.1;
-	epsStdDev = 0.15;
-	maxItr = 50;
+    SHD = false;
+    isLSH = false;
 
+
+    bCodeLen = atoi(paramsB["bCodeLen"].c_str()); //[64,512]
+	trainSamplesCount = atoi(paramsB["trainSamplesCount"].c_str()); //1000
+	examineRatio = atof(paramsB["examineRatio"].c_str()); //[0.1;1]
+
+
+    if(trainSamplesCount > MAX_NUM_TRAIN_SAMPLES){
+        cerr << "Invalid trainSamplesCount: trainSamplesCount > MAX_NUM_TRAIN_SAMPLES" << endl;
+        cerr << "Increase this limit in ./indexer/sphericalHashing/Parameters.h" << endl;
+        return;
+    }
+
+    if(bCodeLen > MAX_BCODE_LEN){
+        cerr << "Invalid bCodeLen: bCodeLen > MAX_BCODE_LEN" << endl;
+        cerr << "Increase this limit in ./indexer/sphericalHashing/Parameters.h" << endl;
+        return;
+    }
 
     if (paramsB["algorithm"] == "lsh"){
         isLSH = true;
+    } else if(paramsB["algorithm"] == "sh"){
+        incRatio = atof(paramsB["incRatio"].c_str());//0.5;
+        overRatio = atof(paramsB["overRatio"].c_str());//0.25;
+        epsMean = atof(paramsB["epsMean"].c_str());//0.1;
+        epsStdDev = atof(paramsB["epsStdDev"].c_str());//0.15;
+        maxItr = atof(paramsB["maxItr"].c_str());//50;s
+
+        if (paramsB["distance"] == "shd")
+            SHD = true;
+        else if (paramsB["distance"] != "hd"){
+            cerr << "Invalid distance: " << paramsB["distance"] << endl;
+            return;
+        }
+
+    } else {
+        cerr << "Invalid algorithm: " << paramsB["algorithm"] << endl;
+        return;
     }
+
 }
 
 SphericalHashIndexer::SphericalHashIndexer(const string& type){
@@ -44,11 +74,16 @@ SphericalHashIndexer::SphericalHashIndexer(const string& type){
 
 
 SphericalHashIndexer::~SphericalHashIndexer(){
-
+    delete bCodeData;
+    delete [] dataCenter;
 }
 
 void* SphericalHashIndexer::createType(string &type, map<string,string>& params){
-    return new SphericalHashIndexer(type,params);
+    if (!params.empty())
+        return new SphericalHashIndexer(type,params);
+    else {
+        return new SphericalHashIndexer(type);
+    }
 }
 
 void* SphericalHashIndexer::createType(string &type){
@@ -71,7 +106,6 @@ void SphericalHashIndexer::indexWithTrainedParams(cv::Mat features){
 void SphericalHashIndexer::index(cv::Mat features){
 
     matToPoints(features,dps);
-
     dataCenter = new REAL_TYPE[ dps.dim ];
 	// compute mean position of data points
 	dps.Compute_Center( dataCenter);
@@ -103,6 +137,7 @@ void SphericalHashIndexer::index(cv::Mat features){
 }
 
 std::pair<vector<float>,vector<float> > SphericalHashIndexer::knnSearchId(const cv::Mat query, const int n){
+
     vector<float> indicesFloat;
     vector<float> dists;
 
@@ -110,9 +145,10 @@ std::pair<vector<float>,vector<float> > SphericalHashIndexer::knnSearchId(const 
 
     matToPoints(query,qps);
 
-    bitset<MAX_BCODE_LEN> *bCodeDataQ = new bitset<MAX_BCODE_LEN> [nP];
-
     int nQ = query.rows;
+    bitset<MAX_BCODE_LEN> *bCodeDataQ = new bitset<MAX_BCODE_LEN> [nQ];
+
+
 
     if (isLSH){
         Do_ZeroCentering(qps,dataCenter);
@@ -131,18 +167,25 @@ std::pair<vector<float>,vector<float> > SphericalHashIndexer::knnSearchId(const 
    	Result_Element<int> *res = new Result_Element<int> [ nP ];
 
     for(int i=0;i<nP;i++){
-        float dist = lsh.Compute_HD( bCodeDataQ[0] , bCodeData[i]);
+        float dist;
+
+        if(SHD){
+            dist = lsh.Compute_SHD( bCodeDataQ[0] , bCodeData[i]);
+        } else {
+            dist = lsh.Compute_HD( bCodeDataQ[0] , bCodeData[i]);
+
+        }
         H.at(i) = std::make_pair (i,dist);
     }
 
 	std::sort(H.begin(),H.end(),compareVectDists());
-
 	for (int i = 0; i < n; i++){
 		pair<float,float> p = H.at(i);
 		indicesFloat.push_back(p.first);
 		dists.push_back(p.second);
 	}
-
+    delete bCodeDataQ;
+    delete res;
     return make_pair(indicesFloat,dists);
 }
 
@@ -178,13 +221,13 @@ void SphericalHashIndexer::matToPoints(const cv::Mat& input, Points& output){
 
 
 void SphericalHashIndexer::Do_ZeroCentering(Points& in, float* center){
-	for(int i=0;i<nP;i++){
+	for(int i=0;i<in.nP;i++){
 		Sub_Vector<REAL_TYPE>( in.d[i] , center , in.d[i] , in.dim );
 	}
 }
 
 void SphericalHashIndexer::Undo_ZeroCentering(Points& in, float* center){
-	for(int i=0;i<nP;i++){
+	for(int i=0;i<in.nP;i++){
 		Add_Vector<REAL_TYPE>( in.d[i] , center , in.d[i] , in.dim );
 	}
 }

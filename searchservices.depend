@@ -719,7 +719,7 @@
 1391725562 source:/home/amourao/code/searchservices/indexer/FactoryIndexer.cpp
 	"FactoryIndexer.h"
 
-1392646990 source:/home/amourao/code/searchservices/indexer/FlannkNNIndexer.cpp
+1392733525 source:/home/amourao/code/searchservices/indexer/FlannkNNIndexer.cpp
 	"FlannkNNIndexer.h"
 
 1391563053 source:/home/amourao/code/searchservices/indexer/LSHkNNIndexer.cpp
@@ -3901,7 +3901,7 @@
 1237852534 source:/home/amourao/code/searchservices/indexer/e2lsh/Util.cpp
 	"headers.h"
 
-1392646990 source:/home/amourao/code/searchservices/indexer/LSHIndexer.cpp
+1392733621 source:/home/amourao/code/searchservices/indexer/LSHIndexer.cpp
 	"LSHIndexer.h"
 
 1392646990 /home/amourao/code/searchservices/indexer/LSHIndexer.h
@@ -3950,15 +3950,15 @@
 	<opencv2/core/core.hpp>
 	<opencv2/highgui/highgui.hpp>
 
-1392664777 source:/home/amourao/code/searchservices/indexer/sphericalHashing/BinaryHash.cpp
+1392667596 source:/home/amourao/code/searchservices/indexer/sphericalHashing/BinaryHash.cpp
 	"BinaryHash.h"
 	<omp.h>
 
-1392666155 /home/amourao/code/searchservices/indexer/sphericalHashing/BinaryHash.h
+1392667596 /home/amourao/code/searchservices/indexer/sphericalHashing/BinaryHash.h
 	"Common.h"
 	"Points.h"
 
-1392649243 /home/amourao/code/searchservices/indexer/sphericalHashing/Common.h
+1392667596 /home/amourao/code/searchservices/indexer/sphericalHashing/Common.h
 	<cstdio>
 	<cmath>
 	<ctime>
@@ -3968,27 +3968,27 @@
 	"Parameters.h"
 	"Stopwatch.hpp"
 
-1392664850 /home/amourao/code/searchservices/indexer/sphericalHashing/Parameters.h
+1392731857 /home/amourao/code/searchservices/indexer/sphericalHashing/Parameters.h
 
-1308064592 /home/amourao/code/searchservices/indexer/sphericalHashing/Stopwatch.hpp
+1392667596 /home/amourao/code/searchservices/indexer/sphericalHashing/Stopwatch.hpp
 	<time.h>
 	<sys/timeb.h>
 	<sys/time.h>
 
-1392646294 /home/amourao/code/searchservices/indexer/sphericalHashing/Points.h
+1392667596 /home/amourao/code/searchservices/indexer/sphericalHashing/Points.h
 	"Common.h"
 
-1323266734 source:/home/amourao/code/searchservices/indexer/sphericalHashing/Common.cpp
+1392667596 source:/home/amourao/code/searchservices/indexer/sphericalHashing/Common.cpp
 	"Common.h"
 
-1392666181 source:/home/amourao/code/searchservices/indexer/sphericalHashing/Main.cpp
+1392667596 source:/home/amourao/code/searchservices/indexer/sphericalHashing/Main.cpp
 	"BinaryHash.h"
 	"Evaluation.h"
 	<omp.h>
 
-1392664429 /home/amourao/code/searchservices/indexer/sphericalHashing/Evaluation.h
+1392667596 /home/amourao/code/searchservices/indexer/sphericalHashing/Evaluation.h
 
-1392645073 source:/home/amourao/code/searchservices/indexer/sphericalHashing/Stopwatch.cpp
+1392667596 source:/home/amourao/code/searchservices/indexer/sphericalHashing/Stopwatch.cpp
 	<stdio.h>
 	"Stopwatch.hpp"
 	<iostream>
@@ -4010,15 +4010,15 @@
 	"e2lsh/headers.h"
 	"e2lsh/NearNeighbors.h"
 
-1392666181 /home/amourao/code/searchservices/indexer/sphericalHashing/Main.cpp
+1392667596 /home/amourao/code/searchservices/indexer/sphericalHashing/Main.cpp
 	"BinaryHash.h"
 	"Evaluation.h"
 	<omp.h>
 
-1392666887 source:/home/amourao/code/searchservices/indexer/SphericalHashIndexer.cpp
+1392733810 source:/home/amourao/code/searchservices/indexer/SphericalHashIndexer.cpp
 	"SphericalHashIndexer.h"
 
-1392666647 /home/amourao/code/searchservices/indexer/SphericalHashIndexer.h
+1392732402 /home/amourao/code/searchservices/indexer/SphericalHashIndexer.h
 	<string>
 	<iostream>
 	<vector>

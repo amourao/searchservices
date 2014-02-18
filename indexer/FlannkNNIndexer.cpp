@@ -30,6 +30,7 @@ FlannkNNIndexer::FlannkNNIndexer(string& typeId, map<string,string>& params){
     //FLANN_DIST_KULLBACK_LEIBLER  = 8,
     //FLANN_DIST_KL                = 8,
     //FLANN_DIST_HAMMING          = 9,
+
 	if(params["distance"] == "EUCLIDEAN")
 		flannDistance = cvflann::FLANN_DIST_EUCLIDEAN;
 	else if(params["distance"] == "MANHATTAN")
