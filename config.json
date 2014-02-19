@@ -9,11 +9,11 @@
     "type3": "nsBin",
 
     "nTrain": "100000",
-    "nValI": "1000",
+    "nValI": "10000",
     "nValQ": "100",
     "nTesI": "100000",
     "nTesQ": "100",
-    "k": "10"
+    "k": "1000"
     },
  "endpoints": {
     "indexer": [
@@ -45,7 +45,8 @@
                 "overRatio": "0.25",
                 "epsMean": "0.1",
                 "epsStdDev": "0.15",
-                "maxItr": "50"
+                "maxItr": "50",
+                "examineRatio": "1"
             }
         },{
             "newName": "sh_shd",
@@ -59,7 +60,8 @@
                 "overRatio": "0.25",
                 "epsMean": "0.1",
                 "epsStdDev": "0.15",
-                "maxItr": "50"
+                "maxItr": "50",
+                "examineRatio": "1"
             }
         }
     ]

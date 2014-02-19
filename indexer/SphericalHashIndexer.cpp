@@ -166,7 +166,7 @@ std::pair<vector<float>,vector<float> > SphericalHashIndexer::knnSearchId(const 
 
    	Result_Element<int> *res = new Result_Element<int> [ nP ];
 
-    for(int i=0;i<nP;i++){
+    for(int i=0;i<nP*examineRatio;i++){
         float dist;
 
         if(SHD){

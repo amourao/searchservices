@@ -60,7 +60,6 @@ private:
 
 	string typeId;
 	cv::Mat indexData;
-	map<string,string> paramsB;
 
 	float oneMinusDelta;
 	float r;

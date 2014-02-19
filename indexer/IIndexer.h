@@ -22,6 +22,10 @@ using namespace std;
 #define INDEXER_LABELS_EXTENSION ".labels"
 #endif
 
+#ifndef INDEXER_PARAMS_EXTENSION
+#define INDEXER_PARAMS_EXTENSION ".params"
+#endif
+
 class IIndexer: public FactoryMethod {
 
 public:
@@ -121,12 +125,34 @@ public:
 	}
 
 	virtual void saveLabels(string basePath){
+
+        stringstream ss;
+
+        ss << basePath << INDEXER_LABELS_EXTENSION;
+
 		std::map<float,string>::iterator iter;
 
-	    ofstream labelData(basePath.c_str());
+	    ofstream labelData(ss.str().c_str());
 
 	    labelData << numberOfElements << endl;
 	    for (iter = labels.begin(); iter != labels.end(); ++iter) {
+	    	labelData << iter->first << "," << iter->second << endl;
+	    }
+		labelData.close();
+	}
+
+	virtual void saveParams(string basePath){
+
+        stringstream ss;
+
+        ss << INDEXER_BASE_SAVE_PATH << basePath << INDEXER_PARAMS_EXTENSION;
+
+		std::map<string,string>::iterator iter;
+
+	    ofstream labelData(ss.str().c_str());
+
+        labelData << paramsB.size() << endl;
+	    for (iter = paramsB.begin(); iter != paramsB.end(); ++iter) {
 	    	labelData << iter->first << "," << iter->second << endl;
 	    }
 		labelData.close();
@@ -137,7 +163,12 @@ public:
 
 	virtual string getName() = 0;
 
+protected:
+
+    map<string,string> paramsB;
+
 private:
+
 
 	std::map<float,string> labels;
 	int numberOfElements;

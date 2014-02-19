@@ -11,6 +11,7 @@ MSIDXIndexer::MSIDXIndexer(string& _type){
 }
 
 MSIDXIndexer::MSIDXIndexer(string& _type, map<string,string>& params){
+    paramsB = params;
 	type = _type;
 	w = atof(params["w"].c_str());
 }

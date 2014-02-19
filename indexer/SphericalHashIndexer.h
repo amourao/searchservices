@@ -61,7 +61,6 @@ private:
     void Undo_ZeroCentering(Points& in, float* center);
 
 	string typeId;
-	map<string,string> paramsB;
 
     // dps: data points set
     // qps: query points set
