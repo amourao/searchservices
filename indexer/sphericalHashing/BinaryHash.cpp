@@ -7,11 +7,11 @@ void Sphere::Set_Radius(Points *ps, Index_Distance *ids, float incRatio)
 	for(int i=0;i<ps->nP;i++)
 	{
 		ids[i].index = i;
-		ids[i].distSq = Compute_Distance_L2Sq<REAL_TYPE>( c , ps->d[i] , ps->dim );
+		ids[i].distSq = Compute_Distance_L2Sq<float>( c , ps->d[i] , ps->dim );
 		ids[i].dist = sqrt( ids[i].distSq );
 	}
 	sort( &ids[0] , &ids[ ps->nP ] );
-	int tIndex = (int)( (REAL_TYPE)( ps->nP ) * incRatio );
+	int tIndex = (int)( (float)( ps->nP ) * incRatio );
 	r = ids[tIndex-1].dist;
 	rSq = r * r;
 }
@@ -47,7 +47,7 @@ void SphericalHashing::Initialize(Points *_ps, 	int _dim, int _bCodeLen, int _tr
 				break;
 			}
 		}
-		SetVector_Vec<REAL_TYPE>( tps.d[i] , ps->d[index] , tps.dim );
+		SetVector_Vec<float>( tps.d[i] , ps->d[index] , tps.dim );
 	}
 	delete [] checkList;
 
@@ -57,7 +57,12 @@ void SphericalHashing::Initialize(Points *_ps, 	int _dim, int _bCodeLen, int _tr
 		s[i].Initialize( tps.dim );
 	}
 
-	table = new bitset<MAX_NUM_TRAIN_SAMPLES> [ bCodeLen ];
+	table = new boost::dynamic_bitset<> [ bCodeLen ];
+
+	for(int i = 0; i < bCodeLen; i++){
+		table[i] = boost::dynamic_bitset<>(trainSamplesCount);
+	}
+
 	for(int i=0;i<bCodeLen;i++)
 	{
 		for(int j=0;j<trainSamplesCount;j++)
@@ -93,7 +98,7 @@ void SphericalHashing::Compute_Table()
 		for(int j=0;j<trainSamplesCount;j++)
 		{
 			table[i][j] = 0;
-			if( Compute_Distance_L2Sq<REAL_TYPE>( s[i].c , tps.d[j] , tps.dim ) < s[i].rSq )
+			if( Compute_Distance_L2Sq<float>( s[i].c , tps.d[j] , tps.dim ) < s[i].rSq )
 			{
 				table[i][j] = 1;
 			}
@@ -130,7 +135,7 @@ void SphericalHashing::Compute_Num_Overlaps(int **overlaps)
 */
 void SphericalHashing::Set_Spheres()
 {
-	REAL_TYPE	marginT = 0.05;
+	float	marginT = 0.05;
 
 	double allowedErrorMean, allowedErrorVar;
 	allowedErrorMean = (double)tps.nP * overRatio * epsMean;
@@ -141,13 +146,13 @@ void SphericalHashing::Set_Spheres()
 	int rIndex;
 	for(int i=0;i<bCodeLen;i++)
 	{
-		SetVector_Val<REAL_TYPE>( s[i].c , tps.dim , 0.0 );
+		SetVector_Val<float>( s[i].c , tps.dim , 0.0 );
 		for(int j=0;j<10;j++)
 		{
 			rIndex = Rand_Uniform_Int( 0 , tps.nP - 1 );
-			Add_Vector<REAL_TYPE>( s[i].c , tps.d[ rIndex ] , s[i].c , tps.dim );
+			Add_Vector<float>( s[i].c , tps.d[ rIndex ] , s[i].c , tps.dim );
 		}
-		Scalar_Vector<REAL_TYPE>( s[i].c , 0.1 , tps.dim );
+		Scalar_Vector<float>( s[i].c , 0.1 , tps.dim );
 	}
 
 #ifdef USE_PARALLELIZATION
@@ -163,13 +168,13 @@ void SphericalHashing::Set_Spheres()
 	{
 		overlaps[i] = new int [ bCodeLen ];
 	}
-	REAL_TYPE **forces = new REAL_TYPE * [ bCodeLen ];
+	float **forces = new float * [ bCodeLen ];
 	for(int i=0;i<bCodeLen;i++)
 	{
-		forces[i] = new REAL_TYPE [ tps.dim ];
+		forces[i] = new float [ tps.dim ];
 	}
-	REAL_TYPE *force = new REAL_TYPE [ tps.dim ];
-	REAL_TYPE tmpOverlap, alpha;
+	float *force = new float [ tps.dim ];
+	float tmpOverlap, alpha;
 
 	for(int k=0;k<maxItr;k++)
 	{
@@ -204,20 +209,20 @@ void SphericalHashing::Set_Spheres()
 
 
 		// force computation
-		SetMatrix_Val<REAL_TYPE>( forces , bCodeLen , tps.dim , 0.0 );
+		SetMatrix_Val<float>( forces , bCodeLen , tps.dim , 0.0 );
 		for(int i=0;i<bCodeLen-1;i++)
 		{
 			for(int j=i+1;j<bCodeLen;j++)
 			{
-				tmpOverlap = (REAL_TYPE)overlaps[i][j] / (REAL_TYPE)tps.nP;
+				tmpOverlap = (float)overlaps[i][j] / (float)tps.nP;
 				alpha = ( tmpOverlap - overRatio ) / overRatio;
 				alpha /= 2.0;
 
-				Sub_Vector<REAL_TYPE>( s[j].c , s[i].c , force , tps.dim );
-				Scalar_Vector<REAL_TYPE>( force , alpha , tps.dim);
-				Add_Vector<REAL_TYPE>( forces[j] , force , forces[j] , tps.dim );
-				Scalar_Vector<REAL_TYPE>( force , -1.0 , tps.dim );
-				Add_Vector<REAL_TYPE>( forces[i] , force , forces[i] , tps.dim );
+				Sub_Vector<float>( s[j].c , s[i].c , force , tps.dim );
+				Scalar_Vector<float>( force , alpha , tps.dim);
+				Add_Vector<float>( forces[j] , force , forces[j] , tps.dim );
+				Scalar_Vector<float>( force , -1.0 , tps.dim );
+				Add_Vector<float>( forces[i] , force , forces[i] , tps.dim );
 			}
 		}
 
@@ -227,8 +232,8 @@ void SphericalHashing::Set_Spheres()
 #endif
 		for(int i=0;i<bCodeLen;i++)
 		{
-			Scalar_Vector<REAL_TYPE>( forces[i] , 1.0 / bCodeLen , tps.dim );
-			Add_Vector<REAL_TYPE>( s[i].c , forces[i] , s[i].c , tps.dim );
+			Scalar_Vector<float>( forces[i] , 1.0 / bCodeLen , tps.dim );
+			Add_Vector<float>( s[i].c , forces[i] , s[i].c , tps.dim );
 			s[i].Set_Radius( &tps , &ids[i][0], incRatio);
 		}
 	}

@@ -7,15 +7,15 @@ class Points
 public :
 	int nP;
 	int dim;
-	REAL_TYPE **d;
+	float **d;
 	
 	void Initialize(int _nP, int _dim)
 	{
 		nP = _nP;		dim = _dim;
-		d = new REAL_TYPE * [ nP ];
+		d = new float * [ nP ];
 		for(int i=0;i<nP;i++)
 		{
-			d[i] = new REAL_TYPE [ dim ];
+			d[i] = new float [ dim ];
 		}
 	}
 
@@ -30,10 +30,10 @@ public :
 		FILE *input = fopen( fileName , "rb" );
 		fread( &nP , sizeof(int) , 1 , input );
 		fread( &dim , sizeof(int) , 1 , input );
-		d = new REAL_TYPE * [ nP ];
+		d = new float * [ nP ];
 		for(int i=0;i<nP;i++)
 		{
-			d[i] = new REAL_TYPE [ dim ];
+			d[i] = new float [ dim ];
 		}
 		float *tmp = new float [ dim ];
 		for(int i=0;i<nP;i++)
@@ -41,7 +41,7 @@ public :
 			fread( tmp , sizeof(float) , dim , input );
 			for(int k=0;k<dim;k++)
 			{
-				d[i][k] = (REAL_TYPE)( tmp[k] );
+				d[i][k] = (float)( tmp[k] );
 			}
 		}
 		fclose(input);
@@ -49,7 +49,7 @@ public :
 	}
 
 	// computing center of points for zero centering
-	void Compute_Center(REAL_TYPE *center)
+	void Compute_Center(float *center)
 	{
 		double *tCenter = new double [dim];
 		SetVector_Val<double>( tCenter , dim , 0.0 );
@@ -63,7 +63,7 @@ public :
 		for(int k=0;k<dim;k++)
 		{
 			tCenter[k] /= (double)(nP);
-			center[k] = (REAL_TYPE)( tCenter[k] );
+			center[k] = (float)( tCenter[k] );
 		}
 		delete [] tCenter;
 	}

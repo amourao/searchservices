@@ -1,0 +1,5 @@
+#!/bin/bash
+
+casdasd=`python countCombinations.py $1.json`
+
+printf "universe = vanilla\ngetenv = True\nexecutable = /home/amourao/code/searchservices/bin/Release/runIndexer\narguments = /home/amourao/code/searchservices/condor/$1.json \$(PROCESS)\noutput = /localstore/amourao/indexerLog/$1_\$(PROCESS)\nlog = /localstore/amourao/indexerLog/$1_\$(PROCESS).log\nqueue $casdasd" > $1.submit 

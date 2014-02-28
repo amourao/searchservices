@@ -5,7 +5,6 @@
 #include <ctime>
 #include <cstdlib>
 #include <algorithm>
-#include <bitset>
 
 #define __forceinline __attribute__((always_inline))
 

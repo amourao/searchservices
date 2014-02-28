@@ -1,0 +1,4 @@
+scp amourao@arthur:/localstore/amourao/indexerLog/$1* /home/amourao/code/searchservices/condor/tmpData/
+scp amourao@cobb:/localstore/amourao/indexerLog/$1* /home/amourao/code/searchservices/condor/tmpData/
+scp amourao@saito:/localstore/amourao/indexerLog/$1* /home/amourao/code/searchservices/condor/tmpData/
+scp amourao@mal:/localstore/amourao/indexerLog/$1* /home/amourao/code/searchservices/condor/tmpData/

@@ -1,0 +1,7 @@
+universe = vanilla
+getenv = True
+executable = /home/amourao/code/searchservices/bin/Release/runIndexer
+arguments = /home/amourao/code/searchservices/configCondor3.json $(PROCESS)
+output = /localstore/amourao/indexerLog/configCondor3_$(PROCESS)
+log = /localstore/amourao/indexerLog/configCondor3_$(PROCESS).log
+queue 15

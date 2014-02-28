@@ -478,6 +478,8 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
 	vector<IIndexer*> allIndexers;
 	vector<IAnalyser*> analysers;
 
+	bool debug = false;
+
     IBinImporter* importer;
 
     string paramFile(argv[1]);
@@ -505,6 +507,10 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
 
     int currentOffset = 0;
 
+    if (parameters.count("debug") > 0){
+	    debug = true;
+	}
+
     if (parameters.count("startOffset") > 0){
 		currentOffset = atoi(parameters["startOffset"].c_str());
 	}
@@ -528,33 +534,33 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
 	Mat featuresTestQ;
 
     timestamp_type start, end;
-    //cout << "Reading featuresTrain: ";
+    if (debug) cout << "Reading featuresTrain: ";
 	//Mat labels;
     
     get_timestamp(&start);
 	importer->readBin(file,nTrain,featuresTrain,currentOffset);
 	get_timestamp(&end);
 	currentOffset += nTrain;
-	//cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresValidationI ";
+	if (debug) cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresValidationI ";
 	get_timestamp(&start);
 	importer->readBin(file,nValI,featuresValidationI,currentOffset);
 	get_timestamp(&end);
 	currentOffset += nValI;
-    //cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresValidationQ ";
+    if (debug) cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresValidationQ ";
     get_timestamp(&start);
 	importer->readBin(file,nValQ,featuresValidationQ,currentOffset);
 	get_timestamp(&end);
 	currentOffset += nValQ;
-	//cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresTestI ";
+	if (debug) cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresTestI ";
 	get_timestamp(&start);
 	importer->readBin(file,nTesI,featuresTestI,currentOffset);
 	get_timestamp(&end);
 	currentOffset += nTesI;
-	//cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresTestQ ";
+	if (debug) cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresTestQ ";
 	get_timestamp(&start);
 	importer->readBin(file,nTesQ,featuresTestQ,currentOffset);
 	get_timestamp(&end);
-	//cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
+	if (debug) cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
 
     //featuresValidationI.copyTo(featuresTestI);
     //featuresValidationQ.copyTo(featuresTestQ);
@@ -565,25 +571,33 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
 	int posC = file.rfind("/");
 	string simpleFileName = file.substr(0,posC);
 
+	if (debug) cout << "Loading GT" << endl;
     loadGT(gtFile,linearResults,simpleFileName);
+	if (debug) cout << "Loading GT ok" << endl;
 
     vector<IIndexer*> indexers;
 
     indexers.push_back(allIndexers.at(indexToTest));
 
+    
     for(int i = 0; i < indexers.size(); i++){
+    	
+    	if (debug) cout << "Training" << endl;
 		get_timestamp(&start);
         indexers.at(i)->train(featuresTrain,featuresValidationQ,featuresValidationI);
 		get_timestamp(&end);
+		if (debug) cout << "Training ok" << endl;
 
 		int pos = indexers.at(i)->getName().rfind("_");
 		string simpleName = indexers.at(i)->getName().substr(0,pos);
 
         cout << indexers.at(i)->getName() << ";" << simpleName << ";" << timestamp_diff_in_milliseconds(start, end);
 
+        if (debug) cout << "Indexing" << endl;
 		get_timestamp(&start);
         indexers.at(i)->indexWithTrainedParams(featuresTestI);
 		get_timestamp(&end);
+		if (debug) cout << "Indexing ok" << endl;
 
         //if(indexToTest == 0 || i > 0)
         cout << ";" << timestamp_diff_in_milliseconds(start, end);
@@ -595,6 +609,7 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
         std::pair<vector<float>, vector<float> > r;
         vector<std::pair<vector<float>, vector<float> > > rAll;
 
+		if (debug) cout << "Querying" << endl;        
         for (int j = 0; j < featuresTestQ.rows; j++){
             Mat q = featuresTestQ.row(j);
             get_timestamp(&start);
@@ -603,6 +618,7 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
             tmpTime += timestamp_diff_in_milliseconds(start, end);
             rAll.push_back(r);
         }
+        if (debug) cout << "Querying ok" << endl;
         double deltaDistance = 0;
 
         long commonElements = 0;

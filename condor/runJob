@@ -1,0 +1,3 @@
+export LD_LIBRARY_PATH=/home/amourao/myLibs/lib:$LD_LIBRARY_PATH && export LIBRARY_PATH=/home/amourao/myLibs/bin:$LIBRARY_PATH && export C_INCLUDE_PATH=/home/amourao/myLibs/include:$C_INCLUDE_PATH && export CPLUS_INCLUDE_PATH=/home/amourao/myLibs/include:$CPLUS_INCLUDE_PATH && export PATH=/home/amourao/myLibs/bin:/home/amourao/code/trec_eval.9.0:$PATH
+
+condor_submit $1.submit

@@ -1,0 +1,4 @@
+ssh arthur "rm /localstore/amourao/indexerLog/$1*"
+ssh cobb "rm /localstore/amourao/indexerLog/$1*"
+ssh saito "rm /localstore/amourao/indexerLog/$1*"
+ssh mal "rm /localstore/amourao/indexerLog/$1*"

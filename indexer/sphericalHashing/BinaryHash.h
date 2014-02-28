@@ -3,6 +3,7 @@
 #include "Common.h"
 #include "Points.h"
 #include <boost/dynamic_bitset.hpp>
+#include <iostream>
 
 class LSH
 {
@@ -18,31 +19,31 @@ public :
 	// spherical hamming distance function
 	__forceinline double Compute_SHD(boost::dynamic_bitset<> &a, boost::dynamic_bitset<> &b)
 	{
-		return ( ( (double)( ( a ^ b ).count() ) ) / ( (double)( ( a & b ).count() - (MAX_BCODE_LEN - bCodeLen)) + 0.1 ));
+		return ( ( (double)( ( a ^ b ).count() ) ) / ( (double)( ( a & b ).count()) + 0.1 ));
 	}
 
 	int dim;
 	int bCodeLen;
-	REAL_TYPE **pM;
+	float **pM;
 
 	void Initialize(int _dim, int _bCodeLen)
 	{
 		dim = _dim;
 		bCodeLen = _bCodeLen;
-		pM = new REAL_TYPE * [ dim ];
+		pM = new float * [ dim ];
 		for(int k=0;k<dim;k++)
 		{
-			pM[k] = new REAL_TYPE [ bCodeLen ];
+			pM[k] = new float [ bCodeLen ];
 			for(int i=0;i<bCodeLen;i++)
 			{
-				pM[k][i] = Rand_Gaussian<REAL_TYPE>();
+				pM[k][i] = Rand_Gaussian<float>();
 			}
 		}
 	}
 
-	__forceinline void Compute_BCode(REAL_TYPE *x, boost::dynamic_bitset<> &y)
+	__forceinline void Compute_BCode(float *x, boost::dynamic_bitset<> &y)
 	{
-		REAL_TYPE tmp;
+		float tmp;
 		for(int i=0;i<bCodeLen;i++)
 		{
 			tmp = 0.0;
@@ -67,7 +68,7 @@ class Index_Distance
 public :
 	bool flag;
 	int index;
-	REAL_TYPE dist, distSq;
+	float dist, distSq;
 	bool operator < (const Index_Distance &T) const
 	{
 		if( this->distSq < T.distSq )	{			return true;		}
@@ -78,11 +79,11 @@ public :
 class Sphere
 {
 public :
-	REAL_TYPE *c, r, rSq;
+	float *c, r, rSq;
 
 	void Initialize(int _dim)
 	{
-		c = new REAL_TYPE [ _dim ];
+		c = new float [ _dim ];
 		r = 0.0;		rSq = 0.0;
 	}
 
@@ -110,7 +111,7 @@ public :
 	int maxItr;
 
 	Index_Distance **ids;
-	bitset<MAX_NUM_TRAIN_SAMPLES> *table;
+	boost::dynamic_bitset<> *table;
 
 	void Initialize(Points *_ps, int _dim, int _bCodeLen, int _trainSamplesCount, int _maxItr,
     float _incRatio, float _overRatio, float _epsMean, float _epsStdDev);
@@ -120,11 +121,11 @@ public :
 
 	void ReleaseMem();
 
-	__forceinline void Compute_BCode(REAL_TYPE *x, boost::dynamic_bitset<> &y)
+	__forceinline void Compute_BCode(float *x, boost::dynamic_bitset<> &y)
 	{
 		for(int i=0;i<bCodeLen;i++)
 		{
-			if( Compute_Distance_L2Sq<REAL_TYPE>( s[i].c , x , ps->dim ) > s[i].rSq )
+			if( Compute_Distance_L2Sq<float>( s[i].c , x , ps->dim ) > s[i].rSq )
 			{
 				y[i] = 0;
 			}

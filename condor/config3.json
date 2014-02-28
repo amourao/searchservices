@@ -1,0 +1,65 @@
+{"parameters": {
+
+    "file2" : "/home/amourao/dataBig/1-billion-vectors/gist/gist_base.fvecs",
+    "type2": "billion",
+
+    "file" : "/home/amourao/dataBig/tinygist80millionSample.bin",
+    "gtFile" : "/home/amourao/code/searchservices/gt.txt",
+    "type": "tiny",
+
+    "file3" : "/home/amourao/code/searchservices/analyser/data/dataFCTHFull.bin",
+    "type3": "nsBin",
+
+    "nTrain": "100000",
+    "nValI": "10000",
+    "nValQ": "100",
+    "nTesI": "1000000",
+    "nTesQ": "100",
+    "k": "50",
+    "mapAt": "50"
+
+    },
+ "endpoints": {
+    "indexer": [
+        {
+            "newName": "linearIndexer",
+            "originalName": "flannkNNIndexer",
+            "params": {
+                "algorithm": "linear",
+                "distance": "EUCLIDEAN"
+            }
+        },{
+            "newName": "kdTree",
+            "originalName": "flannkNNIndexer",
+            "params": {
+                "algorithm": "kd",
+                "distance": "EUCLIDEAN",
+                "trees": ["1","4","8","16","32"]
+            }
+        },{
+            "newName": "kMeansTree",
+            "originalName": "flannkNNIndexer",
+            "params": {
+                "algorithm": "kmeans",
+                "distance": "EUCLIDEAN",
+                "branching": ["16","32","64","128","256"],
+                "iterations": ["-1","5","10","15"],
+                "cb_index": ["0","0.2","0,5"],
+                "centers_init": ["CENTERS_RANDOM","CENTERS_GONZALES","CENTERS_KMEANSPP"]
+            }
+        },{
+            "newName": "compositeTree",
+            "originalName": "flannkNNIndexer",
+            "params": {
+                "algorithm": "composite",
+                "distance": "EUCLIDEAN",
+                "trees": ["1","4","8","16","32"],
+                "branching": ["16","32","64","128","256"],
+                "iterations": ["-1","5","10","15"],
+                "cb_index": ["0","0.2","0,5"],
+                "centers_init": ["CENTERS_RANDOM","CENTERS_GONZALES","CENTERS_KMEANSPP"]     
+            }
+        }
+
+    ]
+} }    
