@@ -8,6 +8,7 @@
 #include "../analyser/FactoryAnalyser.h"
 #include "../analyser/IAnalyser.h"
 
+#include <iomanip>
 #include <jsoncpp/json/json.h>
 
 

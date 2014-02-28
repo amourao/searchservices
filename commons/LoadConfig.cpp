@@ -108,13 +108,15 @@ vector<IIndexer*> LoadConfig::registerIndeces(Json::Value plugins){
         map<string,string> params;
         vector<map<string,string> > allParams;
 
+
         LoadConfig::generatePermutations(paramsJSON,allParams);
 
         for( int j = 0; j < allParams.size(); j++){
             map<string,string> params = allParams.at(j);
             stringstream ss;
-            ss << newName << "_" << j;
+            ss << newName << "_" << std::setw(4) << std::setfill('0') << j;
             string newNameId = ss.str();
+
             IIndexer* originalIndex = (IIndexer*)FactoryIndexer::getInstance()->createType(originalName);
             FactoryIndexer::getInstance()->registerType(newNameId,originalIndex,params);
             IIndexer* readyIndex = (IIndexer*)FactoryIndexer::getInstance()->createType(newNameId);

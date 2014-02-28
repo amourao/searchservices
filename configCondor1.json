@@ -10,11 +10,13 @@
     "file3" : "/home/amourao/code/searchservices/analyser/data/dataFCTHFull.bin",
     "type3": "nsBin",
 
+    "startOffset": "0",
     "nTrain": "100000",
     "nValI": "10000",
     "nValQ": "100",
     "nTesI": "1000000",
     "nTesQ": "100",
+
     "k": "50",
     "mapAt": "50"
 
@@ -71,7 +73,7 @@
             "newName": "msIDXIndexerW",
             "originalName": "MSIDXIndexer",
             "params": {
-                "w": ["0.005","0.01","0.025","0.05","0.1","0.15","0.2","0.25"]
+                "w": ["0.005","0.01","0.025","0.05","0.1","0.15","0.2","0.25","0.3","0.4","0.5"]
             }
         },{
             "newName": "lsh",
@@ -80,10 +82,10 @@
                 "radius":  ["0.707107","0.8666","1"],
                 "oneMinusDelta": ["0.7","0.9"],
 
-                "k": ["4"],
-                "m": ["4","5"],
-                "l": ["6","8"],
-                "w": ["2","4"],
+                "k": ["2","4","6"],
+                "m": ["3","4","5"],
+                "l": ["3","6"],
+                "w": "2",
 
                 "t": "10000",
                 "ht": "3",
@@ -105,10 +107,10 @@
             "params": {
                 "algorithm": "kmeans",
                 "distance": "EUCLIDEAN",
-                "branching": ["16","32","64","128"],
-                "iterations": ["-1","5","11","20"],
-                "cb_index": ["0","0.2","0,5"],
-                "centers_init": "CENTERS_RANDOM"         
+                "branching": ["16","32","64"],
+                "iterations": ["5","10","20"],
+                "cb_index": ["0","0.2"],
+                "centers_init": ["CENTERS_RANDOM","CENTERS_GONZALES","CENTERS_KMEANSPP"]          
             }
         }
 

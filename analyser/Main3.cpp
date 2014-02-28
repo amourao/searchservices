@@ -59,7 +59,6 @@
 #include "../commons/LoadConfig.h"
 
 
-
 using namespace std;
 
 
@@ -268,13 +267,17 @@ void awesomeIndexTester(int argc, char *argv[]){
     cout << endl << "nTrain;nValI;nValQ;nTesI;nTesQ;mAcc;k;d" << endl;
     cout << nTrain << ";" << nValI << ";" << nValQ << ";" << nTesI << ";" << nTesQ << ";" << k << ";" << featuresTestI.cols << endl << endl;
 
-	cout << "Name;TrainTime;IndexingTime;QueryTime;%Correct;avgDeltaDistance" << endl;
+	cout << "Name;Name2;TrainTime;IndexingTime;QueryTime;%Correct;avgDeltaDistance" << endl;
 	for(int i = 0; i < indexers.size(); i++){
 		get_timestamp(&start);
         indexers.at(i)->train(featuresTrain,featuresValidationQ,featuresValidationI);
 		get_timestamp(&end);
 
-		cout << indexers.at(i)->getName() << ";" << timestamp_diff_in_milliseconds(start, end);
+		int pos = indexers.at(i)->getName().rfind("_");
+		string simpleName = indexers.at(i)->getName().substr(0,pos);
+
+        cout << indexers.at(i)->getName() << ";" << simpleName << ";" << timestamp_diff_in_milliseconds(start, end);
+		
 
 		get_timestamp(&start);
         indexers.at(i)->indexWithTrainedParams(featuresTestI);
@@ -381,15 +384,15 @@ void computeGT(int argc, char *argv[]){
 
     timestamp_type start, end;
 	//Mat labels;
-    int currentOffset = 0;
+    long currentOffset = 0;
 
 	currentOffset = nTrain + nValI + nValQ;
-	cout << "Reading featuresTestI ";
+	cout << "Reading featuresTestI " << endl;
 	get_timestamp(&start);
 	importer->readBin(file,nTesI,featuresTestI,currentOffset);
 	get_timestamp(&end);
 	currentOffset += nTesI;
-	cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresTestQ ";
+	cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresTestQ " << endl;
 	get_timestamp(&start);
 	importer->readBin(file,nTesQ,featuresTestQ,currentOffset);
 	get_timestamp(&end);
@@ -403,7 +406,7 @@ void computeGT(int argc, char *argv[]){
 
     cout << endl;
     cout << nTesQ << endl;
-    cout << nTesI << endl;
+    cout << k << endl;
 
 	for(int i = 0; i < 1; i++){
 		get_timestamp(&start);
@@ -437,10 +440,15 @@ void computeGT(int argc, char *argv[]){
 	}
 }
 
-void readGT(string& gtFile,vector<std::pair<vector<float>, vector<float> > >& linearResults){
+void loadGT(string& gtFile,vector<std::pair<vector<float>, vector<float> > >& linearResults,string &nameO){
     ifstream file(gtFile.c_str(), ifstream::in);
-
     string line, path, tmpStr;
+
+    getline(file, line);
+    string name = line;
+
+    getline(file, line);
+    int offset = atoi(line.c_str());
 
     getline(file, line);
     int nRows = atoi(line.c_str());
@@ -478,8 +486,11 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
 
 	LoadConfig::load(paramFile,parameters,allIndexers,analysers);
 
+	//cout << allIndexers.size() << endl;
+
     string file(parameters["file"]);
     string type(parameters["type"]);
+    string gtFile(parameters["gtFile"]);
 
     if(type == "tiny"){
         importer = new tinyImageImporter();
@@ -492,6 +503,11 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
         return;
     }
 
+    int currentOffset = 0;
+
+    if (parameters.count("startOffset") > 0){
+		currentOffset = atoi(parameters["startOffset"].c_str());
+	}
 
 	int nTrain = atoi(parameters["nTrain"].c_str());
 	int nValI = atoi(parameters["nValI"].c_str());
@@ -500,6 +516,8 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
 	int nTesQ = atoi(parameters["nTesQ"].c_str());
 	int k = atoi(parameters["k"].c_str());
 	int mapAt = atoi(parameters["mapAt"].c_str());
+
+
 
     int tmp = 0;
 
@@ -512,7 +530,7 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
     timestamp_type start, end;
     //cout << "Reading featuresTrain: ";
 	//Mat labels;
-    int currentOffset = 0;
+    
     get_timestamp(&start);
 	importer->readBin(file,nTrain,featuresTrain,currentOffset);
 	get_timestamp(&end);
@@ -528,51 +546,47 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
 	get_timestamp(&end);
 	currentOffset += nValQ;
 	//cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresTestI ";
-	/*
 	get_timestamp(&start);
 	importer->readBin(file,nTesI,featuresTestI,currentOffset);
 	get_timestamp(&end);
 	currentOffset += nTesI;
-	cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresTestQ ";
+	//cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresTestQ ";
 	get_timestamp(&start);
 	importer->readBin(file,nTesQ,featuresTestQ,currentOffset);
 	get_timestamp(&end);
-	cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
-    */
+	//cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
 
-    featuresValidationI.copyTo(featuresTestI);
-    featuresValidationQ.copyTo(featuresTestQ);
-    nTesI = featuresTestI.rows;
-    nTesQ = featuresTestQ.rows;
+    //featuresValidationI.copyTo(featuresTestI);
+    //featuresValidationQ.copyTo(featuresTestQ);
+    //nTesI = featuresTestI.rows;
+    //nTesQ = featuresTestQ.rows;
     vector<std::pair<vector<float>, vector<float> > > linearResults;
+
+	int posC = file.rfind("/");
+	string simpleFileName = file.substr(0,posC);
+
+    loadGT(gtFile,linearResults,simpleFileName);
 
     vector<IIndexer*> indexers;
 
-    indexers.push_back(allIndexers.at(0));
-    if(indexToTest != 0)
-        indexers.push_back(allIndexers.at(indexToTest));
-
-    if(indexToTest == 0){
-        cout << endl << "nTrain;nValI;nValQ;nTesI;nTesQ;mAcc;k;d" << endl;
-        cout << nTrain << ";" << nValI << ";" << nValQ << ";" << nTesI << ";" << nTesQ << ";" << k << ";" << featuresTestI.cols << endl << endl;
-
-        cout << "Name;TrainTime;IndexingTime;QueryTime;%Correct;avgDeltaDistance" << endl;
-    }
+    indexers.push_back(allIndexers.at(indexToTest));
 
     for(int i = 0; i < indexers.size(); i++){
 		get_timestamp(&start);
         indexers.at(i)->train(featuresTrain,featuresValidationQ,featuresValidationI);
 		get_timestamp(&end);
 
-        if(indexToTest == 0 || i > 0)
-            cout << indexers.at(i)->getName() << ";" << timestamp_diff_in_milliseconds(start, end);
+		int pos = indexers.at(i)->getName().rfind("_");
+		string simpleName = indexers.at(i)->getName().substr(0,pos);
+
+        cout << indexers.at(i)->getName() << ";" << simpleName << ";" << timestamp_diff_in_milliseconds(start, end);
 
 		get_timestamp(&start);
         indexers.at(i)->indexWithTrainedParams(featuresTestI);
 		get_timestamp(&end);
 
-        if(indexToTest == 0 || i > 0)
-            cout << ";" << timestamp_diff_in_milliseconds(start, end);
+        //if(indexToTest == 0 || i > 0)
+        cout << ";" << timestamp_diff_in_milliseconds(start, end);
 
         int tmp = 0;
 
@@ -587,8 +601,6 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
             r =  indexers.at(i)->knnSearchId(q,k);
             get_timestamp(&end);
             tmpTime += timestamp_diff_in_milliseconds(start, end);
-            if (i == 0)
-                linearResults.push_back(r);
             rAll.push_back(r);
         }
         double deltaDistance = 0;
@@ -622,10 +634,22 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
             avgPrec += precAccum;
         }
 
-        if(indexToTest == 0 || i > 0)
-            cout << ";" <<  tmpTime <<  ";" << ((double)commonElements)/(k*nTesQ) << ";" << avgPrec/(k*nTesQ) << ";" << deltaDistance << endl;
+        //if(indexToTest == 0 || i > 0)
+        cout << ";" <<  tmpTime <<  ";" << ((double)commonElements)/(k*nTesQ) << ";" << avgPrec/(k*nTesQ) << ";" << deltaDistance << endl;
 
-		indexers.at(i)->saveParams(indexers.at(i)->getName());
+        stringstream ss2;
+
+        int pos2a = paramFile.rfind("/");
+        int pos2b = paramFile.rfind(".");
+
+        if (pos2a == std::string::npos)
+        	pos2a = 0;
+
+		string simpleParamFileName = paramFile.substr(pos2a,pos2b-pos2a);
+
+        ss2 << simpleParamFileName << "_" << std::setw(5) << std::setfill('0') << indexToTest << "_" << indexers.at(i)->getName();
+
+		indexers.at(i)->saveParams(ss2.str());
 
 		delete indexers.at(i);
 	}
@@ -717,7 +741,8 @@ map<string,string> parameters;
 
 int main(int argc, char *argv[]){
 	//awesomeIndexTester(argc, argv);
+	awesomeIndexTesterSingle(argc, argv);
 	//testSphericalHashing(argc, argv);
-	computeGT(argc, argv);
+	//computeGT(argc, argv);
     return 0;
 }

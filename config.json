@@ -11,58 +11,14 @@
     "nTrain": "100000",
     "nValI": "10000",
     "nValQ": "100",
-    "nTesI": "100000",
+    "nTesI": "1000000",
     "nTesQ": "100",
-    "k": "1000"
+    "k": "50"
     },
  "endpoints": {
     "indexer": [
         {
-            "newName": "linearIndexer",
-            "originalName": "flannkNNIndexer",
-            "params": {
-                "algorithm": "linear",
-                "distance": "EUCLIDEAN"
-            }
-        },{
-            "newName": "lsh",
-            "originalName": "sphericalHashIndexer",
-            "params": {
-                "algorithm": "lsh",
-                "bCodeLen": ["32","64","128","256","512"],
-                "trainSamplesCount": "1000",
-                "examineRatio": "1"
-            }
-        },{
-            "newName": "sh_hd",
-            "originalName": "sphericalHashIndexer",
-            "params": {
-                "algorithm": "sh",
-                "distance": "hd",
-                "bCodeLen": ["32","64","128","256","512"],
-                "trainSamplesCount": "1000",
-                "incRatio": "0.5",
-                "overRatio": "0.25",
-                "epsMean": "0.1",
-                "epsStdDev": "0.15",
-                "maxItr": "50",
-                "examineRatio": "1"
-            }
-        },{
-            "newName": "sh_shd",
-            "originalName": "sphericalHashIndexer",
-            "params": {
-                "algorithm": "sh",
-                "distance": "shd",
-                "bCodeLen": ["32","64","128","256","512"],
-                "trainSamplesCount": "1000",
-                "incRatio": "0.5",
-                "overRatio": "0.25",
-                "epsMean": "0.1",
-                "epsStdDev": "0.15",
-                "maxItr": "50",
-                "examineRatio": "1"
-            }
+
         }
     ]
 } }    
