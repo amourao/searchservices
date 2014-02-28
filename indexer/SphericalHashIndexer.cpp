@@ -120,7 +120,13 @@ void SphericalHashIndexer::index(cv::Mat features){
         sh.Set_Spheres();
     }
 
-    bCodeData = new bitset<MAX_BCODE_LEN> [nP];
+
+    //bCodeData = new boost::dynamic_bitset<> [nP];
+    bCodeData = new boost::dynamic_bitset<>[nP];
+
+    for(int i=0;i<nP;i++){
+        bCodeData[i] = boost::dynamic_bitset<>(MAX_BCODE_LEN);
+    }
 
     if (isLSH){
         Do_ZeroCentering(dps,dataCenter);
@@ -146,9 +152,12 @@ std::pair<vector<float>,vector<float> > SphericalHashIndexer::knnSearchId(const 
     matToPoints(query,qps);
 
     int nQ = query.rows;
-    bitset<MAX_BCODE_LEN> *bCodeDataQ = new bitset<MAX_BCODE_LEN> [nQ];
 
+    boost::dynamic_bitset<> *bCodeDataQ = new boost::dynamic_bitset<> [nQ];
 
+    for(int i=0;i<nQ;i++){
+        bCodeDataQ[i] = boost::dynamic_bitset<>(MAX_BCODE_LEN);
+    }
 
     if (isLSH){
         Do_ZeroCentering(qps,dataCenter);

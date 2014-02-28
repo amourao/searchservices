@@ -411,7 +411,7 @@
 	"FactoryIndexer.h"
 	"../commons/Timing.h"
 
-1392666904 source:/home/amourao/code/searchservices/analyser/Main3.cpp
+1393587806 source:/home/amourao/code/searchservices/analyser/Main3.cpp
 	<iostream>
 	<string>
 	<sstream>
@@ -3923,14 +3923,15 @@
 	<sys/times.h>
 	"headers.h"
 
-1391882780 /home/amourao/code/searchservices/commons/LoadConfig.h
+1393587806 /home/amourao/code/searchservices/commons/LoadConfig.h
 	"../indexer/FactoryIndexer.h"
 	"../indexer/IIndexer.h"
 	"../analyser/FactoryAnalyser.h"
 	"../analyser/IAnalyser.h"
+	<iomanip>
 	<jsoncpp/json/json.h>
 
-1391883008 source:/home/amourao/code/searchservices/commons/LoadConfig.cpp
+1393587806 source:/home/amourao/code/searchservices/commons/LoadConfig.cpp
 	"LoadConfig.h"
 
 1392073827 source:/home/amourao/code/searchservices/analyser/tools/oneBillionImporter.cpp
@@ -3950,13 +3951,14 @@
 	<opencv2/core/core.hpp>
 	<opencv2/highgui/highgui.hpp>
 
-1392667596 source:/home/amourao/code/searchservices/indexer/sphericalHashing/BinaryHash.cpp
+1393590115 source:/home/amourao/code/searchservices/indexer/sphericalHashing/BinaryHash.cpp
 	"BinaryHash.h"
 	<omp.h>
 
-1392667596 /home/amourao/code/searchservices/indexer/sphericalHashing/BinaryHash.h
+1393598555 /home/amourao/code/searchservices/indexer/sphericalHashing/BinaryHash.h
 	"Common.h"
 	"Points.h"
+	<boost/dynamic_bitset.hpp>
 
 1392667596 /home/amourao/code/searchservices/indexer/sphericalHashing/Common.h
 	<cstdio>
@@ -3968,7 +3970,7 @@
 	"Parameters.h"
 	"Stopwatch.hpp"
 
-1392731857 /home/amourao/code/searchservices/indexer/sphericalHashing/Parameters.h
+1393590494 /home/amourao/code/searchservices/indexer/sphericalHashing/Parameters.h
 
 1392667596 /home/amourao/code/searchservices/indexer/sphericalHashing/Stopwatch.hpp
 	<time.h>
@@ -4015,14 +4017,15 @@
 	"Evaluation.h"
 	<omp.h>
 
-1392737170 source:/home/amourao/code/searchservices/indexer/SphericalHashIndexer.cpp
+1393598532 source:/home/amourao/code/searchservices/indexer/SphericalHashIndexer.cpp
 	"SphericalHashIndexer.h"
 
-1392737025 /home/amourao/code/searchservices/indexer/SphericalHashIndexer.h
+1393598394 /home/amourao/code/searchservices/indexer/SphericalHashIndexer.h
 	<string>
 	<iostream>
 	<vector>
 	<opencv2/highgui/highgui.hpp>
+	<boost/dynamic_bitset.hpp>
 	"IIndexer.h"
 	"FactoryIndexer.h"
 	"FactoryIndexer.h"

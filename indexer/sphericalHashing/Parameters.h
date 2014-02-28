@@ -3,11 +3,14 @@
 #define	REAL_TYPE				float
 
 // binary code length
+#ifndef MAX_BCODE_LEN
 #define MAX_BCODE_LEN			512
-
+#endif
 // number of training samples for spherical hashing
-#define MAX_NUM_TRAIN_SAMPLES	100000
 
+#ifndef MAX_NUM_TRAIN_SAMPLES
+#define MAX_NUM_TRAIN_SAMPLES	100000
+#endif
 
 //#define INPUT_DATA_FILE_NAME	"F:\\KNN_Datasets\\BigANN_GIST_1M_960Dim\\Data.points"
 //#define INPUT_QUERY_FILE_NAME	"F:\\KNN_Datasets\\BigANN_GIST_1M_960Dim\\Query.points"

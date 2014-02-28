@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <opencv2/highgui/highgui.hpp>
+#include <boost/dynamic_bitset.hpp>
 
 #include "IIndexer.h"
 #include "FactoryIndexer.h"
@@ -79,8 +80,7 @@ private:
     bool SHD;
 
 
-    bitset<MAX_BCODE_LEN> *bCodeData;
-
+    boost::dynamic_bitset<> *bCodeData;
 
     int dim;
 	int bCodeLen;

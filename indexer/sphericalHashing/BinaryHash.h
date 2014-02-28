@@ -2,6 +2,7 @@
 
 #include "Common.h"
 #include "Points.h"
+#include <boost/dynamic_bitset.hpp>
 
 class LSH
 {
@@ -9,13 +10,13 @@ public :
 
 
 	// hamming distance function
-	__forceinline int Compute_HD(bitset<MAX_BCODE_LEN> &a, bitset<MAX_BCODE_LEN> &b)
+	__forceinline int Compute_HD(boost::dynamic_bitset<> &a, boost::dynamic_bitset<> &b)
 	{
 		return ( ( a ^ b ).count() );
 	}
 
 	// spherical hamming distance function
-	__forceinline double Compute_SHD(bitset<MAX_BCODE_LEN> &a, bitset<MAX_BCODE_LEN> &b)
+	__forceinline double Compute_SHD(boost::dynamic_bitset<> &a, boost::dynamic_bitset<> &b)
 	{
 		return ( ( (double)( ( a ^ b ).count() ) ) / ( (double)( ( a & b ).count() - (MAX_BCODE_LEN - bCodeLen)) + 0.1 ));
 	}
@@ -39,7 +40,7 @@ public :
 		}
 	}
 
-	__forceinline void Compute_BCode(REAL_TYPE *x, bitset<MAX_BCODE_LEN> &y)
+	__forceinline void Compute_BCode(REAL_TYPE *x, boost::dynamic_bitset<> &y)
 	{
 		REAL_TYPE tmp;
 		for(int i=0;i<bCodeLen;i++)
@@ -119,7 +120,7 @@ public :
 
 	void ReleaseMem();
 
-	__forceinline void Compute_BCode(REAL_TYPE *x, bitset<MAX_BCODE_LEN> &y)
+	__forceinline void Compute_BCode(REAL_TYPE *x, boost::dynamic_bitset<> &y)
 	{
 		for(int i=0;i<bCodeLen;i++)
 		{
