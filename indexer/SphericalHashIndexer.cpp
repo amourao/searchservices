@@ -113,7 +113,7 @@ void SphericalHashIndexer::index(cv::Mat features){
     bCodeData = new boost::dynamic_bitset<>[nP];
 
     for(int i=0;i<nP;i++){
-        bCodeData[i] = boost::dynamic_bitset<>(MAX_BCODE_LEN);
+        bCodeData[i] = boost::dynamic_bitset<>(bCodeLen);
     }
 
 
@@ -142,11 +142,17 @@ std::pair<vector<float>,vector<float> > SphericalHashIndexer::knnSearchId(const 
 
     int nQ = 1;
 
+
+    timestamp_type start, end;
+
+    
     boost::dynamic_bitset<> *bCodeDataQ = new boost::dynamic_bitset<> [nQ];
 
     for(int i=0;i<nQ;i++){
-        bCodeDataQ[i] = boost::dynamic_bitset<>(MAX_BCODE_LEN);
+        bCodeDataQ[i] = boost::dynamic_bitset<>(bCodeLen);
     }
+
+    
 
     if (isLSH){
         Do_ZeroCentering(qps,dataCenter);
@@ -159,10 +165,12 @@ std::pair<vector<float>,vector<float> > SphericalHashIndexer::knnSearchId(const 
             sh.Compute_BCode(qps.d[i] , bCodeDataQ[i]);
         }
     }
+
     std::vector<pair<float,float> > H(nP);
 
    	Result_Element<int> *res = new Result_Element<int> [ nP ];
 
+    
     for(int i=0;i<nP*examineRatio;i++){
         float dist;
 
@@ -175,7 +183,10 @@ std::pair<vector<float>,vector<float> > SphericalHashIndexer::knnSearchId(const 
         H.at(i) = std::make_pair (i,dist);
     }
 
+
 	std::sort(H.begin(),H.end(),compareVectDists());
+
+
 	for (int i = 0; i < n; i++){
 		pair<float,float> p = H.at(i);
 		indicesFloat.push_back(p.first);

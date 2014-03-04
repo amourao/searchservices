@@ -24,6 +24,13 @@
  "endpoints": {
     "indexer": [
         {
+            "newName": "linearIndexer",
+            "originalName": "flannkNNIndexer",
+            "params": {
+                "algorithm": "linear",
+                "distance": "EUCLIDEAN"
+            }
+        },{
             "newName": "sh_lsh",
             "originalName": "sphericalHashIndexer",
             "params": {

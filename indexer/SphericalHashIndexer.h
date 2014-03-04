@@ -13,6 +13,10 @@
 
 #include "./sphericalHashing/BinaryHash.h"
 #include "./sphericalHashing/Evaluation.h"
+#include "./sphericalHashing/Stopwatch.hpp"
+
+#include "../commons/Timing.h"
+
 
 using namespace std;
 using namespace cv;

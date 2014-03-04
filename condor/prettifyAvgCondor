@@ -1,0 +1,9 @@
+varNames=""
+
+for var in "$@"
+do
+    ./prettifyCondor ./tmpData/$var > $var.csv
+    varNames="$varNames $var.csv"
+done
+
+python computeAverageRuns.py $varNames

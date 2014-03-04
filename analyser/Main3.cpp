@@ -1,10 +1,13 @@
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <sstream>
 #include <set>
 #include <cstdlib>
 #include <opencv2/features2d/features2d.hpp>
 #include <time.h>
+#include <armadillo>
+
 //#include <math>
 
 #include <opencv2/core/core.hpp>
@@ -341,11 +344,65 @@ void awesomeIndexTester(int argc, char *argv[]){
 }
 
 
+bool loadGT(string& gtFile,vector<std::pair<vector<float>, vector<float> > >& linearResults,string &nameO,long testOffset, int nTesI, int nTesQ,int k){
+    ifstream file(gtFile.c_str(), ifstream::in);
+    string line, path, tmpStr;
+
+    getline(file, line);
+    string name = line;
+
+    if (name != nameO)
+    	return false;
+
+    getline(file, line);
+    int offset = atoi(line.c_str());
+
+    if (testOffset != offset)
+    	return false;
+
+    getline(file, line);
+    int nTestI = atoi(line.c_str());
+
+    if(nTesI != nTestI)
+    	return false;
+
+    getline(file, line);
+    int nRows = atoi(line.c_str());
+
+    if(nTesQ != nRows)
+    	return false;
+
+    getline(file, line);
+    int nCols = atoi(line.c_str());
+
+    if (k > nCols)
+    	return false;
+
+    for(int i = 0; i < nRows; i++){
+        getline(file, line);
+        stringstream liness(line);
+
+        vector<float> indeces;
+        vector<float> dists;
+        for(int j = 0; j < nCols; j++){
+            getline(liness, tmpStr, ',');
+            indeces.push_back(atof(tmpStr.c_str()));
+            getline(liness, tmpStr, ';');
+            dists.push_back(atof(tmpStr.c_str()));
+        }
+        linearResults.push_back(make_pair(indeces,dists));
+    }
+    return true;
+}
+
 void computeGT(int argc, char *argv[]){
 
 	map<string,string> parameters;
 	vector<IIndexer*> indexers;
+	
 	vector<IAnalyser*> analysers;
+
+	bool debug = false;
 
     IBinImporter* importer;
 
@@ -366,6 +423,9 @@ void computeGT(int argc, char *argv[]){
         return;
     }
 
+    if (parameters.count("debug") > 0){
+	    debug = true;
+	}
 
 	int nTrain = atoi(parameters["nTrain"].c_str());
 	int nValI = atoi(parameters["nValI"].c_str());
@@ -376,9 +436,6 @@ void computeGT(int argc, char *argv[]){
 
     int tmp = 0;
 
-	Mat featuresTrain;
-	Mat featuresValidationI;
-	Mat featuresValidationQ;
 	Mat featuresTestI;
 	Mat featuresTestQ;
 
@@ -386,7 +443,27 @@ void computeGT(int argc, char *argv[]){
 	//Mat labels;
     long currentOffset = 0;
 
-	currentOffset = nTrain + nValI + nValQ;
+    if (parameters.count("splitToTest") > 0){
+		currentOffset = atoi(parameters["splitToTest"].c_str())*(nTrain+nValI+nValQ+nTesI+nTesQ);
+	}
+
+	currentOffset += nTrain + nValI + nValQ;
+
+	long nTestOffset = currentOffset; 
+	string simpleName = file;
+	int pos = simpleName.rfind("/");
+	
+	if(pos != string::npos)
+		simpleName = simpleName.substr(pos+1);
+    
+	stringstream outfileName;
+
+	outfileName << simpleName << "_" << currentOffset << "_" << nTesI << "_" << nTesQ << "_" << k << ".gt";
+
+	cout << outfileName.str() << endl;
+
+	fstream out(outfileName.str().c_str(),std::fstream::out);
+
 	cout << "Reading featuresTestI " << endl;
 	get_timestamp(&start);
 	importer->readBin(file,nTesI,featuresTestI,currentOffset);
@@ -401,21 +478,15 @@ void computeGT(int argc, char *argv[]){
 
     vector<std::pair<vector<float>, vector<float> > > linearResults;
 
-    cout << endl << "file;nTrain;nValI;nValQ;nTesI;nTesQ;k;d" << endl;
-    cout << file << ";" << nTrain << ";" << nValI << ";" << nValQ << ";" << nTesI << ";" << nTesQ << ";" << k << ";" << featuresTestI.cols << endl << endl;
-
-    cout << endl;
-    cout << nTesQ << endl;
-    cout << k << endl;
+    out << simpleName << endl;
+    out << nTestOffset << endl;
+    out << nTesI << endl;
+    out << nTesQ << endl;
+    out << k << endl;
 
 	for(int i = 0; i < 1; i++){
-		get_timestamp(&start);
-        indexers.at(i)->train(featuresTrain,featuresValidationQ,featuresValidationI);
-		get_timestamp(&end);
 
-		get_timestamp(&start);
         indexers.at(i)->indexWithTrainedParams(featuresTestI);
-		get_timestamp(&end);
 
         int tmp = 0;
 
@@ -431,46 +502,19 @@ void computeGT(int argc, char *argv[]){
             get_timestamp(&end);
             tmpTime += timestamp_diff_in_milliseconds(start, end);
             for (int l = 0; l < r.first.size(); l++){
-                cout << r.first.at(l) << "," << r.second.at(l) << ";";
+                out << r.first.at(l) << "," << r.second.at(l) << ";";
             }
-            cout << endl;
+            out << endl;
         }
 
 		delete indexers.at(i);
 	}
+
+	vector<std::pair<vector<float>, vector<float> > > linearResultsAA;
+	string ada = outfileName.str();
+	cout << loadGT(ada,linearResultsAA,simpleName,nTestOffset,nTesI,nTesQ,k) << endl;
 }
 
-void loadGT(string& gtFile,vector<std::pair<vector<float>, vector<float> > >& linearResults,string &nameO){
-    ifstream file(gtFile.c_str(), ifstream::in);
-    string line, path, tmpStr;
-
-    getline(file, line);
-    string name = line;
-
-    getline(file, line);
-    int offset = atoi(line.c_str());
-
-    getline(file, line);
-    int nRows = atoi(line.c_str());
-
-    getline(file, line);
-    int nCols = atoi(line.c_str());
-
-    for(int i = 0; i < nRows; i++){
-        getline(file, line);
-        stringstream liness(line);
-
-        vector<float> indeces;
-        vector<float> dists;
-        for(int j = 0; j < nCols; j++){
-            getline(liness, tmpStr, ',');
-            indeces.push_back(atof(tmpStr.c_str()));
-            getline(liness, tmpStr, ';');
-            dists.push_back(atof(tmpStr.c_str()));
-        }
-        linearResults.push_back(make_pair(indeces,dists));
-    }
-}
 
 void awesomeIndexTesterSingle(int argc, char *argv[]){
 
@@ -492,7 +536,6 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
 
     string file(parameters["file"]);
     string type(parameters["type"]);
-    string gtFile(parameters["gtFile"]);
 
     if(type == "tiny"){
         importer = new tinyImageImporter();
@@ -505,14 +548,10 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
         return;
     }
 
-    int currentOffset = 0;
+    long currentOffset = 0;
 
     if (parameters.count("debug") > 0){
 	    debug = true;
-	}
-
-    if (parameters.count("startOffset") > 0){
-		currentOffset = atoi(parameters["startOffset"].c_str());
 	}
 
 	int nTrain = atoi(parameters["nTrain"].c_str());
@@ -523,7 +562,9 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
 	int k = atoi(parameters["k"].c_str());
 	int mapAt = atoi(parameters["mapAt"].c_str());
 
-
+    if (parameters.count("splitToTest") > 0){
+		currentOffset = atoi(parameters["splitToTest"].c_str())*(nTrain+nValI+nValQ+nTesI+nTesQ);
+	}
 
     int tmp = 0;
 
@@ -551,10 +592,12 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
 	importer->readBin(file,nValQ,featuresValidationQ,currentOffset);
 	get_timestamp(&end);
 	currentOffset += nValQ;
-	if (debug) cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresTestI ";
+	long testOffset = currentOffset;
+	if (debug) cout << currentOffset << " ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresTestI ";
 	get_timestamp(&start);
 	importer->readBin(file,nTesI,featuresTestI,currentOffset);
 	get_timestamp(&end);
+
 	currentOffset += nTesI;
 	if (debug) cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresTestQ ";
 	get_timestamp(&start);
@@ -568,18 +611,40 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
     //nTesQ = featuresTestQ.rows;
     vector<std::pair<vector<float>, vector<float> > > linearResults;
 
-	int posC = file.rfind("/");
-	string simpleFileName = file.substr(0,posC);
+    string simpleFileName = file;
+	int posC = simpleFileName.rfind("/");
+
+	if (posC != string::npos)
+		simpleFileName = simpleFileName.substr(posC+1);
 
 	if (debug) cout << "Loading GT" << endl;
-    loadGT(gtFile,linearResults,simpleFileName);
+
+	stringstream outfileName;
+
+	outfileName << simpleFileName << "_" << testOffset << "_" << nTesI << "_" << nTesQ << "_" << k << ".gt";
+
+	if (debug) cout << outfileName.str() << endl;
+
+	string outfileNameA = outfileName.str();
+
+    bool gtLoaded = loadGT(outfileNameA,linearResults,simpleFileName,testOffset,nTesI,nTesQ,k);
+    
+    if (!gtLoaded){
+    	cout << "error loading GT: " << outfileNameA << endl;
+    	return;
+    }
 	if (debug) cout << "Loading GT ok" << endl;
 
     vector<IIndexer*> indexers;
 
     indexers.push_back(allIndexers.at(indexToTest));
 
-    
+    if(indexToTest == 0){
+    	cout << simpleFileName << endl;
+    	cout << "nTrain;nValI;nValQ;nTesI;nTesQ;k;d;offset" << endl;
+    	cout << nTrain << ";" << nValI << ";" << nValQ << ";" << nTesI << ";" << nTesQ << ";" << k << ";" << featuresTestI.cols << ";" << atoi(parameters["startOffset"].c_str()) << endl;
+		cout << "Index name;Name;Base name;Train time (ms);Index time (ms);Query time (ms);mAcc@" << k << ";MAP@" << k << ";Dist" << endl;
+    }
     for(int i = 0; i < indexers.size(); i++){
     	
     	if (debug) cout << "Training" << endl;
@@ -591,7 +656,9 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
 		int pos = indexers.at(i)->getName().rfind("_");
 		string simpleName = indexers.at(i)->getName().substr(0,pos);
 
-        cout << indexers.at(i)->getName() << ";" << simpleName << ";" << timestamp_diff_in_milliseconds(start, end);
+		stringstream ss4;
+        ss4 << std::setw(5) << std::setfill('0') << indexToTest;
+        cout << ss4.str() << ";" << indexers.at(i)->getName() << ";" << simpleName << ";" << timestamp_diff_in_milliseconds(start, end);
 
         if (debug) cout << "Indexing" << endl;
 		get_timestamp(&start);
@@ -621,37 +688,40 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
         if (debug) cout << "Querying ok" << endl;
         double deltaDistance = 0;
 
-        long commonElements = 0;
-
-
-        int relevant = 0;
-        double avgPrec = 0;
+        double avgPrecAccum = 0;
+        double accuracyAccum = 0;
         for (int j = 0; j < rAll.size(); j++){
-            int kLinear = 0;
             long relAccum = 0;
             double precAccum = 0;
 
             for (int m = 0; m < rAll.at(j).first.size(); m++){
                 deltaDistance += rAll.at(j).second.at(m) - linearResults.at(j).second.at(m);
             }
-
+            //for each document in rank            
             for (int m = 0; m < rAll.at(j).first.size(); m++){
-
-                for (int n = 0; n < mapAt; n++){
+            	// Check if document m appears in the linear rank up to k
+            	int isRelevant = 0;
+                for (int n = 0; n < k; n++){
                     if (rAll.at(j).first.at(m) == linearResults.at(j).first.at(n)){
-                        commonElements++;
                         relAccum++;
-                        relevant = 1;
+                        isRelevant = 1;
                     }
                 }
+                // Measure precision at m
+                // relAccum contains the number relevant document up to m
                 double precisionAtM = relAccum/(m+1.0);
-                precAccum += precisionAtM*relevant;
+                if (debug){ cout << precisionAtM << " " << isRelevant << endl;}
+                if (debug){ cout << relAccum << endl; getchar();}
+                precAccum += precisionAtM * isRelevant;
             }
-            avgPrec += precAccum;
+            // Accumulate results for query j            
+            //do not sum if relAccum is zero (special case in MAP formula)
+            if (relAccum != 0){
+            	avgPrecAccum += precAccum/(double)relAccum;
+            }
         }
-
         //if(indexToTest == 0 || i > 0)
-        cout << ";" <<  tmpTime <<  ";" << ((double)commonElements)/(k*nTesQ) << ";" << avgPrec/(k*nTesQ) << ";" << deltaDistance << endl;
+        cout << ";" <<  tmpTime <<  ";" << ((double)accuracyAccum)/(k*nTesQ) << ";" << avgPrecAccum/(nTesQ) << ";" << deltaDistance << endl;
 
         stringstream ss2;
 
@@ -659,9 +729,9 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
         int pos2b = paramFile.rfind(".");
 
         if (pos2a == std::string::npos)
-        	pos2a = 0;
+        	pos2a = -1;
 
-		string simpleParamFileName = paramFile.substr(pos2a,pos2b-pos2a);
+		string simpleParamFileName = paramFile.substr(pos2a+1,pos2b-pos2a);
 
         ss2 << simpleParamFileName << "_" << std::setw(5) << std::setfill('0') << indexToTest << "_" << indexers.at(i)->getName();
 
@@ -670,6 +740,127 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
 		delete indexers.at(i);
 	}
 }
+
+
+void exportToArmaMat(int argc, char *argv[]){
+
+	map<string,string> parameters;
+	vector<IIndexer*> allIndexers;
+	vector<IAnalyser*> analysers;
+
+	bool debug = false;
+
+    IBinImporter* importer;
+
+    string paramFile(argv[1]);
+
+	LoadConfig::load(paramFile,parameters,allIndexers,analysers);
+
+	//cout << allIndexers.size() << endl;
+
+    string file(parameters["file"]);
+    string type(parameters["type"]);
+
+    if(type == "tiny"){
+        importer = new tinyImageImporter();
+    } else if(type == "billion"){
+        importer = new oneBillionImporter();
+    } else if(type == "nsBin"){
+        importer = new MatrixTools();
+    } else {
+        cout << "Unknown parameter value \"type\" = " << type << endl;
+        return;
+    }
+
+    long currentOffset = 0;
+
+    if (parameters.count("debug") > 0){
+	    debug = true;
+	}
+
+	int nTrain = atoi(parameters["nTrain"].c_str());
+	int nValI = atoi(parameters["nValI"].c_str());
+    int nValQ = atoi(parameters["nValQ"].c_str());
+	int nTesI = atoi(parameters["nTesI"].c_str());
+	int nTesQ = atoi(parameters["nTesQ"].c_str());
+	int k = atoi(parameters["k"].c_str());
+	int mapAt = atoi(parameters["mapAt"].c_str());
+
+    if (parameters.count("splitToTest") > 0){
+		currentOffset = atoi(parameters["splitToTest"].c_str())*(nTrain+nValI+nValQ+nTesI+nTesQ);
+	}
+
+    int tmp = 0;
+
+	Mat featuresTrain;
+	Mat featuresValidationI;
+	Mat featuresValidationQ;
+	Mat featuresTestI;
+	Mat featuresTestQ;
+
+    timestamp_type start, end;
+    if (debug) cout << "Reading featuresTrain: ";
+	//Mat labels;
+    
+    get_timestamp(&start);
+	importer->readBin(file,nTrain,featuresTrain,currentOffset);
+	get_timestamp(&end);
+	currentOffset += nTrain;
+	if (debug) cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresValidationI ";
+	get_timestamp(&start);
+	importer->readBin(file,nValI,featuresValidationI,currentOffset);
+	get_timestamp(&end);
+	currentOffset += nValI;
+    if (debug) cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresValidationQ ";
+    get_timestamp(&start);
+	importer->readBin(file,nValQ,featuresValidationQ,currentOffset);
+	get_timestamp(&end);
+	currentOffset += nValQ;
+	long testOffset = currentOffset;
+	if (debug) cout << currentOffset << " ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresTestI ";
+	get_timestamp(&start);
+	importer->readBin(file,nTesI,featuresTestI,currentOffset);
+	get_timestamp(&end);
+
+	currentOffset += nTesI;
+	if (debug) cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresTestQ ";
+	get_timestamp(&start);
+	importer->readBin(file,nTesQ,featuresTestQ,currentOffset);
+	get_timestamp(&end);
+	if (debug) cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
+
+	string simpleFileName = paramFile;
+	int posC = simpleFileName.rfind("/");
+
+	if (posC != string::npos)
+		simpleFileName = simpleFileName.substr(posC+1);
+
+	vector<Mat> mats;
+
+	mats.push_back(featuresTrain);
+	mats.push_back(featuresValidationI);
+	mats.push_back(featuresValidationQ);
+	mats.push_back(featuresTestI);
+	mats.push_back(featuresTestQ);
+
+	vector<string> matNames;
+
+	matNames.push_back("train");
+	matNames.push_back("valI");
+	matNames.push_back("valQ");
+	matNames.push_back("testI");
+	matNames.push_back("testQ");
+
+	for (uint i = 0; i < mats.size(); i++){
+		Mat f = mats.at(i);
+		arma::Mat<float> featuresArma((float*)f.data, f.cols, f.rows,false,true);
+		stringstream sss;
+		sss << "/localstore/amourao/" << simpleFileName << "_" << matNames.at(i) << ".mat";
+		cout << matNames.at(i) << " rows: " << featuresArma.n_rows << " cols: " << featuresArma.n_cols << endl; 
+		featuresArma.save(sss.str());
+	}
+}
+
 
 void testSphericalHashing(int argc, char *argv[]){
 
@@ -757,8 +948,15 @@ map<string,string> parameters;
 
 int main(int argc, char *argv[]){
 	//awesomeIndexTester(argc, argv);
-	awesomeIndexTesterSingle(argc, argv);
 	//testSphericalHashing(argc, argv);
-	//computeGT(argc, argv);
+	string name(argv[0]); 
+	if (name == "./computeGT"){
+		computeGT(argc, argv);
+	} else if (name == "./exportToArmaMat"){
+		cout << "ok" << endl;
+		exportToArmaMat(argc, argv);
+	} else{
+		awesomeIndexTesterSingle(argc, argv);
+	}
     return 0;
 }

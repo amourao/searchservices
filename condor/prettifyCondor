@@ -1,1 +1,1 @@
-ls $1* --sort=version | xargs -I % sh -c  'printf %\;; cat % | tr -d "\n" ; printf "\n";'
+ls $1* --sort=version | xargs -I % sh -c  'head % --bytes=-1 ; printf "\n";'

@@ -1,3 +1,4 @@
+rm /home/amourao/code/searchservices/condor/tmpData/$1*
 ssh arthur "rm /localstore/amourao/indexerLog/$1*"
 ssh cobb "rm /localstore/amourao/indexerLog/$1*"
 ssh saito "rm /localstore/amourao/indexerLog/$1*"

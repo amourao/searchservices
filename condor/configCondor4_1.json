@@ -4,26 +4,32 @@
     "type2": "billion",
 
     "file" : "/home/amourao/dataBig/tinygist80millionSample.bin",
-    "gtFile" : "/home/amourao/code/searchservices/gt.txt",
     "type": "tiny",
 
     "file3" : "/home/amourao/code/searchservices/analyser/data/dataFCTHFull.bin",
     "type3": "nsBin",
 
-    "startOffset": "0",
+    "splitToTest": "0",
     "nTrain": "100000",
     "nValI": "10000",
     "nValQ": "100",
     "nTesI": "1000000",
     "nTesQ": "100",
 
-    "k": "50",
-    "mapAt": "50"
+    "k": "1000",
+    "mapAt": "1000"
 
     },
  "endpoints": {
     "indexer": [
         {
+            "newName": "linearIndexer",
+            "originalName": "flannkNNIndexer",
+            "params": {
+                "algorithm": "linear",
+                "distance": "EUCLIDEAN"
+            }
+        },{
             "newName": "sh_lsh",
             "originalName": "sphericalHashIndexer",
             "params": {
@@ -62,6 +68,50 @@
                 "maxItr": ["50"],
                 "examineRatio": "1"
             }
+        },{
+            "newName": "msIDXIndexerW",
+            "originalName": "MSIDXIndexer",
+            "params": {
+                "w": ["0.005","0.01","0.025","0.05","0.1","0.15","0.2","0.25","0.3","0.4","0.5"]
+            }
+        },{
+            "newName": "lsh",
+            "originalName": "lshIndexer",
+            "params": {
+                "radius":  ["0.707107","0.8666"],
+                "oneMinusDelta": ["0.7"],
+
+                "k": ["4","6"],
+                "m": ["4","5"],
+                "l": ["3","6"],
+                "w": "2",
+
+                "t": "10000",
+                "ht": "3",
+                "useU": "1",
+
+                "trainValSplit": "0.15"
+            }
+        },{
+            "newName": "kdTree",
+            "originalName": "flannkNNIndexer",
+            "params": {
+                "algorithm": "kd",
+                "distance": "EUCLIDEAN",
+                "trees": ["4","8","16","32","64","128"]
+            }
+        },{
+            "newName": "kMeansTree",
+            "originalName": "flannkNNIndexer",
+            "params": {
+                "algorithm": "kmeans",
+                "distance": "EUCLIDEAN",
+                "branching": ["16","32","64"],
+                "iterations": ["5","10"],
+                "cb_index": ["0"],
+                "centers_init": ["CENTERS_KMEANSPP"]          
+            }
         }
+
     ]
 } }    
