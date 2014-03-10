@@ -28,11 +28,20 @@ LSHIndexer::LSHIndexer(const string& type, map<string,string>& params){
     if (params.count("k") > 0){
         int k = atof(params["k"].c_str());
         int m = atof(params["m"].c_str());
-        int l = atof(params["l"].c_str());
-        int w = atof(params["w"].c_str());
-        int t = atof(params["t"].c_str());
-        int ht = atof(params["ht"].c_str());
+
         int useU = atof(params["useU"].c_str());
+
+        int l;
+        if (useU == 0)
+            l = m;
+        else
+            l = m*(m-1.0)/2.0;
+        
+        int w = atof(params["w"].c_str());
+
+        int t = atof(params["t"].c_str());
+        
+        int ht = atof(params["ht"].c_str());
 
         learnedParams.parameterR = r;
         learnedParams.successProbability = oneMinusDelta;
