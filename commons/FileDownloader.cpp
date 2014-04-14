@@ -35,7 +35,7 @@ void FileDownloader::getFile(std::string url, std::string location){
 
 std::vector<std::string> FileDownloader::getFiles(std::string url){
     std::vector<std::string> results;
-    std::vector<std::string> x = split(url, ';');
+    std::vector<std::string> x = StringTools::split(url, ';');
     for (int i = 0; i < x.size(); i++)
         results.push_back(getFile(x[i]));
     return results;
@@ -59,12 +59,3 @@ std::string FileDownloader::getExtension(std::string name) {
     return "";
 }
 
-std::vector<std::string> FileDownloader::split(const std::string &s, char delim) {
-    std::vector<std::string> elems;
-    std::stringstream ss(s);
-    std::string item;
-    while (std::getline(ss, item, delim)) {
-        elems.push_back(item);
-    }
-    return elems;
-}

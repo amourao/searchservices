@@ -61,25 +61,25 @@ public:
 	}
 
 
-	virtual std::pair<vector<float>,vector<float> > knnSearchId(cv::Mat features, int n) = 0;
+	virtual std::pair<vector<float>,vector<float> > knnSearchId(cv::Mat& features, int n) = 0;
 
-	virtual std::pair<vector<string>,vector<float> > knnSearchName(cv::Mat features, int n){
+	virtual std::pair<vector<string>,vector<float> > knnSearchName(cv::Mat& features, int n){
         std::pair<vector<float>,vector<float> > knnSearch = knnSearchId(features,n);
         return make_pair(idToLabels(knnSearch.first),knnSearch.second);
 	}
 
-	virtual std::pair<vector<float>,vector<float> > radiusSearchId(cv::Mat features, double radius, int n = 1000) = 0;
+	virtual std::pair<vector<float>,vector<float> > radiusSearchId(cv::Mat& features, double radius, int n = 1000) = 0;
 
-	virtual std::pair<vector<string>,vector<float> > radiusSearchName(cv::Mat features, double radius, int n = 1000){
+	virtual std::pair<vector<string>,vector<float> > radiusSearchName(cv::Mat& features, double radius, int n = 1000){
         std::pair<vector<float>,vector<float> > rSearch = radiusSearchId(features,radius,n);
         return make_pair(idToLabels(rSearch.first),rSearch.second);
 	}
 
-    virtual void train(cv::Mat featuresTrain,cv::Mat featuresValidationI,cv::Mat featuresValidationQ) = 0;
+    virtual void train(cv::Mat& featuresTrain,cv::Mat& featuresValidationI,cv::Mat& featuresValidationQ) = 0;
 
-	virtual void indexWithTrainedParams(cv::Mat features) = 0;
+	virtual void indexWithTrainedParams(cv::Mat& features) = 0;
 
-	virtual void index(cv::Mat features) = 0;
+	virtual void index(cv::Mat& features) = 0;
 
 	vector<string> idToLabels(vector<float> v1){
 		vector<string> result;

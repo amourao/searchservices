@@ -92,35 +92,39 @@ void* LSHIndexer::createType(string &type){
     return NULL;
 }
 
-void LSHIndexer::train(cv::Mat featuresTrain,cv::Mat featuresValidationI,cv::Mat featuresValidationQ){
+void LSHIndexer::train(cv::Mat& featuresTrain,cv::Mat& featuresValidationI,cv::Mat& featuresValidationQ){
     if (!hasParams){
         PPointT* dataSet = matToPPointT(featuresTrain);
         PPointT* sampleQueries = matToPPointT(featuresValidationQ);
         learnedParams = computeOptimalParameters(r, oneMinusDelta, featuresTrain.rows, featuresTrain.cols, dataSet, featuresValidationQ.rows, sampleQueries, memoryUpperBound);
+        delete dataSet;
+        delete sampleQueries;
     } else {
         learnedParams.dimension = featuresTrain.cols;
     }
 
 }
 
-void LSHIndexer::indexWithTrainedParams(cv::Mat features){
+void LSHIndexer::indexWithTrainedParams(cv::Mat& features){
     PPointT* dataSet = matToPPointT(features);
     indexer =  initLSH_WithDataSet(learnedParams,features.rows,dataSet);
 }
 
-void LSHIndexer::index(cv::Mat features){
+void LSHIndexer::index(cv::Mat& features){
     featuresSplit = features.rowRange(0,features.rows*trainValSplit);
     validationSplit = features.rowRange(features.rows*trainValSplit,features.rows);
     PPointT* dataSet = matToPPointT(featuresSplit);
     PPointT* sampleQueries = matToPPointT(validationSplit);
     indexer = initSelfTunedRNearNeighborWithDataSet(r, oneMinusDelta, featuresSplit.rows, featuresSplit.cols, dataSet, validationSplit.rows, sampleQueries, memoryUpperBound);
+    delete dataSet;
+    delete sampleQueries;
 }
 
-std::pair<vector<float>,vector<float> > LSHIndexer::knnSearchId(const cv::Mat query, const int n){
+std::pair<vector<float>,vector<float> > LSHIndexer::knnSearchId(cv::Mat& query, int n){
     return radiusSearchId(query,-1,n);
 }
 
-std::pair<vector<float>,vector<float> > LSHIndexer::radiusSearchId(const cv::Mat query, const double radius, const int n){
+std::pair<vector<float>,vector<float> > LSHIndexer::radiusSearchId(cv::Mat& query, double radius, int n){
 
     /*
     INDICIES:

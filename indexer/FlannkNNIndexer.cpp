@@ -133,17 +133,17 @@ void* FlannkNNIndexer::createType(string &typeId){
 	return NULL;
 }
 
-void FlannkNNIndexer::train(cv::Mat featuresTrain,cv::Mat featuresValidationI,cv::Mat featuresValidationQ){
+void FlannkNNIndexer::train(cv::Mat& featuresTrain,cv::Mat& featuresValidationI,cv::Mat& featuresValidationQ){
 
 }
 
-void FlannkNNIndexer::indexWithTrainedParams(cv::Mat features){
+void FlannkNNIndexer::indexWithTrainedParams(cv::Mat& features){
 	indexData = features;
 
 	flannIndexs = new flann::Index(indexData,*flannParams,flannDistance);
 }
 
-void FlannkNNIndexer::index(cv::Mat features){
+void FlannkNNIndexer::index(cv::Mat& features){
 	//flannIndex = new flann::Index();
 
 	indexData = features;
@@ -152,7 +152,7 @@ void FlannkNNIndexer::index(cv::Mat features){
 	//flannIndex->build(indexData,flannParams);
 }
 
-std::pair<vector<float>,vector<float> > FlannkNNIndexer::knnSearchId(cv::Mat query, int n){
+std::pair<vector<float>,vector<float> > FlannkNNIndexer::knnSearchId(cv::Mat& query, int n){
 	vector<int> indices (n);
 	vector<float> dists (n);
 	//cout << j++ << endl;
@@ -163,7 +163,7 @@ std::pair<vector<float>,vector<float> > FlannkNNIndexer::knnSearchId(cv::Mat que
 	return make_pair(indicesFloat,dists);
 }
 
-std::pair<vector<float>,vector<float> > FlannkNNIndexer::radiusSearchId(cv::Mat query, double radius, int n){
+std::pair<vector<float>,vector<float> > FlannkNNIndexer::radiusSearchId(cv::Mat& query, double radius, int n){
 	vector<int> indices (n);
 	vector<float> dists (n);
 	//cout << j++ << endl;

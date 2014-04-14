@@ -82,16 +82,16 @@ void* SphericalHashIndexer::createType(string &type){
     return NULL;
 }
 
-void SphericalHashIndexer::train(cv::Mat featuresTrain,cv::Mat featuresValidationI,cv::Mat featuresValidationQ){
+void SphericalHashIndexer::train(cv::Mat& featuresTrain,cv::Mat& featuresValidationI,cv::Mat& featuresValidationQ){
 
 
 }
 
-void SphericalHashIndexer::indexWithTrainedParams(cv::Mat features){
+void SphericalHashIndexer::indexWithTrainedParams(cv::Mat& features){
     index(features);
 }
 
-void SphericalHashIndexer::index(cv::Mat features){
+void SphericalHashIndexer::index(cv::Mat& features){
 
     matToPoints(features,dps);
     dataCenter = new float[ dps.dim ];
@@ -131,7 +131,7 @@ void SphericalHashIndexer::index(cv::Mat features){
 
 }
 
-std::pair<vector<float>,vector<float> > SphericalHashIndexer::knnSearchId(const cv::Mat query, const int n){
+std::pair<vector<float>,vector<float> > SphericalHashIndexer::knnSearchId(cv::Mat& query, int n){
 
     vector<float> indicesFloat;
     vector<float> dists;
@@ -199,7 +199,7 @@ std::pair<vector<float>,vector<float> > SphericalHashIndexer::knnSearchId(const 
 }
 
 
-std::pair<vector<float>,vector<float> > SphericalHashIndexer::radiusSearchId(const cv::Mat query, const double radius, const int n){
+std::pair<vector<float>,vector<float> > SphericalHashIndexer::radiusSearchId(cv::Mat& query, double radius, int n){
     vector<float> indicesFloat;
     vector<float> dists;
 

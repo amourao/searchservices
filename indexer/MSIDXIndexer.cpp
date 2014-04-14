@@ -33,16 +33,16 @@ void* MSIDXIndexer::createType(string &typeId){
 }
 
 
-void MSIDXIndexer::train(cv::Mat featuresTrain,cv::Mat featuresValidationI,cv::Mat featuresValidationQ){
+void MSIDXIndexer::train(cv::Mat& featuresTrain,cv::Mat& featuresValidationI,cv::Mat& featuresValidationQ){
     cardinalitiesCols = preProcessCardinality(featuresTrain);
 }
 
-void MSIDXIndexer::indexWithTrainedParams(cv::Mat features){
+void MSIDXIndexer::indexWithTrainedParams(cv::Mat& features){
     if (cardinalitiesCols.size() > 0)
         featuresList = preProcessMultisortFeatures(features);
 }
 
-void MSIDXIndexer::index(cv::Mat features){
+void MSIDXIndexer::index(cv::Mat& features){
 	cardinalitiesCols = preProcessCardinality(features);
 	featuresList = preProcessMultisortFeatures(features);
 }
@@ -120,7 +120,7 @@ int MSIDXIndexer::compareToMatCardinality(const cv::Mat& mat1, const cv::Mat& ma
     return 0;
 }
 
-std::pair<vector<float>,vector<float> > MSIDXIndexer::knnSearchId(cv::Mat query, int k){
+std::pair<vector<float>,vector<float> > MSIDXIndexer::knnSearchId(cv::Mat& query, int k){
     timestamp_type start, end;
     //get_timestamp(&start);
 	std::vector<float> indicesFloat;
@@ -183,7 +183,7 @@ std::pair<vector<float>,vector<float> > MSIDXIndexer::knnSearchId(cv::Mat query,
 	return make_pair(indicesFloat,dists);
 }
 
-std::pair<vector<float>,vector<float> > MSIDXIndexer::radiusSearchId(cv::Mat query, double radius, int k){
+std::pair<vector<float>,vector<float> > MSIDXIndexer::radiusSearchId(cv::Mat& query, double radius, int k){
 	std::vector<float> indicesFloat;
 	std::vector<float> dists;
 	return make_pair(indicesFloat,dists);

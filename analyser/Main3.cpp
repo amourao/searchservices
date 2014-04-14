@@ -432,7 +432,13 @@ void computeGT(int argc, char *argv[]){
     int nValQ = atoi(parameters["nValQ"].c_str());
 	int nTesI = atoi(parameters["nTesI"].c_str());
 	int nTesQ = atoi(parameters["nTesQ"].c_str());
-	int k = atoi(parameters["k"].c_str());
+	vector<string> kList = StringTools::split(parameters["k"],',');
+	int k = atoi(kList.at(0).c_str());
+
+	for(uint i = 1; i < kList.size(); i++){
+		if(atoi(kList.at(i).c_str()) > k)
+			k = atoi(kList.at(i).c_str());
+	}
 
     int tmp = 0;
 
@@ -601,7 +607,14 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
     int nValQ = atoi(parameters["nValQ"].c_str());
 	int nTesI = atoi(parameters["nTesI"].c_str());
 	int nTesQ = atoi(parameters["nTesQ"].c_str());
-	int k = atoi(parameters["k"].c_str());
+
+	vector<string> kList = StringTools::split(parameters["k"],',');
+	int biggestK = atoi(kList.at(0).c_str());
+
+	for(uint i = 1; i < kList.size(); i++){
+		if(atoi(kList.at(i).c_str()) > biggestK)
+			biggestK = atoi(kList.at(i).c_str());
+	}
 	int mapAt = atoi(parameters["mapAt"].c_str());
 
 	Mat featuresTrain;
@@ -667,7 +680,7 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
 
 		stringstream outfileName;
 
-		outfileName << simpleFileName << "_" << testOffset << "_" << nTesI << "_" << nTesQ << "_" << k << ".gt";
+		outfileName << simpleFileName << "_" << testOffset << "_" << nTesI << "_" << nTesQ << "_" << biggestK << ".gt";
 
 		if (debug) cout << outfileName.str() << endl;
 
@@ -687,14 +700,14 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
 		//Mat labels;
     
 	    get_timestamp(&start);
-		importer->readBin(fileTrain,nTrain,featuresTrain,currentOffset);
+		importer->readBin(fileTrain,nTrain-nValI-nValQ,featuresTrain,currentOffset);
 		get_timestamp(&end);
-		//currentOffset += nTrain;
+		currentOffset += nTrain-nValI-nValQ;
 		if (debug) cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresValidationI ";
 		get_timestamp(&start);
 		importer->readBin(fileTrain,nValI,featuresValidationI,currentOffset);
 		get_timestamp(&end);
-		//currentOffset += nValI;
+		currentOffset += nValI;
 	    if (debug) cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresValidationQ ";
 	    get_timestamp(&start);
 		importer->readBin(fileTrain,nValQ,featuresValidationQ,currentOffset);
@@ -722,7 +735,7 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
 
 		stringstream outfileName;
 
-		outfileName << simpleFileName << "_" << testIndexOffset << "_" << nTesI << "_" << nTesQ << "_" << k << ".gt";
+		outfileName << simpleFileName << "_" << testIndexOffset << "_" << nTesI << "_" << nTesQ << "_" << biggestK << ".gt";
 
 		if (debug) cout << outfileName.str() << endl;
 
@@ -734,7 +747,7 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
     	return;
 	}
 
-    bool gtLoaded = loadGT(outfileNameA,linearResults,simpleFileName,testOffset,nTesI,nTesQ,k);
+    bool gtLoaded = loadGT(outfileNameA,linearResults,simpleFileName,testOffset,nTesI,nTesQ,biggestK);
     
     if (!gtLoaded){
     	cout << "error loading GT: " << outfileNameA << endl;
@@ -752,9 +765,15 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
 
     if(indexToTest == 0){
     	cout << simpleFileName << endl;
-    	cout << "nTrain;nValI;nValQ;nTesI;nTesQ;k;d;offset" << endl;
-    	cout << nTrain << ";" << nValI << ";" << nValQ << ";" << nTesI << ";" << nTesQ << ";" << k << ";" << featuresTestI.cols << ";" << atoi(parameters["startOffset"].c_str()) << endl;
-		cout << "Index name;Name;Base name;Train time (ms);Index time (ms);Query time (ms);mAcc@" << k << ";MAP@" << k << ";Dist" << endl;
+    	cout << "nTrain;nValI;nValQ;nTesI;nTesQ;nk;";
+    	for (int ii = 0; ii < kList.size(); ii++){cout << "k" << ii+1<< ";";}
+    	cout << "d;offset" << endl;
+    	cout << nTrain << ";" << nValI << ";" << nValQ << ";" << nTesI << ";" << nTesQ << ";" << kList.size() << ";";
+    	for (int ii = 0; ii < kList.size(); ii++){cout << kList.at(ii)<<";";}
+    	cout << featuresTestI.cols << ";" << atoi(parameters["startOffset"].c_str()) << endl;
+		cout << "Index name;Name;Base name;Train time (ms);Index time (ms);";
+    	for (int ii = 0; ii < kList.size(); ii++){cout << "Query time (ms)@" << kList.at(ii) << ";mAcc@" << kList.at(ii) << ";MAP@" << kList.at(ii) << ";Dist@" << kList.at(ii) << ";";}
+    	cout << endl;
     }
     for(int i = 0; i < indexers.size(); i++){
     	
@@ -780,61 +799,64 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
         //if(indexToTest == 0 || i > 0)
         cout << ";" << timestamp_diff_in_milliseconds(start, end);
 
-        int tmp = 0;
 
-        vector<float> precVsLinearTmp;
-        double tmpTime = 0;
-        std::pair<vector<float>, vector<float> > r;
-        vector<std::pair<vector<float>, vector<float> > > rAll;
 
-		if (debug) cout << "Querying" << endl;        
-        for (int j = 0; j < featuresTestQ.rows; j++){
-            Mat q = featuresTestQ.row(j);
-            get_timestamp(&start);
-            r =  indexers.at(i)->knnSearchId(q,k);
-            get_timestamp(&end);
-            tmpTime += timestamp_diff_in_milliseconds(start, end);
-            rAll.push_back(r);
-        }
-        if (debug) cout << "Querying ok" << endl;
-        double deltaDistance = 0;
+		if (debug) cout << "Querying" << endl;
+		for (int kIndex = 0; kIndex < kList.size(); kIndex++){
+			int tmp = 0;
+        	vector<float> precVsLinearTmp;
+        	double tmpTime = 0;
+        	std::pair<vector<float>, vector<float> > r;
+        	vector<std::pair<vector<float>, vector<float> > > rAll;
+			int k = atoi(kList.at(kIndex).c_str());
+	        for (int j = 0; j < featuresTestQ.rows; j++){
+	            Mat q = featuresTestQ.row(j);
+	            get_timestamp(&start);
+	            r =  indexers.at(i)->knnSearchId(q,k);
+	            get_timestamp(&end);
+	            tmpTime += timestamp_diff_in_milliseconds(start, end);
+	            rAll.push_back(r);
+	        }
+	        if (debug) cout << "Querying ok" << endl;
+	        double deltaDistance = 0;
 
-        double avgPrecAccum = 0;
-        double accuracyAccum = 0;
-        for (int j = 0; j < rAll.size(); j++){
-            long relAccum = 0;
-            double precAccum = 0;
+	        double avgPrecAccum = 0;
+	        double accuracyAccum = 0;
+	        for (int j = 0; j < rAll.size(); j++){
+	            long relAccum = 0;
+	            double precAccum = 0;
 
-            for (int m = 0; m < rAll.at(j).first.size(); m++){
-                deltaDistance += rAll.at(j).second.at(m) - linearResults.at(j).second.at(m);
-            }
-            //for each document in rank            
-            for (int m = 0; m < rAll.at(j).first.size(); m++){
-            	// Check if document m appears in the linear rank up to k
-            	int isRelevant = 0;
-                for (int n = 0; n < k; n++){
-                    if (rAll.at(j).first.at(m) == linearResults.at(j).first.at(n)){
-                        relAccum++;
-                        accuracyAccum++;
-                        isRelevant = 1;
-                    }
-                }
-                // Measure precision at m
-                // relAccum contains the number relevant document up to m
-                double precisionAtM = relAccum/(m+1.0);
-                if (debug){ cout << precisionAtM << " " << isRelevant << endl;}
-                if (debug){ cout << relAccum << endl; getchar();}
-                precAccum += precisionAtM * isRelevant;
-            }
-            // Accumulate results for query j            
-            //do not sum if relAccum is zero (special case in MAP formula)
-            if (relAccum != 0){
-            	avgPrecAccum += precAccum/(double)k;
-            }
-        }
-        //if(indexToTest == 0 || i > 0)
-        cout << ";" <<  tmpTime <<  ";" << ((double)accuracyAccum)/((double)k*nTesQ) << ";" << avgPrecAccum/(nTesQ) << ";" << deltaDistance << endl;
-
+	            for (int m = 0; m < rAll.at(j).first.size(); m++){
+	                deltaDistance += rAll.at(j).second.at(m) - linearResults.at(j).second.at(m);
+	            }
+	            //for each document in rank            
+	            for (int m = 0; m < rAll.at(j).first.size(); m++){
+	            	// Check if document m appears in the linear rank up to k
+	            	int isRelevant = 0;
+	                for (int n = 0; n < k; n++){
+	                    if (rAll.at(j).first.at(m) == linearResults.at(j).first.at(n)){
+	                        relAccum++;
+	                        accuracyAccum++;
+	                        isRelevant = 1;
+	                    }
+	                }
+	                // Measure precision at m
+	                // relAccum contains the number relevant document up to m
+	                double precisionAtM = relAccum/(m+1.0);
+	                if (debug){ cout << precisionAtM << " " << isRelevant << endl;}
+	                if (debug){ cout << relAccum << endl; getchar();}
+	                precAccum += precisionAtM * isRelevant;
+	            }
+	            // Accumulate results for query j            
+	            //do not sum if relAccum is zero (special case in MAP formula)
+	            if (relAccum != 0){
+	            	avgPrecAccum += precAccum/(double)k;
+	            }
+	        }
+	        //if(indexToTest == 0 || i > 0)
+	        cout << ";" <<  tmpTime <<  ";" << ((double)accuracyAccum)/((double)k*nTesQ) << ";" << avgPrecAccum/(nTesQ) << ";" << deltaDistance;
+    	}
+    	cout << endl;
         stringstream ss2;
 
         int pos2a = paramFile.rfind("/");
@@ -843,7 +865,7 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
         if (pos2a == std::string::npos)
         	pos2a = -1;
 
-		string simpleParamFileName = paramFile.substr(pos2a+1,pos2b-pos2a);
+		string simpleParamFileName = paramFile.substr(pos2a+1,pos2b-pos2a-1);
 
         ss2 << simpleParamFileName << "_" << std::setw(5) << std::setfill('0') << indexToTest << "_" << indexers.at(i)->getName();
 
@@ -966,14 +988,14 @@ void exportToArmaMat(int argc, char *argv[]){
 		//Mat labels;
     
 	    get_timestamp(&start);
-		importer->readBin(fileTrain,nTrain,featuresTrain,currentOffset);
+		importer->readBin(fileTrain,nTrain-nValI-nValQ,featuresTrain,currentOffset);
 		get_timestamp(&end);
-		//currentOffset += nTrain;
+		currentOffset += nTrain-nValI-nValQ;
 		if (debug) cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresValidationI ";
 		get_timestamp(&start);
 		importer->readBin(fileTrain,nValI,featuresValidationI,currentOffset);
 		get_timestamp(&end);
-		//currentOffset += nValI;
+		currentOffset += nValI;
 	    if (debug) cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresValidationQ ";
 	    get_timestamp(&start);
 		importer->readBin(fileTrain,nValQ,featuresValidationQ,currentOffset);
@@ -1022,7 +1044,7 @@ void exportToArmaMat(int argc, char *argv[]){
 		Mat f = mats.at(i);
 		arma::Mat<float> featuresArma((float*)f.data, f.cols, f.rows,false,true);
 		stringstream sss;
-		sss << "/localstore/amourao/" << simpleFileName << "_" << matNames.at(i) << ".mat";
+		sss << "/localstore/amourao/configCondor/" << simpleFileName << "_" << matNames.at(i) << ".mat";
 		cout << matNames.at(i) << " rows: " << featuresArma.n_rows << " cols: " << featuresArma.n_cols << endl; 
 		featuresArma.save(sss.str());
 	}

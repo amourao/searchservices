@@ -97,12 +97,12 @@ public:
 	void* createType(string &typeId);
 	void* createType(string &typeId, map<string,string>& params);
 
-    void train(cv::Mat featuresTrain,cv::Mat featuresValidationI,cv::Mat featuresValidationQ);
-	void indexWithTrainedParams(cv::Mat features);
-	void index(cv::Mat features);
+    void train(cv::Mat& featuresTrain,cv::Mat& featuresValidationI,cv::Mat& featuresValidationQ);
+	void indexWithTrainedParams(cv::Mat& features);
+	void index(cv::Mat& features);
 
-	std::pair<vector<float>,vector<float> > knnSearchId(cv::Mat name, int k);
-    std::pair<vector<float>,vector<float> > radiusSearchId(cv::Mat name, double radius, int k);
+	std::pair<vector<float>,vector<float> > knnSearchId(cv::Mat& name, int k);
+    std::pair<vector<float>,vector<float> > radiusSearchId(cv::Mat& name, double radius, int k);
 
 	bool save(string basePath);
 	bool load(string basePath);

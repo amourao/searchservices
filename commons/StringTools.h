@@ -15,6 +15,7 @@ public:
 
     static std::string genRandom(int len);
     static std::string replaceAll(string input, string search, string replace);
+    static std::vector<std::string> split(const std::string &s, char delim);
 
 };
 
