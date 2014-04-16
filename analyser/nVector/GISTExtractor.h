@@ -14,6 +14,7 @@ extern "C" {
 
 #include "FeatureExtractor.h"
 #include "../FactoryAnalyser.h"
+#include "../../commons/StringTools.h"
 
 class GISTExtractor :
 	public FeatureExtractor
@@ -21,18 +22,27 @@ class GISTExtractor :
 public:
 
 	GISTExtractor();
+	GISTExtractor(string& type);
+	GISTExtractor(string& type, map<string, string>& params);
+
 	GISTExtractor(int _nblocks, int _nscale, vector<int> _orientations_per_scale, int _imageW, int _imageH);
 	~GISTExtractor();
 
+    void init(int _nblocks, int _nscale, vector<int> _orientations_per_scale, int _imageW, int _imageH);
+
+    void* createType(string &typeId);
+	void* createType(string &typeId, map<string, string>& params);
+
 	void extractFeatures(Mat& src, Mat& dst);
-	
+
 	int getFeatureVectorSize();
 
 	string getName();
-	
-	void* createType(string &typeId);
-	
+
+
+
 private:
+    string type;
 
 	color_image_t * getGISTColorImage(Mat& src);
 
@@ -46,6 +56,6 @@ private:
   	int nscale;
   	int* orientations_per_scale;
 
-	
+
 };
 

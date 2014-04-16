@@ -3,30 +3,43 @@
 static HistogramExtractor histogramExtractorFactory;
 
 HistogramExtractor::HistogramExtractor(){
-	FactoryAnalyser::getInstance()->registerType("Histogram8",this);
-	FactoryAnalyser::getInstance()->registerType("Histogram16",this);
+	FactoryAnalyser::getInstance()->registerType("hsvHistogramExtractor",this);
 }
 
-void* HistogramExtractor::createType(string& type){
-	//TODO
-	if (type == "Histogram8")
-		return new HistogramExtractor(8);
-	else if (type == "Histogram16")
-		return new HistogramExtractor(16);
-	cerr << "Error registering type from constructor (this should never happen)" << endl;
-	return NULL;
-	
-}
 
 HistogramExtractor::HistogramExtractor(int _binCount){
 	binCount = _binCount;
 	//featureChannel = _featureChannel;
 }
 
+HistogramExtractor::HistogramExtractor(string& _type){
+    type = _type;
+}
+
+HistogramExtractor::HistogramExtractor(string& _type, map<string,string>& params){
+    type = _type;
+    if (params.size() == 0)
+        return;
+
+    binCount = atoi(params["binCount"].c_str());
+}
 
 HistogramExtractor::~HistogramExtractor(){
 
 }
+
+void* HistogramExtractor::createType(string& type){
+	if (type == "hsvHistogramExtractor")
+		return new HistogramExtractor(type);
+	cerr << "Error registering type from constructor (this should never happen)" << endl;
+	return NULL;
+
+}
+
+void* HistogramExtractor::createType(string& type, map<string,string>& params){
+    return new HistogramExtractor(type,params);
+}
+
 
 void HistogramExtractor::extractFeatures(Mat& src, Mat& dst){
 	Mat result;
@@ -41,10 +54,10 @@ void HistogramExtractor::extractFeatures(Mat& src, Mat& dst){
 			tmpResult.copyTo(result);
 		else
 			hconcat(result,tmpResult,result);
-		
+
 	}
 
-	
+
 	result.copyTo(dst);
 	dst /= src.rows * src.cols;
 }
@@ -79,6 +92,6 @@ int HistogramExtractor::getFeatureVectorSize(){
 }
 
 string HistogramExtractor::getName(){
-	return "HistogramExtractor";
+	return type;
 }
 

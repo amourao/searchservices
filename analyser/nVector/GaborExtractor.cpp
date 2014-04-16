@@ -3,32 +3,63 @@
 static GaborExtractor gaborExtractorFactory;
 
 GaborExtractor::GaborExtractor(){
-	FactoryAnalyser::getInstance()->registerType("GaborFace",this);
-	FactoryAnalyser::getInstance()->registerType("GaborGlobal",this);
+	FactoryAnalyser::getInstance()->registerType("gaborExtractor",this);
 }
 
-void* GaborExtractor::createType(string& type){
-	//TODO
-	if (type == "GaborFace"){
-		vector<cv::Rect> rectangleRois1 = vector<cv::Rect>();
-		rectangleRois1.push_back(cv::Rect(0,0,46,64));
-		rectangleRois1.push_back(cv::Rect(46,64,46,112-64));
-		rectangleRois1.push_back(cv::Rect(46,0,46,64));
-		rectangleRois1.push_back(cv::Rect(0,64,46,112-64));
-		rectangleRois1.push_back(cv::Rect(0,10,92,30));
-		rectangleRois1.push_back(cv::Rect(20,65,52,30));
-		return new GaborExtractor(92,112,4,6,rectangleRois1);
-		
-	}else if (type == "GaborGlobal"){
-		return new GaborExtractor(640,480,4,6);
-		
-	}
-	cerr << "Error registering type from constructor (this should never happen)" << endl;
+GaborExtractor::GaborExtractor(string& _type){
+    type = _type;
+}
+GaborExtractor::GaborExtractor(string& _type, map<string, string>& params){
+    type = _type;
 
-	return NULL;
+    if (params.size() == 0)
+        return;
+
+    int _imageW = atoi(params["imageW"].c_str());
+    int _imageH = atoi(params["imageH"].c_str());
+    int _nScales = atoi(params["nScales"].c_str());
+    int _nOrientations = atoi(params["nOrientations"].c_str());
+
+    int _minWaveLength = atoi(params["minWaveLength"].c_str());
+    int _mult = atoi(params["mult"].c_str());
+    double _sigmaOnf = atof(params["sigmaOnf"].c_str());
+    double _dThetaOnSigma = atof(params["dThetaOnSigma"].c_str());
+
+    vector<cv::Rect> _rectangularAreas;
+
+    if(params.count("rectangles") > 0){
+        string rectangleString = params["rectangles"];
+        vector<string> rectangleSplit = StringTools::split(rectangleString,';');
+
+        for(uint i = 0; i < rectangleSplit.size(); i++){
+            vector<string> rectangleSingle = StringTools::split(rectangleSplit.at(i),',');
+            cv::Rect r(atoi(rectangleSingle.at(0).c_str()),atoi(rectangleSingle.at(1).c_str()),atoi(rectangleSingle.at(2).c_str()),atoi(rectangleSingle.at(3).c_str()));
+            _rectangularAreas.push_back(r);
+        }
+    }
+
+    init(_imageW, _imageH, _nScales, _nOrientations, _rectangularAreas, _minWaveLength,_mult, _sigmaOnf, _dThetaOnSigma);
 }
 
 GaborExtractor::GaborExtractor(int _imageW, int _imageH, int _nScales, int _nOrientations, vector<cv::Rect> rectangularAreas, int _minWaveLength,int _mult, double _sigmaOnf, double _dThetaOnSigma){
+    init(_imageW, _imageH, _nScales, _nOrientations, rectangularAreas, _minWaveLength,_mult, _sigmaOnf, _dThetaOnSigma);
+}
+
+
+void* GaborExtractor::createType(string& type){
+	if (type == "gaborExtractor"){
+		return new GaborExtractor(type);
+	}
+	cerr << "Error registering type from constructor (this should never happen)" << endl;
+	return NULL;
+}
+
+
+void* GaborExtractor::createType(string& type, map<string, string>& params){
+    return new GaborExtractor(type,params);
+}
+
+void GaborExtractor::init(int _imageW, int _imageH, int _nScales, int _nOrientations, vector<cv::Rect> rectangularAreas, int _minWaveLength,int _mult, double _sigmaOnf, double _dThetaOnSigma){
 
 	// If no rectangles are given, assume the full image must be used
 	if (rectangularAreas.empty()){
@@ -49,7 +80,7 @@ GaborExtractor::GaborExtractor(int _imageW, int _imageH, int _nScales, int _nOri
 	illumFilter = IlluminationCorrectionFilter(imageW,imageH);
 
 	buildFilters();
-	
+
 }
 
 GaborExtractor::~GaborExtractor(){}
@@ -65,16 +96,16 @@ void GaborExtractor::preProcess(Mat& src, Mat& dst){
 		cv::cvtColor(src, src, COLOR_RGB2GRAY);
 	} else if (src.type() != CV_8U){
 		src.convertTo(src,CV_8U);
-	} 
+	}
 	dst = src;
-	
+
 	//illumFilter.applyFilter(src,dst);
 }
 
 void GaborExtractor::applyFilter(Mat& image, Mat& dst){
 
 	preProcess(image,image);
-	
+
 	//int i = 0;
 	//double rows = image.rows;
 	//double cols = image.cols;
@@ -99,7 +130,7 @@ void GaborExtractor::applyFilter(Mat& image, Mat& dst){
 					l++;
 				}
 			}
-			
+
 			Mat tmpResult = newIFFTW(tmpResultC,filter.cols,filter.rows);
 
 			fftw_free( tmpResultC );
@@ -238,8 +269,8 @@ void GaborExtractor::cvShiftDFT(CvArr * src_arr, CvArr * dst_arr )
 }
 
 fftw_complex* GaborExtractor::newFFTW(Mat image){
-	fftw_complex    *data_in;    
-	fftw_complex    *fft;  
+	fftw_complex    *data_in;
+	fftw_complex    *fft;
 	fftw_plan       plan_f;
 
 	int             width, height;
@@ -276,7 +307,7 @@ fftw_complex* GaborExtractor::newFFTW(Mat image){
 Mat GaborExtractor::newIFFTW(fftw_complex* image, int width, int height){
 
 
-	fftw_complex    *ifft;    
+	fftw_complex    *ifft;
 	fftw_plan       plan_b;
 
 	Mat result (height,width,CV_32F);
@@ -348,11 +379,11 @@ void GaborExtractor::buildFilters(){
 
 	for (int o = 1; o<=nOrientations; o++){
 
-		double angl = (o-1)*PI/nOrientations;     
-		double wavelength = minWaveLength;  
+		double angl = (o-1)*PI/nOrientations;
+		double wavelength = minWaveLength;
 
 		Mat ds = sintheta * cos(angl) - costheta * sin(angl);
-		Mat dc = costheta * cos(angl) + sintheta * sin(angl);   
+		Mat dc = costheta * cos(angl) + sintheta * sin(angl);
 
 		Mat dtheta(ds.rows,ds.cols,ds.type());
 		Mat spread(ds.rows,ds.cols,ds.type());
@@ -372,7 +403,7 @@ void GaborExtractor::buildFilters(){
 
 			wavelength = wavelength * mult;
 
-			double fo = 1.0/wavelength; 
+			double fo = 1.0/wavelength;
 
 			Mat logGabor(radius.rows,radius.cols,radius.type());
 
@@ -408,5 +439,5 @@ void GaborExtractor::buildFilters(){
 }
 
 string GaborExtractor::getName(){
-	return "GaborExtractor";
+	return type;
 }

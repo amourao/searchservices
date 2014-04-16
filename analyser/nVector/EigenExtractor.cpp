@@ -3,29 +3,34 @@
 static EigenExtractor eigenExtractorFactory;
 
 EigenExtractor::EigenExtractor(){
-	FactoryAnalyser::getInstance()->registerType("EigenFace",this);
+	FactoryAnalyser::getInstance()->registerType("EigenAnalyser",this);
+}
+
+EigenExtractor::EigenExtractor(string& _type){
+    type = _type;
+}
+
+EigenExtractor::EigenExtractor(string& _type, map<string,string>& params){
+    type = _type;
+
+    if (params.size() > 0){
+        createFaceSpace(params["faceSpace"]);
+        eigenfacesCount = atoi(params["faceSpace"].c_str());
+	}
+}
+
+EigenExtractor::~EigenExtractor(){
 }
 
 void* EigenExtractor::createType(string& type){
-	//TODO
-	if (type == "EigenFace")
-		return new EigenExtractor(100);
+	if (type == "EigenAnalyser")
+		return new EigenExtractor(type);
 	cerr << "Error registering type from constructor (this should never happen)" << endl;
 	return NULL;
 }
 
-
-EigenExtractor::EigenExtractor(string xmlDataFile){
-	load(xmlDataFile);
-}
-
-
-EigenExtractor::EigenExtractor(int eigenCount){
-	eigenfacesCount = eigenCount;
-}
-
-
-EigenExtractor::~EigenExtractor(){ 
+void* EigenExtractor::createType(string& type, map<string,string>& params){
+    return new EigenExtractor(type,params);
 }
 
 void EigenExtractor::createFaceSpace(string trainDataFile){
@@ -62,11 +67,10 @@ Mat EigenExtractor::readFile(string trainDataFile){
 	string line,path,id;
 	ifstream myfile (trainDataFile.c_str());
 
-	int maxCount = 100;
-	int count = 0;
+	//int maxCount = 100;
 	if (myfile.is_open()){
 		getline (myfile,line);
-		while (myfile.good() && count++ < maxCount){
+		while (myfile.good()){
 			getline (myfile,line);
 
 			stringstream liness(line);
@@ -104,10 +108,6 @@ void EigenExtractor::extractFeatures(Mat& src, Mat& dst){
 
 int EigenExtractor::getFeatureVectorSize(){
 	return eigenfacesCount;
-}
-
-void EigenExtractor::toGrayscale(Mat& src, Mat& dst){
-
 }
 
 string EigenExtractor::getName(){

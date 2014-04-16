@@ -11,21 +11,29 @@ class SegmentedHistogramExtractor :
 	public FeatureExtractor
 {
 public:
-	
+
 	SegmentedHistogramExtractor();
-	SegmentedHistogramExtractor(int binCount, int horizontalDivisions, int verticalDivisions);
-	SegmentedHistogramExtractor(int binCount, int horizontalDivisions, int verticalDivisions, bool useCenterRegion);
+	SegmentedHistogramExtractor(string& type);
+	SegmentedHistogramExtractor(string& type, map<string, string>& params);
+	SegmentedHistogramExtractor(int binCount, int horizontalDivisions, int verticalDivisions, bool useCenterRegion = false);
 	~SegmentedHistogramExtractor();
 
+	void init(int binCount, int horizontalDivisions, int verticalDivisions, bool useCenterRegion);
+
+	void* createType(string &typeId);
+	void* createType(string& type, map<string, string>& params);
+
 	void extractFeatures(Mat& src, Mat& dst);
-	
+
 	int getFeatureVectorSize();
 
 	string getName();
-	
-	void* createType(string &typeId);
+
+
 private:
-	
+
+    string type;
+
 	Ptr<HistogramExtractor> singleHistogramExtractor;
 	int binCount;
 	int horizontalDivisions;

@@ -9,6 +9,7 @@
 #include "FeatureExtractor.h"
 #include "../tools/ImageFilter.h"
 #include "../FactoryAnalyser.h"
+#include "../../commons/StringTools.h"
 #ifndef PI
 #define PI 3.14159265359
 #endif
@@ -20,28 +21,36 @@ using namespace std;
 class GaborExtractor: public  FeatureExtractor
 {
 public:
+
 	GaborExtractor(int imageW, int imageH, int nScales, int nOrientations, vector<cv::Rect> rectangles = vector<cv::Rect>(),int minWaveLength = 3,int mult = 2, double sigmaOnf = 0.65, double dThetaOnSigma = 1.5);
+
 	GaborExtractor();
+	GaborExtractor(string& type);
+	GaborExtractor(string& type, map<string, string>& params);
 	~GaborExtractor();
 
+    void* createType(string &typeId);
+	void* createType(string &typeId, map<string, string>& params);
+
+    void init(int imageW, int imageH, int nScales, int nOrientations, vector<cv::Rect> rectangles,int minWaveLength,int mult , double sigmaOnf, double dThetaOnSigma);
 	void applyFilter(Mat& src, Mat& dst);
 
 	void extractFeatures(Mat& src, Mat& dst);
-	
+
 	int getFeatureVectorSize();
-	
+
 	string getName();
-	
-	void* createType(string &typeId);
 
 private:
+
+    string type;
 	int imageW;
 	int imageH;
-	int nScales; 
+	int nScales;
 	int nOrientations;
 	int minWaveLength;
-	int mult; 
-	double sigmaOnf; 
+	int mult;
+	double sigmaOnf;
 	double dThetaOnSigma;
 	vector<Mat> filters;
 

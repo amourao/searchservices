@@ -17,10 +17,13 @@ class EigenExtractor :
 {
 public:
 	EigenExtractor();
-	EigenExtractor(string xmlDataFile);
-	EigenExtractor(int eigenCount);
-	~EigenExtractor();
+	EigenExtractor(string& type);
+	EigenExtractor(string& type, map<string,string>& params);
 
+	void* createType(string &typeId);
+	void* createType(string &typeId, map<string,string>& params);
+
+	~EigenExtractor();
 
 	void createFaceSpace(string trainDataFile);
 
@@ -28,17 +31,17 @@ public:
 	void save(string xmlDataFile);
 
 	void extractFeatures(Mat& src, Mat& dst);
-	
+
 	int getFeatureVectorSize();
-	
+
 	string getName();
-	
-	void* createType(string &typeId);
+
+
 
 private:
 	Mat readFile(string trainDataFile);
-	void toGrayscale(Mat& src, Mat& dst);
-	
+
+    string type;
 
 	int eigenfacesCount;
 	cv::PCA pca;

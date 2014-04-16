@@ -3,29 +3,45 @@
 static SegmentedHistogramExtractor segHistogramExtractorFactory;
 
 SegmentedHistogramExtractor::SegmentedHistogramExtractor(){
-	FactoryAnalyser::getInstance()->registerType("SegHistogram16",this);
-	FactoryAnalyser::getInstance()->registerType("SegHistogram8",this);
+	FactoryAnalyser::getInstance()->registerType("hsvSegHistogramExtractor",this);
 }
 
-void* SegmentedHistogramExtractor::createType(string& type){
-	//TODO
-	if (type == "SegHistogram8"){
-		return new SegmentedHistogramExtractor(8,2,2);
-	}else if (type == "SegHistogram16"){
-		return new SegmentedHistogramExtractor(16,2,2);
-	}cerr << "Error registering type from constructor (this should never happen)" << endl;
-	return NULL;
+SegmentedHistogramExtractor::SegmentedHistogramExtractor(string& _type){
+    type = _type;
 }
 
-SegmentedHistogramExtractor::SegmentedHistogramExtractor(int _binCount, int _horizontalDivisions, int _verticalDivisions){
-	binCount = _binCount;
-	horizontalDivisions=_horizontalDivisions;
-	verticalDivisions =_verticalDivisions;
-	useCenterRegion = false;
-	singleHistogramExtractor = new HistogramExtractor(binCount);
+SegmentedHistogramExtractor::SegmentedHistogramExtractor(string& _type, map<string, string>& params){
+    type = _type;
+
+    if (params.size() == 0)
+        return;
+
+    int _binCount = atoi(params["binCount"].c_str());
+    int _horizontalDivisions = atoi(params["horizontalDivisions"].c_str());
+    int _verticalDivisions = atoi(params["verticalDivisions"].c_str());
+    bool _useCenterRegion = params["useCenterRegion"] == "true";
+
+    init(_binCount, _horizontalDivisions, _verticalDivisions, _useCenterRegion);
 }
 
 SegmentedHistogramExtractor::SegmentedHistogramExtractor(int _binCount, int _horizontalDivisions, int _verticalDivisions, bool _useCenterRegion){
+	init(_binCount, _horizontalDivisions, _verticalDivisions, _useCenterRegion);
+}
+
+
+void* SegmentedHistogramExtractor::createType(string& type){
+	if (type == "hsvSegHistogramExtractor"){
+		return new SegmentedHistogramExtractor(type);
+	}
+	cerr << "Error registering type from constructor (this should never happen)" << endl;
+	return NULL;
+}
+
+void* SegmentedHistogramExtractor::createType(string& type, map<string, string>& params){
+    return new SegmentedHistogramExtractor(type,params);
+}
+
+void SegmentedHistogramExtractor::init(int _binCount, int _horizontalDivisions, int _verticalDivisions, bool _useCenterRegion){
 	binCount = _binCount;
 	horizontalDivisions=_horizontalDivisions;
 	verticalDivisions =_verticalDivisions;
@@ -44,7 +60,7 @@ void SegmentedHistogramExtractor::extractFeatures(Mat& src, Mat& dst){
 	int width = src.cols;
 	int height = src.rows;
 	double divisionSizeW = width/(double)(horizontalDivisions+1);
-	double divisionSizeH = height/(double)(verticalDivisions+1); 
+	double divisionSizeH = height/(double)(verticalDivisions+1);
 	for (int i = 0; i <= horizontalDivisions; i++){
 		for (int j = 0; j <= verticalDivisions; j++){
 			cv::Rect roi(j*divisionSizeW,i*divisionSizeH,min(width-j*divisionSizeW,divisionSizeW),min(height-i*divisionSizeH,divisionSizeH));
@@ -57,16 +73,16 @@ void SegmentedHistogramExtractor::extractFeatures(Mat& src, Mat& dst){
 				tmpResult.copyTo(result);
 			else
 				hconcat(result,tmpResult,result);
-		}		
+		}
 	}
 	if (useCenterRegion){
-		
+
 		Mat tmpResult;
 		cv::Rect roi(width*0.3,height*0.3,width*0.4,height*0.4);
 		Mat roiImage(src,roi);
-		
+
 		singleHistogramExtractor->extractFeatures(roiImage,tmpResult);
-		
+
 		hconcat(result,tmpResult,result);
 	}
 	result.copyTo(dst);

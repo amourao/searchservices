@@ -69,7 +69,7 @@
 	"tools/MIRFlickrImporter.h"
 	"FactoryAnalyser.h"
 
-1397659470 /home/amourao/code/searchservices/analyser/nTag/SRClassifier.h
+1397661871 /home/amourao/code/searchservices/analyser/nTag/SRClassifier.h
 	"dalm.h"
 	"fista.h"
 	"omp.h"
@@ -143,7 +143,7 @@
 	<fstream>
 	<sstream>
 
-1390951648 /home/amourao/code/searchservices/analyser/nVector/GaborExtractor.h
+1397667333 /home/amourao/code/searchservices/analyser/nVector/GaborExtractor.h
 	<fftw3.h>
 	<opencv2/imgproc/imgproc.hpp>
 	<vector>
@@ -152,6 +152,7 @@
 	"FeatureExtractor.h"
 	"../tools/ImageFilter.h"
 	"../FactoryAnalyser.h"
+	"../../commons/StringTools.h"
 
 1390951648 /home/amourao/code/searchservices/analyser/tools/IlluminationCorrectionFilter.h
 	"ImageFilter.h"
@@ -202,11 +203,11 @@
 1390951648 /home/amourao/code/searchservices/dataModel/NKeypoint.h
 	"IDataModel.h"
 
-1390951648 /home/amourao/code/searchservices/analyser/nVector/HistogramExtractor.h
+1397670144 /home/amourao/code/searchservices/analyser/nVector/HistogramExtractor.h
 	"FeatureExtractor.h"
 	"../FactoryAnalyser.h"
 
-1390951648 /home/amourao/code/searchservices/analyser/nVector/SegmentedHistogramExtractor.h
+1397671756 /home/amourao/code/searchservices/analyser/nVector/SegmentedHistogramExtractor.h
 	"FeatureExtractor.h"
 	"HistogramExtractor.h"
 	<iostream>
@@ -322,7 +323,7 @@
 	<fstream>
 	<sstream>
 
-1390951648 /home/amourao/code/searchservices/analyser/nVector/LBPExtractor.h
+1397670617 /home/amourao/code/searchservices/analyser/nVector/LBPExtractor.h
 	"FeatureExtractor.h"
 	"lbp.h"
 	"../FactoryAnalyser.h"
@@ -501,13 +502,13 @@
 1397660491 source:/home/amourao/code/searchservices/analyser/nTag/kNNClassifier.cpp
 	"kNNClassifier.h"
 
-1397659557 source:/home/amourao/code/searchservices/analyser/nTag/SRClassifier.cpp
+1397661867 source:/home/amourao/code/searchservices/analyser/nTag/SRClassifier.cpp
 	"SRClassifier.h"
 
-1391563053 source:/home/amourao/code/searchservices/analyser/nTag/SVMClassifier.cpp
+1397661508 source:/home/amourao/code/searchservices/analyser/nTag/SVMClassifier.cpp
 	"SVMClassifier.h"
 
-1397660962 source:/home/amourao/code/searchservices/analyser/nTag/VWBasicClassifier.cpp
+1397661393 source:/home/amourao/code/searchservices/analyser/nTag/VWBasicClassifier.cpp
 	"VWBasicClassifier.h"
 
 1390951642 source:/home/amourao/code/searchservices/analyser/nVector/CombinedExtractor.cpp
@@ -520,10 +521,10 @@
 	<opencv2/highgui/highgui.hpp>
 	"../FactoryAnalyser.h"
 
-1390951642 source:/home/amourao/code/searchservices/analyser/nVector/EigenExtractor.cpp
+1397662972 source:/home/amourao/code/searchservices/analyser/nVector/EigenExtractor.cpp
 	"EigenExtractor.h"
 
-1390951648 /home/amourao/code/searchservices/analyser/nVector/EigenExtractor.h
+1397662678 /home/amourao/code/searchservices/analyser/nVector/EigenExtractor.h
 	"FeatureExtractor.h"
 	<opencv2/highgui/highgui.hpp>
 	<opencv2/imgproc/imgproc.hpp>
@@ -533,7 +534,7 @@
 	<fstream>
 	"../FactoryAnalyser.h"
 
-1391563053 source:/home/amourao/code/searchservices/analyser/nVector/GaborExtractor.cpp
+1397667557 source:/home/amourao/code/searchservices/analyser/nVector/GaborExtractor.cpp
 	"GaborExtractor.h"
 
 1391563053 source:/home/amourao/code/searchservices/analyser/nVector/gist.c
@@ -553,37 +554,39 @@
 
 1391563053 /home/amourao/code/searchservices/analyser/nVector/standalone_image.h
 
-1391563053 source:/home/amourao/code/searchservices/analyser/nVector/GISTExtractor.cpp
+1397668586 source:/home/amourao/code/searchservices/analyser/nVector/GISTExtractor.cpp
 	"GISTExtractor.h"
 
-1391563053 /home/amourao/code/searchservices/analyser/nVector/GISTExtractor.h
+1397668473 /home/amourao/code/searchservices/analyser/nVector/GISTExtractor.h
 	"standalone_image.h"
 	"gist.h"
 	"FeatureExtractor.h"
 	"../FactoryAnalyser.h"
+	"../../commons/StringTools.h"
 
-1390951642 source:/home/amourao/code/searchservices/analyser/nVector/HistogramExtractor.cpp
+1397670384 source:/home/amourao/code/searchservices/analyser/nVector/HistogramExtractor.cpp
 	"HistogramExtractor.h"
 
 1390951642 source:/home/amourao/code/searchservices/analyser/nVector/lbp.cpp
 	"lbp.h"
 
-1390951642 source:/home/amourao/code/searchservices/analyser/nVector/LBPExtractor.cpp
+1397670874 source:/home/amourao/code/searchservices/analyser/nVector/LBPExtractor.cpp
 	"LBPExtractor.h"
 
-1391563053 source:/home/amourao/code/searchservices/analyser/nVector/LireExtractor.cpp
+1397671466 source:/home/amourao/code/searchservices/analyser/nVector/LireExtractor.cpp
 	"LireExtractor.h"
 
-1390951648 /home/amourao/code/searchservices/analyser/nVector/LireExtractor.h
+1397671474 /home/amourao/code/searchservices/analyser/nVector/LireExtractor.h
 	"FeatureExtractor.h"
 	<iostream>
 	"../FactoryAnalyser.h"
+	"../../commons/StringTools.h"
 	<cstdlib>
 
 1391563053 source:/home/amourao/code/searchservices/analyser/nVector/NullExtractor.cpp
 	"NullExtractor.h"
 
-1390951642 source:/home/amourao/code/searchservices/analyser/nVector/SegmentedHistogramExtractor.cpp
+1397671961 source:/home/amourao/code/searchservices/analyser/nVector/SegmentedHistogramExtractor.cpp
 	"SegmentedHistogramExtractor.h"
 
 1391563053 source:/home/amourao/code/searchservices/analyser/nVector/standalone_image.c
