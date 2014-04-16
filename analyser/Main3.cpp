@@ -115,8 +115,9 @@ void testIndeces(int argc, char *argv[]){
 	map<string,string> parameters;
 	vector<IIndexer*> indexers;
 	vector<IAnalyser*> analysers;
+	vector<IEndpoint*> endpoints;
 
-	LoadConfig::load("config.json",parameters,indexers,analysers);
+	LoadConfig::load("config.json",parameters,indexers,analysers,endpoints);
 
 
     IBinImporter* importer = new tinyImageImporter();
@@ -193,11 +194,13 @@ void awesomeIndexTesterOld(int argc, char *argv[]){
 	map<string,string> parameters;
 	vector<IIndexer*> indexers;
 	vector<IAnalyser*> analysers;
+	vector<IEndpoint*> endpoints;
 
     IBinImporter* importer;
 
     string paramFile(argv[1]);
-	LoadConfig::load(paramFile,parameters,indexers,analysers);
+
+	LoadConfig::load("config.json",parameters,indexers,analysers,endpoints);
 
     string file(parameters["file"]);
     string type(parameters["type"]);
@@ -280,7 +283,7 @@ void awesomeIndexTesterOld(int argc, char *argv[]){
 		string simpleName = indexers.at(i)->getName().substr(0,pos);
 
         cout << indexers.at(i)->getName() << ";" << simpleName << ";" << timestamp_diff_in_milliseconds(start, end);
-		
+
 
 		get_timestamp(&start);
         indexers.at(i)->indexWithTrainedParams(featuresTestI);
@@ -399,15 +402,16 @@ void computeGT(int argc, char *argv[]){
 
 	map<string,string> parameters;
 	vector<IIndexer*> indexers;
-	
+
 	vector<IAnalyser*> analysers;
 
+    vector<IEndpoint*> endpoints;
 	bool debug = false;
 
     IBinImporter* importer;
 
     string paramFile(argv[1]);
-	LoadConfig::load(paramFile,parameters,indexers,analysers);
+	LoadConfig::load(paramFile,parameters,indexers,analysers,endpoints);
 
     string file;
     string type(parameters["type"]);
@@ -461,20 +465,20 @@ void computeGT(int argc, char *argv[]){
 	file = string(parameters["file"]);
 	currentOffset += nTrain + nValI + nValQ;
 
-	nTestOffset = currentOffset; 
+	nTestOffset = currentOffset;
 	simpleName = file;
 	int pos = simpleName.rfind("/");
-	
+
 	if(pos != string::npos)
 		simpleName = simpleName.substr(pos+1);
-    
+
 	stringstream outfileName;
 
 	outfileName << simpleName << "_" << currentOffset << "_" << nTesI << "_" << nTesQ << "_" << k << ".gt";
 
 	cout << outfileName.str() << endl;
 	outfileNameString = outfileName.str();
-	
+
 	cout << "Reading featuresTestI " << endl;
 	get_timestamp(&start);
 	importer->readBin(file,nTesI,featuresTestI,currentOffset);
@@ -492,13 +496,13 @@ void computeGT(int argc, char *argv[]){
 
 	currentOffset = 0;
 
-	nTestOffset = currentOffset; 
+	nTestOffset = currentOffset;
 	simpleName = file;
 	int pos = simpleName.rfind("/");
-	
+
 	if(pos != string::npos)
 		simpleName = simpleName.substr(pos+1);
-    
+
 	stringstream outfileName;
 
 	outfileName << simpleName << "_" << currentOffset << "_" << nTesI << "_" << nTesQ << "_" << k << ".gt";
@@ -567,6 +571,7 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
 	map<string,string> parameters;
 	vector<IIndexer*> allIndexers;
 	vector<IAnalyser*> analysers;
+	vector<IEndpoint*> endpoints;
 
 	bool debug = false;
 
@@ -576,7 +581,7 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
 
     int indexToTest = atoi(argv[2]);
 
-	LoadConfig::load(paramFile,parameters,allIndexers,analysers);
+	LoadConfig::load(paramFile,parameters,allIndexers,analysers,endpoints);
 
 	//cout << allIndexers.size() << endl;
 
@@ -599,7 +604,7 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
 	    debug = true;
 	}
 
-    
+
 
 
 	int nTrain = atoi(parameters["nTrain"].c_str());
@@ -642,7 +647,7 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
     	int tmp = 0;
     	if (debug) cout << "Reading featuresTrain: ";
 	//Mat labels;
-    
+
 	    get_timestamp(&start);
 		importer->readBin(file,nTrain,featuresTrain,currentOffset);
 		get_timestamp(&end);
@@ -698,7 +703,7 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
     	int tmp = 0;
     	if (debug) cout << "Reading featuresTrain: ";
 		//Mat labels;
-    
+
 	    get_timestamp(&start);
 		importer->readBin(fileTrain,nTrain-nValI-nValQ,featuresTrain,currentOffset);
 		get_timestamp(&end);
@@ -748,7 +753,7 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
 	}
 
     bool gtLoaded = loadGT(outfileNameA,linearResults,simpleFileName,testOffset,nTesI,nTesQ,biggestK);
-    
+
     if (!gtLoaded){
     	cout << "error loading GT: " << outfileNameA << endl;
     	return;
@@ -776,7 +781,7 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
     	cout << endl;
     }
     for(int i = 0; i < indexers.size(); i++){
-    	
+
     	if (debug) cout << "Training" << endl;
 		get_timestamp(&start);
         indexers.at(i)->train(featuresTrain,featuresValidationQ,featuresValidationI);
@@ -829,7 +834,7 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
 	            for (int m = 0; m < rAll.at(j).first.size(); m++){
 	                deltaDistance += rAll.at(j).second.at(m) - linearResults.at(j).second.at(m);
 	            }
-	            //for each document in rank            
+	            //for each document in rank
 	            for (int m = 0; m < rAll.at(j).first.size(); m++){
 	            	// Check if document m appears in the linear rank up to k
 	            	int isRelevant = 0;
@@ -847,7 +852,7 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
 	                if (debug){ cout << relAccum << endl; getchar();}
 	                precAccum += precisionAtM * isRelevant;
 	            }
-	            // Accumulate results for query j            
+	            // Accumulate results for query j
 	            //do not sum if relAccum is zero (special case in MAP formula)
 	            if (relAccum != 0){
 	            	avgPrecAccum += precAccum/(double)k;
@@ -881,6 +886,7 @@ void exportToArmaMat(int argc, char *argv[]){
 	map<string,string> parameters;
 	vector<IIndexer*> allIndexers;
 	vector<IAnalyser*> analysers;
+	vector<IEndpoint*> endpoints;
 
 	bool debug = false;
 
@@ -888,7 +894,7 @@ void exportToArmaMat(int argc, char *argv[]){
 
     string paramFile(argv[1]);
 
-	LoadConfig::load(paramFile,parameters,allIndexers,analysers);
+	LoadConfig::load(paramFile,parameters,allIndexers,analysers,endpoints);
 
 	//cout << allIndexers.size() << endl;
 
@@ -947,7 +953,7 @@ void exportToArmaMat(int argc, char *argv[]){
     	int tmp = 0;
     	if (debug) cout << "Reading featuresTrain: ";
 	//Mat labels;
-    
+
 	    get_timestamp(&start);
 		importer->readBin(file,nTrain,featuresTrain,currentOffset);
 		get_timestamp(&end);
@@ -986,7 +992,7 @@ void exportToArmaMat(int argc, char *argv[]){
     	int tmp = 0;
     	if (debug) cout << "Reading featuresTrain: ";
 		//Mat labels;
-    
+
 	    get_timestamp(&start);
 		importer->readBin(fileTrain,nTrain-nValI-nValQ,featuresTrain,currentOffset);
 		get_timestamp(&end);
@@ -1045,7 +1051,7 @@ void exportToArmaMat(int argc, char *argv[]){
 		arma::Mat<float> featuresArma((float*)f.data, f.cols, f.rows,false,true);
 		stringstream sss;
 		sss << "/localstore/amourao/configCondor/" << simpleFileName << "_" << matNames.at(i) << ".mat";
-		cout << matNames.at(i) << " rows: " << featuresArma.n_rows << " cols: " << featuresArma.n_cols << endl; 
+		cout << matNames.at(i) << " rows: " << featuresArma.n_rows << " cols: " << featuresArma.n_cols << endl;
 		featuresArma.save(sss.str());
 	}
 }
@@ -1056,11 +1062,13 @@ void testSphericalHashing(int argc, char *argv[]){
 map<string,string> parameters;
 	vector<IIndexer*> indexers;
 	vector<IAnalyser*> analysers;
+	vector<IEndpoint*> endpoints;
+
 
     IBinImporter* importer;
 
     string paramFile(argv[1]);
-	LoadConfig::load(paramFile,parameters,indexers,analysers);
+	LoadConfig::load(paramFile,parameters,indexers,analysers,endpoints);
 
     string file(parameters["file"]);
     string type(parameters["type"]);
@@ -1138,7 +1146,7 @@ map<string,string> parameters;
 int main(int argc, char *argv[]){
 	//awesomeIndexTester(argc, argv);
 	//testSphericalHashing(argc, argv);
-	string name(argv[0]); 
+	string name(argv[0]);
 	if (name == "./computeGT"){
 		computeGT(argc, argv);
 	} else if (name == "./exportToArmaMat"){

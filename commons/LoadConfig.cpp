@@ -14,7 +14,7 @@ vector<IIndexer*> LoadConfig::getRegisteredIndeces(string filename){
     return LoadConfig::registerIndeces(indexes);
 }
 
-void LoadConfig::load(string filename, map<string,string>& params, vector<IIndexer*>& indeces, vector<IAnalyser*>& analysers){
+void LoadConfig::load(string filename, map<string,string>& params, vector<IIndexer*>& indeces, vector<IAnalyser*>& analysers, vector<IEndpoint*>& endpoints){
     Json::Value root;
     Json::Reader reader;
 
@@ -33,6 +33,10 @@ void LoadConfig::load(string filename, map<string,string>& params, vector<IIndex
     const Json::Value analysersV = root["endpoints"]["analyser"];
 
     analysers = LoadConfig::registerAnalysers(analysersV);
+
+    const Json::Value endpointsV = root["endpoints"]["rest"];
+
+    endpoints = LoadConfig::registerEndpoints(endpointsV);
 
 }
 

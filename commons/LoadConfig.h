@@ -18,7 +18,7 @@
 class LoadConfig
 {
     public:
-        static void load(string filename, map<string,string>& params, vector<IIndexer*>& indeces, vector<IAnalyser*>& analysers);
+        static void load(string filename, map<string,string>& params, vector<IIndexer*>& indeces, vector<IAnalyser*>& analysers, vector<IEndpoint*>& endpoints);
         static vector<IIndexer*> getRegisteredIndeces(string filename);
 
     private:
