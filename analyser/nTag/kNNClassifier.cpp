@@ -6,18 +6,18 @@ kNNClassifier::kNNClassifier(){
 	FactoryClassifier::getInstance()->registerType("kNNClassifier",this);
 }
 
-void* kNNClassifier::createType(string& type){
-	if (type == "kNNClassifier")
-		return new kNNClassifier(type);
-	cerr << "Error registering type from constructor (this should never happen)" << endl;
-	return NULL;
-	
+kNNClassifier::kNNClassifier(string& _type)
+{
+    type = _type;
+	flannIndex = NULL;
 }
 
-
-kNNClassifier::kNNClassifier(string& type)
+kNNClassifier::kNNClassifier(string& _type, map<string, string>& params)
 {
+    type = _type;
 	flannIndex = NULL;
+	if (params.count("trainFile") > 0)
+        load(params["trainFile"]);
 }
 
 
@@ -26,30 +26,42 @@ kNNClassifier::~kNNClassifier()
 
 }
 
+void* kNNClassifier::createType(string& type){
+	if (type == "kNNClassifier")
+		return new kNNClassifier(type);
+	cerr << "Error registering type from constructor (this should never happen)" << endl;
+	return NULL;
+
+}
+void* kNNClassifier::createType(string& type, map<string, string>& params){
+    return new kNNClassifier(type,params);
+}
+
+
 void kNNClassifier::train( cv::Mat _trainData, cv::Mat _trainLabels )
 {
-	
+
 	double min, max;
 	int minInd, maxInd;
 	cv::minMaxIdx(_trainLabels, &min, &max, &minInd, &maxInd, Mat());
-		
+
 	numberOfClasses = max+1;
-	
+
 	flann::LinearIndexParams params = flann::LinearIndexParams();
 
 	if ( flannIndex != NULL)
 		delete flannIndex;
 	flannIndex = new flann::Index();
-	
+
 	_trainData.copyTo(trainData);
 	_trainLabels.copyTo(trainLabels);
 
 	flannIndex->build(trainData,params);
 
 
-	
+
 }
-	
+
 
 
 void kNNClassifier::test( cv::Mat testData, cv::Mat testLabels )
@@ -61,7 +73,7 @@ float kNNClassifier::classify( cv::Mat query){
 }
 
 string kNNClassifier::getName(){
-	return "kNNClassifier";
+	return type;
 }
 
 float kNNClassifier::classify( cv::Mat query, int neighboursCount )
@@ -96,7 +108,7 @@ float kNNClassifier::classify( cv::Mat query, int neighboursCount )
 	int maxEmotionCount = 0;
 //cout << j++ << endl;
 	for (int i = 0; i < numberOfClasses; i++){
-		
+
 		if (matches[i] > maxEmotionCount){
 			maxEmotion = i;
 			maxEmotionCount = matches[i];
@@ -124,12 +136,12 @@ bool kNNClassifier::save(string basePath){
 	//ssF << CLASSIFIER_BASE_SAVE_PATH << basePath << FLANN_EXTENSION_KNN;
 	//flannIndex->save(ssF.str().c_str());
 	//flannIndex->release();
-	
+
 	return true;
 }
 
 bool kNNClassifier::load(string basePath){
-	
+
 	stringstream ss;
 	ss << CLASSIFIER_BASE_SAVE_PATH << basePath << TRAINDATA_EXTENSION_KNN;
 
@@ -144,8 +156,8 @@ bool kNNClassifier::load(string basePath){
 	if ( flannIndex != NULL)
 		delete flannIndex;
 	flannIndex = new flann::Index();
-	
+
 	flannIndex->build(trainData,params);
-	
+
 	return true;
 }

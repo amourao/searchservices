@@ -15,7 +15,11 @@ class SVMClassifier: public IClassifier
 public:
 	SVMClassifier();
 	SVMClassifier(string& type);
+	SVMClassifier(string& type, std::map<string,string>& params);
 	~SVMClassifier();
+
+    void* createType(string &typeId);
+    void* createType(string &typeId, std::map<string,string>& params);
 
 	void train(cv::Mat trainData, cv::Mat trainLabels);
 	void test(cv::Mat testData, cv::Mat testLabels);
@@ -24,11 +28,12 @@ public:
 	bool save(string basePath);
 	bool load(string basePath);
 
-	void* createType(string &typeId);
+
 
 	string getName();
 private:
 
 	CvSVM* svm;
+	string type;
 };
 

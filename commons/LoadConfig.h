@@ -8,6 +8,9 @@
 #include "../analyser/FactoryAnalyser.h"
 #include "../analyser/IAnalyser.h"
 
+#include "../analyser/FactoryClassifier.h"
+#include "../analyser/nTag/IClassifier.h"
+
 #include "../rest/FactoryEndpoint.h"
 #include "../rest/IEndpoint.h"
 
@@ -18,12 +21,13 @@
 class LoadConfig
 {
     public:
-        static void load(string filename, map<string,string>& params, vector<IIndexer*>& indeces, vector<IAnalyser*>& analysers, vector<IEndpoint*>& endpoints);
+        static void load(string filename, map<string,string>& params, vector<IIndexer*>& indeces, vector<IAnalyser*>& analysers, vector<IClassifier*>& classifiers, vector<IEndpoint*>& endpoints);
         static vector<IIndexer*> getRegisteredIndeces(string filename);
 
     private:
         static vector<IIndexer*> registerIndeces(Json::Value root);
         static vector<IAnalyser*> registerAnalysers(Json::Value plugins);
+        static vector<IClassifier*> registerClassifiers(Json::Value plugins);
         static vector<IEndpoint*> registerEndpoints(Json::Value plugins);
         static void generatePermutations(Json::Value root, vector<map<string,string> >& result);
         static map<string,string> jsonToDict(Json::Value root);

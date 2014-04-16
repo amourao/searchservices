@@ -21,8 +21,8 @@ bool Factory::registerType(string typeId, FactoryMethod* object, map<string,stri
         return false;
 
     objectTypes[typeId] = make_pair(object,params);
+    cout << " Registered new FactoryMethod: " << typeId << endl;
 
-    //cout << " Registered new FactoryMethod: " << typeId << endl;
 
     return true;
 }

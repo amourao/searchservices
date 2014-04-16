@@ -24,19 +24,23 @@ class kNNClassifier: public IClassifier
 public:
 	kNNClassifier();
 	kNNClassifier(string& type);
+	kNNClassifier(string& type, map<string, string>& params);
 	~kNNClassifier();
+
+    void* createType(string &typeId);
+	void* createType(string &typeId, map<string, string>& params);
 
 	void train(cv::Mat trainData, cv::Mat trainLabels);
 
 	void test(cv::Mat testData, cv::Mat testLabels);
-		
+
 	float classify( cv::Mat query);
-	
+
 	float classify( cv::Mat query, int neighboursCount = 1);
-	
+
 	string getName();
 
-	void* createType(string &typeId);
+
 
 	bool save(string basePath);
 	bool load(string basePath);
@@ -46,4 +50,5 @@ private:
 	cv::Mat trainData;
 	flann::Index* flannIndex;
 	int numberOfClasses;
+	string type;
 };

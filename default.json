@@ -1,0 +1,83 @@
+{"parameters": {
+    "port" : "9191"
+    },
+ "endpoints": {
+    "indexer": [
+        {
+            "newName": "linearIndexer",
+            "originalName": "flannkNNIndexer",
+            "params": {
+                "algorithm": "linear",
+                "distance": "EUCLIDEAN"
+            }
+        }
+    ],
+    "analyser": [
+        {
+            "newName": "faceDetectorWithEyes",
+            "originalName": "faceDetection",
+            "params": {
+                "cascadePath": "haarcascade_frontalface_default.xml",
+                "nestedCascadePath": "haarcascade_eye.xml",
+                "scaleChangeFactor": "4",
+                "eyeScaleChangeFactor": "1",
+                "minSizeW": "20",
+                "minSizeH": "20",
+                "maxSizeW": "50",
+                "maxSizeH": "50",
+                "preProcess": "true"
+            }
+        },{
+            "newName": "faceDetectorNoEyes",
+            "originalName": "faceDetection",
+            "params": {
+                "cascadePath": "haarcascade_frontalface_default.xml",
+                "nestedCascadePath": "haarcascade_eye.xml",
+                "scaleChangeFactor": "4",
+                "eyeScaleChangeFactor": "1",
+                "minSizeW": "20",
+                "minSizeH": "20",
+                "maxSizeW": "50",
+                "maxSizeH": "50",
+                "preProcess": "false"
+            }
+        },{
+            "newName": "surf1000",
+            "originalName": "surf",
+            "params": {
+                "hessianThreshold": "1000",
+                "nOctaves": "4",
+                "nOctaveLayers": "2",
+                "extended": "true",
+                "upright": "false"
+            }
+        }
+    ],
+    "classifier": [
+        {
+            "newName": "kNNClassifierMed",
+            "originalName": "kNNClassifier",
+            "params": {
+                "trainFile": "medical_fcth_knn"
+            }
+        },{
+            "newName": "SRClassifierMed",
+            "originalName": "SRClassifier",
+            "params": {
+                "trainFile": "medical_fcth_sr"
+            }
+        },{
+            "newName": "VWBasicClassifierMed",
+            "originalName": "VWBasicClassifier",
+            "params": {
+                "trainFile": "medical_fcth_vw"
+            }
+        },{
+            "newName": "SVMClassifierMed",
+            "originalName": "SVMClassifier",
+            "params": {
+                "trainFile": "medical_fcth_vw"
+            }
+        }
+    ]
+} }    

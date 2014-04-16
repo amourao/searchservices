@@ -3,15 +3,56 @@
 static FaceDetection faceDetectorFactory;
 
 FaceDetection::FaceDetection(){
-	FactoryAnalyser::getInstance()->registerType("FaceDetection",this);
-	FactoryAnalyser::getInstance()->registerType("FastFaceDetection",this);
+    //TODO: add to load file
+    //FactoryAnalyser::getInstance()->registerType("FaceDetection",this);
+    //FactoryAnalyser::getInstance()->registerType("FastFaceDetection",this);
+
+    //if (typeId == "FaceDetection")
+    //return new FaceDetection(FACE_DETECTION_CASCADE_PATH + "haarcascade_frontalface_default.xml",FACE_DETECTION_CASCADE_PATH + "haarcascade_eye.xml",4,1, cv::Size(20,20),cv::Size(50,50),true);
+    //else if (typeId == "FastFaceDetection")
+    //return new FaceDetection(FACE_DETECTION_CASCADE_PATH + "haarcascade_frontalface_default.xml",FACE_DETECTION_CASCADE_PATH + "haarcascade_eye.xml",4,1, cv::Size(20,20),cv::Size(50,50),false);
+
+	FactoryAnalyser::getInstance()->registerType("faceDetection",this);
 }
 
 
+FaceDetection::FaceDetection(string& typeId) {
+    type = typeId;
+}
+
+FaceDetection::FaceDetection(string& typeId, map<string, string>& params) {
+    type = typeId;
+
+    if (params.size() == 0)
+        return;
+
+    string _cascadePath = params["cascadePath"];
+    string _nestedCascadePath = params["nestedCascadePath"];
+    double _scaleChangeFactor = atof(params["scaleChangeFactor"].c_str());
+    double _eyeScaleChangeFactor = atof(params["eyeScaleChangeFactor"].c_str());
+
+
+    int minSizeW = atoi(params["minSizeW"].c_str());
+    int minSizeH = atoi(params["minSizeH"].c_str());
+    int maxSizeW = atoi(params["maxSizeW"].c_str());
+    int maxSizeH = atoi(params["maxSizeH"].c_str());
+
+    cv::Size _minSize(minSizeW,minSizeH);
+    cv::Size _maxSize(maxSizeW,maxSizeH);
+
+    bool _preProcess = params["preProcess"] == "true";
+
+    init(_cascadePath,_nestedCascadePath,_scaleChangeFactor,_eyeScaleChangeFactor,_minSize,_maxSize,_preProcess);
+}
 
 FaceDetection::FaceDetection(string _cascadePath, string _nestedCascadePath, double _scaleChangeFactor, double _eyeScaleChangeFactor, cv::Size _minSize, cv::Size _maxSize, bool _preProcess){
-	faceCascade.load( _cascadePath );
-	eyesCascade.load( _nestedCascadePath );
+    init(_cascadePath,_nestedCascadePath,_scaleChangeFactor,_eyeScaleChangeFactor,_minSize,_maxSize,_preProcess);
+}
+
+void FaceDetection::init(string _cascadePath, string _nestedCascadePath, double _scaleChangeFactor, double _eyeScaleChangeFactor, cv::Size _minSize, cv::Size _maxSize, bool _preProcess){
+
+	faceCascade.load(FACE_DETECTION_CASCADE_PATH + _cascadePath );
+	eyesCascade.load(FACE_DETECTION_CASCADE_PATH + _nestedCascadePath );
 
 	scaleChangeFactor = _scaleChangeFactor;
 	eyeScaleChangeFactor = _eyeScaleChangeFactor;
@@ -20,17 +61,21 @@ FaceDetection::FaceDetection(string _cascadePath, string _nestedCascadePath, dou
 	maxSize = _maxSize;
 
 	preProcess = _preProcess;
+
+
+}
+
+void* FaceDetection::createType(string& typeId, map<string,string>& params) {
+    return new FaceDetection(typeId,params);
 }
 
 void* FaceDetection::createType(string& typeId) {
-
-	if (typeId == "FaceDetection")
-		return new FaceDetection(FACE_DETECTION_CASCADE_PATH + "haarcascade_frontalface_default.xml",FACE_DETECTION_CASCADE_PATH + "haarcascade_eye.xml",4,1, cv::Size(20,20),cv::Size(50,50),true);
-	else if (typeId == "FastFaceDetection")
-		return new FaceDetection(FACE_DETECTION_CASCADE_PATH + "haarcascade_frontalface_default.xml",FACE_DETECTION_CASCADE_PATH + "haarcascade_eye.xml",4,1, cv::Size(20,20),cv::Size(50,50),false);
+	if (typeId == "faceDetection")
+		return new FaceDetection(typeId);
 	cerr << "Error registering type from constructor (this should never happen)" << endl;
 	return NULL;
 }
+
 FaceDetection::~FaceDetection(){
 
 }
@@ -73,8 +118,8 @@ void FaceDetection::detectFaces(Mat& img, vector<Mat>& faceImages, vector<cv::Po
 	double t = (double)cvGetTickCount();
 	faceCascade.detectMultiScale( imgGrayscaleScalled, facesVectorCascade, 1.1, 3, 0|CV_HAAR_SCALE_IMAGE,minSize,maxSize);
 	t = (double)(cvGetTickCount()-t)/((double)cvGetTickFrequency());
-	
-	for (unsigned int q = 0; q < facesVectorCascade.size(); q++){	
+
+	for (unsigned int q = 0; q < facesVectorCascade.size(); q++){
 		Rect r = facesVectorCascade.at(q);
 		cv::Rect newR = cv::Rect(r.x,r.y,r.width,r.height);
 		newR.x *= scaleChangeFactor;
@@ -93,10 +138,10 @@ void FaceDetection::detectFaces(Mat& img, vector<Mat>& faceImages, vector<cv::Po
 			cv::Rect newRoi;
 			if (preProcessFaceImage(smallImgColorROI,preprocessed,newRoi)){
 
-				smallImgColorROI = preprocessed;				
+				smallImgColorROI = preprocessed;
 				newRoi.x += newR.x;
 				newRoi.y += newR.y;
-				
+
 				newR = newRoi;
 			}
 
@@ -126,21 +171,21 @@ bool FaceDetection::preProcessFaceImage(Mat& img, Mat& faceImage, cv::Rect& roi 
 		//|CV_HAAR_DO_ROUGH_SEARCH
 		//|CV_HAAR_DO_CANNY_PRUNING
 		|CV_HAAR_SCALE_IMAGE
-		
+
 		);
 
 	vector<Eye> leftEyes;
 	vector<Eye> rightEyes;
 
-	
+
 	cv::Point center;
 	center.x = cvRound((img.cols*0.5));
 	center.y = cvRound((img.rows*0.5));
 
-	
-	
+
+
 	double radius = (img.cols + img.rows)*0.25;
-	for (unsigned int q = 0; q < eyesVectorCascade.size(); q++){	
+	for (unsigned int q = 0; q < eyesVectorCascade.size(); q++){
 		Rect r = eyesVectorCascade.at(q);
 
 		//cout << r << endl;
@@ -168,7 +213,7 @@ bool FaceDetection::preProcessFaceImage(Mat& img, Mat& faceImage, cv::Rect& roi 
 
 	if (leftEyes.size() == 0 || rightEyes.size() == 0)
 		return false;
-	
+
 	Eye leftEye = leftEyes.front();
 	Eye rigthEye = rightEyes.front();
 	//if (!detectBestEyepair (center, radius, leftEyes, rightEyes, leftEye, rigthEye))
@@ -194,7 +239,7 @@ bool FaceDetection::preProcessFaceImage(Mat& img, Mat& faceImage, cv::Rect& roi 
 	Mat rot_mat = getRotationMatrix2D(center, angle, 1.0);
 	warpAffine(img, rotatedImage, rot_mat, img.size());
 
-	rotateEye(center,leftEye.eyeCenter, angle); 
+	rotateEye(center,leftEye.eyeCenter, angle);
 	rotateEye(center,rigthEye.eyeCenter, angle);
 
 	roi =  computeROI(center, leftEye.eyeCenter, rigthEye.eyeCenter, radius);
@@ -202,7 +247,7 @@ bool FaceDetection::preProcessFaceImage(Mat& img, Mat& faceImage, cv::Rect& roi 
 	ajustROI(roi, img.size());
 
 	faceImage=Mat(img,roi);
-			
+
 	resize(faceImage,faceImage,cv::Size(92,112),0,0,INTER_CUBIC);
 	//cout << faceImage.size() << endl;
 	return true;
@@ -234,7 +279,7 @@ bool FaceDetection::detectBestEyepair (Point& center, double faceRadius, vector<
 		if (((tmpRightDetected && !tmpLeftDetected) ||
 
 			(abs(abs(leftEye.eyeCenter.x-center.x)-abs(tmpRightEye.eyeCenter.x-center.x)) <
-			abs(abs(bestLeftEye.eyeCenter.x-center.x)-abs(bestRightEye.eyeCenter.x-center.x)))) 
+			abs(abs(bestLeftEye.eyeCenter.x-center.x)-abs(bestRightEye.eyeCenter.x-center.x))))
 
 			&&
 
@@ -309,7 +354,8 @@ string FaceDetection::crossValidate(string testFile) {
 }
 
 string FaceDetection::getName() {
-	return "FaceDetector";
+	return type;
+	//return "FaceDetector";
 }
 
 

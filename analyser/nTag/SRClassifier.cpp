@@ -6,22 +6,36 @@ SRClassifier::SRClassifier(){
 	FactoryClassifier::getInstance()->registerType("SRClassifier",this);
 }
 
-void* SRClassifier::createType(string& type){
-	if (type == "SRClassifier")
-		return new SRClassifier(type);
-	cerr << "Error registering type from constructor (this should never happen)" << endl;
-	return NULL;
-	
+SRClassifier::SRClassifier(string& _type, map<string, string>& params)
+{
+    type = _type;
+	if (params.count("trainFile") > 0)
+        load(params["trainFile"]);
 }
 
 
-SRClassifier::SRClassifier(string& type){
-	
+SRClassifier::SRClassifier(string& _type){
+    type = _type;
 }
 
 SRClassifier::~SRClassifier(){
 	delete omp;
 }
+
+void* SRClassifier::createType(string& type){
+	if (type == "SRClassifier")
+		return new SRClassifier(type);
+	cerr << "Error registering type from constructor (this should never happen)" << endl;
+	return NULL;
+
+}
+
+void* SRClassifier::createType(string& type, map<string, string>& params){
+    return new SRClassifier(type,params);
+}
+
+
+
 
 void SRClassifier::train(cv::Mat trainData, cv::Mat trainLabels){
 	arma::fmat trainDataFMat;
@@ -45,7 +59,7 @@ float SRClassifier::classify( cv::Mat query){
 	return classify(queryFMat);
 }
 
-	
+
 void SRClassifier::train(arma::fmat _trainData, arma::fmat trainLabels){
 
 	int i = 0;
@@ -106,7 +120,7 @@ float SRClassifier::classify(arma::fmat query, double* error, arma::fmat* recErr
 			arma::fvec newRes = res;
 
 			for(unsigned int k = 0; k < labelsCute.n_rows; k++){
-				
+
 					float la  = labelsCute.row(k);
 
 					if(recErrors != NULL){
@@ -120,7 +134,7 @@ float SRClassifier::classify(arma::fmat query, double* error, arma::fmat* recErr
 			}
 
 			arma::fmat reconstruction = trainData * newRes;
-	
+
 
 
 			double multiFactor = arma::mean(arma::mean(reconstruction/query));
@@ -129,13 +143,13 @@ float SRClassifier::classify(arma::fmat query, double* error, arma::fmat* recErr
 
 
 			if (reconstructionError<minFromReconstruct){
-				minFromReconstruct = reconstructionError;	
+				minFromReconstruct = reconstructionError;
 				detectedLabelFromReconstruct = j;
 				bestReconstruction = reconstruction;
 				bestMultiFactor = multiFactor;
 			}
 		}
-		
+
 
 	}
 
@@ -147,7 +161,7 @@ float SRClassifier::classify(arma::fmat query, double* error, arma::fmat* recErr
 	//for(unsigned int k = 0; k < labelsCute.n_rows; k++){
 	//	cout << (int)labelsCute.row(k) << "," << abs(res.row(k)) << ";";
 	//}
-	
+
 	//cout << "]";
 	//getchar();
 
@@ -159,11 +173,11 @@ float SRClassifier::classify(arma::fmat query, double* error, arma::fmat* recErr
 }
 
 void SRClassifier::test(arma::fmat testData, arma::fmat testLabels){
-	
+
 }
 
 string SRClassifier::getName(){
-	return "SRClassifier";
+	return type;
 }
 
 void SRClassifier::changeLabels(arma::fmat trainLabels) {
@@ -179,10 +193,10 @@ bool SRClassifier::save(string basePath){
 
 
 	cv::Mat trainDataCV;
-	MatrixTools::fmatToMat(trainData,trainDataCV);  
+	MatrixTools::fmatToMat(trainData,trainDataCV);
 
 	cv::Mat labelsCuteCV;
-	MatrixTools::fmatToMat(labelsCute,labelsCuteCV);  
+	MatrixTools::fmatToMat(labelsCute,labelsCuteCV);
 
 	fs << "trainDataCV" << trainDataCV;
 	fs << "labelsCuteCV" << labelsCuteCV;
@@ -226,7 +240,7 @@ bool SRClassifier::load(string basePath){
 	labelsCute = arma::fvec(labelsCuteFmat);
 
 	MatrixTools::matToFMat(trainDataCV,trainData);
-	
+
 
 	omp = new l1min::FISTA(opt);
 

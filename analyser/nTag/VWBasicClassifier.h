@@ -41,8 +41,13 @@ class VWBasicClassifier: public IClassifier
 {
 public:
 	VWBasicClassifier();
-	VWBasicClassifier(string _modelName);
+	VWBasicClassifier(string& typeId);
+	VWBasicClassifier(string& typeId, std::map<string,string>& params);
 	~VWBasicClassifier();
+
+	void* createType(string& typeId);
+	void* createType(string& typeId, std::map<string,string>& params);
+
 
 	void train(cv::Mat trainData, cv::Mat trainLabels);
 
@@ -50,14 +55,14 @@ public:
 	float classify( cv::Mat query);
 	string getName();
 
-	void* createType(string &typeId);
+
 
 	bool save(string basePath);
 	bool load(string basePath);
-	
+
 	//void importToVowpalFormat(cv::Mat trainData, cv::Mat trainLabels);
 	//void importTxtToVowpalFormat(cv::Mat trainData, cv::Mat trainLabels);
-	
+
 	//float importToVowpalFormatTest(cv::Mat testData);
 private:
 
@@ -71,8 +76,9 @@ private:
 	std::map<int,int> initLabelToVowpalLabel;
 	std::map<int,int> vowpalLabelToinitLabel;
 	int numberOfClasses;
-	
+
 	string modelName;
+	string type;
 
 };
 

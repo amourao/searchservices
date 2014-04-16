@@ -7,6 +7,22 @@ SVMClassifier::SVMClassifier(){
 	FactoryClassifier::getInstance()->registerType("SVMClassifier",this);
 }
 
+
+SVMClassifier::SVMClassifier(string& _type){
+	type = _type;
+}
+
+SVMClassifier::SVMClassifier(string& _type, std::map<string,string>& params){
+	type = _type;
+    if (params.count("trainFile") > 0)
+        load(params["trainFile"]);
+}
+
+
+SVMClassifier::~SVMClassifier(){
+}
+
+
 void* SVMClassifier::createType(string& type){
 	if (type == "SVMClassifier")
 		return new SVMClassifier(type);
@@ -14,13 +30,10 @@ void* SVMClassifier::createType(string& type){
 	return NULL;
 }
 
-
-SVMClassifier::SVMClassifier(string& type){
-	
+void* SVMClassifier::createType(string& type, std::map<string,string>& params){
+	return new SVMClassifier(type,params);
 }
 
-SVMClassifier::~SVMClassifier(){
-}
 
 void SVMClassifier::train( cv::Mat trainData, cv::Mat trainLabels ){
 	CvSVMParams params;
@@ -31,7 +44,7 @@ void SVMClassifier::train( cv::Mat trainData, cv::Mat trainLabels ){
 	//params.p = 1.1920928955078125e-007;
 	svm = new CvSVM();
 	svm->train_auto(trainData,trainLabels,cv::Mat(),cv::Mat(),params);
-	
+
 	//TODO
 	//svm.train(trainData,trainLabels);
 }
@@ -56,7 +69,7 @@ bool SVMClassifier::save(string basePath){
 	return true;
 
 
-				
+
 }
 
 bool SVMClassifier::load(string basePath){

@@ -14,7 +14,7 @@ vector<IIndexer*> LoadConfig::getRegisteredIndeces(string filename){
     return LoadConfig::registerIndeces(indexes);
 }
 
-void LoadConfig::load(string filename, map<string,string>& params, vector<IIndexer*>& indeces, vector<IAnalyser*>& analysers, vector<IEndpoint*>& endpoints){
+void LoadConfig::load(string filename, map<string,string>& params, vector<IIndexer*>& indeces, vector<IAnalyser*>& analysers, vector<IClassifier*>& classifiers, vector<IEndpoint*>& endpoints){
     Json::Value root;
     Json::Reader reader;
 
@@ -37,6 +37,10 @@ void LoadConfig::load(string filename, map<string,string>& params, vector<IIndex
     const Json::Value endpointsV = root["endpoints"]["rest"];
 
     endpoints = LoadConfig::registerEndpoints(endpointsV);
+
+    const Json::Value classifiersV = root["endpoints"]["classifier"];
+
+    classifiers = LoadConfig::registerClassifiers(classifiersV);
 
 }
 
@@ -109,7 +113,6 @@ vector<IIndexer*> LoadConfig::registerIndeces(Json::Value plugins){
 
         Json::Value paramsJSON = p["params"];
 
-        map<string,string> params;
         vector<map<string,string> > allParams;
 
 
@@ -117,8 +120,8 @@ vector<IIndexer*> LoadConfig::registerIndeces(Json::Value plugins){
 
         for( int j = 0; j < allParams.size(); j++){
             string newNameId;
+            map<string,string> params = allParams.at(j);
             if (allParams.size() > 1){
-                map<string,string> params = allParams.at(j);
                 stringstream ss;
                 ss << newName << "_" << std::setw(4) << std::setfill('0') << j;
                 newNameId = ss.str();
@@ -149,15 +152,52 @@ vector<IAnalyser*> LoadConfig::registerAnalysers(Json::Value plugins){
 
         Json::Value paramsJSON = p["params"];
 
-        map<string,string> params;
         vector<map<string,string> > allParams;
 
         LoadConfig::generatePermutations(paramsJSON,allParams);
 
         for( int j = 0; j < allParams.size(); j++){
+            map<string,string> params = allParams.at(j);
             string newNameId;
             if (allParams.size() > 1){
-                map<string,string> params = allParams.at(j);
+                stringstream ss;
+                ss << newName << "_" << std::setw(4) << std::setfill('0') << j;
+                newNameId = ss.str();
+            } else {
+                newNameId = newName;
+            }
+            IAnalyser* originalAnalyser = (IAnalyser*)FactoryAnalyser::getInstance()->createType(originalName);
+            FactoryAnalyser::getInstance()->registerType(newNameId,originalAnalyser,params);
+            IAnalyser* readyAnalyser = (IAnalyser*)FactoryAnalyser::getInstance()->createType(newNameId);
+
+            analysers.push_back(readyAnalyser);
+        }
+    }
+    return analysers;
+}
+
+
+vector<IClassifier*> LoadConfig::registerClassifiers(Json::Value plugins){
+
+    vector<IClassifier*> analysers;
+
+    for ( int i = 0; i < plugins.size(); i++ ){
+        const Json::Value p = plugins[i];
+
+        string newName = p["newName"].asString();
+        string originalName = p["originalName"].asString();
+
+        Json::Value paramsJSON = p["params"];
+
+
+        vector<map<string,string> > allParams;
+
+        LoadConfig::generatePermutations(paramsJSON,allParams);
+
+        for( int j = 0; j < allParams.size(); j++){
+            map<string,string> params = allParams.at(j);
+            string newNameId;
+            if (allParams.size() > 1){
                 stringstream ss;
                 ss << newName << "_" << std::setw(4) << std::setfill('0') << j;
                 newNameId = ss.str();
@@ -165,9 +205,9 @@ vector<IAnalyser*> LoadConfig::registerAnalysers(Json::Value plugins){
                 newNameId = newName;
             }
 
-            IAnalyser* originalAnalyser = (IAnalyser*)FactoryAnalyser::getInstance()->createType(originalName);
-            FactoryAnalyser::getInstance()->registerType(newNameId,originalAnalyser,params);
-            IAnalyser* readyAnalyser = (IAnalyser*)FactoryAnalyser::getInstance()->createType(newNameId);
+            IClassifier* originalAnalyser = (IClassifier*)FactoryClassifier::getInstance()->createType(originalName);
+            FactoryClassifier::getInstance()->registerType(newNameId,originalAnalyser,params);
+            IClassifier* readyAnalyser = (IClassifier*)FactoryClassifier::getInstance()->createType(newNameId);
 
             analysers.push_back(readyAnalyser);
         }
@@ -188,15 +228,15 @@ vector<IEndpoint*> LoadConfig::registerEndpoints(Json::Value plugins){
 
         Json::Value paramsJSON = p["params"];
 
-        map<string,string> params;
+
         vector<map<string,string> > allParams;
 
         LoadConfig::generatePermutations(paramsJSON,allParams);
 
         for( int j = 0; j < allParams.size(); j++){
+            map<string,string> params = allParams.at(j);
             string newNameId;
             if (allParams.size() > 1){
-                map<string,string> params = allParams.at(j);
                 stringstream ss;
                 ss << newName << "_" << std::setw(4) << std::setfill('0') << j;
                 newNameId = ss.str();

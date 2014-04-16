@@ -357,7 +357,10 @@ int testAllClassifiersBin(int argc, char *argv[]) {
 	//classi.push_back(new SRClassifier(dummy));
 	//classi.push_back(new SVMClassifier(dummy));
 	//classi.push_back(new kNNClassifier());
-	classi.push_back(new VWBasicClassifier(randf));
+    map<string,string> params;
+    params["trainFile"] = randf;
+
+	classi.push_back(new VWBasicClassifier(dummy,params));
 
 	if (isdigit(argv[2][0])){ //crossvalidation
 

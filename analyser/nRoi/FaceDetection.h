@@ -34,8 +34,14 @@ class FaceDetection: public RoiFeatureExtractor
 {
 public:
 	FaceDetection();
-	FaceDetection(string cascadePath, string nestedCascadePath, double scaleChangeFactor, double eyeScaleChangeFactor, cv::Size minSize, cv::Size maxSize, bool preProcess);
+	FaceDetection(string& type);
+	FaceDetection(string& type, map<string,string>& params);
+    FaceDetection(string cascadePath, string nestedCascadePath, double scaleChangeFactor, double eyeScaleChangeFactor, cv::Size minSize, cv::Size maxSize, bool preProcess);
 	~FaceDetection();
+
+    void init(string cascadePath, string nestedCascadePath, double scaleChangeFactor, double eyeScaleChangeFactor, cv::Size minSize, cv::Size maxSize, bool preProcess);
+    void* createType(string &typeId);
+    void* createType(string &typeId, map<string,string>& params);
 
 	void extractFeatures(Mat& source, map<string,region>& features);
 
@@ -49,10 +55,9 @@ public:
 
 	string getName();
 
-	void* createType(string &typeId);
-	
-
 private:
+
+    string type;
 
 	bool preProcessFaceImage(Mat& image, Mat& faceImage, cv::Rect& roi);
 
