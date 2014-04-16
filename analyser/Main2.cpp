@@ -3,7 +3,7 @@
 #include <sstream>
 #include <cstdlib>
 #include <opencv2/features2d/features2d.hpp>
-#include <time.h> 
+#include <time.h>
 //#include <math>
 
 #include <opencv2/core/core.hpp>
@@ -68,13 +68,13 @@ int testAllClassifiers(int argc, char *argv[]) {
 
 	// /localstore/example.txt
 	//"ImageCLEF 2012 Training Set/DVDM/IJD-54-150-g002.jpg";IJD-54-150-g002;DVDM;16
-	
+
 	if(argc < 4){
 		cout << "usage: analyser <trainTextFile> <nrOfDivisions> <classifierFactoryName>"  << endl;
 		cout << "nrOfDivisions == 9 leads to crossvalidation: 9 parts for train, 1 for test"  << endl;
 		exit(1);
 	}
-	
+
 	//Text file with images
 	string file(argv[1]);
 	int numberOfDivisions = atoi(argv[2]);
@@ -85,7 +85,7 @@ int testAllClassifiers(int argc, char *argv[]) {
 
 	FactoryAnalyser * f = FactoryAnalyser::getInstance();
 	IAnalyser* extractor = (IAnalyser*)f->createType(className);
-	
+
 
 
 	cv::Mat src;
@@ -96,7 +96,7 @@ int testAllClassifiers(int argc, char *argv[]) {
 
 	cout << is.getImageCount() << endl;
 	for (int k = 0; k < is.getImageCount(); k++) {
-		if (!(src = is.nextImage()).empty()) { // src contains the image, but the IAnalyser interface needs a path 
+		if (!(src = is.nextImage()).empty()) { // src contains the image, but the IAnalyser interface needs a path
 			cv::Mat featuresRow;
 
 
@@ -115,14 +115,14 @@ int testAllClassifiers(int argc, char *argv[]) {
 			label.at<float>(0, 0) = atoi(idStr.c_str());
 
 			i++;
-			
-			
+
+
 			//cout << path << endl;
 			IDataModel* data = extractor->getFeatures(path);
 			vector<float>* v = (vector<float>*) data->getValue();
 			vector<float> v2 = *v;
 			MatrixTools::vectorToMat(v2, featuresRow);
-			
+
 			//cout << featuresRow << endl;
 			// add the features to the main feature and label matrix
 			features.push_back(featuresRow);
@@ -162,7 +162,7 @@ void extractAllFeaturesCK(int argc, char *argv[]) {
 	//HistogramExtractor histogramExtractor (8);
 
 	vector<cv::Rect> rectangleRois = vector<cv::Rect>();
-	
+
 	 rectangleRois.push_back(cv::Rect(0,0,46,64));
 	 rectangleRois.push_back(cv::Rect(46,64,46,112-64));
 	 rectangleRois.push_back(cv::Rect(46,0,46,64));
@@ -232,10 +232,10 @@ void extractAllFeaturesCK(int argc, char *argv[]) {
 
 		int isd = 0;
 		int isd2 = 50;
-		
+
 		cv::Mat gaborOwnNeutral = gaborOwnNeutralD[is.getCurrentImageInfoField(1)];
 		cv::Mat lbpOwnNeutral = lbpOwnNeutralD[is.getCurrentImageInfoField(1)];
-		
+
 		gaborOwnNeutralD[is.getCurrentImageInfoField(1)];
 		//float id;
 		//float detected;
@@ -244,28 +244,28 @@ void extractAllFeaturesCK(int argc, char *argv[]) {
 		stringstream neutralPath;
 
 		neutralPath << is.getBasePath() << is.getCurrentImageInfoField(5);
-		
+
 		cv::Mat neutral = imread(neutralPath.str());
-		
+
 		cv::Mat gaborV0;
 		cv::Mat lbpV0;
 
 		faceGaborExtractor.extractFeatures(src, gaborV0);
 		faceGaborExtractor.extractFeatures(neutral, gaborNeutral);
-		
+
 		cv::Mat gaborV1 = gaborV0 - gaborNeutral;
 		cv::Mat gaborV2 = gaborV0 - gaborOwnNeutral;
 		cv::Mat gaborV3 = gaborV0 - globalNeutralGabor;
 
-		
+
 		normalize(gaborV1, gaborV1, 0, 1, CV_MINMAX);
 		normalize(gaborV2, gaborV2, 0, 1, CV_MINMAX);
 		normalize(gaborV3, gaborV3, 0, 1, CV_MINMAX);
 
-		
+
 		lbpExtractor.extractFeatures(src, lbpV0);
 		lbpExtractor.extractFeatures(neutral, lbpNeutral);
-		
+
 
 		cv::Mat lbpV1 = lbpV0 - lbpNeutral;
 		cv::Mat lbpV2 = lbpV0 - lbpOwnNeutral;
@@ -275,21 +275,21 @@ void extractAllFeaturesCK(int argc, char *argv[]) {
 		normalize(lbpV2, lbpV2, 0, 1, CV_MINMAX);
 		normalize(lbpV3, lbpV3, 0, 1, CV_MINMAX);
 
-		
+
 		gaborV0ALL.push_back(gaborV0);
 		gaborV1ALL.push_back(gaborV1);
 		gaborV2ALL.push_back(gaborV2);
 		gaborV3ALL.push_back(gaborV3);
-		
+
 		lbpV0ALL.push_back(lbpV0);
 		lbpV1ALL.push_back(lbpV1);
 		lbpV2ALL.push_back(lbpV2);
 		lbpV3ALL.push_back(lbpV3);
-		
+
 		Mat labels(1,2,CV_32F);
 		labels.at<float>(0,0) = idI;
 		labels.at<float>(0,1) = idC;
-		
+
 		labelsAll.push_back(labels);
 
 		u++;
@@ -338,18 +338,18 @@ int testAllClassifiersBin(int argc, char *argv[]) {
 		exit(1);
 	}
 	string name(argv[1]);
-	
+
 	int divisions =  atoi(argv[2]);
 
 	vector<IClassifier*> classi; //choose the classifiers to test
 	string dummy = "";
 	srand (time(NULL));
-	
+
 	unsigned pos = name.rfind("/");
 	unsigned pos2 = name.rfind(".");
 
   	string randf = name.substr(pos+1,pos2);
-	
+
 	stringstream sss;
 	sss << "./tmpData/" << randf << "";
 	randf = sss.str();
@@ -360,17 +360,17 @@ int testAllClassifiersBin(int argc, char *argv[]) {
 	classi.push_back(new VWBasicClassifier(randf));
 
 	if (isdigit(argv[2][0])){ //crossvalidation
-		
+
 		string file(argv[1]);
 
 		Mat features;
 		Mat labels;
-	
+
 		MatrixTools::readBin(file, features, labels);
-	
+
 		TrainTestFeaturesTools ttft(features, labels,classi);
-				
-		cout << ttft.crossValidateAll(divisions) << endl;	
+
+		cout << ttft.crossValidateAll(divisions) << endl;
 	} else { //separated files
 
 		string file(argv[1]);
@@ -386,10 +386,10 @@ int testAllClassifiersBin(int argc, char *argv[]) {
 		MatrixTools::readBin(file, features, labels);
 		MatrixTools::readBin(fileTest, testFeatures, testLabels);
 
-		TrainTestFeaturesTools ttft(features, labels, testFeatures, testLabels,classi);				
+		TrainTestFeaturesTools ttft(features, labels, testFeatures, testLabels,classi);
 		cout << ttft.testAll() << endl;
 	}
-	
+
 
 	return 0;
 }
@@ -400,14 +400,14 @@ void testLoadSaveIClassifier(int argc, char *argv[]){
 
 	Mat features;
 	Mat labels;
-	
+
 	MatrixTools::readBin(file, features, labels);
 
 	IClassifier* vw = new SVMClassifier();
 
 	vw->train(features,labels.col(0));
 	vw->save("medicalImage_CEDD_SVM");
-	
+
 	cout << vw->classify(features.row(0)) << endl;
 
 	delete vw;
@@ -423,17 +423,17 @@ void testLoadSaveIIndexer(int argc, char *argv[]){
 
 	Mat features;
 	Mat labels;
-	
+
 	MatrixTools::readBin(file, features, labels);
 	IIndexer* vw = new FlannkNNIndexer();
 
 	vw->index(features);
 	vw->save("medicalImage_CEDD_kNN");
 	Mat q = features.row(0);
-	
-	vector<std::pair<float,float> > r = vw->knnSearchId(q,10);
-	for(uint i = 0; i < r.size(); i++){
-		cout << r.at(i).first << "\t" << r.at(i).second << endl;
+
+	std::pair<vector<float>,vector<float> > r = vw->knnSearchId(q,10);
+	for(uint i = 0; i < r.first.size(); i++){
+		cout << r.first.at(i) << "\t" << r.second.at(i) << endl;
 	}
 	cout  << endl;
 	delete vw;
@@ -443,8 +443,8 @@ void testLoadSaveIIndexer(int argc, char *argv[]){
 
 	r = vw->knnSearchId(q,10);
 
-	for(uint i = 0; i < r.size(); i++){
-		cout << r.at(i).first << "\t" << r.at(i).second << endl;
+	for(uint i = 0; i < r.first.size(); i++){
+		cout << r.first.at(i) << "\t" << r.second.at(i) << endl;
 	}
 }
 
@@ -480,7 +480,7 @@ int faceDetectionParameterChallenge(int argc, char *argv[]){
 		center.x = cvRound((src.cols*0.5));
 		center.y = cvRound((src.rows*0.5));
 
-		for (int i = 0; i < anglesLen; i++){ 
+		for (int i = 0; i < anglesLen; i++){
 
 			vector<Mat> faceImages2;
 			vector<cv::Point> locations2;
@@ -505,14 +505,14 @@ int faceDetectionParameterChallenge(int argc, char *argv[]){
 			imwrite(ss.str(), faceImages.at(i));
 			cv::Rect roi = faceRois.at(i);
 			rectangle(newSrc, roi, Scalar(255,255,0));
-		
+
 		}
 
 		stringstream ss;
 
 		ss << "faces_" <<	 is.getCurrentImageInfoField(0);
 		imwrite(ss.str(), newSrc);
-	
+
 		u++;
 
 		//	double rem =  ((double) cvGetTickCount() - lastT)
@@ -530,8 +530,8 @@ int faceDetectionParameterChallenge(int argc, char *argv[]){
 		}
 	}
 
-	cout << "imageCount " << size << endl; 
-	cout << "facesDetected " << facesDetected << endl; 
+	cout << "imageCount " << size << endl;
+	cout << "facesDetected " << facesDetected << endl;
 	lastT = cvGetTickCount();
 	double rem = (double)(lastT - startT) / ((double) cvGetTickFrequency() * 1000000);
 	cout << rem << " seconds elapsed" << endl;
@@ -548,8 +548,9 @@ void testMSIDXIndexer(int argc, char *argv[]){
 
 	Mat features;
 	//Mat labels;
-	
-	tinyImageImporter::readBin(file,n,features);
+
+	tinyImageImporter ti;
+	ti.readBin(file,n,features);
 	//MatrixTools::readBin(file, features, labels);
 	string dummy = "";
 	map<string,string> params;
@@ -565,10 +566,13 @@ void testMSIDXIndexer(int argc, char *argv[]){
 	paramsL["multi_probe_level"] = "0";
 	//table_number the number of hash tables to use [10...30]
     //key_size the size of the hash key in bits [10...20]
-    //multi_probe_level the number of bits to shift to check for neighboring buckets 
+    //multi_probe_level the number of bits to shift to check for neighboring buckets
     //(0 is regular LSH, 2 is recommended).
 	IIndexer* lsh = new FlannkNNIndexer(dummy,params);
-	IIndexer* ms = new MSIDXIndexer(dummy,w);
+
+    map<string,string> paramsMSIDX;
+	paramsMSIDX["w"] = string(argv[3]);
+	IIndexer* ms = new MSIDXIndexer(dummy,paramsMSIDX);
 
 	linear->index(features);
 	lsh->index(features);
@@ -577,26 +581,26 @@ void testMSIDXIndexer(int argc, char *argv[]){
 	lsh->save("L");
 	lsh->load("L");
 	Mat q = features.row(0);
-	
-	vector<std::pair<float,float> > r = linear->knnSearchId(q,k);
-	for(uint i = 0; i < r.size(); i++){
-		cout << r.at(i).first << "\t" << r.at(i).second << endl;
+
+	std::pair< vector<float> , vector<float> > r = linear->knnSearchId(q,k);
+	for(uint i = 0; i < r.first.size(); i++){
+		cout << r.first.at(i)<< "\t" << r.second.at(i) << endl;
 	}
 
 	cout  << endl;
 	cout  << endl;
-	
+
 	r = lsh->knnSearchId(q,k);
-	for(uint i = 0; i < r.size(); i++){
-		cout << r.at(i).first << "\t" << r.at(i).second << endl;
+	for(uint i = 0; i < r.first.size(); i++){
+		cout << r.first.at(i)<< "\t" << r.second.at(i) << endl;
 	}
 
 	cout  << endl;
 	cout  << endl;
-	
+
 	r = ms->knnSearchId(q,k);
-	for(uint i = 0; i < r.size(); i++){
-		cout << r.at(i).first << "\t" << r.at(i).second << endl;
+	for(uint i = 0; i < r.first.size(); i++){
+		cout << r.first.at(i)<< "\t" << r.second.at(i) << endl;
 	}
 }
 
@@ -633,19 +637,19 @@ void extractAllFeaturesCKv2(int argc, char *argv[]) {
 	TextFileSourceV2 is(testPath);
 
 	//HistogramExtractor histogramExtractor (8);
-	
+
 	vector<cv::Rect> rectangleRois = vector<cv::Rect>();
-	
+
 	 rectangleRois.push_back(cv::Rect(0,0,46,64));
 	 rectangleRois.push_back(cv::Rect(46,64,46,112-64));
 	 rectangleRois.push_back(cv::Rect(46,0,46,64));
 	 rectangleRois.push_back(cv::Rect(0,64,46,112-64));
 	 rectangleRois.push_back(cv::Rect(0,10,92,30));
 	 rectangleRois.push_back(cv::Rect(20,65,52,30));
-	
+
 	GaborExtractor faceGaborExtractor(92, 112, 4, 6, rectangleRois);
 	//LBPExtractor lbpExtractor (59, 5, 6, false);
-	
+
 	//LBPExtractor faceGaborExtractor (59, 5, 6, false);
 
 
@@ -699,9 +703,9 @@ void extractAllFeaturesCKv2(int argc, char *argv[]) {
 
 		int isd = 0;
 		int isd2 = 50;
-		
+
 		cv::Mat gaborOwnNeutral = gaborOwnNeutralD[is.getCurrentImageInfoField(1)];
-		
+
 		gaborOwnNeutralD[is.getCurrentImageInfoField(1)];
 		//float id;
 		//float detected;
@@ -710,15 +714,15 @@ void extractAllFeaturesCKv2(int argc, char *argv[]) {
 		stringstream neutralPath;
 
 		neutralPath << is.getBasePath() << is.getCurrentImageInfoField(5);
-		
+
 		cv::Mat neutral = imread(neutralPath.str());
-		
+
 		cv::Mat gaborV0;
 		cv::Mat lbpV0;
 
 		faceGaborExtractor.extractFeatures(src, gaborV0);
 		faceGaborExtractor.extractFeatures(neutral, gaborNeutral);
-				
+
 		normalize(gaborV0, gaborV0, 0,1, CV_MINMAX);
 		normalize(gaborNeutral, gaborNeutral, 0,1, CV_MINMAX);
 
@@ -726,20 +730,20 @@ void extractAllFeaturesCKv2(int argc, char *argv[]) {
 		cv::Mat gaborV2 = gaborV0 - gaborOwnNeutral;
 		cv::Mat gaborV3 = gaborV0 - globalNeutralGabor;
 
-		
+
 		normalize(gaborV1, gaborV1, 0, 1, CV_MINMAX);
 		normalize(gaborV2, gaborV2, 0, 1, CV_MINMAX);
 		normalize(gaborV3, gaborV3, 0, 1, CV_MINMAX);
-				
+
 		gaborV0ALL.push_back(gaborV0);
 		gaborV1ALL.push_back(gaborV1);
 		gaborV2ALL.push_back(gaborV2);
 		gaborV3ALL.push_back(gaborV3);
-		
+
 		Mat labels(1,2,CV_32F);
 		labels.at<float>(0,0) = idI;
 		labels.at<float>(0,1) = idC;
-		
+
 		labelsAll.push_back(labels);
 
 		u++;
@@ -753,33 +757,33 @@ void extractAllFeaturesCKv2(int argc, char *argv[]) {
 			lastT = cvGetTickCount();
 		}
 	}
-	
+
 	string ext = faceGaborExtractor.getName();
 	string out;
 	stringstream ss;
-	ss << ext << "V0.bin"; 
+	ss << ext << "V0.bin";
 	out = ss.str();
 	ss.str(std::string());
 	MatrixTools::writeBinV2(out,gaborV0ALL,labelsAll);
-	
-	ss << ext << "V1.bin"; 
+
+	ss << ext << "V1.bin";
 	out = ss.str();
 	ss.str(std::string());
 	MatrixTools::writeBinV2(out,gaborV1ALL,labelsAll);
-	
-	ss << ext << "V2.bin"; 
+
+	ss << ext << "V2.bin";
 	out = ss.str();
 	ss.str(std::string());
 	MatrixTools::writeBinV2(out,gaborV2ALL,labelsAll);
-	
-	ss << ext << "V3.bin"; 
+
+	ss << ext << "V3.bin";
 	out = ss.str();
 	ss.str(std::string());
 	MatrixTools::writeBinV2(out,gaborV3ALL,labelsAll);
 }
 
 int main(int argc, char *argv[])
-{	
+{
 	//testLoadSaveIClassifier(argc, argv);
 	//testLoadSaveIIndexer(argc, argv);
 	//faceDetectionParameterChallenge(argc, argv);

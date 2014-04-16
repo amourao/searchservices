@@ -112,10 +112,15 @@ vector<IIndexer*> LoadConfig::registerIndeces(Json::Value plugins){
         LoadConfig::generatePermutations(paramsJSON,allParams);
 
         for( int j = 0; j < allParams.size(); j++){
-            map<string,string> params = allParams.at(j);
-            stringstream ss;
-            ss << newName << "_" << std::setw(4) << std::setfill('0') << j;
-            string newNameId = ss.str();
+            string newNameId;
+            if (allParams.size() > 1){
+                map<string,string> params = allParams.at(j);
+                stringstream ss;
+                ss << newName << "_" << std::setw(4) << std::setfill('0') << j;
+                newNameId = ss.str();
+            } else {
+                newNameId = newName;
+            }
 
             IIndexer* originalIndex = (IIndexer*)FactoryIndexer::getInstance()->createType(originalName);
             FactoryIndexer::getInstance()->registerType(newNameId,originalIndex,params);
@@ -130,7 +135,7 @@ vector<IIndexer*> LoadConfig::registerIndeces(Json::Value plugins){
 
 vector<IAnalyser*> LoadConfig::registerAnalysers(Json::Value plugins){
 
-    vector<IAnalyser*> indexers;
+    vector<IAnalyser*> analysers;
 
     for ( int i = 0; i < plugins.size(); i++ ){
         const Json::Value p = plugins[i];
@@ -146,18 +151,63 @@ vector<IAnalyser*> LoadConfig::registerAnalysers(Json::Value plugins){
         LoadConfig::generatePermutations(paramsJSON,allParams);
 
         for( int j = 0; j < allParams.size(); j++){
-            map<string,string> params = allParams.at(j);
-            stringstream ss;
-            ss << newName << "_" << j;
-            string newNameId = ss.str();
-            IAnalyser* originalIndex = (IAnalyser*)FactoryAnalyser::getInstance()->createType(originalName);
-            FactoryAnalyser::getInstance()->registerType(newNameId,originalIndex,params);
-            IAnalyser* readyIndex = (IAnalyser*)FactoryAnalyser::getInstance()->createType(newNameId);
+            string newNameId;
+            if (allParams.size() > 1){
+                map<string,string> params = allParams.at(j);
+                stringstream ss;
+                ss << newName << "_" << std::setw(4) << std::setfill('0') << j;
+                newNameId = ss.str();
+            } else {
+                newNameId = newName;
+            }
 
-            indexers.push_back(readyIndex);
+            IAnalyser* originalAnalyser = (IAnalyser*)FactoryAnalyser::getInstance()->createType(originalName);
+            FactoryAnalyser::getInstance()->registerType(newNameId,originalAnalyser,params);
+            IAnalyser* readyAnalyser = (IAnalyser*)FactoryAnalyser::getInstance()->createType(newNameId);
+
+            analysers.push_back(readyAnalyser);
         }
     }
-    return indexers;
+    return analysers;
+}
+
+
+vector<IEndpoint*> LoadConfig::registerEndpoints(Json::Value plugins){
+
+    vector<IEndpoint*> analysers;
+
+    for ( int i = 0; i < plugins.size(); i++ ){
+        const Json::Value p = plugins[i];
+
+        string newName = p["newName"].asString();
+        string originalName = p["originalName"].asString();
+
+        Json::Value paramsJSON = p["params"];
+
+        map<string,string> params;
+        vector<map<string,string> > allParams;
+
+        LoadConfig::generatePermutations(paramsJSON,allParams);
+
+        for( int j = 0; j < allParams.size(); j++){
+            string newNameId;
+            if (allParams.size() > 1){
+                map<string,string> params = allParams.at(j);
+                stringstream ss;
+                ss << newName << "_" << std::setw(4) << std::setfill('0') << j;
+                newNameId = ss.str();
+            } else {
+                newNameId = newName;
+            }
+
+            IEndpoint* originalAnalyser = (IEndpoint*)FactoryEndpoint::getInstance()->createType(originalName);
+            FactoryEndpoint::getInstance()->registerType(newNameId,originalAnalyser,params);
+            IEndpoint* readyAnalyser = (IEndpoint*)FactoryEndpoint::getInstance()->createType(newNameId);
+
+            analysers.push_back(readyAnalyser);
+        }
+    }
+    return analysers;
 }
 
 map<string,string> LoadConfig::jsonToDict(Json::Value root){

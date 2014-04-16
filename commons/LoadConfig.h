@@ -8,6 +8,9 @@
 #include "../analyser/FactoryAnalyser.h"
 #include "../analyser/IAnalyser.h"
 
+#include "../rest/FactoryEndpoint.h"
+#include "../rest/IEndpoint.h"
+
 #include <iomanip>
 #include <jsoncpp/json/json.h>
 
@@ -21,6 +24,7 @@ class LoadConfig
     private:
         static vector<IIndexer*> registerIndeces(Json::Value root);
         static vector<IAnalyser*> registerAnalysers(Json::Value plugins);
+        static vector<IEndpoint*> registerEndpoints(Json::Value plugins);
         static void generatePermutations(Json::Value root, vector<map<string,string> >& result);
         static map<string,string> jsonToDict(Json::Value root);
 
