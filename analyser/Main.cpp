@@ -88,14 +88,14 @@ void extractAllFeaturesImEmotion(string testPath, string output) {
 	//HistogramExtractor histogramExtractor (8);
 
 	vector<cv::Rect> rectangleRois = vector<cv::Rect>();
-	
+
 	 rectangleRois.push_back(cv::Rect(0,0,46,64));
 	 rectangleRois.push_back(cv::Rect(46,64,46,112-64));
 	 rectangleRois.push_back(cv::Rect(46,0,46,64));
 	 rectangleRois.push_back(cv::Rect(0,64,46,112-64));
 	 rectangleRois.push_back(cv::Rect(0,10,92,30));
 	 rectangleRois.push_back(cv::Rect(20,65,52,30));
-	 
+
 	/*
 	rectangleRois.push_back(cv::Rect(29, 13, 36, 20));
 	rectangleRois.push_back(cv::Rect(10, 59, 24, 28));
@@ -278,7 +278,7 @@ int extractHistogram(int argc, char *argv[]){
 	//FeatureExtractor* s = new NullExtractor();
 
 	float featureVectorCount = is.getImageCount();
-	float dimensionality = s->getFeatureVectorSize(); 
+	float dimensionality = s->getFeatureVectorSize();
 
 	binFine.write((const char*) &dimensionality,sizeof(float));
 	binFine.write((const char*) &featureVectorCount,sizeof(float));
@@ -291,9 +291,9 @@ int extractHistogram(int argc, char *argv[]){
 	cout << "getImageCount: " << is.getImageCount() << endl;
 	for (int k = 0; k < is.getImageCount(); k++) {
 		if (!(src = is.nextImage()).empty()) {
-			
+
 			//cout << "ok" << endl;
-			
+
 			cv::Mat featuresRow;
 			if (src.channels() == 1) {
 				cv::cvtColor(src, dst, CV_GRAY2BGR);
@@ -313,7 +313,7 @@ int extractHistogram(int argc, char *argv[]){
 			float label = atoi(idStr.c_str());
 			if ((i - 1) % 50 == 0){
 				cout << "image " << i << " of " << is.getImageCount() << endl;
-				
+
 				double time = (double)cvGetTickCount()-t;
 				t = cvGetTickCount();
 				int remaining = is.getImageCount() - i;
@@ -322,17 +322,17 @@ int extractHistogram(int argc, char *argv[]){
 			i++;
 
 			binFine.write((const char*) &label,sizeof(float));
-			
+
 			for (int a = 0; a < dimensionality; a++){
-				float g = featuresRow.at<float>(0,a); 
+				float g = featuresRow.at<float>(0,a);
 				binFine.write((const char*) &g,sizeof(float));
 			}
-			
+
 
 		}
 	}
 	binFine.close();
-	
+
 	delete s;
 	return 0;
 }
@@ -341,7 +341,7 @@ int testEverything(int argc, char *argv[]) {
 
 // /home/amourao/iclefmed12/fast.hevs.ch/imageclefmed/2012/modality-classfication/tmp.txt
 //"ImageCLEF 2012 Training Set/DVDM/IJD-54-150-g002.jpg";IJD-54-150-g002;DVDM;16
-	
+
 	int tmpError = 0;
 
 	string file(argv[1]);
@@ -350,7 +350,7 @@ int testEverything(int argc, char *argv[]) {
 	TextFileSource is(file);
 
 
-	FeatureExtractor* s = new SegmentedHistogramExtractor(atoi(argv[3]),atoi(argv[4]), atoi(argv[5]));
+	FeatureExtractor* s = new SegmentedHistogramExtractor(atoi(argv[3]),atoi(argv[4]), atoi(argv[5]),false);
 	//FeatureExtractor* s = new HistogramExtractor(atoi(argv[3]));
 
 	//FeatureExtractor* s = new NullExtractor();
@@ -499,7 +499,7 @@ int testINRIA(int argc, char *argv[]) {
 	vector<FeatureExtractor*> featureExtractors;
 	featureExtractors.push_back(
 			new SegmentedHistogramExtractor(atoi(argv[4]), atoi(argv[5]),
-					atoi(argv[6])));
+					atoi(argv[6])),false);
 	featureExtractors.push_back(new HistogramExtractor(atoi(argv[4])));
 
 	for (unsigned int i = 0; i < featureExtractors.size(); i++) {
@@ -536,7 +536,7 @@ int testInterfaces(int argc, char *argv[]) {
 	string trainfile(argv[1]);
 
 	FeatureExtractor* featureExtractor = new SegmentedHistogramExtractor(
-			atoi(argv[2]), atoi(argv[3]), atoi(argv[4]));
+			atoi(argv[2]), atoi(argv[3]), atoi(argv[4]),false);
 	FeatureExtractor* featureExtractor2 = new HistogramExtractor(atoi(argv[2]));
 
 	vector<float> a;

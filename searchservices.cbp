@@ -100,14 +100,16 @@
 		<Unit filename="analyser/FactoryClassifier.cpp" />
 		<Unit filename="analyser/FactoryClassifier.h" />
 		<Unit filename="analyser/IAnalyser.h" />
-		<Unit filename="analyser/Main.cpp" />
+		<Unit filename="analyser/Main.cpp">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
 		<Unit filename="analyser/Main2.cpp">
 			<Option target="ReleaseMainAna" />
+			<Option target="DebugMainAna" />
 		</Unit>
 		<Unit filename="analyser/Main3.cpp">
 			<Option target="DebugMainInd" />
 			<Option target="ReleaseMainInd" />
-			<Option target="DebugMainAna" />
 		</Unit>
 		<Unit filename="analyser/nKeypoint/KeypointFeatureExtractor.h" />
 		<Unit filename="analyser/nKeypoint/SURFExtractor.cpp" />
