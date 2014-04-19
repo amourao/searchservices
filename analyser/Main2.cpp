@@ -26,6 +26,8 @@
 #include "nKeypoint/SURFExtractor.h"
 #include "nVector/HistogramExtractor.h"
 #include "nVector/SegmentedHistogramExtractor.h"
+#include "nVector/LireExtractor.h"
+
 
 #include "nRoi/FaceDetection.h"
 
@@ -45,6 +47,8 @@
 #include "../indexer/MSIDXIndexer.h"
 
 #include "../commons/StringTools.h"
+
+#include "../dataModel/DatabaseConnection.h"
 
 
 
@@ -634,6 +638,75 @@ int merger(int argc, char *argv[]){
 
 //normalize(dst, dst, 0,255, CV_MINMAX);
 
+void createMedCatClassifier(int argc, char *argv[]) {
+
+    string trainData = string(argv[1]);
+	TextFileSourceV2 is(trainData);
+
+	Mat src;
+
+    string aa = "cedd";
+    map<string,string> params;
+    params["algorithm"] = "cedd";
+    LireExtractor ceddExtractor (aa,params);
+
+    aa = "fcth";
+    map<string,string> paramsB;
+    paramsB["algorithm"] = "fcth";
+    LireExtractor fcthExtractor (aa,paramsB);
+
+    int i = -1;
+    int j = 0;
+    string lastCateg = "";
+
+    Mat features, labels;
+
+    while (j < is.getImageCount()) {
+        src = is.nextImage();
+        if (!src.empty()){
+        string currentCat = is.getCurrentImageInfoField(2);
+
+        if (currentCat != lastCateg){
+            i++;
+            lastCateg = currentCat;
+        }
+
+
+        if (j % 100 == 0)
+            cout << j << " " << is.getImageCount() << endl;
+
+        Mat f1, f2, comb;
+        Mat label(1,1,CV_32F);
+
+        ceddExtractor.extractFeatures(src, f1);
+        fcthExtractor.extractFeatures(src, f2);
+
+        hconcat(f1,f2,comb);
+
+        label.at<float>(0,0) = i;
+        features.push_back(comb);
+        labels.push_back(label);
+        }
+        j++;
+    }
+
+    cout << "Wrote files" << endl;
+
+    string type = "medClassifier";
+
+    MatrixTools::writeBinV2(type,features,labels);
+
+    SVMClassifier svm(type);
+
+    cout << "Training" << endl;
+    svm.train(features,labels);
+
+    cout << "Saving" << endl;
+    svm.save(type);
+
+
+}
+
 void extractAllFeaturesCKv2(int argc, char *argv[]) {
 
 	string testPath = string(argv[1]);
@@ -785,12 +858,85 @@ void extractAllFeaturesCKv2(int argc, char *argv[]) {
 	MatrixTools::writeBinV2(out,gaborV3ALL,labelsAll);
 }
 
+void classifyAllImages(int argc, char *argv[]) {
+
+    string type = "medClassifier";
+
+    SVMClassifier svm(type);
+
+    cout << "Loading" << endl;
+    svm.load(type);
+
+    string trainData = string(argv[1]);
+	TextFileSourceV2 is(trainData);
+
+	Mat src;
+
+    string aa = "cedd";
+    map<string,string> params;
+    params["algorithm"] = "cedd";
+    LireExtractor ceddExtractor (aa,params);
+
+    aa = "fcth";
+    map<string,string> paramsB;
+    paramsB["algorithm"] = "fcth";
+    LireExtractor fcthExtractor (aa,paramsB);
+
+    int i = -1;
+    int j = 0;
+    string lastCateg = "";
+
+    Mat features, labels;
+
+    while (j < is.getImageCount()) {
+        src = is.nextImage();
+        if (!src.empty()){
+        string iri = StringTools::split(is.getCurrentImageInfoField(0),'.')[0];
+
+        if (j % 100 == 0)
+            cout << j << " " << is.getImageCount() << endl;
+
+        Mat f1, f2, comb;
+        Mat label(1,1,CV_32F);
+
+        ceddExtractor.extractFeatures(src, f1);
+        fcthExtractor.extractFeatures(src, f2);
+
+        hconcat(f1,f2,comb);
+
+        float f = svm.classify(comb);
+
+        label.at<float>(0,0) = f;
+        features.push_back(comb);
+        labels.push_back(label);
+
+        cout << is.getCurrentImageInfoField(0) << ";" << iri << ";" << f << ";" << j << endl;
+        }
+        j++;
+    }
+
+    type = "medFeatures";
+    MatrixTools::writeBinV2(type,features,labels);
+    cout << "Wrote files" << endl;
+
+}
+
+
+int testDatabaseConnection(int argc, char *argv[]){
+    DatabaseConnection db;
+
+    map<string,string> s = db.getRow("images","doi,iri,caption","iri","1471-2091-1-1-5");
+}
+
 int main(int argc, char *argv[])
 {
 	//testLoadSaveIClassifier(argc, argv);
 	//testLoadSaveIIndexer(argc, argv);
 	//faceDetectionParameterChallenge(argc, argv);
-    testAllClassifiersBin(argc, argv);
+    //testAllClassifiersBin(argc, argv);
+    //createMedCatClassifier(argc, argv);
+    //testDatabaseConnection(argc, argv);
+    classifyAllImages(argc, argv);
     //extractAllFeaturesCKv2(argc, argv);
     //merger(argc, argv);
     //extractAllFeaturesCK(argc, argv);

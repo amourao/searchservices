@@ -276,7 +276,7 @@
 	<string>
 	<map>
 
-1397661047 source:/home/amourao/code/searchservices/analyser/Main2.cpp
+1397864519 source:/home/amourao/code/searchservices/analyser/Main2.cpp
 	<iostream>
 	<string>
 	<sstream>
@@ -300,6 +300,7 @@
 	"nKeypoint/SURFExtractor.h"
 	"nVector/HistogramExtractor.h"
 	"nVector/SegmentedHistogramExtractor.h"
+	"nVector/LireExtractor.h"
 	"nRoi/FaceDetection.h"
 	"nTag/kNNClassifier.h"
 	"nTag/SVMClassifier.h"
@@ -313,6 +314,7 @@
 	"../indexer/FlannkNNIndexer.h"
 	"../indexer/MSIDXIndexer.h"
 	"../commons/StringTools.h"
+	"../dataModel/DatabaseConnection.h"
 
 1391563053 /home/amourao/code/searchservices/analyser/sources/TextFileSourceV2.h
 	"ImageSource.h"
@@ -4054,4 +4056,54 @@
 	"../indexer/IIndexer.h"
 	"../analyser/IAnalyser.h"
 	"IEndpoint.h"
+
+1397864595 source:/home/amourao/code/searchservices/dataModel/DatabaseConnection.cpp
+	"DatabaseConnection.h"
+
+1397864491 /home/amourao/code/searchservices/dataModel/DatabaseConnection.h
+	<iostream>
+	<string>
+	<vector>
+	<map>
+	"Poco/Data/SQLChannel.h"
+	"Poco/Data/SessionFactory.h"
+	"Poco/Data/SQLite/Connector.h"
+	"Poco/Data/SQLite/Utility.h"
+	"Poco/Data/RecordSet.h"
+
+1381498928 /home/amourao/myLibs/include//Poco/Data/RecordSet.h
+	"Poco/Data/Data.h"
+	"Poco/Data/Extraction.h"
+	"Poco/Data/BulkExtraction.h"
+	"Poco/Data/Statement.h"
+	"Poco/Data/RowIterator.h"
+	"Poco/Data/LOB.h"
+	"Poco/String.h"
+	"Poco/Dynamic/Var.h"
+	"Poco/Exception.h"
+	<ostream>
+	<limits>
+
+1381498928 /home/amourao/myLibs/include//Poco/Data/RowIterator.h
+	"Poco/Data/Data.h"
+	"Poco/Data/Row.h"
+	"Poco/Dynamic/Var.h"
+	<iterator>
+	<algorithm>
+
+1397839203 source:/home/amourao/code/searchservices/rest/Endpoints/database/GetMetadata.cpp
+	"GetMetadata.h"
+
+1397863205 /home/amourao/code/searchservices/rest/Endpoints/database/GetMetadata.h
+	<iostream>
+	<sstream>
+	"../../IEndpoint.h"
+	"../../FactoryEndpoint.h"
+	"../../../analyser/FactoryAnalyser.h"
+	"../../../indexer/FactoryIndexer.h"
+	"../../../indexer/IIndexer.h"
+	"../../../analyser/tools/MatrixTools.h"
+	<jsoncpp/json/json.h>
+	<jsoncpp/json/autolink.h>
+	"../../../commons/FileDownloader.h"
 

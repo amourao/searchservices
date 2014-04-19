@@ -6,18 +6,7 @@
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="Debug">
-				<Option output="bin/Debug/runIndexer" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj/Debug/" />
-				<Option type="1" />
-				<Option compiler="gcc" />
-				<Option parameters="config.json" />
-				<Compiler>
-					<Add option="-g" />
-					<Add directory="commons" />
-				</Compiler>
-			</Target>
-			<Target title="Release">
+			<Target title="ReleaseMainInd">
 				<Option output="bin/Release/runIndexer" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
@@ -30,6 +19,67 @@
 				<Linker>
 					<Add option="-s" />
 				</Linker>
+			</Target>
+			<Target title="ReleaseMainAna">
+				<Option output="bin/Release/runAnalyser" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option parameters="~/code/searchservices/config.json" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add directory="commons" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+			<Target title="ReleaseServer">
+				<Option output="bin/Release/server" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option parameters="default.json" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add directory="commons" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+			<Target title="DebugMainInd">
+				<Option output="bin/Debug/runIndexer" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option parameters="config.json" />
+				<Compiler>
+					<Add option="-g" />
+					<Add directory="commons" />
+				</Compiler>
+			</Target>
+			<Target title="DebugMainAna">
+				<Option output="bin/Debug/runAnalyser" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option parameters="config.json" />
+				<Compiler>
+					<Add option="-g" />
+					<Add directory="commons" />
+				</Compiler>
+			</Target>
+			<Target title="DebugServer">
+				<Option output="bin/Debug/server" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option parameters="default.json" />
+				<Compiler>
+					<Add option="-g" />
+					<Add directory="commons" />
+				</Compiler>
 			</Target>
 		</Build>
 		<Compiler>
@@ -52,9 +102,13 @@
 		<Unit filename="analyser/IAnalyser.h" />
 		<Unit filename="analyser/Main.cpp" />
 		<Unit filename="analyser/Main2.cpp">
-			<Option target="&lt;{~None~}&gt;" />
+			<Option target="ReleaseMainAna" />
 		</Unit>
-		<Unit filename="analyser/Main3.cpp" />
+		<Unit filename="analyser/Main3.cpp">
+			<Option target="DebugMainInd" />
+			<Option target="ReleaseMainInd" />
+			<Option target="DebugMainAna" />
+		</Unit>
 		<Unit filename="analyser/nKeypoint/KeypointFeatureExtractor.h" />
 		<Unit filename="analyser/nKeypoint/SURFExtractor.cpp" />
 		<Unit filename="analyser/nKeypoint/SURFExtractor.h" />
@@ -226,7 +280,8 @@
 		<Unit filename="rest/RestServer.cpp" />
 		<Unit filename="rest/RestServer.h" />
 		<Unit filename="rest/main.cpp">
-			<Option target="&lt;{~None~}&gt;" />
+			<Option target="ReleaseServer" />
+			<Option target="DebugServer" />
 		</Unit>
 		<Extensions>
 			<code_completion />
