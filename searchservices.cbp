@@ -25,7 +25,7 @@
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="~/code/searchservices/config.json" />
+				<Option parameters="/media/Share/data/medicalClassifier/medicalClassifierData.txt" />
 				<Compiler>
 					<Add option="-O2" />
 					<Add directory="commons" />
@@ -203,6 +203,8 @@
 		<Unit filename="commons/factory/Factory.h" />
 		<Unit filename="dataModel/DataModelController.cpp" />
 		<Unit filename="dataModel/DataModelController.h" />
+		<Unit filename="dataModel/DatabaseConnection.cpp" />
+		<Unit filename="dataModel/DatabaseConnection.h" />
 		<Unit filename="dataModel/IDataModel.h" />
 		<Unit filename="dataModel/NKeypoint.cpp" />
 		<Unit filename="dataModel/NKeypoint.h" />
@@ -270,6 +272,8 @@
 		<Unit filename="rest/Endpoints/analyser/SearchResult.h" />
 		<Unit filename="rest/Endpoints/codebits/Codebits.cpp" />
 		<Unit filename="rest/Endpoints/codebits/Codebits.h" />
+		<Unit filename="rest/Endpoints/database/GetMetadata.cpp" />
+		<Unit filename="rest/Endpoints/database/GetMetadata.h" />
 		<Unit filename="rest/Endpoints/indexer/GenericIndexer.cpp" />
 		<Unit filename="rest/Endpoints/indexer/GenericIndexer.h" />
 		<Unit filename="rest/FactoryEndpoint.cpp" />

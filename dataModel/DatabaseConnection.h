@@ -27,7 +27,7 @@ class DatabaseConnection
 {
     public:
         DatabaseConnection();
-        virtual ~DatabaseConnection();
+        ~DatabaseConnection();
 
         std::map<std::string,std::string> getRow(std::string table, std::string fieldsToGet, std::string key, std::string value);
         std::map<std::string,std::string> getRow(std::string table, std::string key, int value);

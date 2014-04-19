@@ -276,7 +276,7 @@
 	<string>
 	<map>
 
-1397864519 source:/home/amourao/code/searchservices/analyser/Main2.cpp
+1397930890 source:/home/amourao/code/searchservices/analyser/Main2.cpp
 	<iostream>
 	<string>
 	<sstream>
@@ -415,7 +415,7 @@
 	"FactoryIndexer.h"
 	"../commons/Timing.h"
 
-1397653226 source:/home/amourao/code/searchservices/analyser/Main3.cpp
+1397932113 source:/home/amourao/code/searchservices/analyser/Main3.cpp
 	<iostream>
 	<fstream>
 	<string>
@@ -4060,7 +4060,7 @@
 1397864595 source:/home/amourao/code/searchservices/dataModel/DatabaseConnection.cpp
 	"DatabaseConnection.h"
 
-1397864491 /home/amourao/code/searchservices/dataModel/DatabaseConnection.h
+1397932325 /home/amourao/code/searchservices/dataModel/DatabaseConnection.h
 	<iostream>
 	<string>
 	<vector>
