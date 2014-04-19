@@ -115,9 +115,10 @@ void testIndeces(int argc, char *argv[]){
 	map<string,string> parameters;
 	vector<IIndexer*> indexers;
 	vector<IAnalyser*> analysers;
+	vector<IClassifier*> classifiers;
 	vector<IEndpoint*> endpoints;
 
-	LoadConfig::load("config.json",parameters,indexers,analysers,endpoints);
+	LoadConfig::load("config.json",parameters,indexers,analysers,classifiers,endpoints);
 
 
     IBinImporter* importer = new tinyImageImporter();
@@ -191,17 +192,17 @@ void testIndeces(int argc, char *argv[]){
 
 void awesomeIndexTesterOld(int argc, char *argv[]){
 
-	map<string,string> parameters;
-	vector<IIndexer*> indexers;
-	vector<IAnalyser*> analysers;
-	vector<IEndpoint*> endpoints;
-
     IBinImporter* importer;
 
     string paramFile(argv[1]);
 
-	LoadConfig::load("config.json",parameters,indexers,analysers,endpoints);
+	map<string,string> parameters;
+	vector<IIndexer*> indexers;
+	vector<IAnalyser*> analysers;
+	vector<IClassifier*> classifiers;
+	vector<IEndpoint*> endpoints;
 
+	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
     string file(parameters["file"]);
     string type(parameters["type"]);
 
@@ -400,18 +401,18 @@ bool loadGT(string& gtFile,vector<std::pair<vector<float>, vector<float> > >& li
 
 void computeGT(int argc, char *argv[]){
 
-	map<string,string> parameters;
-	vector<IIndexer*> indexers;
-
-	vector<IAnalyser*> analysers;
-
-    vector<IEndpoint*> endpoints;
-	bool debug = false;
-
+    bool debug = false;
     IBinImporter* importer;
 
     string paramFile(argv[1]);
-	LoadConfig::load(paramFile,parameters,indexers,analysers,endpoints);
+
+	map<string,string> parameters;
+	vector<IIndexer*> indexers;
+	vector<IAnalyser*> analysers;
+	vector<IClassifier*> classifiers;
+	vector<IEndpoint*> endpoints;
+
+	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
 
     string file;
     string type(parameters["type"]);
@@ -568,20 +569,20 @@ void computeGT(int argc, char *argv[]){
 
 void awesomeIndexTesterSingle(int argc, char *argv[]){
 
-	map<string,string> parameters;
-	vector<IIndexer*> allIndexers;
-	vector<IAnalyser*> analysers;
-	vector<IEndpoint*> endpoints;
-
 	bool debug = false;
-
     IBinImporter* importer;
 
     string paramFile(argv[1]);
 
+	map<string,string> parameters;
+	vector<IIndexer*> allIndexers;
+	vector<IAnalyser*> analysers;
+	vector<IClassifier*> classifiers;
+	vector<IEndpoint*> endpoints;
+
     int indexToTest = atoi(argv[2]);
 
-	LoadConfig::load(paramFile,parameters,allIndexers,analysers,endpoints);
+	LoadConfig::load(paramFile,parameters,allIndexers,analysers,classifiers,endpoints);
 
 	//cout << allIndexers.size() << endl;
 
@@ -883,18 +884,18 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
 
 void exportToArmaMat(int argc, char *argv[]){
 
-	map<string,string> parameters;
-	vector<IIndexer*> allIndexers;
-	vector<IAnalyser*> analysers;
-	vector<IEndpoint*> endpoints;
-
 	bool debug = false;
-
     IBinImporter* importer;
 
     string paramFile(argv[1]);
 
-	LoadConfig::load(paramFile,parameters,allIndexers,analysers,endpoints);
+	map<string,string> parameters;
+	vector<IIndexer*> indexers;
+	vector<IAnalyser*> analysers;
+	vector<IClassifier*> classifiers;
+	vector<IEndpoint*> endpoints;
+
+	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
 
 	//cout << allIndexers.size() << endl;
 
@@ -1059,16 +1060,18 @@ void exportToArmaMat(int argc, char *argv[]){
 
 void testSphericalHashing(int argc, char *argv[]){
 
-map<string,string> parameters;
-	vector<IIndexer*> indexers;
-	vector<IAnalyser*> analysers;
-	vector<IEndpoint*> endpoints;
-
-
+	bool debug = false;
     IBinImporter* importer;
 
     string paramFile(argv[1]);
-	LoadConfig::load(paramFile,parameters,indexers,analysers,endpoints);
+
+	map<string,string> parameters;
+	vector<IIndexer*> indexers;
+	vector<IAnalyser*> analysers;
+	vector<IClassifier*> classifiers;
+	vector<IEndpoint*> endpoints;
+
+	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
 
     string file(parameters["file"]);
     string type(parameters["type"]);
