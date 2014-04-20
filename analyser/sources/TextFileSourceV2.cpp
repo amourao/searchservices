@@ -3,7 +3,6 @@
 
 TextFileSourceV2::TextFileSourceV2(string _filename){
 	readFile(_filename);
-	//baseDir = "./ck+/"; //TODO
 	imageIndex = 0;
 }
 
@@ -56,6 +55,10 @@ Mat TextFileSourceV2::nextImage(){
 	} else
 		return Mat();
 
+}
+
+void TextFileSourceV2::skipTo(int _imageIndex){
+    imageIndex = _imageIndex;
 }
 
 string TextFileSourceV2::getImageInfo(){

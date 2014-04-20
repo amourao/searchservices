@@ -24,6 +24,8 @@ public:
 	int getImageCount();
 	int getRemainingImageCount();
 
+	void skipTo(int imageIndex);
+
 	vector<string> getCurrentImageInfoVector();
 	string getCurrentImageInfoField(int field);
 	int getImageInfoFieldCount();

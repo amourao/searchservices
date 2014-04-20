@@ -926,6 +926,90 @@ void classifyAllImages(int argc, char *argv[]) {
 }
 
 
+void classifyAllImagesCondor(int argc, char *argv[]) {
+
+    string type = "medClassifier";
+
+    SVMClassifier svm(type);
+
+    cout << "Loading" << endl;
+    svm.load(type);
+
+    string trainData = string(argv[1]);
+    int myDivision = atoi(argv[2]);
+    int totalDivisions = atoi(argv[3]);
+
+    TextFileSourceV2 is(trainData);
+
+    int imageCount = is.getImageCount();
+
+    int imagesToProcess = (imageCount/totalDivisions)+1;
+    int startAt = imagesToProcess*myDivision;
+
+    if ((imageCount+startAt)>imageCount){
+        imagesToProcess = imageCount-startAt;
+    }
+
+    is.skipTo(startAt);
+
+	Mat src;
+
+    string aa = "cedd";
+    map<string,string> params;
+    params["algorithm"] = "cedd";
+    LireExtractor ceddExtractor (aa,params);
+
+    aa = "fcth";
+    map<string,string> paramsB;
+    paramsB["algorithm"] = "fcth";
+    LireExtractor fcthExtractor (aa,paramsB);
+
+    int i = -1;
+    int j = 0;
+    string lastCateg = "";
+
+    Mat features, labels;
+
+    for (int j = 0; j < imagesToProcess; j++) {
+        try{
+        src = is.nextImage();
+        //cout << is.getImagePath() << endl;
+
+        //cout <<  StringTools::split(is.getCurrentImageInfoField(0),'.')[0] << endl;
+        if (!src.empty()){
+        string iri = StringTools::split(is.getCurrentImageInfoField(0),'.')[0];
+
+        Mat f1, f2, comb;
+        Mat label(1,1,CV_32F);
+
+        ceddExtractor.extractFeatures(src, f1);
+        fcthExtractor.extractFeatures(src, f2);
+
+        hconcat(f1,f2,comb);
+
+        float f = svm.classify(comb);
+
+        label.at<float>(0,0) = f;
+        features.push_back(comb);
+        labels.push_back(label);
+
+        cout << is.getCurrentImageInfoField(0) << ";" << iri << ";" << f << ";" << j << ";" << j+startAt << endl;
+        }
+        } catch(...){
+
+        }
+    }
+
+    stringstream ss;
+    ss << "medFeatures_";
+    ss << std::setw(2) << std::setfill('0') << myDivision;
+    string filename = ss.str();
+    MatrixTools::writeBinV2(filename,features,labels);
+    cout << "Wrote files" << endl;
+
+}
+
+
 int testDatabaseConnection(int argc, char *argv[]){
     DatabaseConnection db;
 
@@ -940,7 +1024,7 @@ int main(int argc, char *argv[])
     //testAllClassifiersBin(argc, argv);
     //createMedCatClassifier(argc, argv);
     //testDatabaseConnection(argc, argv);
-    classifyAllImages(argc, argv);
+    classifyAllImagesCondor(argc, argv);
     //extractAllFeaturesCKv2(argc, argv);
     //merger(argc, argv);
     //extractAllFeaturesCK(argc, argv);
