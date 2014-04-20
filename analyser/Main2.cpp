@@ -890,8 +890,12 @@ void classifyAllImages(int argc, char *argv[]) {
 
     while (j < is.getImageCount()) {
         src = is.nextImage();
+        cout << is.getImagePath() << endl;
+
+        cout <<  StringTools::split(is.getCurrentImageInfoField(0),'.')[0] << endl;
         if (!src.empty()){
         string iri = StringTools::split(is.getCurrentImageInfoField(0),'.')[0];
+
 
         if (j % 100 == 0)
             cout << j << " " << is.getImageCount() << endl;

@@ -34,14 +34,14 @@ void TextFileSourceV2::readFile(string trainDataFile){
 			stringstream liness(line);
 
 			getline(liness, path, ';');
-			
+
 			stringstream ss2;
-			
+
 			ss2 << baseDir << path;
-			
+
 			string fullPath = ss2.str();
 
-			imagesPath.push_back(fullPath );
+			imagesPath.push_back(fullPath);
 			imagesOriginalInfo.push_back(line);
 		}
 	}
@@ -53,7 +53,7 @@ Mat TextFileSourceV2::nextImage(){
 		imageIndex++;
 		Mat frame2 = imread(s,1);
 		return frame2;
-	} else 
+	} else
 		return Mat();
 
 }

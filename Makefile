@@ -18,607 +18,1833 @@ LIBDIR = -L/home/amourao/myLibs/lib/ -L/home/amourao/myLibs/include/
 LIB = 
 LDFLAGS = -lhdf5 -lflann -ljsoncpp -lopencv_core -lopencv_imgproc -lopencv_calib3d -lopencv_video -lopencv_photo -lopencv_features2d -lopencv_ml -lopencv_highgui -lopencv_objdetect -lopencv_contrib -lopencv_legacy -lopencv_nonfree -lfftw3f -lfftw3 -lm -lopencv_legacy -lopencv_flann -larmadillo -llapack -lblas -lPocoFoundation -lPocoData -lPocoDataSQLite -lPocoNet -lPocoXML -lPocoJSON -lPocoUtil -lcurl -lvw
 
-INC_DEBUG = $(INC) -Icommons
-CFLAGS_DEBUG = $(CFLAGS) -g
-RESINC_DEBUG = $(RESINC)
-RCFLAGS_DEBUG = $(RCFLAGS)
-LIBDIR_DEBUG = $(LIBDIR)
-LIB_DEBUG = $(LIB)
-LDFLAGS_DEBUG = $(LDFLAGS)
-OBJDIR_DEBUG = obj/Debug
-DEP_DEBUG = 
-OUT_DEBUG = bin/Debug/runIndexer
-
-INC_RELEASE = $(INC) -Icommons
-CFLAGS_RELEASE = $(CFLAGS) -O2
-RESINC_RELEASE = $(RESINC)
-RCFLAGS_RELEASE = $(RCFLAGS)
-LIBDIR_RELEASE = $(LIBDIR)
-LIB_RELEASE = $(LIB)
-LDFLAGS_RELEASE = $(LDFLAGS) -s
-OBJDIR_RELEASE = obj/Release
-DEP_RELEASE = 
-OUT_RELEASE = bin/Release/runIndexer
-
-OBJ_DEBUG = $(OBJDIR_DEBUG)/indexer/LSHIndexer.o $(OBJDIR_DEBUG)/indexer/MSIDXIndexer.o $(OBJDIR_DEBUG)/indexer/SphericalHashIndexer.o $(OBJDIR_DEBUG)/indexer/e2lsh/BucketHashing.o $(OBJDIR_DEBUG)/indexer/FlannkNNIndexer.o $(OBJDIR_DEBUG)/indexer/e2lsh/Geometry.o $(OBJDIR_DEBUG)/indexer/e2lsh/GlobalVars.o $(OBJDIR_DEBUG)/indexer/e2lsh/LSHMain.o $(OBJDIR_DEBUG)/indexer/e2lsh/LocalitySensitiveHashing.o $(OBJDIR_DEBUG)/indexer/e2lsh/NearNeighbors.o $(OBJDIR_DEBUG)/indexer/e2lsh/Random.o $(OBJDIR_DEBUG)/commons/LoadConfig.o $(OBJDIR_DEBUG)/commons/StringTools.o $(OBJDIR_DEBUG)/commons/factory/Factory.o $(OBJDIR_DEBUG)/dataModel/DataModelController.o $(OBJDIR_DEBUG)/dataModel/NKeypoint.o $(OBJDIR_DEBUG)/dataModel/NRoi.o $(OBJDIR_DEBUG)/dataModel/NTag.o $(OBJDIR_DEBUG)/dataModel/NVector.o $(OBJDIR_DEBUG)/indexer/FactoryIndexer.o $(OBJDIR_DEBUG)/rest/Endpoints/analyser/GenericClassifier.o $(OBJDIR_DEBUG)/rest/Endpoints/analyser/GetObjectFeatures.o $(OBJDIR_DEBUG)/rest/Endpoints/analyser/MedicalSearchEngine.o $(OBJDIR_DEBUG)/rest/Endpoints/analyser/SearchResult.o $(OBJDIR_DEBUG)/rest/Endpoints/codebits/Codebits.o $(OBJDIR_DEBUG)/rest/Endpoints/analyser/ExtractFeatures.o $(OBJDIR_DEBUG)/rest/Endpoints/indexer/GenericIndexer.o $(OBJDIR_DEBUG)/rest/FactoryEndpoint.o $(OBJDIR_DEBUG)/rest/RestRequestHandler.o $(OBJDIR_DEBUG)/rest/RestServer.o $(OBJDIR_DEBUG)/indexer/sphericalHashing/Main.o $(OBJDIR_DEBUG)/indexer/e2lsh/SelfTuning.o $(OBJDIR_DEBUG)/indexer/e2lsh/Util.o $(OBJDIR_DEBUG)/indexer/sphericalHashing/BinaryHash.o $(OBJDIR_DEBUG)/indexer/sphericalHashing/Common.o $(OBJDIR_DEBUG)/commons/FileDownloader.o $(OBJDIR_DEBUG)/indexer/sphericalHashing/Stopwatch.o $(OBJDIR_DEBUG)/rest/Endpoints/TestEndpoint.o $(OBJDIR_DEBUG)/rest/Endpoints/analyser/CombSearchResult.o $(OBJDIR_DEBUG)/rest/Endpoints/analyser/EnsembleClassifier.o $(OBJDIR_DEBUG)/analyser/nTag/VWBasicClassifier.o $(OBJDIR_DEBUG)/analyser/nTag/kNNClassifier.o $(OBJDIR_DEBUG)/analyser/nVector/EigenExtractor.o $(OBJDIR_DEBUG)/analyser/nVector/GISTExtractor.o $(OBJDIR_DEBUG)/analyser/nVector/GaborExtractor.o $(OBJDIR_DEBUG)/analyser/nVector/HistogramExtractor.o $(OBJDIR_DEBUG)/analyser/nVector/LBPExtractor.o $(OBJDIR_DEBUG)/analyser/nVector/LireExtractor.o $(OBJDIR_DEBUG)/analyser/nRoi/FaceDetection.o $(OBJDIR_DEBUG)/analyser/FactoryClassifier.o $(OBJDIR_DEBUG)/analyser/Main.o $(OBJDIR_DEBUG)/analyser/Main3.o $(OBJDIR_DEBUG)/analyser/nKeypoint/SURFExtractor.o $(OBJDIR_DEBUG)/analyser/nTag/FaceRecognition.o $(OBJDIR_DEBUG)/analyser/nTag/FacialExpressionRecognition.o $(OBJDIR_DEBUG)/analyser/nTag/SRClassifier.o $(OBJDIR_DEBUG)/analyser/nTag/SVMClassifier.o $(OBJDIR_DEBUG)/analyser/tools/TestFunctions.o $(OBJDIR_DEBUG)/analyser/tools/IlluminationCorrectionFilter.o $(OBJDIR_DEBUG)/analyser/tools/ImageSegmentator.o $(OBJDIR_DEBUG)/analyser/tools/MIRFlickrImporter.o $(OBJDIR_DEBUG)/analyser/tools/MatrixTools.o $(OBJDIR_DEBUG)/analyser/tools/TrainTestFeaturesTools.o $(OBJDIR_DEBUG)/analyser/tools/oneBillionImporter.o $(OBJDIR_DEBUG)/analyser/tools/tinyImageImporter.o $(OBJDIR_DEBUG)/appData/GameImage.o $(OBJDIR_DEBUG)/commons/AppConfig.o $(OBJDIR_DEBUG)/analyser/sources/CamSource.o $(OBJDIR_DEBUG)/analyser/nVector/NullExtractor.o $(OBJDIR_DEBUG)/analyser/nVector/SegmentedHistogramExtractor.o $(OBJDIR_DEBUG)/analyser/nVector/gist.o $(OBJDIR_DEBUG)/analyser/nVector/lbp.o $(OBJDIR_DEBUG)/analyser/nVector/standalone_image.o $(OBJDIR_DEBUG)/analyser/FactoryAnalyser.o $(OBJDIR_DEBUG)/analyser/sources/SingleImageSource.o $(OBJDIR_DEBUG)/analyser/sources/TextFileSource.o $(OBJDIR_DEBUG)/analyser/sources/TextFileSourceV2.o $(OBJDIR_DEBUG)/analyser/sources/VideoSource.o
-
-OBJ_RELEASE = $(OBJDIR_RELEASE)/indexer/LSHIndexer.o $(OBJDIR_RELEASE)/indexer/MSIDXIndexer.o $(OBJDIR_RELEASE)/indexer/SphericalHashIndexer.o $(OBJDIR_RELEASE)/indexer/e2lsh/BucketHashing.o $(OBJDIR_RELEASE)/indexer/FlannkNNIndexer.o $(OBJDIR_RELEASE)/indexer/e2lsh/Geometry.o $(OBJDIR_RELEASE)/indexer/e2lsh/GlobalVars.o $(OBJDIR_RELEASE)/indexer/e2lsh/LSHMain.o $(OBJDIR_RELEASE)/indexer/e2lsh/LocalitySensitiveHashing.o $(OBJDIR_RELEASE)/indexer/e2lsh/NearNeighbors.o $(OBJDIR_RELEASE)/indexer/e2lsh/Random.o $(OBJDIR_RELEASE)/commons/LoadConfig.o $(OBJDIR_RELEASE)/commons/StringTools.o $(OBJDIR_RELEASE)/commons/factory/Factory.o $(OBJDIR_RELEASE)/dataModel/DataModelController.o $(OBJDIR_RELEASE)/dataModel/NKeypoint.o $(OBJDIR_RELEASE)/dataModel/NRoi.o $(OBJDIR_RELEASE)/dataModel/NTag.o $(OBJDIR_RELEASE)/dataModel/NVector.o $(OBJDIR_RELEASE)/indexer/FactoryIndexer.o $(OBJDIR_RELEASE)/rest/Endpoints/analyser/GenericClassifier.o $(OBJDIR_RELEASE)/rest/Endpoints/analyser/GetObjectFeatures.o $(OBJDIR_RELEASE)/rest/Endpoints/analyser/MedicalSearchEngine.o $(OBJDIR_RELEASE)/rest/Endpoints/analyser/SearchResult.o $(OBJDIR_RELEASE)/rest/Endpoints/codebits/Codebits.o $(OBJDIR_RELEASE)/rest/Endpoints/analyser/ExtractFeatures.o $(OBJDIR_RELEASE)/rest/Endpoints/indexer/GenericIndexer.o $(OBJDIR_RELEASE)/rest/FactoryEndpoint.o $(OBJDIR_RELEASE)/rest/RestRequestHandler.o $(OBJDIR_RELEASE)/rest/RestServer.o $(OBJDIR_RELEASE)/indexer/sphericalHashing/Main.o $(OBJDIR_RELEASE)/indexer/e2lsh/SelfTuning.o $(OBJDIR_RELEASE)/indexer/e2lsh/Util.o $(OBJDIR_RELEASE)/indexer/sphericalHashing/BinaryHash.o $(OBJDIR_RELEASE)/indexer/sphericalHashing/Common.o $(OBJDIR_RELEASE)/commons/FileDownloader.o $(OBJDIR_RELEASE)/indexer/sphericalHashing/Stopwatch.o $(OBJDIR_RELEASE)/rest/Endpoints/TestEndpoint.o $(OBJDIR_RELEASE)/rest/Endpoints/analyser/CombSearchResult.o $(OBJDIR_RELEASE)/rest/Endpoints/analyser/EnsembleClassifier.o $(OBJDIR_RELEASE)/analyser/nTag/VWBasicClassifier.o $(OBJDIR_RELEASE)/analyser/nTag/kNNClassifier.o $(OBJDIR_RELEASE)/analyser/nVector/EigenExtractor.o $(OBJDIR_RELEASE)/analyser/nVector/GISTExtractor.o $(OBJDIR_RELEASE)/analyser/nVector/GaborExtractor.o $(OBJDIR_RELEASE)/analyser/nVector/HistogramExtractor.o $(OBJDIR_RELEASE)/analyser/nVector/LBPExtractor.o $(OBJDIR_RELEASE)/analyser/nVector/LireExtractor.o $(OBJDIR_RELEASE)/analyser/nRoi/FaceDetection.o $(OBJDIR_RELEASE)/analyser/FactoryClassifier.o $(OBJDIR_RELEASE)/analyser/Main.o $(OBJDIR_RELEASE)/analyser/Main3.o $(OBJDIR_RELEASE)/analyser/nKeypoint/SURFExtractor.o $(OBJDIR_RELEASE)/analyser/nTag/FaceRecognition.o $(OBJDIR_RELEASE)/analyser/nTag/FacialExpressionRecognition.o $(OBJDIR_RELEASE)/analyser/nTag/SRClassifier.o $(OBJDIR_RELEASE)/analyser/nTag/SVMClassifier.o $(OBJDIR_RELEASE)/analyser/tools/TestFunctions.o $(OBJDIR_RELEASE)/analyser/tools/IlluminationCorrectionFilter.o $(OBJDIR_RELEASE)/analyser/tools/ImageSegmentator.o $(OBJDIR_RELEASE)/analyser/tools/MIRFlickrImporter.o $(OBJDIR_RELEASE)/analyser/tools/MatrixTools.o $(OBJDIR_RELEASE)/analyser/tools/TrainTestFeaturesTools.o $(OBJDIR_RELEASE)/analyser/tools/oneBillionImporter.o $(OBJDIR_RELEASE)/analyser/tools/tinyImageImporter.o $(OBJDIR_RELEASE)/appData/GameImage.o $(OBJDIR_RELEASE)/commons/AppConfig.o $(OBJDIR_RELEASE)/analyser/sources/CamSource.o $(OBJDIR_RELEASE)/analyser/nVector/NullExtractor.o $(OBJDIR_RELEASE)/analyser/nVector/SegmentedHistogramExtractor.o $(OBJDIR_RELEASE)/analyser/nVector/gist.o $(OBJDIR_RELEASE)/analyser/nVector/lbp.o $(OBJDIR_RELEASE)/analyser/nVector/standalone_image.o $(OBJDIR_RELEASE)/analyser/FactoryAnalyser.o $(OBJDIR_RELEASE)/analyser/sources/SingleImageSource.o $(OBJDIR_RELEASE)/analyser/sources/TextFileSource.o $(OBJDIR_RELEASE)/analyser/sources/TextFileSourceV2.o $(OBJDIR_RELEASE)/analyser/sources/VideoSource.o
-
-all: debug release
-
-clean: clean_debug clean_release
-
-before_debug: 
-	test -d bin/Debug || mkdir -p bin/Debug
-	test -d $(OBJDIR_DEBUG)/indexer || mkdir -p $(OBJDIR_DEBUG)/indexer
-	test -d $(OBJDIR_DEBUG)/indexer/e2lsh || mkdir -p $(OBJDIR_DEBUG)/indexer/e2lsh
-	test -d $(OBJDIR_DEBUG)/commons || mkdir -p $(OBJDIR_DEBUG)/commons
-	test -d $(OBJDIR_DEBUG)/commons/factory || mkdir -p $(OBJDIR_DEBUG)/commons/factory
-	test -d $(OBJDIR_DEBUG)/dataModel || mkdir -p $(OBJDIR_DEBUG)/dataModel
-	test -d $(OBJDIR_DEBUG)/rest/Endpoints/analyser || mkdir -p $(OBJDIR_DEBUG)/rest/Endpoints/analyser
-	test -d $(OBJDIR_DEBUG)/rest/Endpoints/codebits || mkdir -p $(OBJDIR_DEBUG)/rest/Endpoints/codebits
-	test -d $(OBJDIR_DEBUG)/rest/Endpoints/indexer || mkdir -p $(OBJDIR_DEBUG)/rest/Endpoints/indexer
-	test -d $(OBJDIR_DEBUG)/rest || mkdir -p $(OBJDIR_DEBUG)/rest
-	test -d $(OBJDIR_DEBUG)/indexer/sphericalHashing || mkdir -p $(OBJDIR_DEBUG)/indexer/sphericalHashing
-	test -d $(OBJDIR_DEBUG)/rest/Endpoints || mkdir -p $(OBJDIR_DEBUG)/rest/Endpoints
-	test -d $(OBJDIR_DEBUG)/analyser/nTag || mkdir -p $(OBJDIR_DEBUG)/analyser/nTag
-	test -d $(OBJDIR_DEBUG)/analyser/nVector || mkdir -p $(OBJDIR_DEBUG)/analyser/nVector
-	test -d $(OBJDIR_DEBUG)/analyser/nRoi || mkdir -p $(OBJDIR_DEBUG)/analyser/nRoi
-	test -d $(OBJDIR_DEBUG)/analyser || mkdir -p $(OBJDIR_DEBUG)/analyser
-	test -d $(OBJDIR_DEBUG)/analyser/nKeypoint || mkdir -p $(OBJDIR_DEBUG)/analyser/nKeypoint
-	test -d $(OBJDIR_DEBUG)/analyser/tools || mkdir -p $(OBJDIR_DEBUG)/analyser/tools
-	test -d $(OBJDIR_DEBUG)/appData || mkdir -p $(OBJDIR_DEBUG)/appData
-	test -d $(OBJDIR_DEBUG)/analyser/sources || mkdir -p $(OBJDIR_DEBUG)/analyser/sources
-
-after_debug: 
-
-debug: before_debug out_debug after_debug
-
-out_debug: before_debug $(OBJ_DEBUG) $(DEP_DEBUG)
-	$(LD) $(LIBDIR_DEBUG) -o $(OUT_DEBUG) $(OBJ_DEBUG)  $(LDFLAGS_DEBUG) $(LIB_DEBUG)
-
-$(OBJDIR_DEBUG)/indexer/LSHIndexer.o: indexer/LSHIndexer.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c indexer/LSHIndexer.cpp -o $(OBJDIR_DEBUG)/indexer/LSHIndexer.o
-
-$(OBJDIR_DEBUG)/indexer/MSIDXIndexer.o: indexer/MSIDXIndexer.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c indexer/MSIDXIndexer.cpp -o $(OBJDIR_DEBUG)/indexer/MSIDXIndexer.o
-
-$(OBJDIR_DEBUG)/indexer/SphericalHashIndexer.o: indexer/SphericalHashIndexer.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c indexer/SphericalHashIndexer.cpp -o $(OBJDIR_DEBUG)/indexer/SphericalHashIndexer.o
-
-$(OBJDIR_DEBUG)/indexer/e2lsh/BucketHashing.o: indexer/e2lsh/BucketHashing.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c indexer/e2lsh/BucketHashing.cpp -o $(OBJDIR_DEBUG)/indexer/e2lsh/BucketHashing.o
-
-$(OBJDIR_DEBUG)/indexer/FlannkNNIndexer.o: indexer/FlannkNNIndexer.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c indexer/FlannkNNIndexer.cpp -o $(OBJDIR_DEBUG)/indexer/FlannkNNIndexer.o
-
-$(OBJDIR_DEBUG)/indexer/e2lsh/Geometry.o: indexer/e2lsh/Geometry.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c indexer/e2lsh/Geometry.cpp -o $(OBJDIR_DEBUG)/indexer/e2lsh/Geometry.o
-
-$(OBJDIR_DEBUG)/indexer/e2lsh/GlobalVars.o: indexer/e2lsh/GlobalVars.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c indexer/e2lsh/GlobalVars.cpp -o $(OBJDIR_DEBUG)/indexer/e2lsh/GlobalVars.o
-
-$(OBJDIR_DEBUG)/indexer/e2lsh/LSHMain.o: indexer/e2lsh/LSHMain.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c indexer/e2lsh/LSHMain.cpp -o $(OBJDIR_DEBUG)/indexer/e2lsh/LSHMain.o
-
-$(OBJDIR_DEBUG)/indexer/e2lsh/LocalitySensitiveHashing.o: indexer/e2lsh/LocalitySensitiveHashing.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c indexer/e2lsh/LocalitySensitiveHashing.cpp -o $(OBJDIR_DEBUG)/indexer/e2lsh/LocalitySensitiveHashing.o
-
-$(OBJDIR_DEBUG)/indexer/e2lsh/NearNeighbors.o: indexer/e2lsh/NearNeighbors.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c indexer/e2lsh/NearNeighbors.cpp -o $(OBJDIR_DEBUG)/indexer/e2lsh/NearNeighbors.o
-
-$(OBJDIR_DEBUG)/indexer/e2lsh/Random.o: indexer/e2lsh/Random.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c indexer/e2lsh/Random.cpp -o $(OBJDIR_DEBUG)/indexer/e2lsh/Random.o
-
-$(OBJDIR_DEBUG)/commons/LoadConfig.o: commons/LoadConfig.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c commons/LoadConfig.cpp -o $(OBJDIR_DEBUG)/commons/LoadConfig.o
-
-$(OBJDIR_DEBUG)/commons/StringTools.o: commons/StringTools.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c commons/StringTools.cpp -o $(OBJDIR_DEBUG)/commons/StringTools.o
-
-$(OBJDIR_DEBUG)/commons/factory/Factory.o: commons/factory/Factory.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c commons/factory/Factory.cpp -o $(OBJDIR_DEBUG)/commons/factory/Factory.o
-
-$(OBJDIR_DEBUG)/dataModel/DataModelController.o: dataModel/DataModelController.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c dataModel/DataModelController.cpp -o $(OBJDIR_DEBUG)/dataModel/DataModelController.o
-
-$(OBJDIR_DEBUG)/dataModel/NKeypoint.o: dataModel/NKeypoint.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c dataModel/NKeypoint.cpp -o $(OBJDIR_DEBUG)/dataModel/NKeypoint.o
-
-$(OBJDIR_DEBUG)/dataModel/NRoi.o: dataModel/NRoi.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c dataModel/NRoi.cpp -o $(OBJDIR_DEBUG)/dataModel/NRoi.o
-
-$(OBJDIR_DEBUG)/dataModel/NTag.o: dataModel/NTag.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c dataModel/NTag.cpp -o $(OBJDIR_DEBUG)/dataModel/NTag.o
-
-$(OBJDIR_DEBUG)/dataModel/NVector.o: dataModel/NVector.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c dataModel/NVector.cpp -o $(OBJDIR_DEBUG)/dataModel/NVector.o
-
-$(OBJDIR_DEBUG)/indexer/FactoryIndexer.o: indexer/FactoryIndexer.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c indexer/FactoryIndexer.cpp -o $(OBJDIR_DEBUG)/indexer/FactoryIndexer.o
-
-$(OBJDIR_DEBUG)/rest/Endpoints/analyser/GenericClassifier.o: rest/Endpoints/analyser/GenericClassifier.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c rest/Endpoints/analyser/GenericClassifier.cpp -o $(OBJDIR_DEBUG)/rest/Endpoints/analyser/GenericClassifier.o
-
-$(OBJDIR_DEBUG)/rest/Endpoints/analyser/GetObjectFeatures.o: rest/Endpoints/analyser/GetObjectFeatures.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c rest/Endpoints/analyser/GetObjectFeatures.cpp -o $(OBJDIR_DEBUG)/rest/Endpoints/analyser/GetObjectFeatures.o
-
-$(OBJDIR_DEBUG)/rest/Endpoints/analyser/MedicalSearchEngine.o: rest/Endpoints/analyser/MedicalSearchEngine.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c rest/Endpoints/analyser/MedicalSearchEngine.cpp -o $(OBJDIR_DEBUG)/rest/Endpoints/analyser/MedicalSearchEngine.o
-
-$(OBJDIR_DEBUG)/rest/Endpoints/analyser/SearchResult.o: rest/Endpoints/analyser/SearchResult.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c rest/Endpoints/analyser/SearchResult.cpp -o $(OBJDIR_DEBUG)/rest/Endpoints/analyser/SearchResult.o
-
-$(OBJDIR_DEBUG)/rest/Endpoints/codebits/Codebits.o: rest/Endpoints/codebits/Codebits.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c rest/Endpoints/codebits/Codebits.cpp -o $(OBJDIR_DEBUG)/rest/Endpoints/codebits/Codebits.o
-
-$(OBJDIR_DEBUG)/rest/Endpoints/analyser/ExtractFeatures.o: rest/Endpoints/analyser/ExtractFeatures.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c rest/Endpoints/analyser/ExtractFeatures.cpp -o $(OBJDIR_DEBUG)/rest/Endpoints/analyser/ExtractFeatures.o
-
-$(OBJDIR_DEBUG)/rest/Endpoints/indexer/GenericIndexer.o: rest/Endpoints/indexer/GenericIndexer.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c rest/Endpoints/indexer/GenericIndexer.cpp -o $(OBJDIR_DEBUG)/rest/Endpoints/indexer/GenericIndexer.o
-
-$(OBJDIR_DEBUG)/rest/FactoryEndpoint.o: rest/FactoryEndpoint.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c rest/FactoryEndpoint.cpp -o $(OBJDIR_DEBUG)/rest/FactoryEndpoint.o
-
-$(OBJDIR_DEBUG)/rest/RestRequestHandler.o: rest/RestRequestHandler.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c rest/RestRequestHandler.cpp -o $(OBJDIR_DEBUG)/rest/RestRequestHandler.o
-
-$(OBJDIR_DEBUG)/rest/RestServer.o: rest/RestServer.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c rest/RestServer.cpp -o $(OBJDIR_DEBUG)/rest/RestServer.o
-
-$(OBJDIR_DEBUG)/indexer/sphericalHashing/Main.o: indexer/sphericalHashing/Main.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c indexer/sphericalHashing/Main.cpp -o $(OBJDIR_DEBUG)/indexer/sphericalHashing/Main.o
-
-$(OBJDIR_DEBUG)/indexer/e2lsh/SelfTuning.o: indexer/e2lsh/SelfTuning.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c indexer/e2lsh/SelfTuning.cpp -o $(OBJDIR_DEBUG)/indexer/e2lsh/SelfTuning.o
-
-$(OBJDIR_DEBUG)/indexer/e2lsh/Util.o: indexer/e2lsh/Util.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c indexer/e2lsh/Util.cpp -o $(OBJDIR_DEBUG)/indexer/e2lsh/Util.o
-
-$(OBJDIR_DEBUG)/indexer/sphericalHashing/BinaryHash.o: indexer/sphericalHashing/BinaryHash.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c indexer/sphericalHashing/BinaryHash.cpp -o $(OBJDIR_DEBUG)/indexer/sphericalHashing/BinaryHash.o
-
-$(OBJDIR_DEBUG)/indexer/sphericalHashing/Common.o: indexer/sphericalHashing/Common.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c indexer/sphericalHashing/Common.cpp -o $(OBJDIR_DEBUG)/indexer/sphericalHashing/Common.o
-
-$(OBJDIR_DEBUG)/commons/FileDownloader.o: commons/FileDownloader.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c commons/FileDownloader.cpp -o $(OBJDIR_DEBUG)/commons/FileDownloader.o
-
-$(OBJDIR_DEBUG)/indexer/sphericalHashing/Stopwatch.o: indexer/sphericalHashing/Stopwatch.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c indexer/sphericalHashing/Stopwatch.cpp -o $(OBJDIR_DEBUG)/indexer/sphericalHashing/Stopwatch.o
-
-$(OBJDIR_DEBUG)/rest/Endpoints/TestEndpoint.o: rest/Endpoints/TestEndpoint.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c rest/Endpoints/TestEndpoint.cpp -o $(OBJDIR_DEBUG)/rest/Endpoints/TestEndpoint.o
-
-$(OBJDIR_DEBUG)/rest/Endpoints/analyser/CombSearchResult.o: rest/Endpoints/analyser/CombSearchResult.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c rest/Endpoints/analyser/CombSearchResult.cpp -o $(OBJDIR_DEBUG)/rest/Endpoints/analyser/CombSearchResult.o
-
-$(OBJDIR_DEBUG)/rest/Endpoints/analyser/EnsembleClassifier.o: rest/Endpoints/analyser/EnsembleClassifier.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c rest/Endpoints/analyser/EnsembleClassifier.cpp -o $(OBJDIR_DEBUG)/rest/Endpoints/analyser/EnsembleClassifier.o
-
-$(OBJDIR_DEBUG)/analyser/nTag/VWBasicClassifier.o: analyser/nTag/VWBasicClassifier.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c analyser/nTag/VWBasicClassifier.cpp -o $(OBJDIR_DEBUG)/analyser/nTag/VWBasicClassifier.o
-
-$(OBJDIR_DEBUG)/analyser/nTag/kNNClassifier.o: analyser/nTag/kNNClassifier.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c analyser/nTag/kNNClassifier.cpp -o $(OBJDIR_DEBUG)/analyser/nTag/kNNClassifier.o
-
-$(OBJDIR_DEBUG)/analyser/nVector/EigenExtractor.o: analyser/nVector/EigenExtractor.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c analyser/nVector/EigenExtractor.cpp -o $(OBJDIR_DEBUG)/analyser/nVector/EigenExtractor.o
-
-$(OBJDIR_DEBUG)/analyser/nVector/GISTExtractor.o: analyser/nVector/GISTExtractor.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c analyser/nVector/GISTExtractor.cpp -o $(OBJDIR_DEBUG)/analyser/nVector/GISTExtractor.o
-
-$(OBJDIR_DEBUG)/analyser/nVector/GaborExtractor.o: analyser/nVector/GaborExtractor.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c analyser/nVector/GaborExtractor.cpp -o $(OBJDIR_DEBUG)/analyser/nVector/GaborExtractor.o
-
-$(OBJDIR_DEBUG)/analyser/nVector/HistogramExtractor.o: analyser/nVector/HistogramExtractor.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c analyser/nVector/HistogramExtractor.cpp -o $(OBJDIR_DEBUG)/analyser/nVector/HistogramExtractor.o
-
-$(OBJDIR_DEBUG)/analyser/nVector/LBPExtractor.o: analyser/nVector/LBPExtractor.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c analyser/nVector/LBPExtractor.cpp -o $(OBJDIR_DEBUG)/analyser/nVector/LBPExtractor.o
-
-$(OBJDIR_DEBUG)/analyser/nVector/LireExtractor.o: analyser/nVector/LireExtractor.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c analyser/nVector/LireExtractor.cpp -o $(OBJDIR_DEBUG)/analyser/nVector/LireExtractor.o
-
-$(OBJDIR_DEBUG)/analyser/nRoi/FaceDetection.o: analyser/nRoi/FaceDetection.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c analyser/nRoi/FaceDetection.cpp -o $(OBJDIR_DEBUG)/analyser/nRoi/FaceDetection.o
-
-$(OBJDIR_DEBUG)/analyser/FactoryClassifier.o: analyser/FactoryClassifier.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c analyser/FactoryClassifier.cpp -o $(OBJDIR_DEBUG)/analyser/FactoryClassifier.o
-
-$(OBJDIR_DEBUG)/analyser/Main.o: analyser/Main.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c analyser/Main.cpp -o $(OBJDIR_DEBUG)/analyser/Main.o
-
-$(OBJDIR_DEBUG)/analyser/Main3.o: analyser/Main3.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c analyser/Main3.cpp -o $(OBJDIR_DEBUG)/analyser/Main3.o
-
-$(OBJDIR_DEBUG)/analyser/nKeypoint/SURFExtractor.o: analyser/nKeypoint/SURFExtractor.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c analyser/nKeypoint/SURFExtractor.cpp -o $(OBJDIR_DEBUG)/analyser/nKeypoint/SURFExtractor.o
-
-$(OBJDIR_DEBUG)/analyser/nTag/FaceRecognition.o: analyser/nTag/FaceRecognition.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c analyser/nTag/FaceRecognition.cpp -o $(OBJDIR_DEBUG)/analyser/nTag/FaceRecognition.o
-
-$(OBJDIR_DEBUG)/analyser/nTag/FacialExpressionRecognition.o: analyser/nTag/FacialExpressionRecognition.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c analyser/nTag/FacialExpressionRecognition.cpp -o $(OBJDIR_DEBUG)/analyser/nTag/FacialExpressionRecognition.o
-
-$(OBJDIR_DEBUG)/analyser/nTag/SRClassifier.o: analyser/nTag/SRClassifier.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c analyser/nTag/SRClassifier.cpp -o $(OBJDIR_DEBUG)/analyser/nTag/SRClassifier.o
-
-$(OBJDIR_DEBUG)/analyser/nTag/SVMClassifier.o: analyser/nTag/SVMClassifier.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c analyser/nTag/SVMClassifier.cpp -o $(OBJDIR_DEBUG)/analyser/nTag/SVMClassifier.o
-
-$(OBJDIR_DEBUG)/analyser/tools/TestFunctions.o: analyser/tools/TestFunctions.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c analyser/tools/TestFunctions.cpp -o $(OBJDIR_DEBUG)/analyser/tools/TestFunctions.o
-
-$(OBJDIR_DEBUG)/analyser/tools/IlluminationCorrectionFilter.o: analyser/tools/IlluminationCorrectionFilter.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c analyser/tools/IlluminationCorrectionFilter.cpp -o $(OBJDIR_DEBUG)/analyser/tools/IlluminationCorrectionFilter.o
-
-$(OBJDIR_DEBUG)/analyser/tools/ImageSegmentator.o: analyser/tools/ImageSegmentator.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c analyser/tools/ImageSegmentator.cpp -o $(OBJDIR_DEBUG)/analyser/tools/ImageSegmentator.o
-
-$(OBJDIR_DEBUG)/analyser/tools/MIRFlickrImporter.o: analyser/tools/MIRFlickrImporter.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c analyser/tools/MIRFlickrImporter.cpp -o $(OBJDIR_DEBUG)/analyser/tools/MIRFlickrImporter.o
-
-$(OBJDIR_DEBUG)/analyser/tools/MatrixTools.o: analyser/tools/MatrixTools.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c analyser/tools/MatrixTools.cpp -o $(OBJDIR_DEBUG)/analyser/tools/MatrixTools.o
-
-$(OBJDIR_DEBUG)/analyser/tools/TrainTestFeaturesTools.o: analyser/tools/TrainTestFeaturesTools.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c analyser/tools/TrainTestFeaturesTools.cpp -o $(OBJDIR_DEBUG)/analyser/tools/TrainTestFeaturesTools.o
-
-$(OBJDIR_DEBUG)/analyser/tools/oneBillionImporter.o: analyser/tools/oneBillionImporter.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c analyser/tools/oneBillionImporter.cpp -o $(OBJDIR_DEBUG)/analyser/tools/oneBillionImporter.o
-
-$(OBJDIR_DEBUG)/analyser/tools/tinyImageImporter.o: analyser/tools/tinyImageImporter.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c analyser/tools/tinyImageImporter.cpp -o $(OBJDIR_DEBUG)/analyser/tools/tinyImageImporter.o
-
-$(OBJDIR_DEBUG)/appData/GameImage.o: appData/GameImage.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c appData/GameImage.cpp -o $(OBJDIR_DEBUG)/appData/GameImage.o
-
-$(OBJDIR_DEBUG)/commons/AppConfig.o: commons/AppConfig.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c commons/AppConfig.cpp -o $(OBJDIR_DEBUG)/commons/AppConfig.o
-
-$(OBJDIR_DEBUG)/analyser/sources/CamSource.o: analyser/sources/CamSource.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c analyser/sources/CamSource.cpp -o $(OBJDIR_DEBUG)/analyser/sources/CamSource.o
-
-$(OBJDIR_DEBUG)/analyser/nVector/NullExtractor.o: analyser/nVector/NullExtractor.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c analyser/nVector/NullExtractor.cpp -o $(OBJDIR_DEBUG)/analyser/nVector/NullExtractor.o
-
-$(OBJDIR_DEBUG)/analyser/nVector/SegmentedHistogramExtractor.o: analyser/nVector/SegmentedHistogramExtractor.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c analyser/nVector/SegmentedHistogramExtractor.cpp -o $(OBJDIR_DEBUG)/analyser/nVector/SegmentedHistogramExtractor.o
-
-$(OBJDIR_DEBUG)/analyser/nVector/gist.o: analyser/nVector/gist.c
-	$(CC) $(CFLAGS_DEBUG) $(INC_DEBUG) -c analyser/nVector/gist.c -o $(OBJDIR_DEBUG)/analyser/nVector/gist.o
-
-$(OBJDIR_DEBUG)/analyser/nVector/lbp.o: analyser/nVector/lbp.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c analyser/nVector/lbp.cpp -o $(OBJDIR_DEBUG)/analyser/nVector/lbp.o
-
-$(OBJDIR_DEBUG)/analyser/nVector/standalone_image.o: analyser/nVector/standalone_image.c
-	$(CC) $(CFLAGS_DEBUG) $(INC_DEBUG) -c analyser/nVector/standalone_image.c -o $(OBJDIR_DEBUG)/analyser/nVector/standalone_image.o
-
-$(OBJDIR_DEBUG)/analyser/FactoryAnalyser.o: analyser/FactoryAnalyser.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c analyser/FactoryAnalyser.cpp -o $(OBJDIR_DEBUG)/analyser/FactoryAnalyser.o
-
-$(OBJDIR_DEBUG)/analyser/sources/SingleImageSource.o: analyser/sources/SingleImageSource.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c analyser/sources/SingleImageSource.cpp -o $(OBJDIR_DEBUG)/analyser/sources/SingleImageSource.o
-
-$(OBJDIR_DEBUG)/analyser/sources/TextFileSource.o: analyser/sources/TextFileSource.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c analyser/sources/TextFileSource.cpp -o $(OBJDIR_DEBUG)/analyser/sources/TextFileSource.o
-
-$(OBJDIR_DEBUG)/analyser/sources/TextFileSourceV2.o: analyser/sources/TextFileSourceV2.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c analyser/sources/TextFileSourceV2.cpp -o $(OBJDIR_DEBUG)/analyser/sources/TextFileSourceV2.o
-
-$(OBJDIR_DEBUG)/analyser/sources/VideoSource.o: analyser/sources/VideoSource.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c analyser/sources/VideoSource.cpp -o $(OBJDIR_DEBUG)/analyser/sources/VideoSource.o
-
-clean_debug: 
-	rm -f $(OBJ_DEBUG) $(OUT_DEBUG)
-	rm -rf bin/Debug
-	rm -rf $(OBJDIR_DEBUG)/indexer
-	rm -rf $(OBJDIR_DEBUG)/indexer/e2lsh
-	rm -rf $(OBJDIR_DEBUG)/commons
-	rm -rf $(OBJDIR_DEBUG)/commons/factory
-	rm -rf $(OBJDIR_DEBUG)/dataModel
-	rm -rf $(OBJDIR_DEBUG)/rest/Endpoints/analyser
-	rm -rf $(OBJDIR_DEBUG)/rest/Endpoints/codebits
-	rm -rf $(OBJDIR_DEBUG)/rest/Endpoints/indexer
-	rm -rf $(OBJDIR_DEBUG)/rest
-	rm -rf $(OBJDIR_DEBUG)/indexer/sphericalHashing
-	rm -rf $(OBJDIR_DEBUG)/rest/Endpoints
-	rm -rf $(OBJDIR_DEBUG)/analyser/nTag
-	rm -rf $(OBJDIR_DEBUG)/analyser/nVector
-	rm -rf $(OBJDIR_DEBUG)/analyser/nRoi
-	rm -rf $(OBJDIR_DEBUG)/analyser
-	rm -rf $(OBJDIR_DEBUG)/analyser/nKeypoint
-	rm -rf $(OBJDIR_DEBUG)/analyser/tools
-	rm -rf $(OBJDIR_DEBUG)/appData
-	rm -rf $(OBJDIR_DEBUG)/analyser/sources
-
-before_release: 
+INC_RELEASEMAININD = $(INC) -Icommons
+CFLAGS_RELEASEMAININD = $(CFLAGS) -O2
+RESINC_RELEASEMAININD = $(RESINC)
+RCFLAGS_RELEASEMAININD = $(RCFLAGS)
+LIBDIR_RELEASEMAININD = $(LIBDIR)
+LIB_RELEASEMAININD = $(LIB)
+LDFLAGS_RELEASEMAININD = $(LDFLAGS) -s
+OBJDIR_RELEASEMAININD = obj/Release
+DEP_RELEASEMAININD = 
+OUT_RELEASEMAININD = bin/Release/runIndexer
+
+INC_RELEASEMAINANA = $(INC) -Icommons
+CFLAGS_RELEASEMAINANA = $(CFLAGS) -O2
+RESINC_RELEASEMAINANA = $(RESINC)
+RCFLAGS_RELEASEMAINANA = $(RCFLAGS)
+LIBDIR_RELEASEMAINANA = $(LIBDIR)
+LIB_RELEASEMAINANA = $(LIB)
+LDFLAGS_RELEASEMAINANA = $(LDFLAGS) -s
+OBJDIR_RELEASEMAINANA = obj/Release
+DEP_RELEASEMAINANA = 
+OUT_RELEASEMAINANA = bin/Release/runAnalyser
+
+INC_RELEASESERVER = $(INC) -Icommons
+CFLAGS_RELEASESERVER = $(CFLAGS) -O2
+RESINC_RELEASESERVER = $(RESINC)
+RCFLAGS_RELEASESERVER = $(RCFLAGS)
+LIBDIR_RELEASESERVER = $(LIBDIR)
+LIB_RELEASESERVER = $(LIB)
+LDFLAGS_RELEASESERVER = $(LDFLAGS) -s
+OBJDIR_RELEASESERVER = obj/Release
+DEP_RELEASESERVER = 
+OUT_RELEASESERVER = bin/Release/server
+
+INC_DEBUGMAININD = $(INC) -Icommons
+CFLAGS_DEBUGMAININD = $(CFLAGS) -g
+RESINC_DEBUGMAININD = $(RESINC)
+RCFLAGS_DEBUGMAININD = $(RCFLAGS)
+LIBDIR_DEBUGMAININD = $(LIBDIR)
+LIB_DEBUGMAININD = $(LIB)
+LDFLAGS_DEBUGMAININD = $(LDFLAGS)
+OBJDIR_DEBUGMAININD = obj/Debug
+DEP_DEBUGMAININD = 
+OUT_DEBUGMAININD = bin/Debug/runIndexer
+
+INC_DEBUGMAINANA = $(INC) -Icommons
+CFLAGS_DEBUGMAINANA = $(CFLAGS) -g
+RESINC_DEBUGMAINANA = $(RESINC)
+RCFLAGS_DEBUGMAINANA = $(RCFLAGS)
+LIBDIR_DEBUGMAINANA = $(LIBDIR)
+LIB_DEBUGMAINANA = $(LIB)
+LDFLAGS_DEBUGMAINANA = $(LDFLAGS)
+OBJDIR_DEBUGMAINANA = obj/Debug
+DEP_DEBUGMAINANA = 
+OUT_DEBUGMAINANA = bin/Debug/runAnalyser
+
+INC_DEBUGSERVER = $(INC) -Icommons
+CFLAGS_DEBUGSERVER = $(CFLAGS) -g
+RESINC_DEBUGSERVER = $(RESINC)
+RCFLAGS_DEBUGSERVER = $(RCFLAGS)
+LIBDIR_DEBUGSERVER = $(LIBDIR)
+LIB_DEBUGSERVER = $(LIB)
+LDFLAGS_DEBUGSERVER = $(LDFLAGS)
+OBJDIR_DEBUGSERVER = obj/Debug
+DEP_DEBUGSERVER = 
+OUT_DEBUGSERVER = bin/Debug/server
+
+OBJ_RELEASEMAININD = $(OBJDIR_RELEASEMAININD)/indexer/e2lsh/Geometry.o $(OBJDIR_RELEASEMAININD)/indexer/LSHIndexer.o $(OBJDIR_RELEASEMAININD)/indexer/MSIDXIndexer.o $(OBJDIR_RELEASEMAININD)/indexer/SphericalHashIndexer.o $(OBJDIR_RELEASEMAININD)/indexer/e2lsh/BucketHashing.o $(OBJDIR_RELEASEMAININD)/indexer/FlannkNNIndexer.o $(OBJDIR_RELEASEMAININD)/indexer/e2lsh/GlobalVars.o $(OBJDIR_RELEASEMAININD)/indexer/e2lsh/LSHMain.o $(OBJDIR_RELEASEMAININD)/indexer/e2lsh/LocalitySensitiveHashing.o $(OBJDIR_RELEASEMAININD)/indexer/e2lsh/NearNeighbors.o $(OBJDIR_RELEASEMAININD)/indexer/e2lsh/Random.o $(OBJDIR_RELEASEMAININD)/commons/StringTools.o $(OBJDIR_RELEASEMAININD)/commons/factory/Factory.o $(OBJDIR_RELEASEMAININD)/dataModel/DataModelController.o $(OBJDIR_RELEASEMAININD)/dataModel/DatabaseConnection.o $(OBJDIR_RELEASEMAININD)/indexer/e2lsh/SelfTuning.o $(OBJDIR_RELEASEMAININD)/dataModel/NKeypoint.o $(OBJDIR_RELEASEMAININD)/dataModel/NRoi.o $(OBJDIR_RELEASEMAININD)/dataModel/NTag.o $(OBJDIR_RELEASEMAININD)/dataModel/NVector.o $(OBJDIR_RELEASEMAININD)/indexer/FactoryIndexer.o $(OBJDIR_RELEASEMAININD)/rest/Endpoints/analyser/GenericClassifier.o $(OBJDIR_RELEASEMAININD)/rest/Endpoints/analyser/GetObjectFeatures.o $(OBJDIR_RELEASEMAININD)/rest/Endpoints/analyser/MedicalSearchEngine.o $(OBJDIR_RELEASEMAININD)/rest/Endpoints/analyser/SearchResult.o $(OBJDIR_RELEASEMAININD)/rest/Endpoints/codebits/Codebits.o $(OBJDIR_RELEASEMAININD)/rest/Endpoints/database/GetMetadata.o $(OBJDIR_RELEASEMAININD)/rest/Endpoints/indexer/GenericIndexer.o $(OBJDIR_RELEASEMAININD)/rest/FactoryEndpoint.o $(OBJDIR_RELEASEMAININD)/rest/RestRequestHandler.o $(OBJDIR_RELEASEMAININD)/rest/RestServer.o $(OBJDIR_RELEASEMAININD)/indexer/e2lsh/Util.o $(OBJDIR_RELEASEMAININD)/indexer/sphericalHashing/BinaryHash.o $(OBJDIR_RELEASEMAININD)/indexer/sphericalHashing/Common.o $(OBJDIR_RELEASEMAININD)/indexer/sphericalHashing/Main.o $(OBJDIR_RELEASEMAININD)/commons/LoadConfig.o $(OBJDIR_RELEASEMAININD)/indexer/sphericalHashing/Stopwatch.o $(OBJDIR_RELEASEMAININD)/rest/Endpoints/TestEndpoint.o $(OBJDIR_RELEASEMAININD)/rest/Endpoints/analyser/CombSearchResult.o $(OBJDIR_RELEASEMAININD)/rest/Endpoints/analyser/EnsembleClassifier.o $(OBJDIR_RELEASEMAININD)/rest/Endpoints/analyser/ExtractFeatures.o $(OBJDIR_RELEASEMAININD)/analyser/nTag/VWBasicClassifier.o $(OBJDIR_RELEASEMAININD)/analyser/nTag/kNNClassifier.o $(OBJDIR_RELEASEMAININD)/analyser/nVector/EigenExtractor.o $(OBJDIR_RELEASEMAININD)/analyser/nVector/GISTExtractor.o $(OBJDIR_RELEASEMAININD)/analyser/nVector/GaborExtractor.o $(OBJDIR_RELEASEMAININD)/analyser/nVector/HistogramExtractor.o $(OBJDIR_RELEASEMAININD)/analyser/nVector/LBPExtractor.o $(OBJDIR_RELEASEMAININD)/analyser/nVector/LireExtractor.o $(OBJDIR_RELEASEMAININD)/analyser/nRoi/FaceDetection.o $(OBJDIR_RELEASEMAININD)/analyser/FactoryClassifier.o $(OBJDIR_RELEASEMAININD)/analyser/Main3.o $(OBJDIR_RELEASEMAININD)/analyser/nKeypoint/SURFExtractor.o $(OBJDIR_RELEASEMAININD)/analyser/nVector/NullExtractor.o $(OBJDIR_RELEASEMAININD)/analyser/nTag/FaceRecognition.o $(OBJDIR_RELEASEMAININD)/analyser/nTag/FacialExpressionRecognition.o $(OBJDIR_RELEASEMAININD)/analyser/nTag/SRClassifier.o $(OBJDIR_RELEASEMAININD)/analyser/nTag/SVMClassifier.o $(OBJDIR_RELEASEMAININD)/analyser/tools/ImageSegmentator.o $(OBJDIR_RELEASEMAININD)/analyser/tools/MIRFlickrImporter.o $(OBJDIR_RELEASEMAININD)/analyser/tools/MatrixTools.o $(OBJDIR_RELEASEMAININD)/analyser/tools/TestFunctions.o $(OBJDIR_RELEASEMAININD)/analyser/tools/TrainTestFeaturesTools.o $(OBJDIR_RELEASEMAININD)/analyser/tools/IlluminationCorrectionFilter.o $(OBJDIR_RELEASEMAININD)/analyser/tools/oneBillionImporter.o $(OBJDIR_RELEASEMAININD)/analyser/tools/tinyImageImporter.o $(OBJDIR_RELEASEMAININD)/appData/GameImage.o $(OBJDIR_RELEASEMAININD)/commons/AppConfig.o $(OBJDIR_RELEASEMAININD)/commons/FileDownloader.o $(OBJDIR_RELEASEMAININD)/analyser/nVector/SegmentedHistogramExtractor.o $(OBJDIR_RELEASEMAININD)/analyser/nVector/gist.o $(OBJDIR_RELEASEMAININD)/analyser/nVector/lbp.o $(OBJDIR_RELEASEMAININD)/analyser/nVector/standalone_image.o $(OBJDIR_RELEASEMAININD)/analyser/sources/CamSource.o $(OBJDIR_RELEASEMAININD)/analyser/FactoryAnalyser.o $(OBJDIR_RELEASEMAININD)/analyser/sources/SingleImageSource.o $(OBJDIR_RELEASEMAININD)/analyser/sources/TextFileSource.o $(OBJDIR_RELEASEMAININD)/analyser/sources/TextFileSourceV2.o $(OBJDIR_RELEASEMAININD)/analyser/sources/VideoSource.o
+
+OBJ_RELEASEMAINANA = $(OBJDIR_RELEASEMAINANA)/indexer/e2lsh/Geometry.o $(OBJDIR_RELEASEMAINANA)/indexer/LSHIndexer.o $(OBJDIR_RELEASEMAINANA)/indexer/MSIDXIndexer.o $(OBJDIR_RELEASEMAINANA)/indexer/SphericalHashIndexer.o $(OBJDIR_RELEASEMAINANA)/indexer/e2lsh/BucketHashing.o $(OBJDIR_RELEASEMAINANA)/indexer/FlannkNNIndexer.o $(OBJDIR_RELEASEMAINANA)/indexer/e2lsh/GlobalVars.o $(OBJDIR_RELEASEMAINANA)/indexer/e2lsh/LSHMain.o $(OBJDIR_RELEASEMAINANA)/indexer/e2lsh/LocalitySensitiveHashing.o $(OBJDIR_RELEASEMAINANA)/indexer/e2lsh/NearNeighbors.o $(OBJDIR_RELEASEMAINANA)/indexer/e2lsh/Random.o $(OBJDIR_RELEASEMAINANA)/commons/StringTools.o $(OBJDIR_RELEASEMAINANA)/commons/factory/Factory.o $(OBJDIR_RELEASEMAINANA)/dataModel/DataModelController.o $(OBJDIR_RELEASEMAINANA)/dataModel/DatabaseConnection.o $(OBJDIR_RELEASEMAINANA)/indexer/e2lsh/SelfTuning.o $(OBJDIR_RELEASEMAINANA)/dataModel/NKeypoint.o $(OBJDIR_RELEASEMAINANA)/dataModel/NRoi.o $(OBJDIR_RELEASEMAINANA)/dataModel/NTag.o $(OBJDIR_RELEASEMAINANA)/dataModel/NVector.o $(OBJDIR_RELEASEMAINANA)/indexer/FactoryIndexer.o $(OBJDIR_RELEASEMAINANA)/rest/Endpoints/analyser/GenericClassifier.o $(OBJDIR_RELEASEMAINANA)/rest/Endpoints/analyser/GetObjectFeatures.o $(OBJDIR_RELEASEMAINANA)/rest/Endpoints/analyser/MedicalSearchEngine.o $(OBJDIR_RELEASEMAINANA)/rest/Endpoints/analyser/SearchResult.o $(OBJDIR_RELEASEMAINANA)/rest/Endpoints/codebits/Codebits.o $(OBJDIR_RELEASEMAINANA)/rest/Endpoints/database/GetMetadata.o $(OBJDIR_RELEASEMAINANA)/rest/Endpoints/indexer/GenericIndexer.o $(OBJDIR_RELEASEMAINANA)/rest/FactoryEndpoint.o $(OBJDIR_RELEASEMAINANA)/rest/RestRequestHandler.o $(OBJDIR_RELEASEMAINANA)/rest/RestServer.o $(OBJDIR_RELEASEMAINANA)/indexer/e2lsh/Util.o $(OBJDIR_RELEASEMAINANA)/indexer/sphericalHashing/BinaryHash.o $(OBJDIR_RELEASEMAINANA)/indexer/sphericalHashing/Common.o $(OBJDIR_RELEASEMAINANA)/indexer/sphericalHashing/Main.o $(OBJDIR_RELEASEMAINANA)/commons/LoadConfig.o $(OBJDIR_RELEASEMAINANA)/indexer/sphericalHashing/Stopwatch.o $(OBJDIR_RELEASEMAINANA)/rest/Endpoints/TestEndpoint.o $(OBJDIR_RELEASEMAINANA)/rest/Endpoints/analyser/CombSearchResult.o $(OBJDIR_RELEASEMAINANA)/rest/Endpoints/analyser/EnsembleClassifier.o $(OBJDIR_RELEASEMAINANA)/rest/Endpoints/analyser/ExtractFeatures.o $(OBJDIR_RELEASEMAINANA)/analyser/nTag/VWBasicClassifier.o $(OBJDIR_RELEASEMAINANA)/analyser/nTag/kNNClassifier.o $(OBJDIR_RELEASEMAINANA)/analyser/nVector/EigenExtractor.o $(OBJDIR_RELEASEMAINANA)/analyser/nVector/GISTExtractor.o $(OBJDIR_RELEASEMAINANA)/analyser/nVector/GaborExtractor.o $(OBJDIR_RELEASEMAINANA)/analyser/nVector/HistogramExtractor.o $(OBJDIR_RELEASEMAINANA)/analyser/nVector/LBPExtractor.o $(OBJDIR_RELEASEMAINANA)/analyser/nVector/LireExtractor.o $(OBJDIR_RELEASEMAINANA)/analyser/nRoi/FaceDetection.o $(OBJDIR_RELEASEMAINANA)/analyser/FactoryClassifier.o $(OBJDIR_RELEASEMAINANA)/analyser/Main2.o $(OBJDIR_RELEASEMAINANA)/analyser/nKeypoint/SURFExtractor.o $(OBJDIR_RELEASEMAINANA)/analyser/nVector/NullExtractor.o $(OBJDIR_RELEASEMAINANA)/analyser/nTag/FaceRecognition.o $(OBJDIR_RELEASEMAINANA)/analyser/nTag/FacialExpressionRecognition.o $(OBJDIR_RELEASEMAINANA)/analyser/nTag/SRClassifier.o $(OBJDIR_RELEASEMAINANA)/analyser/nTag/SVMClassifier.o $(OBJDIR_RELEASEMAINANA)/analyser/tools/ImageSegmentator.o $(OBJDIR_RELEASEMAINANA)/analyser/tools/MIRFlickrImporter.o $(OBJDIR_RELEASEMAINANA)/analyser/tools/MatrixTools.o $(OBJDIR_RELEASEMAINANA)/analyser/tools/TestFunctions.o $(OBJDIR_RELEASEMAINANA)/analyser/tools/TrainTestFeaturesTools.o $(OBJDIR_RELEASEMAINANA)/analyser/tools/IlluminationCorrectionFilter.o $(OBJDIR_RELEASEMAINANA)/analyser/tools/oneBillionImporter.o $(OBJDIR_RELEASEMAINANA)/analyser/tools/tinyImageImporter.o $(OBJDIR_RELEASEMAINANA)/appData/GameImage.o $(OBJDIR_RELEASEMAINANA)/commons/AppConfig.o $(OBJDIR_RELEASEMAINANA)/commons/FileDownloader.o $(OBJDIR_RELEASEMAINANA)/analyser/nVector/SegmentedHistogramExtractor.o $(OBJDIR_RELEASEMAINANA)/analyser/nVector/gist.o $(OBJDIR_RELEASEMAINANA)/analyser/nVector/lbp.o $(OBJDIR_RELEASEMAINANA)/analyser/nVector/standalone_image.o $(OBJDIR_RELEASEMAINANA)/analyser/sources/CamSource.o $(OBJDIR_RELEASEMAINANA)/analyser/FactoryAnalyser.o $(OBJDIR_RELEASEMAINANA)/analyser/sources/SingleImageSource.o $(OBJDIR_RELEASEMAINANA)/analyser/sources/TextFileSource.o $(OBJDIR_RELEASEMAINANA)/analyser/sources/TextFileSourceV2.o $(OBJDIR_RELEASEMAINANA)/analyser/sources/VideoSource.o
+
+OBJ_RELEASESERVER = $(OBJDIR_RELEASESERVER)/indexer/e2lsh/Geometry.o $(OBJDIR_RELEASESERVER)/indexer/LSHIndexer.o $(OBJDIR_RELEASESERVER)/indexer/MSIDXIndexer.o $(OBJDIR_RELEASESERVER)/indexer/SphericalHashIndexer.o $(OBJDIR_RELEASESERVER)/indexer/e2lsh/BucketHashing.o $(OBJDIR_RELEASESERVER)/indexer/FlannkNNIndexer.o $(OBJDIR_RELEASESERVER)/indexer/e2lsh/GlobalVars.o $(OBJDIR_RELEASESERVER)/indexer/e2lsh/LSHMain.o $(OBJDIR_RELEASESERVER)/indexer/e2lsh/LocalitySensitiveHashing.o $(OBJDIR_RELEASESERVER)/indexer/e2lsh/NearNeighbors.o $(OBJDIR_RELEASESERVER)/indexer/e2lsh/Random.o $(OBJDIR_RELEASESERVER)/commons/StringTools.o $(OBJDIR_RELEASESERVER)/commons/factory/Factory.o $(OBJDIR_RELEASESERVER)/dataModel/DataModelController.o $(OBJDIR_RELEASESERVER)/dataModel/DatabaseConnection.o $(OBJDIR_RELEASESERVER)/indexer/e2lsh/SelfTuning.o $(OBJDIR_RELEASESERVER)/dataModel/NKeypoint.o $(OBJDIR_RELEASESERVER)/dataModel/NRoi.o $(OBJDIR_RELEASESERVER)/dataModel/NTag.o $(OBJDIR_RELEASESERVER)/dataModel/NVector.o $(OBJDIR_RELEASESERVER)/indexer/FactoryIndexer.o $(OBJDIR_RELEASESERVER)/rest/Endpoints/analyser/GenericClassifier.o $(OBJDIR_RELEASESERVER)/rest/Endpoints/analyser/GetObjectFeatures.o $(OBJDIR_RELEASESERVER)/rest/Endpoints/analyser/MedicalSearchEngine.o $(OBJDIR_RELEASESERVER)/rest/Endpoints/analyser/SearchResult.o $(OBJDIR_RELEASESERVER)/rest/Endpoints/codebits/Codebits.o $(OBJDIR_RELEASESERVER)/rest/Endpoints/database/GetMetadata.o $(OBJDIR_RELEASESERVER)/rest/Endpoints/indexer/GenericIndexer.o $(OBJDIR_RELEASESERVER)/rest/FactoryEndpoint.o $(OBJDIR_RELEASESERVER)/rest/RestRequestHandler.o $(OBJDIR_RELEASESERVER)/rest/RestServer.o $(OBJDIR_RELEASESERVER)/rest/main.o $(OBJDIR_RELEASESERVER)/indexer/e2lsh/Util.o $(OBJDIR_RELEASESERVER)/indexer/sphericalHashing/BinaryHash.o $(OBJDIR_RELEASESERVER)/indexer/sphericalHashing/Common.o $(OBJDIR_RELEASESERVER)/indexer/sphericalHashing/Main.o $(OBJDIR_RELEASESERVER)/commons/LoadConfig.o $(OBJDIR_RELEASESERVER)/indexer/sphericalHashing/Stopwatch.o $(OBJDIR_RELEASESERVER)/rest/Endpoints/TestEndpoint.o $(OBJDIR_RELEASESERVER)/rest/Endpoints/analyser/CombSearchResult.o $(OBJDIR_RELEASESERVER)/rest/Endpoints/analyser/EnsembleClassifier.o $(OBJDIR_RELEASESERVER)/rest/Endpoints/analyser/ExtractFeatures.o $(OBJDIR_RELEASESERVER)/analyser/nTag/VWBasicClassifier.o $(OBJDIR_RELEASESERVER)/analyser/nTag/kNNClassifier.o $(OBJDIR_RELEASESERVER)/analyser/nVector/EigenExtractor.o $(OBJDIR_RELEASESERVER)/analyser/nVector/GISTExtractor.o $(OBJDIR_RELEASESERVER)/analyser/nVector/GaborExtractor.o $(OBJDIR_RELEASESERVER)/analyser/nVector/HistogramExtractor.o $(OBJDIR_RELEASESERVER)/analyser/nVector/LBPExtractor.o $(OBJDIR_RELEASESERVER)/analyser/nVector/LireExtractor.o $(OBJDIR_RELEASESERVER)/analyser/nRoi/FaceDetection.o $(OBJDIR_RELEASESERVER)/analyser/FactoryClassifier.o $(OBJDIR_RELEASESERVER)/analyser/nKeypoint/SURFExtractor.o $(OBJDIR_RELEASESERVER)/analyser/nVector/NullExtractor.o $(OBJDIR_RELEASESERVER)/analyser/nTag/FaceRecognition.o $(OBJDIR_RELEASESERVER)/analyser/nTag/FacialExpressionRecognition.o $(OBJDIR_RELEASESERVER)/analyser/nTag/SRClassifier.o $(OBJDIR_RELEASESERVER)/analyser/nTag/SVMClassifier.o $(OBJDIR_RELEASESERVER)/analyser/tools/ImageSegmentator.o $(OBJDIR_RELEASESERVER)/analyser/tools/MIRFlickrImporter.o $(OBJDIR_RELEASESERVER)/analyser/tools/MatrixTools.o $(OBJDIR_RELEASESERVER)/analyser/tools/TestFunctions.o $(OBJDIR_RELEASESERVER)/analyser/tools/TrainTestFeaturesTools.o $(OBJDIR_RELEASESERVER)/analyser/tools/IlluminationCorrectionFilter.o $(OBJDIR_RELEASESERVER)/analyser/tools/oneBillionImporter.o $(OBJDIR_RELEASESERVER)/analyser/tools/tinyImageImporter.o $(OBJDIR_RELEASESERVER)/appData/GameImage.o $(OBJDIR_RELEASESERVER)/commons/AppConfig.o $(OBJDIR_RELEASESERVER)/commons/FileDownloader.o $(OBJDIR_RELEASESERVER)/analyser/nVector/SegmentedHistogramExtractor.o $(OBJDIR_RELEASESERVER)/analyser/nVector/gist.o $(OBJDIR_RELEASESERVER)/analyser/nVector/lbp.o $(OBJDIR_RELEASESERVER)/analyser/nVector/standalone_image.o $(OBJDIR_RELEASESERVER)/analyser/sources/CamSource.o $(OBJDIR_RELEASESERVER)/analyser/FactoryAnalyser.o $(OBJDIR_RELEASESERVER)/analyser/sources/SingleImageSource.o $(OBJDIR_RELEASESERVER)/analyser/sources/TextFileSource.o $(OBJDIR_RELEASESERVER)/analyser/sources/TextFileSourceV2.o $(OBJDIR_RELEASESERVER)/analyser/sources/VideoSource.o
+
+OBJ_DEBUGMAININD = $(OBJDIR_DEBUGMAININD)/indexer/e2lsh/Geometry.o $(OBJDIR_DEBUGMAININD)/indexer/LSHIndexer.o $(OBJDIR_DEBUGMAININD)/indexer/MSIDXIndexer.o $(OBJDIR_DEBUGMAININD)/indexer/SphericalHashIndexer.o $(OBJDIR_DEBUGMAININD)/indexer/e2lsh/BucketHashing.o $(OBJDIR_DEBUGMAININD)/indexer/FlannkNNIndexer.o $(OBJDIR_DEBUGMAININD)/indexer/e2lsh/GlobalVars.o $(OBJDIR_DEBUGMAININD)/indexer/e2lsh/LSHMain.o $(OBJDIR_DEBUGMAININD)/indexer/e2lsh/LocalitySensitiveHashing.o $(OBJDIR_DEBUGMAININD)/indexer/e2lsh/NearNeighbors.o $(OBJDIR_DEBUGMAININD)/indexer/e2lsh/Random.o $(OBJDIR_DEBUGMAININD)/commons/StringTools.o $(OBJDIR_DEBUGMAININD)/commons/factory/Factory.o $(OBJDIR_DEBUGMAININD)/dataModel/DataModelController.o $(OBJDIR_DEBUGMAININD)/dataModel/DatabaseConnection.o $(OBJDIR_DEBUGMAININD)/indexer/e2lsh/SelfTuning.o $(OBJDIR_DEBUGMAININD)/dataModel/NKeypoint.o $(OBJDIR_DEBUGMAININD)/dataModel/NRoi.o $(OBJDIR_DEBUGMAININD)/dataModel/NTag.o $(OBJDIR_DEBUGMAININD)/dataModel/NVector.o $(OBJDIR_DEBUGMAININD)/indexer/FactoryIndexer.o $(OBJDIR_DEBUGMAININD)/rest/Endpoints/analyser/GenericClassifier.o $(OBJDIR_DEBUGMAININD)/rest/Endpoints/analyser/GetObjectFeatures.o $(OBJDIR_DEBUGMAININD)/rest/Endpoints/analyser/MedicalSearchEngine.o $(OBJDIR_DEBUGMAININD)/rest/Endpoints/analyser/SearchResult.o $(OBJDIR_DEBUGMAININD)/rest/Endpoints/codebits/Codebits.o $(OBJDIR_DEBUGMAININD)/rest/Endpoints/database/GetMetadata.o $(OBJDIR_DEBUGMAININD)/rest/Endpoints/indexer/GenericIndexer.o $(OBJDIR_DEBUGMAININD)/rest/FactoryEndpoint.o $(OBJDIR_DEBUGMAININD)/rest/RestRequestHandler.o $(OBJDIR_DEBUGMAININD)/rest/RestServer.o $(OBJDIR_DEBUGMAININD)/indexer/e2lsh/Util.o $(OBJDIR_DEBUGMAININD)/indexer/sphericalHashing/BinaryHash.o $(OBJDIR_DEBUGMAININD)/indexer/sphericalHashing/Common.o $(OBJDIR_DEBUGMAININD)/indexer/sphericalHashing/Main.o $(OBJDIR_DEBUGMAININD)/commons/LoadConfig.o $(OBJDIR_DEBUGMAININD)/indexer/sphericalHashing/Stopwatch.o $(OBJDIR_DEBUGMAININD)/rest/Endpoints/TestEndpoint.o $(OBJDIR_DEBUGMAININD)/rest/Endpoints/analyser/CombSearchResult.o $(OBJDIR_DEBUGMAININD)/rest/Endpoints/analyser/EnsembleClassifier.o $(OBJDIR_DEBUGMAININD)/rest/Endpoints/analyser/ExtractFeatures.o $(OBJDIR_DEBUGMAININD)/analyser/nTag/VWBasicClassifier.o $(OBJDIR_DEBUGMAININD)/analyser/nTag/kNNClassifier.o $(OBJDIR_DEBUGMAININD)/analyser/nVector/EigenExtractor.o $(OBJDIR_DEBUGMAININD)/analyser/nVector/GISTExtractor.o $(OBJDIR_DEBUGMAININD)/analyser/nVector/GaborExtractor.o $(OBJDIR_DEBUGMAININD)/analyser/nVector/HistogramExtractor.o $(OBJDIR_DEBUGMAININD)/analyser/nVector/LBPExtractor.o $(OBJDIR_DEBUGMAININD)/analyser/nVector/LireExtractor.o $(OBJDIR_DEBUGMAININD)/analyser/nRoi/FaceDetection.o $(OBJDIR_DEBUGMAININD)/analyser/FactoryClassifier.o $(OBJDIR_DEBUGMAININD)/analyser/Main3.o $(OBJDIR_DEBUGMAININD)/analyser/nKeypoint/SURFExtractor.o $(OBJDIR_DEBUGMAININD)/analyser/nVector/NullExtractor.o $(OBJDIR_DEBUGMAININD)/analyser/nTag/FaceRecognition.o $(OBJDIR_DEBUGMAININD)/analyser/nTag/FacialExpressionRecognition.o $(OBJDIR_DEBUGMAININD)/analyser/nTag/SRClassifier.o $(OBJDIR_DEBUGMAININD)/analyser/nTag/SVMClassifier.o $(OBJDIR_DEBUGMAININD)/analyser/tools/ImageSegmentator.o $(OBJDIR_DEBUGMAININD)/analyser/tools/MIRFlickrImporter.o $(OBJDIR_DEBUGMAININD)/analyser/tools/MatrixTools.o $(OBJDIR_DEBUGMAININD)/analyser/tools/TestFunctions.o $(OBJDIR_DEBUGMAININD)/analyser/tools/TrainTestFeaturesTools.o $(OBJDIR_DEBUGMAININD)/analyser/tools/IlluminationCorrectionFilter.o $(OBJDIR_DEBUGMAININD)/analyser/tools/oneBillionImporter.o $(OBJDIR_DEBUGMAININD)/analyser/tools/tinyImageImporter.o $(OBJDIR_DEBUGMAININD)/appData/GameImage.o $(OBJDIR_DEBUGMAININD)/commons/AppConfig.o $(OBJDIR_DEBUGMAININD)/commons/FileDownloader.o $(OBJDIR_DEBUGMAININD)/analyser/nVector/SegmentedHistogramExtractor.o $(OBJDIR_DEBUGMAININD)/analyser/nVector/gist.o $(OBJDIR_DEBUGMAININD)/analyser/nVector/lbp.o $(OBJDIR_DEBUGMAININD)/analyser/nVector/standalone_image.o $(OBJDIR_DEBUGMAININD)/analyser/sources/CamSource.o $(OBJDIR_DEBUGMAININD)/analyser/FactoryAnalyser.o $(OBJDIR_DEBUGMAININD)/analyser/sources/SingleImageSource.o $(OBJDIR_DEBUGMAININD)/analyser/sources/TextFileSource.o $(OBJDIR_DEBUGMAININD)/analyser/sources/TextFileSourceV2.o $(OBJDIR_DEBUGMAININD)/analyser/sources/VideoSource.o
+
+OBJ_DEBUGMAINANA = $(OBJDIR_DEBUGMAINANA)/indexer/e2lsh/Geometry.o $(OBJDIR_DEBUGMAINANA)/indexer/LSHIndexer.o $(OBJDIR_DEBUGMAINANA)/indexer/MSIDXIndexer.o $(OBJDIR_DEBUGMAINANA)/indexer/SphericalHashIndexer.o $(OBJDIR_DEBUGMAINANA)/indexer/e2lsh/BucketHashing.o $(OBJDIR_DEBUGMAINANA)/indexer/FlannkNNIndexer.o $(OBJDIR_DEBUGMAINANA)/indexer/e2lsh/GlobalVars.o $(OBJDIR_DEBUGMAINANA)/indexer/e2lsh/LSHMain.o $(OBJDIR_DEBUGMAINANA)/indexer/e2lsh/LocalitySensitiveHashing.o $(OBJDIR_DEBUGMAINANA)/indexer/e2lsh/NearNeighbors.o $(OBJDIR_DEBUGMAINANA)/indexer/e2lsh/Random.o $(OBJDIR_DEBUGMAINANA)/commons/StringTools.o $(OBJDIR_DEBUGMAINANA)/commons/factory/Factory.o $(OBJDIR_DEBUGMAINANA)/dataModel/DataModelController.o $(OBJDIR_DEBUGMAINANA)/dataModel/DatabaseConnection.o $(OBJDIR_DEBUGMAINANA)/indexer/e2lsh/SelfTuning.o $(OBJDIR_DEBUGMAINANA)/dataModel/NKeypoint.o $(OBJDIR_DEBUGMAINANA)/dataModel/NRoi.o $(OBJDIR_DEBUGMAINANA)/dataModel/NTag.o $(OBJDIR_DEBUGMAINANA)/dataModel/NVector.o $(OBJDIR_DEBUGMAINANA)/indexer/FactoryIndexer.o $(OBJDIR_DEBUGMAINANA)/rest/Endpoints/analyser/GenericClassifier.o $(OBJDIR_DEBUGMAINANA)/rest/Endpoints/analyser/GetObjectFeatures.o $(OBJDIR_DEBUGMAINANA)/rest/Endpoints/analyser/MedicalSearchEngine.o $(OBJDIR_DEBUGMAINANA)/rest/Endpoints/analyser/SearchResult.o $(OBJDIR_DEBUGMAINANA)/rest/Endpoints/codebits/Codebits.o $(OBJDIR_DEBUGMAINANA)/rest/Endpoints/database/GetMetadata.o $(OBJDIR_DEBUGMAINANA)/rest/Endpoints/indexer/GenericIndexer.o $(OBJDIR_DEBUGMAINANA)/rest/FactoryEndpoint.o $(OBJDIR_DEBUGMAINANA)/rest/RestRequestHandler.o $(OBJDIR_DEBUGMAINANA)/rest/RestServer.o $(OBJDIR_DEBUGMAINANA)/indexer/e2lsh/Util.o $(OBJDIR_DEBUGMAINANA)/indexer/sphericalHashing/BinaryHash.o $(OBJDIR_DEBUGMAINANA)/indexer/sphericalHashing/Common.o $(OBJDIR_DEBUGMAINANA)/indexer/sphericalHashing/Main.o $(OBJDIR_DEBUGMAINANA)/commons/LoadConfig.o $(OBJDIR_DEBUGMAINANA)/indexer/sphericalHashing/Stopwatch.o $(OBJDIR_DEBUGMAINANA)/rest/Endpoints/TestEndpoint.o $(OBJDIR_DEBUGMAINANA)/rest/Endpoints/analyser/CombSearchResult.o $(OBJDIR_DEBUGMAINANA)/rest/Endpoints/analyser/EnsembleClassifier.o $(OBJDIR_DEBUGMAINANA)/rest/Endpoints/analyser/ExtractFeatures.o $(OBJDIR_DEBUGMAINANA)/analyser/nTag/VWBasicClassifier.o $(OBJDIR_DEBUGMAINANA)/analyser/nTag/kNNClassifier.o $(OBJDIR_DEBUGMAINANA)/analyser/nVector/EigenExtractor.o $(OBJDIR_DEBUGMAINANA)/analyser/nVector/GISTExtractor.o $(OBJDIR_DEBUGMAINANA)/analyser/nVector/GaborExtractor.o $(OBJDIR_DEBUGMAINANA)/analyser/nVector/HistogramExtractor.o $(OBJDIR_DEBUGMAINANA)/analyser/nVector/LBPExtractor.o $(OBJDIR_DEBUGMAINANA)/analyser/nVector/LireExtractor.o $(OBJDIR_DEBUGMAINANA)/analyser/nRoi/FaceDetection.o $(OBJDIR_DEBUGMAINANA)/analyser/FactoryClassifier.o $(OBJDIR_DEBUGMAINANA)/analyser/Main2.o $(OBJDIR_DEBUGMAINANA)/analyser/nKeypoint/SURFExtractor.o $(OBJDIR_DEBUGMAINANA)/analyser/nVector/NullExtractor.o $(OBJDIR_DEBUGMAINANA)/analyser/nTag/FaceRecognition.o $(OBJDIR_DEBUGMAINANA)/analyser/nTag/FacialExpressionRecognition.o $(OBJDIR_DEBUGMAINANA)/analyser/nTag/SRClassifier.o $(OBJDIR_DEBUGMAINANA)/analyser/nTag/SVMClassifier.o $(OBJDIR_DEBUGMAINANA)/analyser/tools/ImageSegmentator.o $(OBJDIR_DEBUGMAINANA)/analyser/tools/MIRFlickrImporter.o $(OBJDIR_DEBUGMAINANA)/analyser/tools/MatrixTools.o $(OBJDIR_DEBUGMAINANA)/analyser/tools/TestFunctions.o $(OBJDIR_DEBUGMAINANA)/analyser/tools/TrainTestFeaturesTools.o $(OBJDIR_DEBUGMAINANA)/analyser/tools/IlluminationCorrectionFilter.o $(OBJDIR_DEBUGMAINANA)/analyser/tools/oneBillionImporter.o $(OBJDIR_DEBUGMAINANA)/analyser/tools/tinyImageImporter.o $(OBJDIR_DEBUGMAINANA)/appData/GameImage.o $(OBJDIR_DEBUGMAINANA)/commons/AppConfig.o $(OBJDIR_DEBUGMAINANA)/commons/FileDownloader.o $(OBJDIR_DEBUGMAINANA)/analyser/nVector/SegmentedHistogramExtractor.o $(OBJDIR_DEBUGMAINANA)/analyser/nVector/gist.o $(OBJDIR_DEBUGMAINANA)/analyser/nVector/lbp.o $(OBJDIR_DEBUGMAINANA)/analyser/nVector/standalone_image.o $(OBJDIR_DEBUGMAINANA)/analyser/sources/CamSource.o $(OBJDIR_DEBUGMAINANA)/analyser/FactoryAnalyser.o $(OBJDIR_DEBUGMAINANA)/analyser/sources/SingleImageSource.o $(OBJDIR_DEBUGMAINANA)/analyser/sources/TextFileSource.o $(OBJDIR_DEBUGMAINANA)/analyser/sources/TextFileSourceV2.o $(OBJDIR_DEBUGMAINANA)/analyser/sources/VideoSource.o
+
+OBJ_DEBUGSERVER = $(OBJDIR_DEBUGSERVER)/indexer/e2lsh/Geometry.o $(OBJDIR_DEBUGSERVER)/indexer/LSHIndexer.o $(OBJDIR_DEBUGSERVER)/indexer/MSIDXIndexer.o $(OBJDIR_DEBUGSERVER)/indexer/SphericalHashIndexer.o $(OBJDIR_DEBUGSERVER)/indexer/e2lsh/BucketHashing.o $(OBJDIR_DEBUGSERVER)/indexer/FlannkNNIndexer.o $(OBJDIR_DEBUGSERVER)/indexer/e2lsh/GlobalVars.o $(OBJDIR_DEBUGSERVER)/indexer/e2lsh/LSHMain.o $(OBJDIR_DEBUGSERVER)/indexer/e2lsh/LocalitySensitiveHashing.o $(OBJDIR_DEBUGSERVER)/indexer/e2lsh/NearNeighbors.o $(OBJDIR_DEBUGSERVER)/indexer/e2lsh/Random.o $(OBJDIR_DEBUGSERVER)/commons/StringTools.o $(OBJDIR_DEBUGSERVER)/commons/factory/Factory.o $(OBJDIR_DEBUGSERVER)/dataModel/DataModelController.o $(OBJDIR_DEBUGSERVER)/dataModel/DatabaseConnection.o $(OBJDIR_DEBUGSERVER)/indexer/e2lsh/SelfTuning.o $(OBJDIR_DEBUGSERVER)/dataModel/NKeypoint.o $(OBJDIR_DEBUGSERVER)/dataModel/NRoi.o $(OBJDIR_DEBUGSERVER)/dataModel/NTag.o $(OBJDIR_DEBUGSERVER)/dataModel/NVector.o $(OBJDIR_DEBUGSERVER)/indexer/FactoryIndexer.o $(OBJDIR_DEBUGSERVER)/rest/Endpoints/analyser/GenericClassifier.o $(OBJDIR_DEBUGSERVER)/rest/Endpoints/analyser/GetObjectFeatures.o $(OBJDIR_DEBUGSERVER)/rest/Endpoints/analyser/MedicalSearchEngine.o $(OBJDIR_DEBUGSERVER)/rest/Endpoints/analyser/SearchResult.o $(OBJDIR_DEBUGSERVER)/rest/Endpoints/codebits/Codebits.o $(OBJDIR_DEBUGSERVER)/rest/Endpoints/database/GetMetadata.o $(OBJDIR_DEBUGSERVER)/rest/Endpoints/indexer/GenericIndexer.o $(OBJDIR_DEBUGSERVER)/rest/FactoryEndpoint.o $(OBJDIR_DEBUGSERVER)/rest/RestRequestHandler.o $(OBJDIR_DEBUGSERVER)/rest/RestServer.o $(OBJDIR_DEBUGSERVER)/rest/main.o $(OBJDIR_DEBUGSERVER)/indexer/e2lsh/Util.o $(OBJDIR_DEBUGSERVER)/indexer/sphericalHashing/BinaryHash.o $(OBJDIR_DEBUGSERVER)/indexer/sphericalHashing/Common.o $(OBJDIR_DEBUGSERVER)/indexer/sphericalHashing/Main.o $(OBJDIR_DEBUGSERVER)/commons/LoadConfig.o $(OBJDIR_DEBUGSERVER)/indexer/sphericalHashing/Stopwatch.o $(OBJDIR_DEBUGSERVER)/rest/Endpoints/TestEndpoint.o $(OBJDIR_DEBUGSERVER)/rest/Endpoints/analyser/CombSearchResult.o $(OBJDIR_DEBUGSERVER)/rest/Endpoints/analyser/EnsembleClassifier.o $(OBJDIR_DEBUGSERVER)/rest/Endpoints/analyser/ExtractFeatures.o $(OBJDIR_DEBUGSERVER)/analyser/nTag/VWBasicClassifier.o $(OBJDIR_DEBUGSERVER)/analyser/nTag/kNNClassifier.o $(OBJDIR_DEBUGSERVER)/analyser/nVector/EigenExtractor.o $(OBJDIR_DEBUGSERVER)/analyser/nVector/GISTExtractor.o $(OBJDIR_DEBUGSERVER)/analyser/nVector/GaborExtractor.o $(OBJDIR_DEBUGSERVER)/analyser/nVector/HistogramExtractor.o $(OBJDIR_DEBUGSERVER)/analyser/nVector/LBPExtractor.o $(OBJDIR_DEBUGSERVER)/analyser/nVector/LireExtractor.o $(OBJDIR_DEBUGSERVER)/analyser/nRoi/FaceDetection.o $(OBJDIR_DEBUGSERVER)/analyser/FactoryClassifier.o $(OBJDIR_DEBUGSERVER)/analyser/nKeypoint/SURFExtractor.o $(OBJDIR_DEBUGSERVER)/analyser/nVector/NullExtractor.o $(OBJDIR_DEBUGSERVER)/analyser/nTag/FaceRecognition.o $(OBJDIR_DEBUGSERVER)/analyser/nTag/FacialExpressionRecognition.o $(OBJDIR_DEBUGSERVER)/analyser/nTag/SRClassifier.o $(OBJDIR_DEBUGSERVER)/analyser/nTag/SVMClassifier.o $(OBJDIR_DEBUGSERVER)/analyser/tools/ImageSegmentator.o $(OBJDIR_DEBUGSERVER)/analyser/tools/MIRFlickrImporter.o $(OBJDIR_DEBUGSERVER)/analyser/tools/MatrixTools.o $(OBJDIR_DEBUGSERVER)/analyser/tools/TestFunctions.o $(OBJDIR_DEBUGSERVER)/analyser/tools/TrainTestFeaturesTools.o $(OBJDIR_DEBUGSERVER)/analyser/tools/IlluminationCorrectionFilter.o $(OBJDIR_DEBUGSERVER)/analyser/tools/oneBillionImporter.o $(OBJDIR_DEBUGSERVER)/analyser/tools/tinyImageImporter.o $(OBJDIR_DEBUGSERVER)/appData/GameImage.o $(OBJDIR_DEBUGSERVER)/commons/AppConfig.o $(OBJDIR_DEBUGSERVER)/commons/FileDownloader.o $(OBJDIR_DEBUGSERVER)/analyser/nVector/SegmentedHistogramExtractor.o $(OBJDIR_DEBUGSERVER)/analyser/nVector/gist.o $(OBJDIR_DEBUGSERVER)/analyser/nVector/lbp.o $(OBJDIR_DEBUGSERVER)/analyser/nVector/standalone_image.o $(OBJDIR_DEBUGSERVER)/analyser/sources/CamSource.o $(OBJDIR_DEBUGSERVER)/analyser/FactoryAnalyser.o $(OBJDIR_DEBUGSERVER)/analyser/sources/SingleImageSource.o $(OBJDIR_DEBUGSERVER)/analyser/sources/TextFileSource.o $(OBJDIR_DEBUGSERVER)/analyser/sources/TextFileSourceV2.o $(OBJDIR_DEBUGSERVER)/analyser/sources/VideoSource.o
+
+all: releasemainind releasemainana releaseserver debugmainind debugmainana debugserver
+
+clean: clean_releasemainind clean_releasemainana clean_releaseserver clean_debugmainind clean_debugmainana clean_debugserver
+
+before_releasemainind: 
 	test -d bin/Release || mkdir -p bin/Release
-	test -d $(OBJDIR_RELEASE)/indexer || mkdir -p $(OBJDIR_RELEASE)/indexer
-	test -d $(OBJDIR_RELEASE)/indexer/e2lsh || mkdir -p $(OBJDIR_RELEASE)/indexer/e2lsh
-	test -d $(OBJDIR_RELEASE)/commons || mkdir -p $(OBJDIR_RELEASE)/commons
-	test -d $(OBJDIR_RELEASE)/commons/factory || mkdir -p $(OBJDIR_RELEASE)/commons/factory
-	test -d $(OBJDIR_RELEASE)/dataModel || mkdir -p $(OBJDIR_RELEASE)/dataModel
-	test -d $(OBJDIR_RELEASE)/rest/Endpoints/analyser || mkdir -p $(OBJDIR_RELEASE)/rest/Endpoints/analyser
-	test -d $(OBJDIR_RELEASE)/rest/Endpoints/codebits || mkdir -p $(OBJDIR_RELEASE)/rest/Endpoints/codebits
-	test -d $(OBJDIR_RELEASE)/rest/Endpoints/indexer || mkdir -p $(OBJDIR_RELEASE)/rest/Endpoints/indexer
-	test -d $(OBJDIR_RELEASE)/rest || mkdir -p $(OBJDIR_RELEASE)/rest
-	test -d $(OBJDIR_RELEASE)/indexer/sphericalHashing || mkdir -p $(OBJDIR_RELEASE)/indexer/sphericalHashing
-	test -d $(OBJDIR_RELEASE)/rest/Endpoints || mkdir -p $(OBJDIR_RELEASE)/rest/Endpoints
-	test -d $(OBJDIR_RELEASE)/analyser/nTag || mkdir -p $(OBJDIR_RELEASE)/analyser/nTag
-	test -d $(OBJDIR_RELEASE)/analyser/nVector || mkdir -p $(OBJDIR_RELEASE)/analyser/nVector
-	test -d $(OBJDIR_RELEASE)/analyser/nRoi || mkdir -p $(OBJDIR_RELEASE)/analyser/nRoi
-	test -d $(OBJDIR_RELEASE)/analyser || mkdir -p $(OBJDIR_RELEASE)/analyser
-	test -d $(OBJDIR_RELEASE)/analyser/nKeypoint || mkdir -p $(OBJDIR_RELEASE)/analyser/nKeypoint
-	test -d $(OBJDIR_RELEASE)/analyser/tools || mkdir -p $(OBJDIR_RELEASE)/analyser/tools
-	test -d $(OBJDIR_RELEASE)/appData || mkdir -p $(OBJDIR_RELEASE)/appData
-	test -d $(OBJDIR_RELEASE)/analyser/sources || mkdir -p $(OBJDIR_RELEASE)/analyser/sources
+	test -d $(OBJDIR_RELEASEMAININD)/indexer/e2lsh || mkdir -p $(OBJDIR_RELEASEMAININD)/indexer/e2lsh
+	test -d $(OBJDIR_RELEASEMAININD)/indexer || mkdir -p $(OBJDIR_RELEASEMAININD)/indexer
+	test -d $(OBJDIR_RELEASEMAININD)/commons || mkdir -p $(OBJDIR_RELEASEMAININD)/commons
+	test -d $(OBJDIR_RELEASEMAININD)/commons/factory || mkdir -p $(OBJDIR_RELEASEMAININD)/commons/factory
+	test -d $(OBJDIR_RELEASEMAININD)/dataModel || mkdir -p $(OBJDIR_RELEASEMAININD)/dataModel
+	test -d $(OBJDIR_RELEASEMAININD)/rest/Endpoints/analyser || mkdir -p $(OBJDIR_RELEASEMAININD)/rest/Endpoints/analyser
+	test -d $(OBJDIR_RELEASEMAININD)/rest/Endpoints/codebits || mkdir -p $(OBJDIR_RELEASEMAININD)/rest/Endpoints/codebits
+	test -d $(OBJDIR_RELEASEMAININD)/rest/Endpoints/database || mkdir -p $(OBJDIR_RELEASEMAININD)/rest/Endpoints/database
+	test -d $(OBJDIR_RELEASEMAININD)/rest/Endpoints/indexer || mkdir -p $(OBJDIR_RELEASEMAININD)/rest/Endpoints/indexer
+	test -d $(OBJDIR_RELEASEMAININD)/rest || mkdir -p $(OBJDIR_RELEASEMAININD)/rest
+	test -d $(OBJDIR_RELEASEMAININD)/indexer/sphericalHashing || mkdir -p $(OBJDIR_RELEASEMAININD)/indexer/sphericalHashing
+	test -d $(OBJDIR_RELEASEMAININD)/rest/Endpoints || mkdir -p $(OBJDIR_RELEASEMAININD)/rest/Endpoints
+	test -d $(OBJDIR_RELEASEMAININD)/analyser/nTag || mkdir -p $(OBJDIR_RELEASEMAININD)/analyser/nTag
+	test -d $(OBJDIR_RELEASEMAININD)/analyser/nVector || mkdir -p $(OBJDIR_RELEASEMAININD)/analyser/nVector
+	test -d $(OBJDIR_RELEASEMAININD)/analyser/nRoi || mkdir -p $(OBJDIR_RELEASEMAININD)/analyser/nRoi
+	test -d $(OBJDIR_RELEASEMAININD)/analyser || mkdir -p $(OBJDIR_RELEASEMAININD)/analyser
+	test -d $(OBJDIR_RELEASEMAININD)/analyser/nKeypoint || mkdir -p $(OBJDIR_RELEASEMAININD)/analyser/nKeypoint
+	test -d $(OBJDIR_RELEASEMAININD)/analyser/tools || mkdir -p $(OBJDIR_RELEASEMAININD)/analyser/tools
+	test -d $(OBJDIR_RELEASEMAININD)/appData || mkdir -p $(OBJDIR_RELEASEMAININD)/appData
+	test -d $(OBJDIR_RELEASEMAININD)/analyser/sources || mkdir -p $(OBJDIR_RELEASEMAININD)/analyser/sources
 
-after_release: 
+after_releasemainind: 
 
-release: before_release out_release after_release
+releasemainind: before_releasemainind out_releasemainind after_releasemainind
 
-out_release: before_release $(OBJ_RELEASE) $(DEP_RELEASE)
-	$(LD) $(LIBDIR_RELEASE) -o $(OUT_RELEASE) $(OBJ_RELEASE)  $(LDFLAGS_RELEASE) $(LIB_RELEASE)
+out_releasemainind: before_releasemainind $(OBJ_RELEASEMAININD) $(DEP_RELEASEMAININD)
+	$(LD) $(LIBDIR_RELEASEMAININD) -o $(OUT_RELEASEMAININD) $(OBJ_RELEASEMAININD)  $(LDFLAGS_RELEASEMAININD) $(LIB_RELEASEMAININD)
 
-$(OBJDIR_RELEASE)/indexer/LSHIndexer.o: indexer/LSHIndexer.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c indexer/LSHIndexer.cpp -o $(OBJDIR_RELEASE)/indexer/LSHIndexer.o
+$(OBJDIR_RELEASEMAININD)/indexer/e2lsh/Geometry.o: indexer/e2lsh/Geometry.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c indexer/e2lsh/Geometry.cpp -o $(OBJDIR_RELEASEMAININD)/indexer/e2lsh/Geometry.o
 
-$(OBJDIR_RELEASE)/indexer/MSIDXIndexer.o: indexer/MSIDXIndexer.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c indexer/MSIDXIndexer.cpp -o $(OBJDIR_RELEASE)/indexer/MSIDXIndexer.o
+$(OBJDIR_RELEASEMAININD)/indexer/LSHIndexer.o: indexer/LSHIndexer.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c indexer/LSHIndexer.cpp -o $(OBJDIR_RELEASEMAININD)/indexer/LSHIndexer.o
 
-$(OBJDIR_RELEASE)/indexer/SphericalHashIndexer.o: indexer/SphericalHashIndexer.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c indexer/SphericalHashIndexer.cpp -o $(OBJDIR_RELEASE)/indexer/SphericalHashIndexer.o
+$(OBJDIR_RELEASEMAININD)/indexer/MSIDXIndexer.o: indexer/MSIDXIndexer.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c indexer/MSIDXIndexer.cpp -o $(OBJDIR_RELEASEMAININD)/indexer/MSIDXIndexer.o
 
-$(OBJDIR_RELEASE)/indexer/e2lsh/BucketHashing.o: indexer/e2lsh/BucketHashing.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c indexer/e2lsh/BucketHashing.cpp -o $(OBJDIR_RELEASE)/indexer/e2lsh/BucketHashing.o
+$(OBJDIR_RELEASEMAININD)/indexer/SphericalHashIndexer.o: indexer/SphericalHashIndexer.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c indexer/SphericalHashIndexer.cpp -o $(OBJDIR_RELEASEMAININD)/indexer/SphericalHashIndexer.o
 
-$(OBJDIR_RELEASE)/indexer/FlannkNNIndexer.o: indexer/FlannkNNIndexer.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c indexer/FlannkNNIndexer.cpp -o $(OBJDIR_RELEASE)/indexer/FlannkNNIndexer.o
+$(OBJDIR_RELEASEMAININD)/indexer/e2lsh/BucketHashing.o: indexer/e2lsh/BucketHashing.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c indexer/e2lsh/BucketHashing.cpp -o $(OBJDIR_RELEASEMAININD)/indexer/e2lsh/BucketHashing.o
 
-$(OBJDIR_RELEASE)/indexer/e2lsh/Geometry.o: indexer/e2lsh/Geometry.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c indexer/e2lsh/Geometry.cpp -o $(OBJDIR_RELEASE)/indexer/e2lsh/Geometry.o
+$(OBJDIR_RELEASEMAININD)/indexer/FlannkNNIndexer.o: indexer/FlannkNNIndexer.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c indexer/FlannkNNIndexer.cpp -o $(OBJDIR_RELEASEMAININD)/indexer/FlannkNNIndexer.o
 
-$(OBJDIR_RELEASE)/indexer/e2lsh/GlobalVars.o: indexer/e2lsh/GlobalVars.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c indexer/e2lsh/GlobalVars.cpp -o $(OBJDIR_RELEASE)/indexer/e2lsh/GlobalVars.o
+$(OBJDIR_RELEASEMAININD)/indexer/e2lsh/GlobalVars.o: indexer/e2lsh/GlobalVars.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c indexer/e2lsh/GlobalVars.cpp -o $(OBJDIR_RELEASEMAININD)/indexer/e2lsh/GlobalVars.o
 
-$(OBJDIR_RELEASE)/indexer/e2lsh/LSHMain.o: indexer/e2lsh/LSHMain.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c indexer/e2lsh/LSHMain.cpp -o $(OBJDIR_RELEASE)/indexer/e2lsh/LSHMain.o
+$(OBJDIR_RELEASEMAININD)/indexer/e2lsh/LSHMain.o: indexer/e2lsh/LSHMain.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c indexer/e2lsh/LSHMain.cpp -o $(OBJDIR_RELEASEMAININD)/indexer/e2lsh/LSHMain.o
 
-$(OBJDIR_RELEASE)/indexer/e2lsh/LocalitySensitiveHashing.o: indexer/e2lsh/LocalitySensitiveHashing.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c indexer/e2lsh/LocalitySensitiveHashing.cpp -o $(OBJDIR_RELEASE)/indexer/e2lsh/LocalitySensitiveHashing.o
+$(OBJDIR_RELEASEMAININD)/indexer/e2lsh/LocalitySensitiveHashing.o: indexer/e2lsh/LocalitySensitiveHashing.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c indexer/e2lsh/LocalitySensitiveHashing.cpp -o $(OBJDIR_RELEASEMAININD)/indexer/e2lsh/LocalitySensitiveHashing.o
 
-$(OBJDIR_RELEASE)/indexer/e2lsh/NearNeighbors.o: indexer/e2lsh/NearNeighbors.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c indexer/e2lsh/NearNeighbors.cpp -o $(OBJDIR_RELEASE)/indexer/e2lsh/NearNeighbors.o
+$(OBJDIR_RELEASEMAININD)/indexer/e2lsh/NearNeighbors.o: indexer/e2lsh/NearNeighbors.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c indexer/e2lsh/NearNeighbors.cpp -o $(OBJDIR_RELEASEMAININD)/indexer/e2lsh/NearNeighbors.o
 
-$(OBJDIR_RELEASE)/indexer/e2lsh/Random.o: indexer/e2lsh/Random.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c indexer/e2lsh/Random.cpp -o $(OBJDIR_RELEASE)/indexer/e2lsh/Random.o
+$(OBJDIR_RELEASEMAININD)/indexer/e2lsh/Random.o: indexer/e2lsh/Random.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c indexer/e2lsh/Random.cpp -o $(OBJDIR_RELEASEMAININD)/indexer/e2lsh/Random.o
 
-$(OBJDIR_RELEASE)/commons/LoadConfig.o: commons/LoadConfig.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c commons/LoadConfig.cpp -o $(OBJDIR_RELEASE)/commons/LoadConfig.o
+$(OBJDIR_RELEASEMAININD)/commons/StringTools.o: commons/StringTools.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c commons/StringTools.cpp -o $(OBJDIR_RELEASEMAININD)/commons/StringTools.o
 
-$(OBJDIR_RELEASE)/commons/StringTools.o: commons/StringTools.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c commons/StringTools.cpp -o $(OBJDIR_RELEASE)/commons/StringTools.o
+$(OBJDIR_RELEASEMAININD)/commons/factory/Factory.o: commons/factory/Factory.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c commons/factory/Factory.cpp -o $(OBJDIR_RELEASEMAININD)/commons/factory/Factory.o
 
-$(OBJDIR_RELEASE)/commons/factory/Factory.o: commons/factory/Factory.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c commons/factory/Factory.cpp -o $(OBJDIR_RELEASE)/commons/factory/Factory.o
+$(OBJDIR_RELEASEMAININD)/dataModel/DataModelController.o: dataModel/DataModelController.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c dataModel/DataModelController.cpp -o $(OBJDIR_RELEASEMAININD)/dataModel/DataModelController.o
 
-$(OBJDIR_RELEASE)/dataModel/DataModelController.o: dataModel/DataModelController.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c dataModel/DataModelController.cpp -o $(OBJDIR_RELEASE)/dataModel/DataModelController.o
+$(OBJDIR_RELEASEMAININD)/dataModel/DatabaseConnection.o: dataModel/DatabaseConnection.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c dataModel/DatabaseConnection.cpp -o $(OBJDIR_RELEASEMAININD)/dataModel/DatabaseConnection.o
 
-$(OBJDIR_RELEASE)/dataModel/NKeypoint.o: dataModel/NKeypoint.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c dataModel/NKeypoint.cpp -o $(OBJDIR_RELEASE)/dataModel/NKeypoint.o
+$(OBJDIR_RELEASEMAININD)/indexer/e2lsh/SelfTuning.o: indexer/e2lsh/SelfTuning.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c indexer/e2lsh/SelfTuning.cpp -o $(OBJDIR_RELEASEMAININD)/indexer/e2lsh/SelfTuning.o
 
-$(OBJDIR_RELEASE)/dataModel/NRoi.o: dataModel/NRoi.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c dataModel/NRoi.cpp -o $(OBJDIR_RELEASE)/dataModel/NRoi.o
+$(OBJDIR_RELEASEMAININD)/dataModel/NKeypoint.o: dataModel/NKeypoint.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c dataModel/NKeypoint.cpp -o $(OBJDIR_RELEASEMAININD)/dataModel/NKeypoint.o
 
-$(OBJDIR_RELEASE)/dataModel/NTag.o: dataModel/NTag.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c dataModel/NTag.cpp -o $(OBJDIR_RELEASE)/dataModel/NTag.o
+$(OBJDIR_RELEASEMAININD)/dataModel/NRoi.o: dataModel/NRoi.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c dataModel/NRoi.cpp -o $(OBJDIR_RELEASEMAININD)/dataModel/NRoi.o
 
-$(OBJDIR_RELEASE)/dataModel/NVector.o: dataModel/NVector.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c dataModel/NVector.cpp -o $(OBJDIR_RELEASE)/dataModel/NVector.o
+$(OBJDIR_RELEASEMAININD)/dataModel/NTag.o: dataModel/NTag.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c dataModel/NTag.cpp -o $(OBJDIR_RELEASEMAININD)/dataModel/NTag.o
 
-$(OBJDIR_RELEASE)/indexer/FactoryIndexer.o: indexer/FactoryIndexer.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c indexer/FactoryIndexer.cpp -o $(OBJDIR_RELEASE)/indexer/FactoryIndexer.o
+$(OBJDIR_RELEASEMAININD)/dataModel/NVector.o: dataModel/NVector.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c dataModel/NVector.cpp -o $(OBJDIR_RELEASEMAININD)/dataModel/NVector.o
 
-$(OBJDIR_RELEASE)/rest/Endpoints/analyser/GenericClassifier.o: rest/Endpoints/analyser/GenericClassifier.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c rest/Endpoints/analyser/GenericClassifier.cpp -o $(OBJDIR_RELEASE)/rest/Endpoints/analyser/GenericClassifier.o
+$(OBJDIR_RELEASEMAININD)/indexer/FactoryIndexer.o: indexer/FactoryIndexer.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c indexer/FactoryIndexer.cpp -o $(OBJDIR_RELEASEMAININD)/indexer/FactoryIndexer.o
 
-$(OBJDIR_RELEASE)/rest/Endpoints/analyser/GetObjectFeatures.o: rest/Endpoints/analyser/GetObjectFeatures.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c rest/Endpoints/analyser/GetObjectFeatures.cpp -o $(OBJDIR_RELEASE)/rest/Endpoints/analyser/GetObjectFeatures.o
+$(OBJDIR_RELEASEMAININD)/rest/Endpoints/analyser/GenericClassifier.o: rest/Endpoints/analyser/GenericClassifier.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c rest/Endpoints/analyser/GenericClassifier.cpp -o $(OBJDIR_RELEASEMAININD)/rest/Endpoints/analyser/GenericClassifier.o
 
-$(OBJDIR_RELEASE)/rest/Endpoints/analyser/MedicalSearchEngine.o: rest/Endpoints/analyser/MedicalSearchEngine.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c rest/Endpoints/analyser/MedicalSearchEngine.cpp -o $(OBJDIR_RELEASE)/rest/Endpoints/analyser/MedicalSearchEngine.o
+$(OBJDIR_RELEASEMAININD)/rest/Endpoints/analyser/GetObjectFeatures.o: rest/Endpoints/analyser/GetObjectFeatures.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c rest/Endpoints/analyser/GetObjectFeatures.cpp -o $(OBJDIR_RELEASEMAININD)/rest/Endpoints/analyser/GetObjectFeatures.o
 
-$(OBJDIR_RELEASE)/rest/Endpoints/analyser/SearchResult.o: rest/Endpoints/analyser/SearchResult.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c rest/Endpoints/analyser/SearchResult.cpp -o $(OBJDIR_RELEASE)/rest/Endpoints/analyser/SearchResult.o
+$(OBJDIR_RELEASEMAININD)/rest/Endpoints/analyser/MedicalSearchEngine.o: rest/Endpoints/analyser/MedicalSearchEngine.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c rest/Endpoints/analyser/MedicalSearchEngine.cpp -o $(OBJDIR_RELEASEMAININD)/rest/Endpoints/analyser/MedicalSearchEngine.o
 
-$(OBJDIR_RELEASE)/rest/Endpoints/codebits/Codebits.o: rest/Endpoints/codebits/Codebits.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c rest/Endpoints/codebits/Codebits.cpp -o $(OBJDIR_RELEASE)/rest/Endpoints/codebits/Codebits.o
+$(OBJDIR_RELEASEMAININD)/rest/Endpoints/analyser/SearchResult.o: rest/Endpoints/analyser/SearchResult.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c rest/Endpoints/analyser/SearchResult.cpp -o $(OBJDIR_RELEASEMAININD)/rest/Endpoints/analyser/SearchResult.o
 
-$(OBJDIR_RELEASE)/rest/Endpoints/analyser/ExtractFeatures.o: rest/Endpoints/analyser/ExtractFeatures.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c rest/Endpoints/analyser/ExtractFeatures.cpp -o $(OBJDIR_RELEASE)/rest/Endpoints/analyser/ExtractFeatures.o
+$(OBJDIR_RELEASEMAININD)/rest/Endpoints/codebits/Codebits.o: rest/Endpoints/codebits/Codebits.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c rest/Endpoints/codebits/Codebits.cpp -o $(OBJDIR_RELEASEMAININD)/rest/Endpoints/codebits/Codebits.o
 
-$(OBJDIR_RELEASE)/rest/Endpoints/indexer/GenericIndexer.o: rest/Endpoints/indexer/GenericIndexer.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c rest/Endpoints/indexer/GenericIndexer.cpp -o $(OBJDIR_RELEASE)/rest/Endpoints/indexer/GenericIndexer.o
+$(OBJDIR_RELEASEMAININD)/rest/Endpoints/database/GetMetadata.o: rest/Endpoints/database/GetMetadata.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c rest/Endpoints/database/GetMetadata.cpp -o $(OBJDIR_RELEASEMAININD)/rest/Endpoints/database/GetMetadata.o
 
-$(OBJDIR_RELEASE)/rest/FactoryEndpoint.o: rest/FactoryEndpoint.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c rest/FactoryEndpoint.cpp -o $(OBJDIR_RELEASE)/rest/FactoryEndpoint.o
+$(OBJDIR_RELEASEMAININD)/rest/Endpoints/indexer/GenericIndexer.o: rest/Endpoints/indexer/GenericIndexer.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c rest/Endpoints/indexer/GenericIndexer.cpp -o $(OBJDIR_RELEASEMAININD)/rest/Endpoints/indexer/GenericIndexer.o
 
-$(OBJDIR_RELEASE)/rest/RestRequestHandler.o: rest/RestRequestHandler.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c rest/RestRequestHandler.cpp -o $(OBJDIR_RELEASE)/rest/RestRequestHandler.o
+$(OBJDIR_RELEASEMAININD)/rest/FactoryEndpoint.o: rest/FactoryEndpoint.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c rest/FactoryEndpoint.cpp -o $(OBJDIR_RELEASEMAININD)/rest/FactoryEndpoint.o
 
-$(OBJDIR_RELEASE)/rest/RestServer.o: rest/RestServer.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c rest/RestServer.cpp -o $(OBJDIR_RELEASE)/rest/RestServer.o
+$(OBJDIR_RELEASEMAININD)/rest/RestRequestHandler.o: rest/RestRequestHandler.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c rest/RestRequestHandler.cpp -o $(OBJDIR_RELEASEMAININD)/rest/RestRequestHandler.o
 
-$(OBJDIR_RELEASE)/indexer/sphericalHashing/Main.o: indexer/sphericalHashing/Main.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c indexer/sphericalHashing/Main.cpp -o $(OBJDIR_RELEASE)/indexer/sphericalHashing/Main.o
+$(OBJDIR_RELEASEMAININD)/rest/RestServer.o: rest/RestServer.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c rest/RestServer.cpp -o $(OBJDIR_RELEASEMAININD)/rest/RestServer.o
 
-$(OBJDIR_RELEASE)/indexer/e2lsh/SelfTuning.o: indexer/e2lsh/SelfTuning.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c indexer/e2lsh/SelfTuning.cpp -o $(OBJDIR_RELEASE)/indexer/e2lsh/SelfTuning.o
+$(OBJDIR_RELEASEMAININD)/indexer/e2lsh/Util.o: indexer/e2lsh/Util.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c indexer/e2lsh/Util.cpp -o $(OBJDIR_RELEASEMAININD)/indexer/e2lsh/Util.o
 
-$(OBJDIR_RELEASE)/indexer/e2lsh/Util.o: indexer/e2lsh/Util.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c indexer/e2lsh/Util.cpp -o $(OBJDIR_RELEASE)/indexer/e2lsh/Util.o
+$(OBJDIR_RELEASEMAININD)/indexer/sphericalHashing/BinaryHash.o: indexer/sphericalHashing/BinaryHash.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c indexer/sphericalHashing/BinaryHash.cpp -o $(OBJDIR_RELEASEMAININD)/indexer/sphericalHashing/BinaryHash.o
 
-$(OBJDIR_RELEASE)/indexer/sphericalHashing/BinaryHash.o: indexer/sphericalHashing/BinaryHash.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c indexer/sphericalHashing/BinaryHash.cpp -o $(OBJDIR_RELEASE)/indexer/sphericalHashing/BinaryHash.o
+$(OBJDIR_RELEASEMAININD)/indexer/sphericalHashing/Common.o: indexer/sphericalHashing/Common.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c indexer/sphericalHashing/Common.cpp -o $(OBJDIR_RELEASEMAININD)/indexer/sphericalHashing/Common.o
 
-$(OBJDIR_RELEASE)/indexer/sphericalHashing/Common.o: indexer/sphericalHashing/Common.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c indexer/sphericalHashing/Common.cpp -o $(OBJDIR_RELEASE)/indexer/sphericalHashing/Common.o
+$(OBJDIR_RELEASEMAININD)/indexer/sphericalHashing/Main.o: indexer/sphericalHashing/Main.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c indexer/sphericalHashing/Main.cpp -o $(OBJDIR_RELEASEMAININD)/indexer/sphericalHashing/Main.o
 
-$(OBJDIR_RELEASE)/commons/FileDownloader.o: commons/FileDownloader.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c commons/FileDownloader.cpp -o $(OBJDIR_RELEASE)/commons/FileDownloader.o
+$(OBJDIR_RELEASEMAININD)/commons/LoadConfig.o: commons/LoadConfig.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c commons/LoadConfig.cpp -o $(OBJDIR_RELEASEMAININD)/commons/LoadConfig.o
 
-$(OBJDIR_RELEASE)/indexer/sphericalHashing/Stopwatch.o: indexer/sphericalHashing/Stopwatch.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c indexer/sphericalHashing/Stopwatch.cpp -o $(OBJDIR_RELEASE)/indexer/sphericalHashing/Stopwatch.o
+$(OBJDIR_RELEASEMAININD)/indexer/sphericalHashing/Stopwatch.o: indexer/sphericalHashing/Stopwatch.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c indexer/sphericalHashing/Stopwatch.cpp -o $(OBJDIR_RELEASEMAININD)/indexer/sphericalHashing/Stopwatch.o
 
-$(OBJDIR_RELEASE)/rest/Endpoints/TestEndpoint.o: rest/Endpoints/TestEndpoint.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c rest/Endpoints/TestEndpoint.cpp -o $(OBJDIR_RELEASE)/rest/Endpoints/TestEndpoint.o
+$(OBJDIR_RELEASEMAININD)/rest/Endpoints/TestEndpoint.o: rest/Endpoints/TestEndpoint.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c rest/Endpoints/TestEndpoint.cpp -o $(OBJDIR_RELEASEMAININD)/rest/Endpoints/TestEndpoint.o
 
-$(OBJDIR_RELEASE)/rest/Endpoints/analyser/CombSearchResult.o: rest/Endpoints/analyser/CombSearchResult.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c rest/Endpoints/analyser/CombSearchResult.cpp -o $(OBJDIR_RELEASE)/rest/Endpoints/analyser/CombSearchResult.o
+$(OBJDIR_RELEASEMAININD)/rest/Endpoints/analyser/CombSearchResult.o: rest/Endpoints/analyser/CombSearchResult.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c rest/Endpoints/analyser/CombSearchResult.cpp -o $(OBJDIR_RELEASEMAININD)/rest/Endpoints/analyser/CombSearchResult.o
 
-$(OBJDIR_RELEASE)/rest/Endpoints/analyser/EnsembleClassifier.o: rest/Endpoints/analyser/EnsembleClassifier.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c rest/Endpoints/analyser/EnsembleClassifier.cpp -o $(OBJDIR_RELEASE)/rest/Endpoints/analyser/EnsembleClassifier.o
+$(OBJDIR_RELEASEMAININD)/rest/Endpoints/analyser/EnsembleClassifier.o: rest/Endpoints/analyser/EnsembleClassifier.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c rest/Endpoints/analyser/EnsembleClassifier.cpp -o $(OBJDIR_RELEASEMAININD)/rest/Endpoints/analyser/EnsembleClassifier.o
 
-$(OBJDIR_RELEASE)/analyser/nTag/VWBasicClassifier.o: analyser/nTag/VWBasicClassifier.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c analyser/nTag/VWBasicClassifier.cpp -o $(OBJDIR_RELEASE)/analyser/nTag/VWBasicClassifier.o
+$(OBJDIR_RELEASEMAININD)/rest/Endpoints/analyser/ExtractFeatures.o: rest/Endpoints/analyser/ExtractFeatures.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c rest/Endpoints/analyser/ExtractFeatures.cpp -o $(OBJDIR_RELEASEMAININD)/rest/Endpoints/analyser/ExtractFeatures.o
 
-$(OBJDIR_RELEASE)/analyser/nTag/kNNClassifier.o: analyser/nTag/kNNClassifier.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c analyser/nTag/kNNClassifier.cpp -o $(OBJDIR_RELEASE)/analyser/nTag/kNNClassifier.o
+$(OBJDIR_RELEASEMAININD)/analyser/nTag/VWBasicClassifier.o: analyser/nTag/VWBasicClassifier.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c analyser/nTag/VWBasicClassifier.cpp -o $(OBJDIR_RELEASEMAININD)/analyser/nTag/VWBasicClassifier.o
 
-$(OBJDIR_RELEASE)/analyser/nVector/EigenExtractor.o: analyser/nVector/EigenExtractor.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c analyser/nVector/EigenExtractor.cpp -o $(OBJDIR_RELEASE)/analyser/nVector/EigenExtractor.o
+$(OBJDIR_RELEASEMAININD)/analyser/nTag/kNNClassifier.o: analyser/nTag/kNNClassifier.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c analyser/nTag/kNNClassifier.cpp -o $(OBJDIR_RELEASEMAININD)/analyser/nTag/kNNClassifier.o
 
-$(OBJDIR_RELEASE)/analyser/nVector/GISTExtractor.o: analyser/nVector/GISTExtractor.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c analyser/nVector/GISTExtractor.cpp -o $(OBJDIR_RELEASE)/analyser/nVector/GISTExtractor.o
+$(OBJDIR_RELEASEMAININD)/analyser/nVector/EigenExtractor.o: analyser/nVector/EigenExtractor.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c analyser/nVector/EigenExtractor.cpp -o $(OBJDIR_RELEASEMAININD)/analyser/nVector/EigenExtractor.o
 
-$(OBJDIR_RELEASE)/analyser/nVector/GaborExtractor.o: analyser/nVector/GaborExtractor.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c analyser/nVector/GaborExtractor.cpp -o $(OBJDIR_RELEASE)/analyser/nVector/GaborExtractor.o
+$(OBJDIR_RELEASEMAININD)/analyser/nVector/GISTExtractor.o: analyser/nVector/GISTExtractor.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c analyser/nVector/GISTExtractor.cpp -o $(OBJDIR_RELEASEMAININD)/analyser/nVector/GISTExtractor.o
 
-$(OBJDIR_RELEASE)/analyser/nVector/HistogramExtractor.o: analyser/nVector/HistogramExtractor.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c analyser/nVector/HistogramExtractor.cpp -o $(OBJDIR_RELEASE)/analyser/nVector/HistogramExtractor.o
+$(OBJDIR_RELEASEMAININD)/analyser/nVector/GaborExtractor.o: analyser/nVector/GaborExtractor.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c analyser/nVector/GaborExtractor.cpp -o $(OBJDIR_RELEASEMAININD)/analyser/nVector/GaborExtractor.o
 
-$(OBJDIR_RELEASE)/analyser/nVector/LBPExtractor.o: analyser/nVector/LBPExtractor.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c analyser/nVector/LBPExtractor.cpp -o $(OBJDIR_RELEASE)/analyser/nVector/LBPExtractor.o
+$(OBJDIR_RELEASEMAININD)/analyser/nVector/HistogramExtractor.o: analyser/nVector/HistogramExtractor.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c analyser/nVector/HistogramExtractor.cpp -o $(OBJDIR_RELEASEMAININD)/analyser/nVector/HistogramExtractor.o
 
-$(OBJDIR_RELEASE)/analyser/nVector/LireExtractor.o: analyser/nVector/LireExtractor.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c analyser/nVector/LireExtractor.cpp -o $(OBJDIR_RELEASE)/analyser/nVector/LireExtractor.o
+$(OBJDIR_RELEASEMAININD)/analyser/nVector/LBPExtractor.o: analyser/nVector/LBPExtractor.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c analyser/nVector/LBPExtractor.cpp -o $(OBJDIR_RELEASEMAININD)/analyser/nVector/LBPExtractor.o
 
-$(OBJDIR_RELEASE)/analyser/nRoi/FaceDetection.o: analyser/nRoi/FaceDetection.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c analyser/nRoi/FaceDetection.cpp -o $(OBJDIR_RELEASE)/analyser/nRoi/FaceDetection.o
+$(OBJDIR_RELEASEMAININD)/analyser/nVector/LireExtractor.o: analyser/nVector/LireExtractor.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c analyser/nVector/LireExtractor.cpp -o $(OBJDIR_RELEASEMAININD)/analyser/nVector/LireExtractor.o
 
-$(OBJDIR_RELEASE)/analyser/FactoryClassifier.o: analyser/FactoryClassifier.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c analyser/FactoryClassifier.cpp -o $(OBJDIR_RELEASE)/analyser/FactoryClassifier.o
+$(OBJDIR_RELEASEMAININD)/analyser/nRoi/FaceDetection.o: analyser/nRoi/FaceDetection.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c analyser/nRoi/FaceDetection.cpp -o $(OBJDIR_RELEASEMAININD)/analyser/nRoi/FaceDetection.o
 
-$(OBJDIR_RELEASE)/analyser/Main.o: analyser/Main.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c analyser/Main.cpp -o $(OBJDIR_RELEASE)/analyser/Main.o
+$(OBJDIR_RELEASEMAININD)/analyser/FactoryClassifier.o: analyser/FactoryClassifier.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c analyser/FactoryClassifier.cpp -o $(OBJDIR_RELEASEMAININD)/analyser/FactoryClassifier.o
 
-$(OBJDIR_RELEASE)/analyser/Main3.o: analyser/Main3.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c analyser/Main3.cpp -o $(OBJDIR_RELEASE)/analyser/Main3.o
+$(OBJDIR_RELEASEMAININD)/analyser/Main3.o: analyser/Main3.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c analyser/Main3.cpp -o $(OBJDIR_RELEASEMAININD)/analyser/Main3.o
 
-$(OBJDIR_RELEASE)/analyser/nKeypoint/SURFExtractor.o: analyser/nKeypoint/SURFExtractor.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c analyser/nKeypoint/SURFExtractor.cpp -o $(OBJDIR_RELEASE)/analyser/nKeypoint/SURFExtractor.o
+$(OBJDIR_RELEASEMAININD)/analyser/nKeypoint/SURFExtractor.o: analyser/nKeypoint/SURFExtractor.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c analyser/nKeypoint/SURFExtractor.cpp -o $(OBJDIR_RELEASEMAININD)/analyser/nKeypoint/SURFExtractor.o
 
-$(OBJDIR_RELEASE)/analyser/nTag/FaceRecognition.o: analyser/nTag/FaceRecognition.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c analyser/nTag/FaceRecognition.cpp -o $(OBJDIR_RELEASE)/analyser/nTag/FaceRecognition.o
+$(OBJDIR_RELEASEMAININD)/analyser/nVector/NullExtractor.o: analyser/nVector/NullExtractor.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c analyser/nVector/NullExtractor.cpp -o $(OBJDIR_RELEASEMAININD)/analyser/nVector/NullExtractor.o
 
-$(OBJDIR_RELEASE)/analyser/nTag/FacialExpressionRecognition.o: analyser/nTag/FacialExpressionRecognition.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c analyser/nTag/FacialExpressionRecognition.cpp -o $(OBJDIR_RELEASE)/analyser/nTag/FacialExpressionRecognition.o
+$(OBJDIR_RELEASEMAININD)/analyser/nTag/FaceRecognition.o: analyser/nTag/FaceRecognition.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c analyser/nTag/FaceRecognition.cpp -o $(OBJDIR_RELEASEMAININD)/analyser/nTag/FaceRecognition.o
 
-$(OBJDIR_RELEASE)/analyser/nTag/SRClassifier.o: analyser/nTag/SRClassifier.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c analyser/nTag/SRClassifier.cpp -o $(OBJDIR_RELEASE)/analyser/nTag/SRClassifier.o
+$(OBJDIR_RELEASEMAININD)/analyser/nTag/FacialExpressionRecognition.o: analyser/nTag/FacialExpressionRecognition.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c analyser/nTag/FacialExpressionRecognition.cpp -o $(OBJDIR_RELEASEMAININD)/analyser/nTag/FacialExpressionRecognition.o
 
-$(OBJDIR_RELEASE)/analyser/nTag/SVMClassifier.o: analyser/nTag/SVMClassifier.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c analyser/nTag/SVMClassifier.cpp -o $(OBJDIR_RELEASE)/analyser/nTag/SVMClassifier.o
+$(OBJDIR_RELEASEMAININD)/analyser/nTag/SRClassifier.o: analyser/nTag/SRClassifier.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c analyser/nTag/SRClassifier.cpp -o $(OBJDIR_RELEASEMAININD)/analyser/nTag/SRClassifier.o
 
-$(OBJDIR_RELEASE)/analyser/tools/TestFunctions.o: analyser/tools/TestFunctions.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c analyser/tools/TestFunctions.cpp -o $(OBJDIR_RELEASE)/analyser/tools/TestFunctions.o
+$(OBJDIR_RELEASEMAININD)/analyser/nTag/SVMClassifier.o: analyser/nTag/SVMClassifier.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c analyser/nTag/SVMClassifier.cpp -o $(OBJDIR_RELEASEMAININD)/analyser/nTag/SVMClassifier.o
 
-$(OBJDIR_RELEASE)/analyser/tools/IlluminationCorrectionFilter.o: analyser/tools/IlluminationCorrectionFilter.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c analyser/tools/IlluminationCorrectionFilter.cpp -o $(OBJDIR_RELEASE)/analyser/tools/IlluminationCorrectionFilter.o
+$(OBJDIR_RELEASEMAININD)/analyser/tools/ImageSegmentator.o: analyser/tools/ImageSegmentator.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c analyser/tools/ImageSegmentator.cpp -o $(OBJDIR_RELEASEMAININD)/analyser/tools/ImageSegmentator.o
 
-$(OBJDIR_RELEASE)/analyser/tools/ImageSegmentator.o: analyser/tools/ImageSegmentator.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c analyser/tools/ImageSegmentator.cpp -o $(OBJDIR_RELEASE)/analyser/tools/ImageSegmentator.o
+$(OBJDIR_RELEASEMAININD)/analyser/tools/MIRFlickrImporter.o: analyser/tools/MIRFlickrImporter.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c analyser/tools/MIRFlickrImporter.cpp -o $(OBJDIR_RELEASEMAININD)/analyser/tools/MIRFlickrImporter.o
 
-$(OBJDIR_RELEASE)/analyser/tools/MIRFlickrImporter.o: analyser/tools/MIRFlickrImporter.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c analyser/tools/MIRFlickrImporter.cpp -o $(OBJDIR_RELEASE)/analyser/tools/MIRFlickrImporter.o
+$(OBJDIR_RELEASEMAININD)/analyser/tools/MatrixTools.o: analyser/tools/MatrixTools.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c analyser/tools/MatrixTools.cpp -o $(OBJDIR_RELEASEMAININD)/analyser/tools/MatrixTools.o
 
-$(OBJDIR_RELEASE)/analyser/tools/MatrixTools.o: analyser/tools/MatrixTools.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c analyser/tools/MatrixTools.cpp -o $(OBJDIR_RELEASE)/analyser/tools/MatrixTools.o
+$(OBJDIR_RELEASEMAININD)/analyser/tools/TestFunctions.o: analyser/tools/TestFunctions.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c analyser/tools/TestFunctions.cpp -o $(OBJDIR_RELEASEMAININD)/analyser/tools/TestFunctions.o
 
-$(OBJDIR_RELEASE)/analyser/tools/TrainTestFeaturesTools.o: analyser/tools/TrainTestFeaturesTools.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c analyser/tools/TrainTestFeaturesTools.cpp -o $(OBJDIR_RELEASE)/analyser/tools/TrainTestFeaturesTools.o
+$(OBJDIR_RELEASEMAININD)/analyser/tools/TrainTestFeaturesTools.o: analyser/tools/TrainTestFeaturesTools.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c analyser/tools/TrainTestFeaturesTools.cpp -o $(OBJDIR_RELEASEMAININD)/analyser/tools/TrainTestFeaturesTools.o
 
-$(OBJDIR_RELEASE)/analyser/tools/oneBillionImporter.o: analyser/tools/oneBillionImporter.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c analyser/tools/oneBillionImporter.cpp -o $(OBJDIR_RELEASE)/analyser/tools/oneBillionImporter.o
+$(OBJDIR_RELEASEMAININD)/analyser/tools/IlluminationCorrectionFilter.o: analyser/tools/IlluminationCorrectionFilter.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c analyser/tools/IlluminationCorrectionFilter.cpp -o $(OBJDIR_RELEASEMAININD)/analyser/tools/IlluminationCorrectionFilter.o
 
-$(OBJDIR_RELEASE)/analyser/tools/tinyImageImporter.o: analyser/tools/tinyImageImporter.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c analyser/tools/tinyImageImporter.cpp -o $(OBJDIR_RELEASE)/analyser/tools/tinyImageImporter.o
+$(OBJDIR_RELEASEMAININD)/analyser/tools/oneBillionImporter.o: analyser/tools/oneBillionImporter.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c analyser/tools/oneBillionImporter.cpp -o $(OBJDIR_RELEASEMAININD)/analyser/tools/oneBillionImporter.o
 
-$(OBJDIR_RELEASE)/appData/GameImage.o: appData/GameImage.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c appData/GameImage.cpp -o $(OBJDIR_RELEASE)/appData/GameImage.o
+$(OBJDIR_RELEASEMAININD)/analyser/tools/tinyImageImporter.o: analyser/tools/tinyImageImporter.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c analyser/tools/tinyImageImporter.cpp -o $(OBJDIR_RELEASEMAININD)/analyser/tools/tinyImageImporter.o
 
-$(OBJDIR_RELEASE)/commons/AppConfig.o: commons/AppConfig.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c commons/AppConfig.cpp -o $(OBJDIR_RELEASE)/commons/AppConfig.o
+$(OBJDIR_RELEASEMAININD)/appData/GameImage.o: appData/GameImage.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c appData/GameImage.cpp -o $(OBJDIR_RELEASEMAININD)/appData/GameImage.o
 
-$(OBJDIR_RELEASE)/analyser/sources/CamSource.o: analyser/sources/CamSource.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c analyser/sources/CamSource.cpp -o $(OBJDIR_RELEASE)/analyser/sources/CamSource.o
+$(OBJDIR_RELEASEMAININD)/commons/AppConfig.o: commons/AppConfig.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c commons/AppConfig.cpp -o $(OBJDIR_RELEASEMAININD)/commons/AppConfig.o
 
-$(OBJDIR_RELEASE)/analyser/nVector/NullExtractor.o: analyser/nVector/NullExtractor.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c analyser/nVector/NullExtractor.cpp -o $(OBJDIR_RELEASE)/analyser/nVector/NullExtractor.o
+$(OBJDIR_RELEASEMAININD)/commons/FileDownloader.o: commons/FileDownloader.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c commons/FileDownloader.cpp -o $(OBJDIR_RELEASEMAININD)/commons/FileDownloader.o
 
-$(OBJDIR_RELEASE)/analyser/nVector/SegmentedHistogramExtractor.o: analyser/nVector/SegmentedHistogramExtractor.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c analyser/nVector/SegmentedHistogramExtractor.cpp -o $(OBJDIR_RELEASE)/analyser/nVector/SegmentedHistogramExtractor.o
+$(OBJDIR_RELEASEMAININD)/analyser/nVector/SegmentedHistogramExtractor.o: analyser/nVector/SegmentedHistogramExtractor.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c analyser/nVector/SegmentedHistogramExtractor.cpp -o $(OBJDIR_RELEASEMAININD)/analyser/nVector/SegmentedHistogramExtractor.o
 
-$(OBJDIR_RELEASE)/analyser/nVector/gist.o: analyser/nVector/gist.c
-	$(CC) $(CFLAGS_RELEASE) $(INC_RELEASE) -c analyser/nVector/gist.c -o $(OBJDIR_RELEASE)/analyser/nVector/gist.o
+$(OBJDIR_RELEASEMAININD)/analyser/nVector/gist.o: analyser/nVector/gist.c
+	$(CC) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c analyser/nVector/gist.c -o $(OBJDIR_RELEASEMAININD)/analyser/nVector/gist.o
 
-$(OBJDIR_RELEASE)/analyser/nVector/lbp.o: analyser/nVector/lbp.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c analyser/nVector/lbp.cpp -o $(OBJDIR_RELEASE)/analyser/nVector/lbp.o
+$(OBJDIR_RELEASEMAININD)/analyser/nVector/lbp.o: analyser/nVector/lbp.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c analyser/nVector/lbp.cpp -o $(OBJDIR_RELEASEMAININD)/analyser/nVector/lbp.o
 
-$(OBJDIR_RELEASE)/analyser/nVector/standalone_image.o: analyser/nVector/standalone_image.c
-	$(CC) $(CFLAGS_RELEASE) $(INC_RELEASE) -c analyser/nVector/standalone_image.c -o $(OBJDIR_RELEASE)/analyser/nVector/standalone_image.o
+$(OBJDIR_RELEASEMAININD)/analyser/nVector/standalone_image.o: analyser/nVector/standalone_image.c
+	$(CC) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c analyser/nVector/standalone_image.c -o $(OBJDIR_RELEASEMAININD)/analyser/nVector/standalone_image.o
 
-$(OBJDIR_RELEASE)/analyser/FactoryAnalyser.o: analyser/FactoryAnalyser.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c analyser/FactoryAnalyser.cpp -o $(OBJDIR_RELEASE)/analyser/FactoryAnalyser.o
+$(OBJDIR_RELEASEMAININD)/analyser/sources/CamSource.o: analyser/sources/CamSource.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c analyser/sources/CamSource.cpp -o $(OBJDIR_RELEASEMAININD)/analyser/sources/CamSource.o
 
-$(OBJDIR_RELEASE)/analyser/sources/SingleImageSource.o: analyser/sources/SingleImageSource.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c analyser/sources/SingleImageSource.cpp -o $(OBJDIR_RELEASE)/analyser/sources/SingleImageSource.o
+$(OBJDIR_RELEASEMAININD)/analyser/FactoryAnalyser.o: analyser/FactoryAnalyser.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c analyser/FactoryAnalyser.cpp -o $(OBJDIR_RELEASEMAININD)/analyser/FactoryAnalyser.o
 
-$(OBJDIR_RELEASE)/analyser/sources/TextFileSource.o: analyser/sources/TextFileSource.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c analyser/sources/TextFileSource.cpp -o $(OBJDIR_RELEASE)/analyser/sources/TextFileSource.o
+$(OBJDIR_RELEASEMAININD)/analyser/sources/SingleImageSource.o: analyser/sources/SingleImageSource.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c analyser/sources/SingleImageSource.cpp -o $(OBJDIR_RELEASEMAININD)/analyser/sources/SingleImageSource.o
 
-$(OBJDIR_RELEASE)/analyser/sources/TextFileSourceV2.o: analyser/sources/TextFileSourceV2.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c analyser/sources/TextFileSourceV2.cpp -o $(OBJDIR_RELEASE)/analyser/sources/TextFileSourceV2.o
+$(OBJDIR_RELEASEMAININD)/analyser/sources/TextFileSource.o: analyser/sources/TextFileSource.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c analyser/sources/TextFileSource.cpp -o $(OBJDIR_RELEASEMAININD)/analyser/sources/TextFileSource.o
 
-$(OBJDIR_RELEASE)/analyser/sources/VideoSource.o: analyser/sources/VideoSource.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c analyser/sources/VideoSource.cpp -o $(OBJDIR_RELEASE)/analyser/sources/VideoSource.o
+$(OBJDIR_RELEASEMAININD)/analyser/sources/TextFileSourceV2.o: analyser/sources/TextFileSourceV2.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c analyser/sources/TextFileSourceV2.cpp -o $(OBJDIR_RELEASEMAININD)/analyser/sources/TextFileSourceV2.o
 
-clean_release: 
-	rm -f $(OBJ_RELEASE) $(OUT_RELEASE)
+$(OBJDIR_RELEASEMAININD)/analyser/sources/VideoSource.o: analyser/sources/VideoSource.cpp
+	$(CXX) $(CFLAGS_RELEASEMAININD) $(INC_RELEASEMAININD) -c analyser/sources/VideoSource.cpp -o $(OBJDIR_RELEASEMAININD)/analyser/sources/VideoSource.o
+
+clean_releasemainind: 
+	rm -f $(OBJ_RELEASEMAININD) $(OUT_RELEASEMAININD)
 	rm -rf bin/Release
-	rm -rf $(OBJDIR_RELEASE)/indexer
-	rm -rf $(OBJDIR_RELEASE)/indexer/e2lsh
-	rm -rf $(OBJDIR_RELEASE)/commons
-	rm -rf $(OBJDIR_RELEASE)/commons/factory
-	rm -rf $(OBJDIR_RELEASE)/dataModel
-	rm -rf $(OBJDIR_RELEASE)/rest/Endpoints/analyser
-	rm -rf $(OBJDIR_RELEASE)/rest/Endpoints/codebits
-	rm -rf $(OBJDIR_RELEASE)/rest/Endpoints/indexer
-	rm -rf $(OBJDIR_RELEASE)/rest
-	rm -rf $(OBJDIR_RELEASE)/indexer/sphericalHashing
-	rm -rf $(OBJDIR_RELEASE)/rest/Endpoints
-	rm -rf $(OBJDIR_RELEASE)/analyser/nTag
-	rm -rf $(OBJDIR_RELEASE)/analyser/nVector
-	rm -rf $(OBJDIR_RELEASE)/analyser/nRoi
-	rm -rf $(OBJDIR_RELEASE)/analyser
-	rm -rf $(OBJDIR_RELEASE)/analyser/nKeypoint
-	rm -rf $(OBJDIR_RELEASE)/analyser/tools
-	rm -rf $(OBJDIR_RELEASE)/appData
-	rm -rf $(OBJDIR_RELEASE)/analyser/sources
+	rm -rf $(OBJDIR_RELEASEMAININD)/indexer/e2lsh
+	rm -rf $(OBJDIR_RELEASEMAININD)/indexer
+	rm -rf $(OBJDIR_RELEASEMAININD)/commons
+	rm -rf $(OBJDIR_RELEASEMAININD)/commons/factory
+	rm -rf $(OBJDIR_RELEASEMAININD)/dataModel
+	rm -rf $(OBJDIR_RELEASEMAININD)/rest/Endpoints/analyser
+	rm -rf $(OBJDIR_RELEASEMAININD)/rest/Endpoints/codebits
+	rm -rf $(OBJDIR_RELEASEMAININD)/rest/Endpoints/database
+	rm -rf $(OBJDIR_RELEASEMAININD)/rest/Endpoints/indexer
+	rm -rf $(OBJDIR_RELEASEMAININD)/rest
+	rm -rf $(OBJDIR_RELEASEMAININD)/indexer/sphericalHashing
+	rm -rf $(OBJDIR_RELEASEMAININD)/rest/Endpoints
+	rm -rf $(OBJDIR_RELEASEMAININD)/analyser/nTag
+	rm -rf $(OBJDIR_RELEASEMAININD)/analyser/nVector
+	rm -rf $(OBJDIR_RELEASEMAININD)/analyser/nRoi
+	rm -rf $(OBJDIR_RELEASEMAININD)/analyser
+	rm -rf $(OBJDIR_RELEASEMAININD)/analyser/nKeypoint
+	rm -rf $(OBJDIR_RELEASEMAININD)/analyser/tools
+	rm -rf $(OBJDIR_RELEASEMAININD)/appData
+	rm -rf $(OBJDIR_RELEASEMAININD)/analyser/sources
 
-.PHONY: before_debug after_debug clean_debug before_release after_release clean_release
+before_releasemainana: 
+	test -d bin/Release || mkdir -p bin/Release
+	test -d $(OBJDIR_RELEASEMAINANA)/indexer/e2lsh || mkdir -p $(OBJDIR_RELEASEMAINANA)/indexer/e2lsh
+	test -d $(OBJDIR_RELEASEMAINANA)/indexer || mkdir -p $(OBJDIR_RELEASEMAINANA)/indexer
+	test -d $(OBJDIR_RELEASEMAINANA)/commons || mkdir -p $(OBJDIR_RELEASEMAINANA)/commons
+	test -d $(OBJDIR_RELEASEMAINANA)/commons/factory || mkdir -p $(OBJDIR_RELEASEMAINANA)/commons/factory
+	test -d $(OBJDIR_RELEASEMAINANA)/dataModel || mkdir -p $(OBJDIR_RELEASEMAINANA)/dataModel
+	test -d $(OBJDIR_RELEASEMAINANA)/rest/Endpoints/analyser || mkdir -p $(OBJDIR_RELEASEMAINANA)/rest/Endpoints/analyser
+	test -d $(OBJDIR_RELEASEMAINANA)/rest/Endpoints/codebits || mkdir -p $(OBJDIR_RELEASEMAINANA)/rest/Endpoints/codebits
+	test -d $(OBJDIR_RELEASEMAINANA)/rest/Endpoints/database || mkdir -p $(OBJDIR_RELEASEMAINANA)/rest/Endpoints/database
+	test -d $(OBJDIR_RELEASEMAINANA)/rest/Endpoints/indexer || mkdir -p $(OBJDIR_RELEASEMAINANA)/rest/Endpoints/indexer
+	test -d $(OBJDIR_RELEASEMAINANA)/rest || mkdir -p $(OBJDIR_RELEASEMAINANA)/rest
+	test -d $(OBJDIR_RELEASEMAINANA)/indexer/sphericalHashing || mkdir -p $(OBJDIR_RELEASEMAINANA)/indexer/sphericalHashing
+	test -d $(OBJDIR_RELEASEMAINANA)/rest/Endpoints || mkdir -p $(OBJDIR_RELEASEMAINANA)/rest/Endpoints
+	test -d $(OBJDIR_RELEASEMAINANA)/analyser/nTag || mkdir -p $(OBJDIR_RELEASEMAINANA)/analyser/nTag
+	test -d $(OBJDIR_RELEASEMAINANA)/analyser/nVector || mkdir -p $(OBJDIR_RELEASEMAINANA)/analyser/nVector
+	test -d $(OBJDIR_RELEASEMAINANA)/analyser/nRoi || mkdir -p $(OBJDIR_RELEASEMAINANA)/analyser/nRoi
+	test -d $(OBJDIR_RELEASEMAINANA)/analyser || mkdir -p $(OBJDIR_RELEASEMAINANA)/analyser
+	test -d $(OBJDIR_RELEASEMAINANA)/analyser/nKeypoint || mkdir -p $(OBJDIR_RELEASEMAINANA)/analyser/nKeypoint
+	test -d $(OBJDIR_RELEASEMAINANA)/analyser/tools || mkdir -p $(OBJDIR_RELEASEMAINANA)/analyser/tools
+	test -d $(OBJDIR_RELEASEMAINANA)/appData || mkdir -p $(OBJDIR_RELEASEMAINANA)/appData
+	test -d $(OBJDIR_RELEASEMAINANA)/analyser/sources || mkdir -p $(OBJDIR_RELEASEMAINANA)/analyser/sources
+
+after_releasemainana: 
+
+releasemainana: before_releasemainana out_releasemainana after_releasemainana
+
+out_releasemainana: before_releasemainana $(OBJ_RELEASEMAINANA) $(DEP_RELEASEMAINANA)
+	$(LD) $(LIBDIR_RELEASEMAINANA) -o $(OUT_RELEASEMAINANA) $(OBJ_RELEASEMAINANA)  $(LDFLAGS_RELEASEMAINANA) $(LIB_RELEASEMAINANA)
+
+$(OBJDIR_RELEASEMAINANA)/indexer/e2lsh/Geometry.o: indexer/e2lsh/Geometry.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c indexer/e2lsh/Geometry.cpp -o $(OBJDIR_RELEASEMAINANA)/indexer/e2lsh/Geometry.o
+
+$(OBJDIR_RELEASEMAINANA)/indexer/LSHIndexer.o: indexer/LSHIndexer.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c indexer/LSHIndexer.cpp -o $(OBJDIR_RELEASEMAINANA)/indexer/LSHIndexer.o
+
+$(OBJDIR_RELEASEMAINANA)/indexer/MSIDXIndexer.o: indexer/MSIDXIndexer.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c indexer/MSIDXIndexer.cpp -o $(OBJDIR_RELEASEMAINANA)/indexer/MSIDXIndexer.o
+
+$(OBJDIR_RELEASEMAINANA)/indexer/SphericalHashIndexer.o: indexer/SphericalHashIndexer.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c indexer/SphericalHashIndexer.cpp -o $(OBJDIR_RELEASEMAINANA)/indexer/SphericalHashIndexer.o
+
+$(OBJDIR_RELEASEMAINANA)/indexer/e2lsh/BucketHashing.o: indexer/e2lsh/BucketHashing.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c indexer/e2lsh/BucketHashing.cpp -o $(OBJDIR_RELEASEMAINANA)/indexer/e2lsh/BucketHashing.o
+
+$(OBJDIR_RELEASEMAINANA)/indexer/FlannkNNIndexer.o: indexer/FlannkNNIndexer.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c indexer/FlannkNNIndexer.cpp -o $(OBJDIR_RELEASEMAINANA)/indexer/FlannkNNIndexer.o
+
+$(OBJDIR_RELEASEMAINANA)/indexer/e2lsh/GlobalVars.o: indexer/e2lsh/GlobalVars.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c indexer/e2lsh/GlobalVars.cpp -o $(OBJDIR_RELEASEMAINANA)/indexer/e2lsh/GlobalVars.o
+
+$(OBJDIR_RELEASEMAINANA)/indexer/e2lsh/LSHMain.o: indexer/e2lsh/LSHMain.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c indexer/e2lsh/LSHMain.cpp -o $(OBJDIR_RELEASEMAINANA)/indexer/e2lsh/LSHMain.o
+
+$(OBJDIR_RELEASEMAINANA)/indexer/e2lsh/LocalitySensitiveHashing.o: indexer/e2lsh/LocalitySensitiveHashing.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c indexer/e2lsh/LocalitySensitiveHashing.cpp -o $(OBJDIR_RELEASEMAINANA)/indexer/e2lsh/LocalitySensitiveHashing.o
+
+$(OBJDIR_RELEASEMAINANA)/indexer/e2lsh/NearNeighbors.o: indexer/e2lsh/NearNeighbors.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c indexer/e2lsh/NearNeighbors.cpp -o $(OBJDIR_RELEASEMAINANA)/indexer/e2lsh/NearNeighbors.o
+
+$(OBJDIR_RELEASEMAINANA)/indexer/e2lsh/Random.o: indexer/e2lsh/Random.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c indexer/e2lsh/Random.cpp -o $(OBJDIR_RELEASEMAINANA)/indexer/e2lsh/Random.o
+
+$(OBJDIR_RELEASEMAINANA)/commons/StringTools.o: commons/StringTools.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c commons/StringTools.cpp -o $(OBJDIR_RELEASEMAINANA)/commons/StringTools.o
+
+$(OBJDIR_RELEASEMAINANA)/commons/factory/Factory.o: commons/factory/Factory.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c commons/factory/Factory.cpp -o $(OBJDIR_RELEASEMAINANA)/commons/factory/Factory.o
+
+$(OBJDIR_RELEASEMAINANA)/dataModel/DataModelController.o: dataModel/DataModelController.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c dataModel/DataModelController.cpp -o $(OBJDIR_RELEASEMAINANA)/dataModel/DataModelController.o
+
+$(OBJDIR_RELEASEMAINANA)/dataModel/DatabaseConnection.o: dataModel/DatabaseConnection.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c dataModel/DatabaseConnection.cpp -o $(OBJDIR_RELEASEMAINANA)/dataModel/DatabaseConnection.o
+
+$(OBJDIR_RELEASEMAINANA)/indexer/e2lsh/SelfTuning.o: indexer/e2lsh/SelfTuning.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c indexer/e2lsh/SelfTuning.cpp -o $(OBJDIR_RELEASEMAINANA)/indexer/e2lsh/SelfTuning.o
+
+$(OBJDIR_RELEASEMAINANA)/dataModel/NKeypoint.o: dataModel/NKeypoint.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c dataModel/NKeypoint.cpp -o $(OBJDIR_RELEASEMAINANA)/dataModel/NKeypoint.o
+
+$(OBJDIR_RELEASEMAINANA)/dataModel/NRoi.o: dataModel/NRoi.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c dataModel/NRoi.cpp -o $(OBJDIR_RELEASEMAINANA)/dataModel/NRoi.o
+
+$(OBJDIR_RELEASEMAINANA)/dataModel/NTag.o: dataModel/NTag.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c dataModel/NTag.cpp -o $(OBJDIR_RELEASEMAINANA)/dataModel/NTag.o
+
+$(OBJDIR_RELEASEMAINANA)/dataModel/NVector.o: dataModel/NVector.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c dataModel/NVector.cpp -o $(OBJDIR_RELEASEMAINANA)/dataModel/NVector.o
+
+$(OBJDIR_RELEASEMAINANA)/indexer/FactoryIndexer.o: indexer/FactoryIndexer.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c indexer/FactoryIndexer.cpp -o $(OBJDIR_RELEASEMAINANA)/indexer/FactoryIndexer.o
+
+$(OBJDIR_RELEASEMAINANA)/rest/Endpoints/analyser/GenericClassifier.o: rest/Endpoints/analyser/GenericClassifier.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c rest/Endpoints/analyser/GenericClassifier.cpp -o $(OBJDIR_RELEASEMAINANA)/rest/Endpoints/analyser/GenericClassifier.o
+
+$(OBJDIR_RELEASEMAINANA)/rest/Endpoints/analyser/GetObjectFeatures.o: rest/Endpoints/analyser/GetObjectFeatures.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c rest/Endpoints/analyser/GetObjectFeatures.cpp -o $(OBJDIR_RELEASEMAINANA)/rest/Endpoints/analyser/GetObjectFeatures.o
+
+$(OBJDIR_RELEASEMAINANA)/rest/Endpoints/analyser/MedicalSearchEngine.o: rest/Endpoints/analyser/MedicalSearchEngine.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c rest/Endpoints/analyser/MedicalSearchEngine.cpp -o $(OBJDIR_RELEASEMAINANA)/rest/Endpoints/analyser/MedicalSearchEngine.o
+
+$(OBJDIR_RELEASEMAINANA)/rest/Endpoints/analyser/SearchResult.o: rest/Endpoints/analyser/SearchResult.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c rest/Endpoints/analyser/SearchResult.cpp -o $(OBJDIR_RELEASEMAINANA)/rest/Endpoints/analyser/SearchResult.o
+
+$(OBJDIR_RELEASEMAINANA)/rest/Endpoints/codebits/Codebits.o: rest/Endpoints/codebits/Codebits.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c rest/Endpoints/codebits/Codebits.cpp -o $(OBJDIR_RELEASEMAINANA)/rest/Endpoints/codebits/Codebits.o
+
+$(OBJDIR_RELEASEMAINANA)/rest/Endpoints/database/GetMetadata.o: rest/Endpoints/database/GetMetadata.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c rest/Endpoints/database/GetMetadata.cpp -o $(OBJDIR_RELEASEMAINANA)/rest/Endpoints/database/GetMetadata.o
+
+$(OBJDIR_RELEASEMAINANA)/rest/Endpoints/indexer/GenericIndexer.o: rest/Endpoints/indexer/GenericIndexer.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c rest/Endpoints/indexer/GenericIndexer.cpp -o $(OBJDIR_RELEASEMAINANA)/rest/Endpoints/indexer/GenericIndexer.o
+
+$(OBJDIR_RELEASEMAINANA)/rest/FactoryEndpoint.o: rest/FactoryEndpoint.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c rest/FactoryEndpoint.cpp -o $(OBJDIR_RELEASEMAINANA)/rest/FactoryEndpoint.o
+
+$(OBJDIR_RELEASEMAINANA)/rest/RestRequestHandler.o: rest/RestRequestHandler.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c rest/RestRequestHandler.cpp -o $(OBJDIR_RELEASEMAINANA)/rest/RestRequestHandler.o
+
+$(OBJDIR_RELEASEMAINANA)/rest/RestServer.o: rest/RestServer.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c rest/RestServer.cpp -o $(OBJDIR_RELEASEMAINANA)/rest/RestServer.o
+
+$(OBJDIR_RELEASEMAINANA)/indexer/e2lsh/Util.o: indexer/e2lsh/Util.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c indexer/e2lsh/Util.cpp -o $(OBJDIR_RELEASEMAINANA)/indexer/e2lsh/Util.o
+
+$(OBJDIR_RELEASEMAINANA)/indexer/sphericalHashing/BinaryHash.o: indexer/sphericalHashing/BinaryHash.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c indexer/sphericalHashing/BinaryHash.cpp -o $(OBJDIR_RELEASEMAINANA)/indexer/sphericalHashing/BinaryHash.o
+
+$(OBJDIR_RELEASEMAINANA)/indexer/sphericalHashing/Common.o: indexer/sphericalHashing/Common.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c indexer/sphericalHashing/Common.cpp -o $(OBJDIR_RELEASEMAINANA)/indexer/sphericalHashing/Common.o
+
+$(OBJDIR_RELEASEMAINANA)/indexer/sphericalHashing/Main.o: indexer/sphericalHashing/Main.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c indexer/sphericalHashing/Main.cpp -o $(OBJDIR_RELEASEMAINANA)/indexer/sphericalHashing/Main.o
+
+$(OBJDIR_RELEASEMAINANA)/commons/LoadConfig.o: commons/LoadConfig.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c commons/LoadConfig.cpp -o $(OBJDIR_RELEASEMAINANA)/commons/LoadConfig.o
+
+$(OBJDIR_RELEASEMAINANA)/indexer/sphericalHashing/Stopwatch.o: indexer/sphericalHashing/Stopwatch.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c indexer/sphericalHashing/Stopwatch.cpp -o $(OBJDIR_RELEASEMAINANA)/indexer/sphericalHashing/Stopwatch.o
+
+$(OBJDIR_RELEASEMAINANA)/rest/Endpoints/TestEndpoint.o: rest/Endpoints/TestEndpoint.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c rest/Endpoints/TestEndpoint.cpp -o $(OBJDIR_RELEASEMAINANA)/rest/Endpoints/TestEndpoint.o
+
+$(OBJDIR_RELEASEMAINANA)/rest/Endpoints/analyser/CombSearchResult.o: rest/Endpoints/analyser/CombSearchResult.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c rest/Endpoints/analyser/CombSearchResult.cpp -o $(OBJDIR_RELEASEMAINANA)/rest/Endpoints/analyser/CombSearchResult.o
+
+$(OBJDIR_RELEASEMAINANA)/rest/Endpoints/analyser/EnsembleClassifier.o: rest/Endpoints/analyser/EnsembleClassifier.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c rest/Endpoints/analyser/EnsembleClassifier.cpp -o $(OBJDIR_RELEASEMAINANA)/rest/Endpoints/analyser/EnsembleClassifier.o
+
+$(OBJDIR_RELEASEMAINANA)/rest/Endpoints/analyser/ExtractFeatures.o: rest/Endpoints/analyser/ExtractFeatures.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c rest/Endpoints/analyser/ExtractFeatures.cpp -o $(OBJDIR_RELEASEMAINANA)/rest/Endpoints/analyser/ExtractFeatures.o
+
+$(OBJDIR_RELEASEMAINANA)/analyser/nTag/VWBasicClassifier.o: analyser/nTag/VWBasicClassifier.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c analyser/nTag/VWBasicClassifier.cpp -o $(OBJDIR_RELEASEMAINANA)/analyser/nTag/VWBasicClassifier.o
+
+$(OBJDIR_RELEASEMAINANA)/analyser/nTag/kNNClassifier.o: analyser/nTag/kNNClassifier.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c analyser/nTag/kNNClassifier.cpp -o $(OBJDIR_RELEASEMAINANA)/analyser/nTag/kNNClassifier.o
+
+$(OBJDIR_RELEASEMAINANA)/analyser/nVector/EigenExtractor.o: analyser/nVector/EigenExtractor.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c analyser/nVector/EigenExtractor.cpp -o $(OBJDIR_RELEASEMAINANA)/analyser/nVector/EigenExtractor.o
+
+$(OBJDIR_RELEASEMAINANA)/analyser/nVector/GISTExtractor.o: analyser/nVector/GISTExtractor.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c analyser/nVector/GISTExtractor.cpp -o $(OBJDIR_RELEASEMAINANA)/analyser/nVector/GISTExtractor.o
+
+$(OBJDIR_RELEASEMAINANA)/analyser/nVector/GaborExtractor.o: analyser/nVector/GaborExtractor.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c analyser/nVector/GaborExtractor.cpp -o $(OBJDIR_RELEASEMAINANA)/analyser/nVector/GaborExtractor.o
+
+$(OBJDIR_RELEASEMAINANA)/analyser/nVector/HistogramExtractor.o: analyser/nVector/HistogramExtractor.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c analyser/nVector/HistogramExtractor.cpp -o $(OBJDIR_RELEASEMAINANA)/analyser/nVector/HistogramExtractor.o
+
+$(OBJDIR_RELEASEMAINANA)/analyser/nVector/LBPExtractor.o: analyser/nVector/LBPExtractor.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c analyser/nVector/LBPExtractor.cpp -o $(OBJDIR_RELEASEMAINANA)/analyser/nVector/LBPExtractor.o
+
+$(OBJDIR_RELEASEMAINANA)/analyser/nVector/LireExtractor.o: analyser/nVector/LireExtractor.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c analyser/nVector/LireExtractor.cpp -o $(OBJDIR_RELEASEMAINANA)/analyser/nVector/LireExtractor.o
+
+$(OBJDIR_RELEASEMAINANA)/analyser/nRoi/FaceDetection.o: analyser/nRoi/FaceDetection.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c analyser/nRoi/FaceDetection.cpp -o $(OBJDIR_RELEASEMAINANA)/analyser/nRoi/FaceDetection.o
+
+$(OBJDIR_RELEASEMAINANA)/analyser/FactoryClassifier.o: analyser/FactoryClassifier.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c analyser/FactoryClassifier.cpp -o $(OBJDIR_RELEASEMAINANA)/analyser/FactoryClassifier.o
+
+$(OBJDIR_RELEASEMAINANA)/analyser/Main2.o: analyser/Main2.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c analyser/Main2.cpp -o $(OBJDIR_RELEASEMAINANA)/analyser/Main2.o
+
+$(OBJDIR_RELEASEMAINANA)/analyser/nKeypoint/SURFExtractor.o: analyser/nKeypoint/SURFExtractor.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c analyser/nKeypoint/SURFExtractor.cpp -o $(OBJDIR_RELEASEMAINANA)/analyser/nKeypoint/SURFExtractor.o
+
+$(OBJDIR_RELEASEMAINANA)/analyser/nVector/NullExtractor.o: analyser/nVector/NullExtractor.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c analyser/nVector/NullExtractor.cpp -o $(OBJDIR_RELEASEMAINANA)/analyser/nVector/NullExtractor.o
+
+$(OBJDIR_RELEASEMAINANA)/analyser/nTag/FaceRecognition.o: analyser/nTag/FaceRecognition.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c analyser/nTag/FaceRecognition.cpp -o $(OBJDIR_RELEASEMAINANA)/analyser/nTag/FaceRecognition.o
+
+$(OBJDIR_RELEASEMAINANA)/analyser/nTag/FacialExpressionRecognition.o: analyser/nTag/FacialExpressionRecognition.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c analyser/nTag/FacialExpressionRecognition.cpp -o $(OBJDIR_RELEASEMAINANA)/analyser/nTag/FacialExpressionRecognition.o
+
+$(OBJDIR_RELEASEMAINANA)/analyser/nTag/SRClassifier.o: analyser/nTag/SRClassifier.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c analyser/nTag/SRClassifier.cpp -o $(OBJDIR_RELEASEMAINANA)/analyser/nTag/SRClassifier.o
+
+$(OBJDIR_RELEASEMAINANA)/analyser/nTag/SVMClassifier.o: analyser/nTag/SVMClassifier.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c analyser/nTag/SVMClassifier.cpp -o $(OBJDIR_RELEASEMAINANA)/analyser/nTag/SVMClassifier.o
+
+$(OBJDIR_RELEASEMAINANA)/analyser/tools/ImageSegmentator.o: analyser/tools/ImageSegmentator.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c analyser/tools/ImageSegmentator.cpp -o $(OBJDIR_RELEASEMAINANA)/analyser/tools/ImageSegmentator.o
+
+$(OBJDIR_RELEASEMAINANA)/analyser/tools/MIRFlickrImporter.o: analyser/tools/MIRFlickrImporter.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c analyser/tools/MIRFlickrImporter.cpp -o $(OBJDIR_RELEASEMAINANA)/analyser/tools/MIRFlickrImporter.o
+
+$(OBJDIR_RELEASEMAINANA)/analyser/tools/MatrixTools.o: analyser/tools/MatrixTools.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c analyser/tools/MatrixTools.cpp -o $(OBJDIR_RELEASEMAINANA)/analyser/tools/MatrixTools.o
+
+$(OBJDIR_RELEASEMAINANA)/analyser/tools/TestFunctions.o: analyser/tools/TestFunctions.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c analyser/tools/TestFunctions.cpp -o $(OBJDIR_RELEASEMAINANA)/analyser/tools/TestFunctions.o
+
+$(OBJDIR_RELEASEMAINANA)/analyser/tools/TrainTestFeaturesTools.o: analyser/tools/TrainTestFeaturesTools.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c analyser/tools/TrainTestFeaturesTools.cpp -o $(OBJDIR_RELEASEMAINANA)/analyser/tools/TrainTestFeaturesTools.o
+
+$(OBJDIR_RELEASEMAINANA)/analyser/tools/IlluminationCorrectionFilter.o: analyser/tools/IlluminationCorrectionFilter.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c analyser/tools/IlluminationCorrectionFilter.cpp -o $(OBJDIR_RELEASEMAINANA)/analyser/tools/IlluminationCorrectionFilter.o
+
+$(OBJDIR_RELEASEMAINANA)/analyser/tools/oneBillionImporter.o: analyser/tools/oneBillionImporter.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c analyser/tools/oneBillionImporter.cpp -o $(OBJDIR_RELEASEMAINANA)/analyser/tools/oneBillionImporter.o
+
+$(OBJDIR_RELEASEMAINANA)/analyser/tools/tinyImageImporter.o: analyser/tools/tinyImageImporter.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c analyser/tools/tinyImageImporter.cpp -o $(OBJDIR_RELEASEMAINANA)/analyser/tools/tinyImageImporter.o
+
+$(OBJDIR_RELEASEMAINANA)/appData/GameImage.o: appData/GameImage.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c appData/GameImage.cpp -o $(OBJDIR_RELEASEMAINANA)/appData/GameImage.o
+
+$(OBJDIR_RELEASEMAINANA)/commons/AppConfig.o: commons/AppConfig.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c commons/AppConfig.cpp -o $(OBJDIR_RELEASEMAINANA)/commons/AppConfig.o
+
+$(OBJDIR_RELEASEMAINANA)/commons/FileDownloader.o: commons/FileDownloader.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c commons/FileDownloader.cpp -o $(OBJDIR_RELEASEMAINANA)/commons/FileDownloader.o
+
+$(OBJDIR_RELEASEMAINANA)/analyser/nVector/SegmentedHistogramExtractor.o: analyser/nVector/SegmentedHistogramExtractor.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c analyser/nVector/SegmentedHistogramExtractor.cpp -o $(OBJDIR_RELEASEMAINANA)/analyser/nVector/SegmentedHistogramExtractor.o
+
+$(OBJDIR_RELEASEMAINANA)/analyser/nVector/gist.o: analyser/nVector/gist.c
+	$(CC) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c analyser/nVector/gist.c -o $(OBJDIR_RELEASEMAINANA)/analyser/nVector/gist.o
+
+$(OBJDIR_RELEASEMAINANA)/analyser/nVector/lbp.o: analyser/nVector/lbp.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c analyser/nVector/lbp.cpp -o $(OBJDIR_RELEASEMAINANA)/analyser/nVector/lbp.o
+
+$(OBJDIR_RELEASEMAINANA)/analyser/nVector/standalone_image.o: analyser/nVector/standalone_image.c
+	$(CC) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c analyser/nVector/standalone_image.c -o $(OBJDIR_RELEASEMAINANA)/analyser/nVector/standalone_image.o
+
+$(OBJDIR_RELEASEMAINANA)/analyser/sources/CamSource.o: analyser/sources/CamSource.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c analyser/sources/CamSource.cpp -o $(OBJDIR_RELEASEMAINANA)/analyser/sources/CamSource.o
+
+$(OBJDIR_RELEASEMAINANA)/analyser/FactoryAnalyser.o: analyser/FactoryAnalyser.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c analyser/FactoryAnalyser.cpp -o $(OBJDIR_RELEASEMAINANA)/analyser/FactoryAnalyser.o
+
+$(OBJDIR_RELEASEMAINANA)/analyser/sources/SingleImageSource.o: analyser/sources/SingleImageSource.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c analyser/sources/SingleImageSource.cpp -o $(OBJDIR_RELEASEMAINANA)/analyser/sources/SingleImageSource.o
+
+$(OBJDIR_RELEASEMAINANA)/analyser/sources/TextFileSource.o: analyser/sources/TextFileSource.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c analyser/sources/TextFileSource.cpp -o $(OBJDIR_RELEASEMAINANA)/analyser/sources/TextFileSource.o
+
+$(OBJDIR_RELEASEMAINANA)/analyser/sources/TextFileSourceV2.o: analyser/sources/TextFileSourceV2.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c analyser/sources/TextFileSourceV2.cpp -o $(OBJDIR_RELEASEMAINANA)/analyser/sources/TextFileSourceV2.o
+
+$(OBJDIR_RELEASEMAINANA)/analyser/sources/VideoSource.o: analyser/sources/VideoSource.cpp
+	$(CXX) $(CFLAGS_RELEASEMAINANA) $(INC_RELEASEMAINANA) -c analyser/sources/VideoSource.cpp -o $(OBJDIR_RELEASEMAINANA)/analyser/sources/VideoSource.o
+
+clean_releasemainana: 
+	rm -f $(OBJ_RELEASEMAINANA) $(OUT_RELEASEMAINANA)
+	rm -rf bin/Release
+	rm -rf $(OBJDIR_RELEASEMAINANA)/indexer/e2lsh
+	rm -rf $(OBJDIR_RELEASEMAINANA)/indexer
+	rm -rf $(OBJDIR_RELEASEMAINANA)/commons
+	rm -rf $(OBJDIR_RELEASEMAINANA)/commons/factory
+	rm -rf $(OBJDIR_RELEASEMAINANA)/dataModel
+	rm -rf $(OBJDIR_RELEASEMAINANA)/rest/Endpoints/analyser
+	rm -rf $(OBJDIR_RELEASEMAINANA)/rest/Endpoints/codebits
+	rm -rf $(OBJDIR_RELEASEMAINANA)/rest/Endpoints/database
+	rm -rf $(OBJDIR_RELEASEMAINANA)/rest/Endpoints/indexer
+	rm -rf $(OBJDIR_RELEASEMAINANA)/rest
+	rm -rf $(OBJDIR_RELEASEMAINANA)/indexer/sphericalHashing
+	rm -rf $(OBJDIR_RELEASEMAINANA)/rest/Endpoints
+	rm -rf $(OBJDIR_RELEASEMAINANA)/analyser/nTag
+	rm -rf $(OBJDIR_RELEASEMAINANA)/analyser/nVector
+	rm -rf $(OBJDIR_RELEASEMAINANA)/analyser/nRoi
+	rm -rf $(OBJDIR_RELEASEMAINANA)/analyser
+	rm -rf $(OBJDIR_RELEASEMAINANA)/analyser/nKeypoint
+	rm -rf $(OBJDIR_RELEASEMAINANA)/analyser/tools
+	rm -rf $(OBJDIR_RELEASEMAINANA)/appData
+	rm -rf $(OBJDIR_RELEASEMAINANA)/analyser/sources
+
+before_releaseserver: 
+	test -d bin/Release || mkdir -p bin/Release
+	test -d $(OBJDIR_RELEASESERVER)/indexer/e2lsh || mkdir -p $(OBJDIR_RELEASESERVER)/indexer/e2lsh
+	test -d $(OBJDIR_RELEASESERVER)/indexer || mkdir -p $(OBJDIR_RELEASESERVER)/indexer
+	test -d $(OBJDIR_RELEASESERVER)/commons || mkdir -p $(OBJDIR_RELEASESERVER)/commons
+	test -d $(OBJDIR_RELEASESERVER)/commons/factory || mkdir -p $(OBJDIR_RELEASESERVER)/commons/factory
+	test -d $(OBJDIR_RELEASESERVER)/dataModel || mkdir -p $(OBJDIR_RELEASESERVER)/dataModel
+	test -d $(OBJDIR_RELEASESERVER)/rest/Endpoints/analyser || mkdir -p $(OBJDIR_RELEASESERVER)/rest/Endpoints/analyser
+	test -d $(OBJDIR_RELEASESERVER)/rest/Endpoints/codebits || mkdir -p $(OBJDIR_RELEASESERVER)/rest/Endpoints/codebits
+	test -d $(OBJDIR_RELEASESERVER)/rest/Endpoints/database || mkdir -p $(OBJDIR_RELEASESERVER)/rest/Endpoints/database
+	test -d $(OBJDIR_RELEASESERVER)/rest/Endpoints/indexer || mkdir -p $(OBJDIR_RELEASESERVER)/rest/Endpoints/indexer
+	test -d $(OBJDIR_RELEASESERVER)/rest || mkdir -p $(OBJDIR_RELEASESERVER)/rest
+	test -d $(OBJDIR_RELEASESERVER)/indexer/sphericalHashing || mkdir -p $(OBJDIR_RELEASESERVER)/indexer/sphericalHashing
+	test -d $(OBJDIR_RELEASESERVER)/rest/Endpoints || mkdir -p $(OBJDIR_RELEASESERVER)/rest/Endpoints
+	test -d $(OBJDIR_RELEASESERVER)/analyser/nTag || mkdir -p $(OBJDIR_RELEASESERVER)/analyser/nTag
+	test -d $(OBJDIR_RELEASESERVER)/analyser/nVector || mkdir -p $(OBJDIR_RELEASESERVER)/analyser/nVector
+	test -d $(OBJDIR_RELEASESERVER)/analyser/nRoi || mkdir -p $(OBJDIR_RELEASESERVER)/analyser/nRoi
+	test -d $(OBJDIR_RELEASESERVER)/analyser || mkdir -p $(OBJDIR_RELEASESERVER)/analyser
+	test -d $(OBJDIR_RELEASESERVER)/analyser/nKeypoint || mkdir -p $(OBJDIR_RELEASESERVER)/analyser/nKeypoint
+	test -d $(OBJDIR_RELEASESERVER)/analyser/tools || mkdir -p $(OBJDIR_RELEASESERVER)/analyser/tools
+	test -d $(OBJDIR_RELEASESERVER)/appData || mkdir -p $(OBJDIR_RELEASESERVER)/appData
+	test -d $(OBJDIR_RELEASESERVER)/analyser/sources || mkdir -p $(OBJDIR_RELEASESERVER)/analyser/sources
+
+after_releaseserver: 
+
+releaseserver: before_releaseserver out_releaseserver after_releaseserver
+
+out_releaseserver: before_releaseserver $(OBJ_RELEASESERVER) $(DEP_RELEASESERVER)
+	$(LD) $(LIBDIR_RELEASESERVER) -o $(OUT_RELEASESERVER) $(OBJ_RELEASESERVER)  $(LDFLAGS_RELEASESERVER) $(LIB_RELEASESERVER)
+
+$(OBJDIR_RELEASESERVER)/indexer/e2lsh/Geometry.o: indexer/e2lsh/Geometry.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c indexer/e2lsh/Geometry.cpp -o $(OBJDIR_RELEASESERVER)/indexer/e2lsh/Geometry.o
+
+$(OBJDIR_RELEASESERVER)/indexer/LSHIndexer.o: indexer/LSHIndexer.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c indexer/LSHIndexer.cpp -o $(OBJDIR_RELEASESERVER)/indexer/LSHIndexer.o
+
+$(OBJDIR_RELEASESERVER)/indexer/MSIDXIndexer.o: indexer/MSIDXIndexer.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c indexer/MSIDXIndexer.cpp -o $(OBJDIR_RELEASESERVER)/indexer/MSIDXIndexer.o
+
+$(OBJDIR_RELEASESERVER)/indexer/SphericalHashIndexer.o: indexer/SphericalHashIndexer.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c indexer/SphericalHashIndexer.cpp -o $(OBJDIR_RELEASESERVER)/indexer/SphericalHashIndexer.o
+
+$(OBJDIR_RELEASESERVER)/indexer/e2lsh/BucketHashing.o: indexer/e2lsh/BucketHashing.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c indexer/e2lsh/BucketHashing.cpp -o $(OBJDIR_RELEASESERVER)/indexer/e2lsh/BucketHashing.o
+
+$(OBJDIR_RELEASESERVER)/indexer/FlannkNNIndexer.o: indexer/FlannkNNIndexer.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c indexer/FlannkNNIndexer.cpp -o $(OBJDIR_RELEASESERVER)/indexer/FlannkNNIndexer.o
+
+$(OBJDIR_RELEASESERVER)/indexer/e2lsh/GlobalVars.o: indexer/e2lsh/GlobalVars.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c indexer/e2lsh/GlobalVars.cpp -o $(OBJDIR_RELEASESERVER)/indexer/e2lsh/GlobalVars.o
+
+$(OBJDIR_RELEASESERVER)/indexer/e2lsh/LSHMain.o: indexer/e2lsh/LSHMain.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c indexer/e2lsh/LSHMain.cpp -o $(OBJDIR_RELEASESERVER)/indexer/e2lsh/LSHMain.o
+
+$(OBJDIR_RELEASESERVER)/indexer/e2lsh/LocalitySensitiveHashing.o: indexer/e2lsh/LocalitySensitiveHashing.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c indexer/e2lsh/LocalitySensitiveHashing.cpp -o $(OBJDIR_RELEASESERVER)/indexer/e2lsh/LocalitySensitiveHashing.o
+
+$(OBJDIR_RELEASESERVER)/indexer/e2lsh/NearNeighbors.o: indexer/e2lsh/NearNeighbors.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c indexer/e2lsh/NearNeighbors.cpp -o $(OBJDIR_RELEASESERVER)/indexer/e2lsh/NearNeighbors.o
+
+$(OBJDIR_RELEASESERVER)/indexer/e2lsh/Random.o: indexer/e2lsh/Random.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c indexer/e2lsh/Random.cpp -o $(OBJDIR_RELEASESERVER)/indexer/e2lsh/Random.o
+
+$(OBJDIR_RELEASESERVER)/commons/StringTools.o: commons/StringTools.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c commons/StringTools.cpp -o $(OBJDIR_RELEASESERVER)/commons/StringTools.o
+
+$(OBJDIR_RELEASESERVER)/commons/factory/Factory.o: commons/factory/Factory.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c commons/factory/Factory.cpp -o $(OBJDIR_RELEASESERVER)/commons/factory/Factory.o
+
+$(OBJDIR_RELEASESERVER)/dataModel/DataModelController.o: dataModel/DataModelController.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c dataModel/DataModelController.cpp -o $(OBJDIR_RELEASESERVER)/dataModel/DataModelController.o
+
+$(OBJDIR_RELEASESERVER)/dataModel/DatabaseConnection.o: dataModel/DatabaseConnection.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c dataModel/DatabaseConnection.cpp -o $(OBJDIR_RELEASESERVER)/dataModel/DatabaseConnection.o
+
+$(OBJDIR_RELEASESERVER)/indexer/e2lsh/SelfTuning.o: indexer/e2lsh/SelfTuning.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c indexer/e2lsh/SelfTuning.cpp -o $(OBJDIR_RELEASESERVER)/indexer/e2lsh/SelfTuning.o
+
+$(OBJDIR_RELEASESERVER)/dataModel/NKeypoint.o: dataModel/NKeypoint.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c dataModel/NKeypoint.cpp -o $(OBJDIR_RELEASESERVER)/dataModel/NKeypoint.o
+
+$(OBJDIR_RELEASESERVER)/dataModel/NRoi.o: dataModel/NRoi.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c dataModel/NRoi.cpp -o $(OBJDIR_RELEASESERVER)/dataModel/NRoi.o
+
+$(OBJDIR_RELEASESERVER)/dataModel/NTag.o: dataModel/NTag.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c dataModel/NTag.cpp -o $(OBJDIR_RELEASESERVER)/dataModel/NTag.o
+
+$(OBJDIR_RELEASESERVER)/dataModel/NVector.o: dataModel/NVector.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c dataModel/NVector.cpp -o $(OBJDIR_RELEASESERVER)/dataModel/NVector.o
+
+$(OBJDIR_RELEASESERVER)/indexer/FactoryIndexer.o: indexer/FactoryIndexer.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c indexer/FactoryIndexer.cpp -o $(OBJDIR_RELEASESERVER)/indexer/FactoryIndexer.o
+
+$(OBJDIR_RELEASESERVER)/rest/Endpoints/analyser/GenericClassifier.o: rest/Endpoints/analyser/GenericClassifier.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c rest/Endpoints/analyser/GenericClassifier.cpp -o $(OBJDIR_RELEASESERVER)/rest/Endpoints/analyser/GenericClassifier.o
+
+$(OBJDIR_RELEASESERVER)/rest/Endpoints/analyser/GetObjectFeatures.o: rest/Endpoints/analyser/GetObjectFeatures.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c rest/Endpoints/analyser/GetObjectFeatures.cpp -o $(OBJDIR_RELEASESERVER)/rest/Endpoints/analyser/GetObjectFeatures.o
+
+$(OBJDIR_RELEASESERVER)/rest/Endpoints/analyser/MedicalSearchEngine.o: rest/Endpoints/analyser/MedicalSearchEngine.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c rest/Endpoints/analyser/MedicalSearchEngine.cpp -o $(OBJDIR_RELEASESERVER)/rest/Endpoints/analyser/MedicalSearchEngine.o
+
+$(OBJDIR_RELEASESERVER)/rest/Endpoints/analyser/SearchResult.o: rest/Endpoints/analyser/SearchResult.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c rest/Endpoints/analyser/SearchResult.cpp -o $(OBJDIR_RELEASESERVER)/rest/Endpoints/analyser/SearchResult.o
+
+$(OBJDIR_RELEASESERVER)/rest/Endpoints/codebits/Codebits.o: rest/Endpoints/codebits/Codebits.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c rest/Endpoints/codebits/Codebits.cpp -o $(OBJDIR_RELEASESERVER)/rest/Endpoints/codebits/Codebits.o
+
+$(OBJDIR_RELEASESERVER)/rest/Endpoints/database/GetMetadata.o: rest/Endpoints/database/GetMetadata.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c rest/Endpoints/database/GetMetadata.cpp -o $(OBJDIR_RELEASESERVER)/rest/Endpoints/database/GetMetadata.o
+
+$(OBJDIR_RELEASESERVER)/rest/Endpoints/indexer/GenericIndexer.o: rest/Endpoints/indexer/GenericIndexer.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c rest/Endpoints/indexer/GenericIndexer.cpp -o $(OBJDIR_RELEASESERVER)/rest/Endpoints/indexer/GenericIndexer.o
+
+$(OBJDIR_RELEASESERVER)/rest/FactoryEndpoint.o: rest/FactoryEndpoint.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c rest/FactoryEndpoint.cpp -o $(OBJDIR_RELEASESERVER)/rest/FactoryEndpoint.o
+
+$(OBJDIR_RELEASESERVER)/rest/RestRequestHandler.o: rest/RestRequestHandler.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c rest/RestRequestHandler.cpp -o $(OBJDIR_RELEASESERVER)/rest/RestRequestHandler.o
+
+$(OBJDIR_RELEASESERVER)/rest/RestServer.o: rest/RestServer.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c rest/RestServer.cpp -o $(OBJDIR_RELEASESERVER)/rest/RestServer.o
+
+$(OBJDIR_RELEASESERVER)/rest/main.o: rest/main.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c rest/main.cpp -o $(OBJDIR_RELEASESERVER)/rest/main.o
+
+$(OBJDIR_RELEASESERVER)/indexer/e2lsh/Util.o: indexer/e2lsh/Util.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c indexer/e2lsh/Util.cpp -o $(OBJDIR_RELEASESERVER)/indexer/e2lsh/Util.o
+
+$(OBJDIR_RELEASESERVER)/indexer/sphericalHashing/BinaryHash.o: indexer/sphericalHashing/BinaryHash.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c indexer/sphericalHashing/BinaryHash.cpp -o $(OBJDIR_RELEASESERVER)/indexer/sphericalHashing/BinaryHash.o
+
+$(OBJDIR_RELEASESERVER)/indexer/sphericalHashing/Common.o: indexer/sphericalHashing/Common.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c indexer/sphericalHashing/Common.cpp -o $(OBJDIR_RELEASESERVER)/indexer/sphericalHashing/Common.o
+
+$(OBJDIR_RELEASESERVER)/indexer/sphericalHashing/Main.o: indexer/sphericalHashing/Main.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c indexer/sphericalHashing/Main.cpp -o $(OBJDIR_RELEASESERVER)/indexer/sphericalHashing/Main.o
+
+$(OBJDIR_RELEASESERVER)/commons/LoadConfig.o: commons/LoadConfig.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c commons/LoadConfig.cpp -o $(OBJDIR_RELEASESERVER)/commons/LoadConfig.o
+
+$(OBJDIR_RELEASESERVER)/indexer/sphericalHashing/Stopwatch.o: indexer/sphericalHashing/Stopwatch.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c indexer/sphericalHashing/Stopwatch.cpp -o $(OBJDIR_RELEASESERVER)/indexer/sphericalHashing/Stopwatch.o
+
+$(OBJDIR_RELEASESERVER)/rest/Endpoints/TestEndpoint.o: rest/Endpoints/TestEndpoint.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c rest/Endpoints/TestEndpoint.cpp -o $(OBJDIR_RELEASESERVER)/rest/Endpoints/TestEndpoint.o
+
+$(OBJDIR_RELEASESERVER)/rest/Endpoints/analyser/CombSearchResult.o: rest/Endpoints/analyser/CombSearchResult.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c rest/Endpoints/analyser/CombSearchResult.cpp -o $(OBJDIR_RELEASESERVER)/rest/Endpoints/analyser/CombSearchResult.o
+
+$(OBJDIR_RELEASESERVER)/rest/Endpoints/analyser/EnsembleClassifier.o: rest/Endpoints/analyser/EnsembleClassifier.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c rest/Endpoints/analyser/EnsembleClassifier.cpp -o $(OBJDIR_RELEASESERVER)/rest/Endpoints/analyser/EnsembleClassifier.o
+
+$(OBJDIR_RELEASESERVER)/rest/Endpoints/analyser/ExtractFeatures.o: rest/Endpoints/analyser/ExtractFeatures.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c rest/Endpoints/analyser/ExtractFeatures.cpp -o $(OBJDIR_RELEASESERVER)/rest/Endpoints/analyser/ExtractFeatures.o
+
+$(OBJDIR_RELEASESERVER)/analyser/nTag/VWBasicClassifier.o: analyser/nTag/VWBasicClassifier.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c analyser/nTag/VWBasicClassifier.cpp -o $(OBJDIR_RELEASESERVER)/analyser/nTag/VWBasicClassifier.o
+
+$(OBJDIR_RELEASESERVER)/analyser/nTag/kNNClassifier.o: analyser/nTag/kNNClassifier.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c analyser/nTag/kNNClassifier.cpp -o $(OBJDIR_RELEASESERVER)/analyser/nTag/kNNClassifier.o
+
+$(OBJDIR_RELEASESERVER)/analyser/nVector/EigenExtractor.o: analyser/nVector/EigenExtractor.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c analyser/nVector/EigenExtractor.cpp -o $(OBJDIR_RELEASESERVER)/analyser/nVector/EigenExtractor.o
+
+$(OBJDIR_RELEASESERVER)/analyser/nVector/GISTExtractor.o: analyser/nVector/GISTExtractor.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c analyser/nVector/GISTExtractor.cpp -o $(OBJDIR_RELEASESERVER)/analyser/nVector/GISTExtractor.o
+
+$(OBJDIR_RELEASESERVER)/analyser/nVector/GaborExtractor.o: analyser/nVector/GaborExtractor.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c analyser/nVector/GaborExtractor.cpp -o $(OBJDIR_RELEASESERVER)/analyser/nVector/GaborExtractor.o
+
+$(OBJDIR_RELEASESERVER)/analyser/nVector/HistogramExtractor.o: analyser/nVector/HistogramExtractor.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c analyser/nVector/HistogramExtractor.cpp -o $(OBJDIR_RELEASESERVER)/analyser/nVector/HistogramExtractor.o
+
+$(OBJDIR_RELEASESERVER)/analyser/nVector/LBPExtractor.o: analyser/nVector/LBPExtractor.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c analyser/nVector/LBPExtractor.cpp -o $(OBJDIR_RELEASESERVER)/analyser/nVector/LBPExtractor.o
+
+$(OBJDIR_RELEASESERVER)/analyser/nVector/LireExtractor.o: analyser/nVector/LireExtractor.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c analyser/nVector/LireExtractor.cpp -o $(OBJDIR_RELEASESERVER)/analyser/nVector/LireExtractor.o
+
+$(OBJDIR_RELEASESERVER)/analyser/nRoi/FaceDetection.o: analyser/nRoi/FaceDetection.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c analyser/nRoi/FaceDetection.cpp -o $(OBJDIR_RELEASESERVER)/analyser/nRoi/FaceDetection.o
+
+$(OBJDIR_RELEASESERVER)/analyser/FactoryClassifier.o: analyser/FactoryClassifier.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c analyser/FactoryClassifier.cpp -o $(OBJDIR_RELEASESERVER)/analyser/FactoryClassifier.o
+
+$(OBJDIR_RELEASESERVER)/analyser/nKeypoint/SURFExtractor.o: analyser/nKeypoint/SURFExtractor.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c analyser/nKeypoint/SURFExtractor.cpp -o $(OBJDIR_RELEASESERVER)/analyser/nKeypoint/SURFExtractor.o
+
+$(OBJDIR_RELEASESERVER)/analyser/nVector/NullExtractor.o: analyser/nVector/NullExtractor.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c analyser/nVector/NullExtractor.cpp -o $(OBJDIR_RELEASESERVER)/analyser/nVector/NullExtractor.o
+
+$(OBJDIR_RELEASESERVER)/analyser/nTag/FaceRecognition.o: analyser/nTag/FaceRecognition.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c analyser/nTag/FaceRecognition.cpp -o $(OBJDIR_RELEASESERVER)/analyser/nTag/FaceRecognition.o
+
+$(OBJDIR_RELEASESERVER)/analyser/nTag/FacialExpressionRecognition.o: analyser/nTag/FacialExpressionRecognition.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c analyser/nTag/FacialExpressionRecognition.cpp -o $(OBJDIR_RELEASESERVER)/analyser/nTag/FacialExpressionRecognition.o
+
+$(OBJDIR_RELEASESERVER)/analyser/nTag/SRClassifier.o: analyser/nTag/SRClassifier.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c analyser/nTag/SRClassifier.cpp -o $(OBJDIR_RELEASESERVER)/analyser/nTag/SRClassifier.o
+
+$(OBJDIR_RELEASESERVER)/analyser/nTag/SVMClassifier.o: analyser/nTag/SVMClassifier.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c analyser/nTag/SVMClassifier.cpp -o $(OBJDIR_RELEASESERVER)/analyser/nTag/SVMClassifier.o
+
+$(OBJDIR_RELEASESERVER)/analyser/tools/ImageSegmentator.o: analyser/tools/ImageSegmentator.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c analyser/tools/ImageSegmentator.cpp -o $(OBJDIR_RELEASESERVER)/analyser/tools/ImageSegmentator.o
+
+$(OBJDIR_RELEASESERVER)/analyser/tools/MIRFlickrImporter.o: analyser/tools/MIRFlickrImporter.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c analyser/tools/MIRFlickrImporter.cpp -o $(OBJDIR_RELEASESERVER)/analyser/tools/MIRFlickrImporter.o
+
+$(OBJDIR_RELEASESERVER)/analyser/tools/MatrixTools.o: analyser/tools/MatrixTools.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c analyser/tools/MatrixTools.cpp -o $(OBJDIR_RELEASESERVER)/analyser/tools/MatrixTools.o
+
+$(OBJDIR_RELEASESERVER)/analyser/tools/TestFunctions.o: analyser/tools/TestFunctions.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c analyser/tools/TestFunctions.cpp -o $(OBJDIR_RELEASESERVER)/analyser/tools/TestFunctions.o
+
+$(OBJDIR_RELEASESERVER)/analyser/tools/TrainTestFeaturesTools.o: analyser/tools/TrainTestFeaturesTools.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c analyser/tools/TrainTestFeaturesTools.cpp -o $(OBJDIR_RELEASESERVER)/analyser/tools/TrainTestFeaturesTools.o
+
+$(OBJDIR_RELEASESERVER)/analyser/tools/IlluminationCorrectionFilter.o: analyser/tools/IlluminationCorrectionFilter.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c analyser/tools/IlluminationCorrectionFilter.cpp -o $(OBJDIR_RELEASESERVER)/analyser/tools/IlluminationCorrectionFilter.o
+
+$(OBJDIR_RELEASESERVER)/analyser/tools/oneBillionImporter.o: analyser/tools/oneBillionImporter.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c analyser/tools/oneBillionImporter.cpp -o $(OBJDIR_RELEASESERVER)/analyser/tools/oneBillionImporter.o
+
+$(OBJDIR_RELEASESERVER)/analyser/tools/tinyImageImporter.o: analyser/tools/tinyImageImporter.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c analyser/tools/tinyImageImporter.cpp -o $(OBJDIR_RELEASESERVER)/analyser/tools/tinyImageImporter.o
+
+$(OBJDIR_RELEASESERVER)/appData/GameImage.o: appData/GameImage.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c appData/GameImage.cpp -o $(OBJDIR_RELEASESERVER)/appData/GameImage.o
+
+$(OBJDIR_RELEASESERVER)/commons/AppConfig.o: commons/AppConfig.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c commons/AppConfig.cpp -o $(OBJDIR_RELEASESERVER)/commons/AppConfig.o
+
+$(OBJDIR_RELEASESERVER)/commons/FileDownloader.o: commons/FileDownloader.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c commons/FileDownloader.cpp -o $(OBJDIR_RELEASESERVER)/commons/FileDownloader.o
+
+$(OBJDIR_RELEASESERVER)/analyser/nVector/SegmentedHistogramExtractor.o: analyser/nVector/SegmentedHistogramExtractor.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c analyser/nVector/SegmentedHistogramExtractor.cpp -o $(OBJDIR_RELEASESERVER)/analyser/nVector/SegmentedHistogramExtractor.o
+
+$(OBJDIR_RELEASESERVER)/analyser/nVector/gist.o: analyser/nVector/gist.c
+	$(CC) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c analyser/nVector/gist.c -o $(OBJDIR_RELEASESERVER)/analyser/nVector/gist.o
+
+$(OBJDIR_RELEASESERVER)/analyser/nVector/lbp.o: analyser/nVector/lbp.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c analyser/nVector/lbp.cpp -o $(OBJDIR_RELEASESERVER)/analyser/nVector/lbp.o
+
+$(OBJDIR_RELEASESERVER)/analyser/nVector/standalone_image.o: analyser/nVector/standalone_image.c
+	$(CC) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c analyser/nVector/standalone_image.c -o $(OBJDIR_RELEASESERVER)/analyser/nVector/standalone_image.o
+
+$(OBJDIR_RELEASESERVER)/analyser/sources/CamSource.o: analyser/sources/CamSource.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c analyser/sources/CamSource.cpp -o $(OBJDIR_RELEASESERVER)/analyser/sources/CamSource.o
+
+$(OBJDIR_RELEASESERVER)/analyser/FactoryAnalyser.o: analyser/FactoryAnalyser.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c analyser/FactoryAnalyser.cpp -o $(OBJDIR_RELEASESERVER)/analyser/FactoryAnalyser.o
+
+$(OBJDIR_RELEASESERVER)/analyser/sources/SingleImageSource.o: analyser/sources/SingleImageSource.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c analyser/sources/SingleImageSource.cpp -o $(OBJDIR_RELEASESERVER)/analyser/sources/SingleImageSource.o
+
+$(OBJDIR_RELEASESERVER)/analyser/sources/TextFileSource.o: analyser/sources/TextFileSource.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c analyser/sources/TextFileSource.cpp -o $(OBJDIR_RELEASESERVER)/analyser/sources/TextFileSource.o
+
+$(OBJDIR_RELEASESERVER)/analyser/sources/TextFileSourceV2.o: analyser/sources/TextFileSourceV2.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c analyser/sources/TextFileSourceV2.cpp -o $(OBJDIR_RELEASESERVER)/analyser/sources/TextFileSourceV2.o
+
+$(OBJDIR_RELEASESERVER)/analyser/sources/VideoSource.o: analyser/sources/VideoSource.cpp
+	$(CXX) $(CFLAGS_RELEASESERVER) $(INC_RELEASESERVER) -c analyser/sources/VideoSource.cpp -o $(OBJDIR_RELEASESERVER)/analyser/sources/VideoSource.o
+
+clean_releaseserver: 
+	rm -f $(OBJ_RELEASESERVER) $(OUT_RELEASESERVER)
+	rm -rf bin/Release
+	rm -rf $(OBJDIR_RELEASESERVER)/indexer/e2lsh
+	rm -rf $(OBJDIR_RELEASESERVER)/indexer
+	rm -rf $(OBJDIR_RELEASESERVER)/commons
+	rm -rf $(OBJDIR_RELEASESERVER)/commons/factory
+	rm -rf $(OBJDIR_RELEASESERVER)/dataModel
+	rm -rf $(OBJDIR_RELEASESERVER)/rest/Endpoints/analyser
+	rm -rf $(OBJDIR_RELEASESERVER)/rest/Endpoints/codebits
+	rm -rf $(OBJDIR_RELEASESERVER)/rest/Endpoints/database
+	rm -rf $(OBJDIR_RELEASESERVER)/rest/Endpoints/indexer
+	rm -rf $(OBJDIR_RELEASESERVER)/rest
+	rm -rf $(OBJDIR_RELEASESERVER)/indexer/sphericalHashing
+	rm -rf $(OBJDIR_RELEASESERVER)/rest/Endpoints
+	rm -rf $(OBJDIR_RELEASESERVER)/analyser/nTag
+	rm -rf $(OBJDIR_RELEASESERVER)/analyser/nVector
+	rm -rf $(OBJDIR_RELEASESERVER)/analyser/nRoi
+	rm -rf $(OBJDIR_RELEASESERVER)/analyser
+	rm -rf $(OBJDIR_RELEASESERVER)/analyser/nKeypoint
+	rm -rf $(OBJDIR_RELEASESERVER)/analyser/tools
+	rm -rf $(OBJDIR_RELEASESERVER)/appData
+	rm -rf $(OBJDIR_RELEASESERVER)/analyser/sources
+
+before_debugmainind: 
+	test -d bin/Debug || mkdir -p bin/Debug
+	test -d $(OBJDIR_DEBUGMAININD)/indexer/e2lsh || mkdir -p $(OBJDIR_DEBUGMAININD)/indexer/e2lsh
+	test -d $(OBJDIR_DEBUGMAININD)/indexer || mkdir -p $(OBJDIR_DEBUGMAININD)/indexer
+	test -d $(OBJDIR_DEBUGMAININD)/commons || mkdir -p $(OBJDIR_DEBUGMAININD)/commons
+	test -d $(OBJDIR_DEBUGMAININD)/commons/factory || mkdir -p $(OBJDIR_DEBUGMAININD)/commons/factory
+	test -d $(OBJDIR_DEBUGMAININD)/dataModel || mkdir -p $(OBJDIR_DEBUGMAININD)/dataModel
+	test -d $(OBJDIR_DEBUGMAININD)/rest/Endpoints/analyser || mkdir -p $(OBJDIR_DEBUGMAININD)/rest/Endpoints/analyser
+	test -d $(OBJDIR_DEBUGMAININD)/rest/Endpoints/codebits || mkdir -p $(OBJDIR_DEBUGMAININD)/rest/Endpoints/codebits
+	test -d $(OBJDIR_DEBUGMAININD)/rest/Endpoints/database || mkdir -p $(OBJDIR_DEBUGMAININD)/rest/Endpoints/database
+	test -d $(OBJDIR_DEBUGMAININD)/rest/Endpoints/indexer || mkdir -p $(OBJDIR_DEBUGMAININD)/rest/Endpoints/indexer
+	test -d $(OBJDIR_DEBUGMAININD)/rest || mkdir -p $(OBJDIR_DEBUGMAININD)/rest
+	test -d $(OBJDIR_DEBUGMAININD)/indexer/sphericalHashing || mkdir -p $(OBJDIR_DEBUGMAININD)/indexer/sphericalHashing
+	test -d $(OBJDIR_DEBUGMAININD)/rest/Endpoints || mkdir -p $(OBJDIR_DEBUGMAININD)/rest/Endpoints
+	test -d $(OBJDIR_DEBUGMAININD)/analyser/nTag || mkdir -p $(OBJDIR_DEBUGMAININD)/analyser/nTag
+	test -d $(OBJDIR_DEBUGMAININD)/analyser/nVector || mkdir -p $(OBJDIR_DEBUGMAININD)/analyser/nVector
+	test -d $(OBJDIR_DEBUGMAININD)/analyser/nRoi || mkdir -p $(OBJDIR_DEBUGMAININD)/analyser/nRoi
+	test -d $(OBJDIR_DEBUGMAININD)/analyser || mkdir -p $(OBJDIR_DEBUGMAININD)/analyser
+	test -d $(OBJDIR_DEBUGMAININD)/analyser/nKeypoint || mkdir -p $(OBJDIR_DEBUGMAININD)/analyser/nKeypoint
+	test -d $(OBJDIR_DEBUGMAININD)/analyser/tools || mkdir -p $(OBJDIR_DEBUGMAININD)/analyser/tools
+	test -d $(OBJDIR_DEBUGMAININD)/appData || mkdir -p $(OBJDIR_DEBUGMAININD)/appData
+	test -d $(OBJDIR_DEBUGMAININD)/analyser/sources || mkdir -p $(OBJDIR_DEBUGMAININD)/analyser/sources
+
+after_debugmainind: 
+
+debugmainind: before_debugmainind out_debugmainind after_debugmainind
+
+out_debugmainind: before_debugmainind $(OBJ_DEBUGMAININD) $(DEP_DEBUGMAININD)
+	$(LD) $(LIBDIR_DEBUGMAININD) -o $(OUT_DEBUGMAININD) $(OBJ_DEBUGMAININD)  $(LDFLAGS_DEBUGMAININD) $(LIB_DEBUGMAININD)
+
+$(OBJDIR_DEBUGMAININD)/indexer/e2lsh/Geometry.o: indexer/e2lsh/Geometry.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c indexer/e2lsh/Geometry.cpp -o $(OBJDIR_DEBUGMAININD)/indexer/e2lsh/Geometry.o
+
+$(OBJDIR_DEBUGMAININD)/indexer/LSHIndexer.o: indexer/LSHIndexer.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c indexer/LSHIndexer.cpp -o $(OBJDIR_DEBUGMAININD)/indexer/LSHIndexer.o
+
+$(OBJDIR_DEBUGMAININD)/indexer/MSIDXIndexer.o: indexer/MSIDXIndexer.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c indexer/MSIDXIndexer.cpp -o $(OBJDIR_DEBUGMAININD)/indexer/MSIDXIndexer.o
+
+$(OBJDIR_DEBUGMAININD)/indexer/SphericalHashIndexer.o: indexer/SphericalHashIndexer.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c indexer/SphericalHashIndexer.cpp -o $(OBJDIR_DEBUGMAININD)/indexer/SphericalHashIndexer.o
+
+$(OBJDIR_DEBUGMAININD)/indexer/e2lsh/BucketHashing.o: indexer/e2lsh/BucketHashing.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c indexer/e2lsh/BucketHashing.cpp -o $(OBJDIR_DEBUGMAININD)/indexer/e2lsh/BucketHashing.o
+
+$(OBJDIR_DEBUGMAININD)/indexer/FlannkNNIndexer.o: indexer/FlannkNNIndexer.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c indexer/FlannkNNIndexer.cpp -o $(OBJDIR_DEBUGMAININD)/indexer/FlannkNNIndexer.o
+
+$(OBJDIR_DEBUGMAININD)/indexer/e2lsh/GlobalVars.o: indexer/e2lsh/GlobalVars.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c indexer/e2lsh/GlobalVars.cpp -o $(OBJDIR_DEBUGMAININD)/indexer/e2lsh/GlobalVars.o
+
+$(OBJDIR_DEBUGMAININD)/indexer/e2lsh/LSHMain.o: indexer/e2lsh/LSHMain.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c indexer/e2lsh/LSHMain.cpp -o $(OBJDIR_DEBUGMAININD)/indexer/e2lsh/LSHMain.o
+
+$(OBJDIR_DEBUGMAININD)/indexer/e2lsh/LocalitySensitiveHashing.o: indexer/e2lsh/LocalitySensitiveHashing.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c indexer/e2lsh/LocalitySensitiveHashing.cpp -o $(OBJDIR_DEBUGMAININD)/indexer/e2lsh/LocalitySensitiveHashing.o
+
+$(OBJDIR_DEBUGMAININD)/indexer/e2lsh/NearNeighbors.o: indexer/e2lsh/NearNeighbors.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c indexer/e2lsh/NearNeighbors.cpp -o $(OBJDIR_DEBUGMAININD)/indexer/e2lsh/NearNeighbors.o
+
+$(OBJDIR_DEBUGMAININD)/indexer/e2lsh/Random.o: indexer/e2lsh/Random.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c indexer/e2lsh/Random.cpp -o $(OBJDIR_DEBUGMAININD)/indexer/e2lsh/Random.o
+
+$(OBJDIR_DEBUGMAININD)/commons/StringTools.o: commons/StringTools.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c commons/StringTools.cpp -o $(OBJDIR_DEBUGMAININD)/commons/StringTools.o
+
+$(OBJDIR_DEBUGMAININD)/commons/factory/Factory.o: commons/factory/Factory.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c commons/factory/Factory.cpp -o $(OBJDIR_DEBUGMAININD)/commons/factory/Factory.o
+
+$(OBJDIR_DEBUGMAININD)/dataModel/DataModelController.o: dataModel/DataModelController.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c dataModel/DataModelController.cpp -o $(OBJDIR_DEBUGMAININD)/dataModel/DataModelController.o
+
+$(OBJDIR_DEBUGMAININD)/dataModel/DatabaseConnection.o: dataModel/DatabaseConnection.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c dataModel/DatabaseConnection.cpp -o $(OBJDIR_DEBUGMAININD)/dataModel/DatabaseConnection.o
+
+$(OBJDIR_DEBUGMAININD)/indexer/e2lsh/SelfTuning.o: indexer/e2lsh/SelfTuning.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c indexer/e2lsh/SelfTuning.cpp -o $(OBJDIR_DEBUGMAININD)/indexer/e2lsh/SelfTuning.o
+
+$(OBJDIR_DEBUGMAININD)/dataModel/NKeypoint.o: dataModel/NKeypoint.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c dataModel/NKeypoint.cpp -o $(OBJDIR_DEBUGMAININD)/dataModel/NKeypoint.o
+
+$(OBJDIR_DEBUGMAININD)/dataModel/NRoi.o: dataModel/NRoi.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c dataModel/NRoi.cpp -o $(OBJDIR_DEBUGMAININD)/dataModel/NRoi.o
+
+$(OBJDIR_DEBUGMAININD)/dataModel/NTag.o: dataModel/NTag.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c dataModel/NTag.cpp -o $(OBJDIR_DEBUGMAININD)/dataModel/NTag.o
+
+$(OBJDIR_DEBUGMAININD)/dataModel/NVector.o: dataModel/NVector.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c dataModel/NVector.cpp -o $(OBJDIR_DEBUGMAININD)/dataModel/NVector.o
+
+$(OBJDIR_DEBUGMAININD)/indexer/FactoryIndexer.o: indexer/FactoryIndexer.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c indexer/FactoryIndexer.cpp -o $(OBJDIR_DEBUGMAININD)/indexer/FactoryIndexer.o
+
+$(OBJDIR_DEBUGMAININD)/rest/Endpoints/analyser/GenericClassifier.o: rest/Endpoints/analyser/GenericClassifier.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c rest/Endpoints/analyser/GenericClassifier.cpp -o $(OBJDIR_DEBUGMAININD)/rest/Endpoints/analyser/GenericClassifier.o
+
+$(OBJDIR_DEBUGMAININD)/rest/Endpoints/analyser/GetObjectFeatures.o: rest/Endpoints/analyser/GetObjectFeatures.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c rest/Endpoints/analyser/GetObjectFeatures.cpp -o $(OBJDIR_DEBUGMAININD)/rest/Endpoints/analyser/GetObjectFeatures.o
+
+$(OBJDIR_DEBUGMAININD)/rest/Endpoints/analyser/MedicalSearchEngine.o: rest/Endpoints/analyser/MedicalSearchEngine.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c rest/Endpoints/analyser/MedicalSearchEngine.cpp -o $(OBJDIR_DEBUGMAININD)/rest/Endpoints/analyser/MedicalSearchEngine.o
+
+$(OBJDIR_DEBUGMAININD)/rest/Endpoints/analyser/SearchResult.o: rest/Endpoints/analyser/SearchResult.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c rest/Endpoints/analyser/SearchResult.cpp -o $(OBJDIR_DEBUGMAININD)/rest/Endpoints/analyser/SearchResult.o
+
+$(OBJDIR_DEBUGMAININD)/rest/Endpoints/codebits/Codebits.o: rest/Endpoints/codebits/Codebits.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c rest/Endpoints/codebits/Codebits.cpp -o $(OBJDIR_DEBUGMAININD)/rest/Endpoints/codebits/Codebits.o
+
+$(OBJDIR_DEBUGMAININD)/rest/Endpoints/database/GetMetadata.o: rest/Endpoints/database/GetMetadata.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c rest/Endpoints/database/GetMetadata.cpp -o $(OBJDIR_DEBUGMAININD)/rest/Endpoints/database/GetMetadata.o
+
+$(OBJDIR_DEBUGMAININD)/rest/Endpoints/indexer/GenericIndexer.o: rest/Endpoints/indexer/GenericIndexer.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c rest/Endpoints/indexer/GenericIndexer.cpp -o $(OBJDIR_DEBUGMAININD)/rest/Endpoints/indexer/GenericIndexer.o
+
+$(OBJDIR_DEBUGMAININD)/rest/FactoryEndpoint.o: rest/FactoryEndpoint.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c rest/FactoryEndpoint.cpp -o $(OBJDIR_DEBUGMAININD)/rest/FactoryEndpoint.o
+
+$(OBJDIR_DEBUGMAININD)/rest/RestRequestHandler.o: rest/RestRequestHandler.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c rest/RestRequestHandler.cpp -o $(OBJDIR_DEBUGMAININD)/rest/RestRequestHandler.o
+
+$(OBJDIR_DEBUGMAININD)/rest/RestServer.o: rest/RestServer.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c rest/RestServer.cpp -o $(OBJDIR_DEBUGMAININD)/rest/RestServer.o
+
+$(OBJDIR_DEBUGMAININD)/indexer/e2lsh/Util.o: indexer/e2lsh/Util.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c indexer/e2lsh/Util.cpp -o $(OBJDIR_DEBUGMAININD)/indexer/e2lsh/Util.o
+
+$(OBJDIR_DEBUGMAININD)/indexer/sphericalHashing/BinaryHash.o: indexer/sphericalHashing/BinaryHash.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c indexer/sphericalHashing/BinaryHash.cpp -o $(OBJDIR_DEBUGMAININD)/indexer/sphericalHashing/BinaryHash.o
+
+$(OBJDIR_DEBUGMAININD)/indexer/sphericalHashing/Common.o: indexer/sphericalHashing/Common.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c indexer/sphericalHashing/Common.cpp -o $(OBJDIR_DEBUGMAININD)/indexer/sphericalHashing/Common.o
+
+$(OBJDIR_DEBUGMAININD)/indexer/sphericalHashing/Main.o: indexer/sphericalHashing/Main.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c indexer/sphericalHashing/Main.cpp -o $(OBJDIR_DEBUGMAININD)/indexer/sphericalHashing/Main.o
+
+$(OBJDIR_DEBUGMAININD)/commons/LoadConfig.o: commons/LoadConfig.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c commons/LoadConfig.cpp -o $(OBJDIR_DEBUGMAININD)/commons/LoadConfig.o
+
+$(OBJDIR_DEBUGMAININD)/indexer/sphericalHashing/Stopwatch.o: indexer/sphericalHashing/Stopwatch.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c indexer/sphericalHashing/Stopwatch.cpp -o $(OBJDIR_DEBUGMAININD)/indexer/sphericalHashing/Stopwatch.o
+
+$(OBJDIR_DEBUGMAININD)/rest/Endpoints/TestEndpoint.o: rest/Endpoints/TestEndpoint.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c rest/Endpoints/TestEndpoint.cpp -o $(OBJDIR_DEBUGMAININD)/rest/Endpoints/TestEndpoint.o
+
+$(OBJDIR_DEBUGMAININD)/rest/Endpoints/analyser/CombSearchResult.o: rest/Endpoints/analyser/CombSearchResult.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c rest/Endpoints/analyser/CombSearchResult.cpp -o $(OBJDIR_DEBUGMAININD)/rest/Endpoints/analyser/CombSearchResult.o
+
+$(OBJDIR_DEBUGMAININD)/rest/Endpoints/analyser/EnsembleClassifier.o: rest/Endpoints/analyser/EnsembleClassifier.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c rest/Endpoints/analyser/EnsembleClassifier.cpp -o $(OBJDIR_DEBUGMAININD)/rest/Endpoints/analyser/EnsembleClassifier.o
+
+$(OBJDIR_DEBUGMAININD)/rest/Endpoints/analyser/ExtractFeatures.o: rest/Endpoints/analyser/ExtractFeatures.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c rest/Endpoints/analyser/ExtractFeatures.cpp -o $(OBJDIR_DEBUGMAININD)/rest/Endpoints/analyser/ExtractFeatures.o
+
+$(OBJDIR_DEBUGMAININD)/analyser/nTag/VWBasicClassifier.o: analyser/nTag/VWBasicClassifier.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c analyser/nTag/VWBasicClassifier.cpp -o $(OBJDIR_DEBUGMAININD)/analyser/nTag/VWBasicClassifier.o
+
+$(OBJDIR_DEBUGMAININD)/analyser/nTag/kNNClassifier.o: analyser/nTag/kNNClassifier.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c analyser/nTag/kNNClassifier.cpp -o $(OBJDIR_DEBUGMAININD)/analyser/nTag/kNNClassifier.o
+
+$(OBJDIR_DEBUGMAININD)/analyser/nVector/EigenExtractor.o: analyser/nVector/EigenExtractor.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c analyser/nVector/EigenExtractor.cpp -o $(OBJDIR_DEBUGMAININD)/analyser/nVector/EigenExtractor.o
+
+$(OBJDIR_DEBUGMAININD)/analyser/nVector/GISTExtractor.o: analyser/nVector/GISTExtractor.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c analyser/nVector/GISTExtractor.cpp -o $(OBJDIR_DEBUGMAININD)/analyser/nVector/GISTExtractor.o
+
+$(OBJDIR_DEBUGMAININD)/analyser/nVector/GaborExtractor.o: analyser/nVector/GaborExtractor.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c analyser/nVector/GaborExtractor.cpp -o $(OBJDIR_DEBUGMAININD)/analyser/nVector/GaborExtractor.o
+
+$(OBJDIR_DEBUGMAININD)/analyser/nVector/HistogramExtractor.o: analyser/nVector/HistogramExtractor.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c analyser/nVector/HistogramExtractor.cpp -o $(OBJDIR_DEBUGMAININD)/analyser/nVector/HistogramExtractor.o
+
+$(OBJDIR_DEBUGMAININD)/analyser/nVector/LBPExtractor.o: analyser/nVector/LBPExtractor.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c analyser/nVector/LBPExtractor.cpp -o $(OBJDIR_DEBUGMAININD)/analyser/nVector/LBPExtractor.o
+
+$(OBJDIR_DEBUGMAININD)/analyser/nVector/LireExtractor.o: analyser/nVector/LireExtractor.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c analyser/nVector/LireExtractor.cpp -o $(OBJDIR_DEBUGMAININD)/analyser/nVector/LireExtractor.o
+
+$(OBJDIR_DEBUGMAININD)/analyser/nRoi/FaceDetection.o: analyser/nRoi/FaceDetection.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c analyser/nRoi/FaceDetection.cpp -o $(OBJDIR_DEBUGMAININD)/analyser/nRoi/FaceDetection.o
+
+$(OBJDIR_DEBUGMAININD)/analyser/FactoryClassifier.o: analyser/FactoryClassifier.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c analyser/FactoryClassifier.cpp -o $(OBJDIR_DEBUGMAININD)/analyser/FactoryClassifier.o
+
+$(OBJDIR_DEBUGMAININD)/analyser/Main3.o: analyser/Main3.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c analyser/Main3.cpp -o $(OBJDIR_DEBUGMAININD)/analyser/Main3.o
+
+$(OBJDIR_DEBUGMAININD)/analyser/nKeypoint/SURFExtractor.o: analyser/nKeypoint/SURFExtractor.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c analyser/nKeypoint/SURFExtractor.cpp -o $(OBJDIR_DEBUGMAININD)/analyser/nKeypoint/SURFExtractor.o
+
+$(OBJDIR_DEBUGMAININD)/analyser/nVector/NullExtractor.o: analyser/nVector/NullExtractor.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c analyser/nVector/NullExtractor.cpp -o $(OBJDIR_DEBUGMAININD)/analyser/nVector/NullExtractor.o
+
+$(OBJDIR_DEBUGMAININD)/analyser/nTag/FaceRecognition.o: analyser/nTag/FaceRecognition.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c analyser/nTag/FaceRecognition.cpp -o $(OBJDIR_DEBUGMAININD)/analyser/nTag/FaceRecognition.o
+
+$(OBJDIR_DEBUGMAININD)/analyser/nTag/FacialExpressionRecognition.o: analyser/nTag/FacialExpressionRecognition.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c analyser/nTag/FacialExpressionRecognition.cpp -o $(OBJDIR_DEBUGMAININD)/analyser/nTag/FacialExpressionRecognition.o
+
+$(OBJDIR_DEBUGMAININD)/analyser/nTag/SRClassifier.o: analyser/nTag/SRClassifier.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c analyser/nTag/SRClassifier.cpp -o $(OBJDIR_DEBUGMAININD)/analyser/nTag/SRClassifier.o
+
+$(OBJDIR_DEBUGMAININD)/analyser/nTag/SVMClassifier.o: analyser/nTag/SVMClassifier.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c analyser/nTag/SVMClassifier.cpp -o $(OBJDIR_DEBUGMAININD)/analyser/nTag/SVMClassifier.o
+
+$(OBJDIR_DEBUGMAININD)/analyser/tools/ImageSegmentator.o: analyser/tools/ImageSegmentator.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c analyser/tools/ImageSegmentator.cpp -o $(OBJDIR_DEBUGMAININD)/analyser/tools/ImageSegmentator.o
+
+$(OBJDIR_DEBUGMAININD)/analyser/tools/MIRFlickrImporter.o: analyser/tools/MIRFlickrImporter.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c analyser/tools/MIRFlickrImporter.cpp -o $(OBJDIR_DEBUGMAININD)/analyser/tools/MIRFlickrImporter.o
+
+$(OBJDIR_DEBUGMAININD)/analyser/tools/MatrixTools.o: analyser/tools/MatrixTools.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c analyser/tools/MatrixTools.cpp -o $(OBJDIR_DEBUGMAININD)/analyser/tools/MatrixTools.o
+
+$(OBJDIR_DEBUGMAININD)/analyser/tools/TestFunctions.o: analyser/tools/TestFunctions.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c analyser/tools/TestFunctions.cpp -o $(OBJDIR_DEBUGMAININD)/analyser/tools/TestFunctions.o
+
+$(OBJDIR_DEBUGMAININD)/analyser/tools/TrainTestFeaturesTools.o: analyser/tools/TrainTestFeaturesTools.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c analyser/tools/TrainTestFeaturesTools.cpp -o $(OBJDIR_DEBUGMAININD)/analyser/tools/TrainTestFeaturesTools.o
+
+$(OBJDIR_DEBUGMAININD)/analyser/tools/IlluminationCorrectionFilter.o: analyser/tools/IlluminationCorrectionFilter.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c analyser/tools/IlluminationCorrectionFilter.cpp -o $(OBJDIR_DEBUGMAININD)/analyser/tools/IlluminationCorrectionFilter.o
+
+$(OBJDIR_DEBUGMAININD)/analyser/tools/oneBillionImporter.o: analyser/tools/oneBillionImporter.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c analyser/tools/oneBillionImporter.cpp -o $(OBJDIR_DEBUGMAININD)/analyser/tools/oneBillionImporter.o
+
+$(OBJDIR_DEBUGMAININD)/analyser/tools/tinyImageImporter.o: analyser/tools/tinyImageImporter.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c analyser/tools/tinyImageImporter.cpp -o $(OBJDIR_DEBUGMAININD)/analyser/tools/tinyImageImporter.o
+
+$(OBJDIR_DEBUGMAININD)/appData/GameImage.o: appData/GameImage.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c appData/GameImage.cpp -o $(OBJDIR_DEBUGMAININD)/appData/GameImage.o
+
+$(OBJDIR_DEBUGMAININD)/commons/AppConfig.o: commons/AppConfig.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c commons/AppConfig.cpp -o $(OBJDIR_DEBUGMAININD)/commons/AppConfig.o
+
+$(OBJDIR_DEBUGMAININD)/commons/FileDownloader.o: commons/FileDownloader.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c commons/FileDownloader.cpp -o $(OBJDIR_DEBUGMAININD)/commons/FileDownloader.o
+
+$(OBJDIR_DEBUGMAININD)/analyser/nVector/SegmentedHistogramExtractor.o: analyser/nVector/SegmentedHistogramExtractor.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c analyser/nVector/SegmentedHistogramExtractor.cpp -o $(OBJDIR_DEBUGMAININD)/analyser/nVector/SegmentedHistogramExtractor.o
+
+$(OBJDIR_DEBUGMAININD)/analyser/nVector/gist.o: analyser/nVector/gist.c
+	$(CC) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c analyser/nVector/gist.c -o $(OBJDIR_DEBUGMAININD)/analyser/nVector/gist.o
+
+$(OBJDIR_DEBUGMAININD)/analyser/nVector/lbp.o: analyser/nVector/lbp.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c analyser/nVector/lbp.cpp -o $(OBJDIR_DEBUGMAININD)/analyser/nVector/lbp.o
+
+$(OBJDIR_DEBUGMAININD)/analyser/nVector/standalone_image.o: analyser/nVector/standalone_image.c
+	$(CC) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c analyser/nVector/standalone_image.c -o $(OBJDIR_DEBUGMAININD)/analyser/nVector/standalone_image.o
+
+$(OBJDIR_DEBUGMAININD)/analyser/sources/CamSource.o: analyser/sources/CamSource.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c analyser/sources/CamSource.cpp -o $(OBJDIR_DEBUGMAININD)/analyser/sources/CamSource.o
+
+$(OBJDIR_DEBUGMAININD)/analyser/FactoryAnalyser.o: analyser/FactoryAnalyser.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c analyser/FactoryAnalyser.cpp -o $(OBJDIR_DEBUGMAININD)/analyser/FactoryAnalyser.o
+
+$(OBJDIR_DEBUGMAININD)/analyser/sources/SingleImageSource.o: analyser/sources/SingleImageSource.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c analyser/sources/SingleImageSource.cpp -o $(OBJDIR_DEBUGMAININD)/analyser/sources/SingleImageSource.o
+
+$(OBJDIR_DEBUGMAININD)/analyser/sources/TextFileSource.o: analyser/sources/TextFileSource.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c analyser/sources/TextFileSource.cpp -o $(OBJDIR_DEBUGMAININD)/analyser/sources/TextFileSource.o
+
+$(OBJDIR_DEBUGMAININD)/analyser/sources/TextFileSourceV2.o: analyser/sources/TextFileSourceV2.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c analyser/sources/TextFileSourceV2.cpp -o $(OBJDIR_DEBUGMAININD)/analyser/sources/TextFileSourceV2.o
+
+$(OBJDIR_DEBUGMAININD)/analyser/sources/VideoSource.o: analyser/sources/VideoSource.cpp
+	$(CXX) $(CFLAGS_DEBUGMAININD) $(INC_DEBUGMAININD) -c analyser/sources/VideoSource.cpp -o $(OBJDIR_DEBUGMAININD)/analyser/sources/VideoSource.o
+
+clean_debugmainind: 
+	rm -f $(OBJ_DEBUGMAININD) $(OUT_DEBUGMAININD)
+	rm -rf bin/Debug
+	rm -rf $(OBJDIR_DEBUGMAININD)/indexer/e2lsh
+	rm -rf $(OBJDIR_DEBUGMAININD)/indexer
+	rm -rf $(OBJDIR_DEBUGMAININD)/commons
+	rm -rf $(OBJDIR_DEBUGMAININD)/commons/factory
+	rm -rf $(OBJDIR_DEBUGMAININD)/dataModel
+	rm -rf $(OBJDIR_DEBUGMAININD)/rest/Endpoints/analyser
+	rm -rf $(OBJDIR_DEBUGMAININD)/rest/Endpoints/codebits
+	rm -rf $(OBJDIR_DEBUGMAININD)/rest/Endpoints/database
+	rm -rf $(OBJDIR_DEBUGMAININD)/rest/Endpoints/indexer
+	rm -rf $(OBJDIR_DEBUGMAININD)/rest
+	rm -rf $(OBJDIR_DEBUGMAININD)/indexer/sphericalHashing
+	rm -rf $(OBJDIR_DEBUGMAININD)/rest/Endpoints
+	rm -rf $(OBJDIR_DEBUGMAININD)/analyser/nTag
+	rm -rf $(OBJDIR_DEBUGMAININD)/analyser/nVector
+	rm -rf $(OBJDIR_DEBUGMAININD)/analyser/nRoi
+	rm -rf $(OBJDIR_DEBUGMAININD)/analyser
+	rm -rf $(OBJDIR_DEBUGMAININD)/analyser/nKeypoint
+	rm -rf $(OBJDIR_DEBUGMAININD)/analyser/tools
+	rm -rf $(OBJDIR_DEBUGMAININD)/appData
+	rm -rf $(OBJDIR_DEBUGMAININD)/analyser/sources
+
+before_debugmainana: 
+	test -d bin/Debug || mkdir -p bin/Debug
+	test -d $(OBJDIR_DEBUGMAINANA)/indexer/e2lsh || mkdir -p $(OBJDIR_DEBUGMAINANA)/indexer/e2lsh
+	test -d $(OBJDIR_DEBUGMAINANA)/indexer || mkdir -p $(OBJDIR_DEBUGMAINANA)/indexer
+	test -d $(OBJDIR_DEBUGMAINANA)/commons || mkdir -p $(OBJDIR_DEBUGMAINANA)/commons
+	test -d $(OBJDIR_DEBUGMAINANA)/commons/factory || mkdir -p $(OBJDIR_DEBUGMAINANA)/commons/factory
+	test -d $(OBJDIR_DEBUGMAINANA)/dataModel || mkdir -p $(OBJDIR_DEBUGMAINANA)/dataModel
+	test -d $(OBJDIR_DEBUGMAINANA)/rest/Endpoints/analyser || mkdir -p $(OBJDIR_DEBUGMAINANA)/rest/Endpoints/analyser
+	test -d $(OBJDIR_DEBUGMAINANA)/rest/Endpoints/codebits || mkdir -p $(OBJDIR_DEBUGMAINANA)/rest/Endpoints/codebits
+	test -d $(OBJDIR_DEBUGMAINANA)/rest/Endpoints/database || mkdir -p $(OBJDIR_DEBUGMAINANA)/rest/Endpoints/database
+	test -d $(OBJDIR_DEBUGMAINANA)/rest/Endpoints/indexer || mkdir -p $(OBJDIR_DEBUGMAINANA)/rest/Endpoints/indexer
+	test -d $(OBJDIR_DEBUGMAINANA)/rest || mkdir -p $(OBJDIR_DEBUGMAINANA)/rest
+	test -d $(OBJDIR_DEBUGMAINANA)/indexer/sphericalHashing || mkdir -p $(OBJDIR_DEBUGMAINANA)/indexer/sphericalHashing
+	test -d $(OBJDIR_DEBUGMAINANA)/rest/Endpoints || mkdir -p $(OBJDIR_DEBUGMAINANA)/rest/Endpoints
+	test -d $(OBJDIR_DEBUGMAINANA)/analyser/nTag || mkdir -p $(OBJDIR_DEBUGMAINANA)/analyser/nTag
+	test -d $(OBJDIR_DEBUGMAINANA)/analyser/nVector || mkdir -p $(OBJDIR_DEBUGMAINANA)/analyser/nVector
+	test -d $(OBJDIR_DEBUGMAINANA)/analyser/nRoi || mkdir -p $(OBJDIR_DEBUGMAINANA)/analyser/nRoi
+	test -d $(OBJDIR_DEBUGMAINANA)/analyser || mkdir -p $(OBJDIR_DEBUGMAINANA)/analyser
+	test -d $(OBJDIR_DEBUGMAINANA)/analyser/nKeypoint || mkdir -p $(OBJDIR_DEBUGMAINANA)/analyser/nKeypoint
+	test -d $(OBJDIR_DEBUGMAINANA)/analyser/tools || mkdir -p $(OBJDIR_DEBUGMAINANA)/analyser/tools
+	test -d $(OBJDIR_DEBUGMAINANA)/appData || mkdir -p $(OBJDIR_DEBUGMAINANA)/appData
+	test -d $(OBJDIR_DEBUGMAINANA)/analyser/sources || mkdir -p $(OBJDIR_DEBUGMAINANA)/analyser/sources
+
+after_debugmainana: 
+
+debugmainana: before_debugmainana out_debugmainana after_debugmainana
+
+out_debugmainana: before_debugmainana $(OBJ_DEBUGMAINANA) $(DEP_DEBUGMAINANA)
+	$(LD) $(LIBDIR_DEBUGMAINANA) -o $(OUT_DEBUGMAINANA) $(OBJ_DEBUGMAINANA)  $(LDFLAGS_DEBUGMAINANA) $(LIB_DEBUGMAINANA)
+
+$(OBJDIR_DEBUGMAINANA)/indexer/e2lsh/Geometry.o: indexer/e2lsh/Geometry.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c indexer/e2lsh/Geometry.cpp -o $(OBJDIR_DEBUGMAINANA)/indexer/e2lsh/Geometry.o
+
+$(OBJDIR_DEBUGMAINANA)/indexer/LSHIndexer.o: indexer/LSHIndexer.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c indexer/LSHIndexer.cpp -o $(OBJDIR_DEBUGMAINANA)/indexer/LSHIndexer.o
+
+$(OBJDIR_DEBUGMAINANA)/indexer/MSIDXIndexer.o: indexer/MSIDXIndexer.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c indexer/MSIDXIndexer.cpp -o $(OBJDIR_DEBUGMAINANA)/indexer/MSIDXIndexer.o
+
+$(OBJDIR_DEBUGMAINANA)/indexer/SphericalHashIndexer.o: indexer/SphericalHashIndexer.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c indexer/SphericalHashIndexer.cpp -o $(OBJDIR_DEBUGMAINANA)/indexer/SphericalHashIndexer.o
+
+$(OBJDIR_DEBUGMAINANA)/indexer/e2lsh/BucketHashing.o: indexer/e2lsh/BucketHashing.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c indexer/e2lsh/BucketHashing.cpp -o $(OBJDIR_DEBUGMAINANA)/indexer/e2lsh/BucketHashing.o
+
+$(OBJDIR_DEBUGMAINANA)/indexer/FlannkNNIndexer.o: indexer/FlannkNNIndexer.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c indexer/FlannkNNIndexer.cpp -o $(OBJDIR_DEBUGMAINANA)/indexer/FlannkNNIndexer.o
+
+$(OBJDIR_DEBUGMAINANA)/indexer/e2lsh/GlobalVars.o: indexer/e2lsh/GlobalVars.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c indexer/e2lsh/GlobalVars.cpp -o $(OBJDIR_DEBUGMAINANA)/indexer/e2lsh/GlobalVars.o
+
+$(OBJDIR_DEBUGMAINANA)/indexer/e2lsh/LSHMain.o: indexer/e2lsh/LSHMain.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c indexer/e2lsh/LSHMain.cpp -o $(OBJDIR_DEBUGMAINANA)/indexer/e2lsh/LSHMain.o
+
+$(OBJDIR_DEBUGMAINANA)/indexer/e2lsh/LocalitySensitiveHashing.o: indexer/e2lsh/LocalitySensitiveHashing.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c indexer/e2lsh/LocalitySensitiveHashing.cpp -o $(OBJDIR_DEBUGMAINANA)/indexer/e2lsh/LocalitySensitiveHashing.o
+
+$(OBJDIR_DEBUGMAINANA)/indexer/e2lsh/NearNeighbors.o: indexer/e2lsh/NearNeighbors.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c indexer/e2lsh/NearNeighbors.cpp -o $(OBJDIR_DEBUGMAINANA)/indexer/e2lsh/NearNeighbors.o
+
+$(OBJDIR_DEBUGMAINANA)/indexer/e2lsh/Random.o: indexer/e2lsh/Random.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c indexer/e2lsh/Random.cpp -o $(OBJDIR_DEBUGMAINANA)/indexer/e2lsh/Random.o
+
+$(OBJDIR_DEBUGMAINANA)/commons/StringTools.o: commons/StringTools.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c commons/StringTools.cpp -o $(OBJDIR_DEBUGMAINANA)/commons/StringTools.o
+
+$(OBJDIR_DEBUGMAINANA)/commons/factory/Factory.o: commons/factory/Factory.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c commons/factory/Factory.cpp -o $(OBJDIR_DEBUGMAINANA)/commons/factory/Factory.o
+
+$(OBJDIR_DEBUGMAINANA)/dataModel/DataModelController.o: dataModel/DataModelController.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c dataModel/DataModelController.cpp -o $(OBJDIR_DEBUGMAINANA)/dataModel/DataModelController.o
+
+$(OBJDIR_DEBUGMAINANA)/dataModel/DatabaseConnection.o: dataModel/DatabaseConnection.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c dataModel/DatabaseConnection.cpp -o $(OBJDIR_DEBUGMAINANA)/dataModel/DatabaseConnection.o
+
+$(OBJDIR_DEBUGMAINANA)/indexer/e2lsh/SelfTuning.o: indexer/e2lsh/SelfTuning.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c indexer/e2lsh/SelfTuning.cpp -o $(OBJDIR_DEBUGMAINANA)/indexer/e2lsh/SelfTuning.o
+
+$(OBJDIR_DEBUGMAINANA)/dataModel/NKeypoint.o: dataModel/NKeypoint.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c dataModel/NKeypoint.cpp -o $(OBJDIR_DEBUGMAINANA)/dataModel/NKeypoint.o
+
+$(OBJDIR_DEBUGMAINANA)/dataModel/NRoi.o: dataModel/NRoi.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c dataModel/NRoi.cpp -o $(OBJDIR_DEBUGMAINANA)/dataModel/NRoi.o
+
+$(OBJDIR_DEBUGMAINANA)/dataModel/NTag.o: dataModel/NTag.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c dataModel/NTag.cpp -o $(OBJDIR_DEBUGMAINANA)/dataModel/NTag.o
+
+$(OBJDIR_DEBUGMAINANA)/dataModel/NVector.o: dataModel/NVector.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c dataModel/NVector.cpp -o $(OBJDIR_DEBUGMAINANA)/dataModel/NVector.o
+
+$(OBJDIR_DEBUGMAINANA)/indexer/FactoryIndexer.o: indexer/FactoryIndexer.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c indexer/FactoryIndexer.cpp -o $(OBJDIR_DEBUGMAINANA)/indexer/FactoryIndexer.o
+
+$(OBJDIR_DEBUGMAINANA)/rest/Endpoints/analyser/GenericClassifier.o: rest/Endpoints/analyser/GenericClassifier.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c rest/Endpoints/analyser/GenericClassifier.cpp -o $(OBJDIR_DEBUGMAINANA)/rest/Endpoints/analyser/GenericClassifier.o
+
+$(OBJDIR_DEBUGMAINANA)/rest/Endpoints/analyser/GetObjectFeatures.o: rest/Endpoints/analyser/GetObjectFeatures.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c rest/Endpoints/analyser/GetObjectFeatures.cpp -o $(OBJDIR_DEBUGMAINANA)/rest/Endpoints/analyser/GetObjectFeatures.o
+
+$(OBJDIR_DEBUGMAINANA)/rest/Endpoints/analyser/MedicalSearchEngine.o: rest/Endpoints/analyser/MedicalSearchEngine.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c rest/Endpoints/analyser/MedicalSearchEngine.cpp -o $(OBJDIR_DEBUGMAINANA)/rest/Endpoints/analyser/MedicalSearchEngine.o
+
+$(OBJDIR_DEBUGMAINANA)/rest/Endpoints/analyser/SearchResult.o: rest/Endpoints/analyser/SearchResult.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c rest/Endpoints/analyser/SearchResult.cpp -o $(OBJDIR_DEBUGMAINANA)/rest/Endpoints/analyser/SearchResult.o
+
+$(OBJDIR_DEBUGMAINANA)/rest/Endpoints/codebits/Codebits.o: rest/Endpoints/codebits/Codebits.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c rest/Endpoints/codebits/Codebits.cpp -o $(OBJDIR_DEBUGMAINANA)/rest/Endpoints/codebits/Codebits.o
+
+$(OBJDIR_DEBUGMAINANA)/rest/Endpoints/database/GetMetadata.o: rest/Endpoints/database/GetMetadata.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c rest/Endpoints/database/GetMetadata.cpp -o $(OBJDIR_DEBUGMAINANA)/rest/Endpoints/database/GetMetadata.o
+
+$(OBJDIR_DEBUGMAINANA)/rest/Endpoints/indexer/GenericIndexer.o: rest/Endpoints/indexer/GenericIndexer.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c rest/Endpoints/indexer/GenericIndexer.cpp -o $(OBJDIR_DEBUGMAINANA)/rest/Endpoints/indexer/GenericIndexer.o
+
+$(OBJDIR_DEBUGMAINANA)/rest/FactoryEndpoint.o: rest/FactoryEndpoint.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c rest/FactoryEndpoint.cpp -o $(OBJDIR_DEBUGMAINANA)/rest/FactoryEndpoint.o
+
+$(OBJDIR_DEBUGMAINANA)/rest/RestRequestHandler.o: rest/RestRequestHandler.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c rest/RestRequestHandler.cpp -o $(OBJDIR_DEBUGMAINANA)/rest/RestRequestHandler.o
+
+$(OBJDIR_DEBUGMAINANA)/rest/RestServer.o: rest/RestServer.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c rest/RestServer.cpp -o $(OBJDIR_DEBUGMAINANA)/rest/RestServer.o
+
+$(OBJDIR_DEBUGMAINANA)/indexer/e2lsh/Util.o: indexer/e2lsh/Util.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c indexer/e2lsh/Util.cpp -o $(OBJDIR_DEBUGMAINANA)/indexer/e2lsh/Util.o
+
+$(OBJDIR_DEBUGMAINANA)/indexer/sphericalHashing/BinaryHash.o: indexer/sphericalHashing/BinaryHash.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c indexer/sphericalHashing/BinaryHash.cpp -o $(OBJDIR_DEBUGMAINANA)/indexer/sphericalHashing/BinaryHash.o
+
+$(OBJDIR_DEBUGMAINANA)/indexer/sphericalHashing/Common.o: indexer/sphericalHashing/Common.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c indexer/sphericalHashing/Common.cpp -o $(OBJDIR_DEBUGMAINANA)/indexer/sphericalHashing/Common.o
+
+$(OBJDIR_DEBUGMAINANA)/indexer/sphericalHashing/Main.o: indexer/sphericalHashing/Main.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c indexer/sphericalHashing/Main.cpp -o $(OBJDIR_DEBUGMAINANA)/indexer/sphericalHashing/Main.o
+
+$(OBJDIR_DEBUGMAINANA)/commons/LoadConfig.o: commons/LoadConfig.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c commons/LoadConfig.cpp -o $(OBJDIR_DEBUGMAINANA)/commons/LoadConfig.o
+
+$(OBJDIR_DEBUGMAINANA)/indexer/sphericalHashing/Stopwatch.o: indexer/sphericalHashing/Stopwatch.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c indexer/sphericalHashing/Stopwatch.cpp -o $(OBJDIR_DEBUGMAINANA)/indexer/sphericalHashing/Stopwatch.o
+
+$(OBJDIR_DEBUGMAINANA)/rest/Endpoints/TestEndpoint.o: rest/Endpoints/TestEndpoint.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c rest/Endpoints/TestEndpoint.cpp -o $(OBJDIR_DEBUGMAINANA)/rest/Endpoints/TestEndpoint.o
+
+$(OBJDIR_DEBUGMAINANA)/rest/Endpoints/analyser/CombSearchResult.o: rest/Endpoints/analyser/CombSearchResult.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c rest/Endpoints/analyser/CombSearchResult.cpp -o $(OBJDIR_DEBUGMAINANA)/rest/Endpoints/analyser/CombSearchResult.o
+
+$(OBJDIR_DEBUGMAINANA)/rest/Endpoints/analyser/EnsembleClassifier.o: rest/Endpoints/analyser/EnsembleClassifier.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c rest/Endpoints/analyser/EnsembleClassifier.cpp -o $(OBJDIR_DEBUGMAINANA)/rest/Endpoints/analyser/EnsembleClassifier.o
+
+$(OBJDIR_DEBUGMAINANA)/rest/Endpoints/analyser/ExtractFeatures.o: rest/Endpoints/analyser/ExtractFeatures.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c rest/Endpoints/analyser/ExtractFeatures.cpp -o $(OBJDIR_DEBUGMAINANA)/rest/Endpoints/analyser/ExtractFeatures.o
+
+$(OBJDIR_DEBUGMAINANA)/analyser/nTag/VWBasicClassifier.o: analyser/nTag/VWBasicClassifier.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c analyser/nTag/VWBasicClassifier.cpp -o $(OBJDIR_DEBUGMAINANA)/analyser/nTag/VWBasicClassifier.o
+
+$(OBJDIR_DEBUGMAINANA)/analyser/nTag/kNNClassifier.o: analyser/nTag/kNNClassifier.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c analyser/nTag/kNNClassifier.cpp -o $(OBJDIR_DEBUGMAINANA)/analyser/nTag/kNNClassifier.o
+
+$(OBJDIR_DEBUGMAINANA)/analyser/nVector/EigenExtractor.o: analyser/nVector/EigenExtractor.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c analyser/nVector/EigenExtractor.cpp -o $(OBJDIR_DEBUGMAINANA)/analyser/nVector/EigenExtractor.o
+
+$(OBJDIR_DEBUGMAINANA)/analyser/nVector/GISTExtractor.o: analyser/nVector/GISTExtractor.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c analyser/nVector/GISTExtractor.cpp -o $(OBJDIR_DEBUGMAINANA)/analyser/nVector/GISTExtractor.o
+
+$(OBJDIR_DEBUGMAINANA)/analyser/nVector/GaborExtractor.o: analyser/nVector/GaborExtractor.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c analyser/nVector/GaborExtractor.cpp -o $(OBJDIR_DEBUGMAINANA)/analyser/nVector/GaborExtractor.o
+
+$(OBJDIR_DEBUGMAINANA)/analyser/nVector/HistogramExtractor.o: analyser/nVector/HistogramExtractor.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c analyser/nVector/HistogramExtractor.cpp -o $(OBJDIR_DEBUGMAINANA)/analyser/nVector/HistogramExtractor.o
+
+$(OBJDIR_DEBUGMAINANA)/analyser/nVector/LBPExtractor.o: analyser/nVector/LBPExtractor.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c analyser/nVector/LBPExtractor.cpp -o $(OBJDIR_DEBUGMAINANA)/analyser/nVector/LBPExtractor.o
+
+$(OBJDIR_DEBUGMAINANA)/analyser/nVector/LireExtractor.o: analyser/nVector/LireExtractor.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c analyser/nVector/LireExtractor.cpp -o $(OBJDIR_DEBUGMAINANA)/analyser/nVector/LireExtractor.o
+
+$(OBJDIR_DEBUGMAINANA)/analyser/nRoi/FaceDetection.o: analyser/nRoi/FaceDetection.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c analyser/nRoi/FaceDetection.cpp -o $(OBJDIR_DEBUGMAINANA)/analyser/nRoi/FaceDetection.o
+
+$(OBJDIR_DEBUGMAINANA)/analyser/FactoryClassifier.o: analyser/FactoryClassifier.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c analyser/FactoryClassifier.cpp -o $(OBJDIR_DEBUGMAINANA)/analyser/FactoryClassifier.o
+
+$(OBJDIR_DEBUGMAINANA)/analyser/Main2.o: analyser/Main2.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c analyser/Main2.cpp -o $(OBJDIR_DEBUGMAINANA)/analyser/Main2.o
+
+$(OBJDIR_DEBUGMAINANA)/analyser/nKeypoint/SURFExtractor.o: analyser/nKeypoint/SURFExtractor.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c analyser/nKeypoint/SURFExtractor.cpp -o $(OBJDIR_DEBUGMAINANA)/analyser/nKeypoint/SURFExtractor.o
+
+$(OBJDIR_DEBUGMAINANA)/analyser/nVector/NullExtractor.o: analyser/nVector/NullExtractor.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c analyser/nVector/NullExtractor.cpp -o $(OBJDIR_DEBUGMAINANA)/analyser/nVector/NullExtractor.o
+
+$(OBJDIR_DEBUGMAINANA)/analyser/nTag/FaceRecognition.o: analyser/nTag/FaceRecognition.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c analyser/nTag/FaceRecognition.cpp -o $(OBJDIR_DEBUGMAINANA)/analyser/nTag/FaceRecognition.o
+
+$(OBJDIR_DEBUGMAINANA)/analyser/nTag/FacialExpressionRecognition.o: analyser/nTag/FacialExpressionRecognition.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c analyser/nTag/FacialExpressionRecognition.cpp -o $(OBJDIR_DEBUGMAINANA)/analyser/nTag/FacialExpressionRecognition.o
+
+$(OBJDIR_DEBUGMAINANA)/analyser/nTag/SRClassifier.o: analyser/nTag/SRClassifier.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c analyser/nTag/SRClassifier.cpp -o $(OBJDIR_DEBUGMAINANA)/analyser/nTag/SRClassifier.o
+
+$(OBJDIR_DEBUGMAINANA)/analyser/nTag/SVMClassifier.o: analyser/nTag/SVMClassifier.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c analyser/nTag/SVMClassifier.cpp -o $(OBJDIR_DEBUGMAINANA)/analyser/nTag/SVMClassifier.o
+
+$(OBJDIR_DEBUGMAINANA)/analyser/tools/ImageSegmentator.o: analyser/tools/ImageSegmentator.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c analyser/tools/ImageSegmentator.cpp -o $(OBJDIR_DEBUGMAINANA)/analyser/tools/ImageSegmentator.o
+
+$(OBJDIR_DEBUGMAINANA)/analyser/tools/MIRFlickrImporter.o: analyser/tools/MIRFlickrImporter.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c analyser/tools/MIRFlickrImporter.cpp -o $(OBJDIR_DEBUGMAINANA)/analyser/tools/MIRFlickrImporter.o
+
+$(OBJDIR_DEBUGMAINANA)/analyser/tools/MatrixTools.o: analyser/tools/MatrixTools.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c analyser/tools/MatrixTools.cpp -o $(OBJDIR_DEBUGMAINANA)/analyser/tools/MatrixTools.o
+
+$(OBJDIR_DEBUGMAINANA)/analyser/tools/TestFunctions.o: analyser/tools/TestFunctions.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c analyser/tools/TestFunctions.cpp -o $(OBJDIR_DEBUGMAINANA)/analyser/tools/TestFunctions.o
+
+$(OBJDIR_DEBUGMAINANA)/analyser/tools/TrainTestFeaturesTools.o: analyser/tools/TrainTestFeaturesTools.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c analyser/tools/TrainTestFeaturesTools.cpp -o $(OBJDIR_DEBUGMAINANA)/analyser/tools/TrainTestFeaturesTools.o
+
+$(OBJDIR_DEBUGMAINANA)/analyser/tools/IlluminationCorrectionFilter.o: analyser/tools/IlluminationCorrectionFilter.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c analyser/tools/IlluminationCorrectionFilter.cpp -o $(OBJDIR_DEBUGMAINANA)/analyser/tools/IlluminationCorrectionFilter.o
+
+$(OBJDIR_DEBUGMAINANA)/analyser/tools/oneBillionImporter.o: analyser/tools/oneBillionImporter.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c analyser/tools/oneBillionImporter.cpp -o $(OBJDIR_DEBUGMAINANA)/analyser/tools/oneBillionImporter.o
+
+$(OBJDIR_DEBUGMAINANA)/analyser/tools/tinyImageImporter.o: analyser/tools/tinyImageImporter.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c analyser/tools/tinyImageImporter.cpp -o $(OBJDIR_DEBUGMAINANA)/analyser/tools/tinyImageImporter.o
+
+$(OBJDIR_DEBUGMAINANA)/appData/GameImage.o: appData/GameImage.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c appData/GameImage.cpp -o $(OBJDIR_DEBUGMAINANA)/appData/GameImage.o
+
+$(OBJDIR_DEBUGMAINANA)/commons/AppConfig.o: commons/AppConfig.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c commons/AppConfig.cpp -o $(OBJDIR_DEBUGMAINANA)/commons/AppConfig.o
+
+$(OBJDIR_DEBUGMAINANA)/commons/FileDownloader.o: commons/FileDownloader.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c commons/FileDownloader.cpp -o $(OBJDIR_DEBUGMAINANA)/commons/FileDownloader.o
+
+$(OBJDIR_DEBUGMAINANA)/analyser/nVector/SegmentedHistogramExtractor.o: analyser/nVector/SegmentedHistogramExtractor.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c analyser/nVector/SegmentedHistogramExtractor.cpp -o $(OBJDIR_DEBUGMAINANA)/analyser/nVector/SegmentedHistogramExtractor.o
+
+$(OBJDIR_DEBUGMAINANA)/analyser/nVector/gist.o: analyser/nVector/gist.c
+	$(CC) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c analyser/nVector/gist.c -o $(OBJDIR_DEBUGMAINANA)/analyser/nVector/gist.o
+
+$(OBJDIR_DEBUGMAINANA)/analyser/nVector/lbp.o: analyser/nVector/lbp.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c analyser/nVector/lbp.cpp -o $(OBJDIR_DEBUGMAINANA)/analyser/nVector/lbp.o
+
+$(OBJDIR_DEBUGMAINANA)/analyser/nVector/standalone_image.o: analyser/nVector/standalone_image.c
+	$(CC) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c analyser/nVector/standalone_image.c -o $(OBJDIR_DEBUGMAINANA)/analyser/nVector/standalone_image.o
+
+$(OBJDIR_DEBUGMAINANA)/analyser/sources/CamSource.o: analyser/sources/CamSource.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c analyser/sources/CamSource.cpp -o $(OBJDIR_DEBUGMAINANA)/analyser/sources/CamSource.o
+
+$(OBJDIR_DEBUGMAINANA)/analyser/FactoryAnalyser.o: analyser/FactoryAnalyser.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c analyser/FactoryAnalyser.cpp -o $(OBJDIR_DEBUGMAINANA)/analyser/FactoryAnalyser.o
+
+$(OBJDIR_DEBUGMAINANA)/analyser/sources/SingleImageSource.o: analyser/sources/SingleImageSource.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c analyser/sources/SingleImageSource.cpp -o $(OBJDIR_DEBUGMAINANA)/analyser/sources/SingleImageSource.o
+
+$(OBJDIR_DEBUGMAINANA)/analyser/sources/TextFileSource.o: analyser/sources/TextFileSource.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c analyser/sources/TextFileSource.cpp -o $(OBJDIR_DEBUGMAINANA)/analyser/sources/TextFileSource.o
+
+$(OBJDIR_DEBUGMAINANA)/analyser/sources/TextFileSourceV2.o: analyser/sources/TextFileSourceV2.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c analyser/sources/TextFileSourceV2.cpp -o $(OBJDIR_DEBUGMAINANA)/analyser/sources/TextFileSourceV2.o
+
+$(OBJDIR_DEBUGMAINANA)/analyser/sources/VideoSource.o: analyser/sources/VideoSource.cpp
+	$(CXX) $(CFLAGS_DEBUGMAINANA) $(INC_DEBUGMAINANA) -c analyser/sources/VideoSource.cpp -o $(OBJDIR_DEBUGMAINANA)/analyser/sources/VideoSource.o
+
+clean_debugmainana: 
+	rm -f $(OBJ_DEBUGMAINANA) $(OUT_DEBUGMAINANA)
+	rm -rf bin/Debug
+	rm -rf $(OBJDIR_DEBUGMAINANA)/indexer/e2lsh
+	rm -rf $(OBJDIR_DEBUGMAINANA)/indexer
+	rm -rf $(OBJDIR_DEBUGMAINANA)/commons
+	rm -rf $(OBJDIR_DEBUGMAINANA)/commons/factory
+	rm -rf $(OBJDIR_DEBUGMAINANA)/dataModel
+	rm -rf $(OBJDIR_DEBUGMAINANA)/rest/Endpoints/analyser
+	rm -rf $(OBJDIR_DEBUGMAINANA)/rest/Endpoints/codebits
+	rm -rf $(OBJDIR_DEBUGMAINANA)/rest/Endpoints/database
+	rm -rf $(OBJDIR_DEBUGMAINANA)/rest/Endpoints/indexer
+	rm -rf $(OBJDIR_DEBUGMAINANA)/rest
+	rm -rf $(OBJDIR_DEBUGMAINANA)/indexer/sphericalHashing
+	rm -rf $(OBJDIR_DEBUGMAINANA)/rest/Endpoints
+	rm -rf $(OBJDIR_DEBUGMAINANA)/analyser/nTag
+	rm -rf $(OBJDIR_DEBUGMAINANA)/analyser/nVector
+	rm -rf $(OBJDIR_DEBUGMAINANA)/analyser/nRoi
+	rm -rf $(OBJDIR_DEBUGMAINANA)/analyser
+	rm -rf $(OBJDIR_DEBUGMAINANA)/analyser/nKeypoint
+	rm -rf $(OBJDIR_DEBUGMAINANA)/analyser/tools
+	rm -rf $(OBJDIR_DEBUGMAINANA)/appData
+	rm -rf $(OBJDIR_DEBUGMAINANA)/analyser/sources
+
+before_debugserver: 
+	test -d bin/Debug || mkdir -p bin/Debug
+	test -d $(OBJDIR_DEBUGSERVER)/indexer/e2lsh || mkdir -p $(OBJDIR_DEBUGSERVER)/indexer/e2lsh
+	test -d $(OBJDIR_DEBUGSERVER)/indexer || mkdir -p $(OBJDIR_DEBUGSERVER)/indexer
+	test -d $(OBJDIR_DEBUGSERVER)/commons || mkdir -p $(OBJDIR_DEBUGSERVER)/commons
+	test -d $(OBJDIR_DEBUGSERVER)/commons/factory || mkdir -p $(OBJDIR_DEBUGSERVER)/commons/factory
+	test -d $(OBJDIR_DEBUGSERVER)/dataModel || mkdir -p $(OBJDIR_DEBUGSERVER)/dataModel
+	test -d $(OBJDIR_DEBUGSERVER)/rest/Endpoints/analyser || mkdir -p $(OBJDIR_DEBUGSERVER)/rest/Endpoints/analyser
+	test -d $(OBJDIR_DEBUGSERVER)/rest/Endpoints/codebits || mkdir -p $(OBJDIR_DEBUGSERVER)/rest/Endpoints/codebits
+	test -d $(OBJDIR_DEBUGSERVER)/rest/Endpoints/database || mkdir -p $(OBJDIR_DEBUGSERVER)/rest/Endpoints/database
+	test -d $(OBJDIR_DEBUGSERVER)/rest/Endpoints/indexer || mkdir -p $(OBJDIR_DEBUGSERVER)/rest/Endpoints/indexer
+	test -d $(OBJDIR_DEBUGSERVER)/rest || mkdir -p $(OBJDIR_DEBUGSERVER)/rest
+	test -d $(OBJDIR_DEBUGSERVER)/indexer/sphericalHashing || mkdir -p $(OBJDIR_DEBUGSERVER)/indexer/sphericalHashing
+	test -d $(OBJDIR_DEBUGSERVER)/rest/Endpoints || mkdir -p $(OBJDIR_DEBUGSERVER)/rest/Endpoints
+	test -d $(OBJDIR_DEBUGSERVER)/analyser/nTag || mkdir -p $(OBJDIR_DEBUGSERVER)/analyser/nTag
+	test -d $(OBJDIR_DEBUGSERVER)/analyser/nVector || mkdir -p $(OBJDIR_DEBUGSERVER)/analyser/nVector
+	test -d $(OBJDIR_DEBUGSERVER)/analyser/nRoi || mkdir -p $(OBJDIR_DEBUGSERVER)/analyser/nRoi
+	test -d $(OBJDIR_DEBUGSERVER)/analyser || mkdir -p $(OBJDIR_DEBUGSERVER)/analyser
+	test -d $(OBJDIR_DEBUGSERVER)/analyser/nKeypoint || mkdir -p $(OBJDIR_DEBUGSERVER)/analyser/nKeypoint
+	test -d $(OBJDIR_DEBUGSERVER)/analyser/tools || mkdir -p $(OBJDIR_DEBUGSERVER)/analyser/tools
+	test -d $(OBJDIR_DEBUGSERVER)/appData || mkdir -p $(OBJDIR_DEBUGSERVER)/appData
+	test -d $(OBJDIR_DEBUGSERVER)/analyser/sources || mkdir -p $(OBJDIR_DEBUGSERVER)/analyser/sources
+
+after_debugserver: 
+
+debugserver: before_debugserver out_debugserver after_debugserver
+
+out_debugserver: before_debugserver $(OBJ_DEBUGSERVER) $(DEP_DEBUGSERVER)
+	$(LD) $(LIBDIR_DEBUGSERVER) -o $(OUT_DEBUGSERVER) $(OBJ_DEBUGSERVER)  $(LDFLAGS_DEBUGSERVER) $(LIB_DEBUGSERVER)
+
+$(OBJDIR_DEBUGSERVER)/indexer/e2lsh/Geometry.o: indexer/e2lsh/Geometry.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c indexer/e2lsh/Geometry.cpp -o $(OBJDIR_DEBUGSERVER)/indexer/e2lsh/Geometry.o
+
+$(OBJDIR_DEBUGSERVER)/indexer/LSHIndexer.o: indexer/LSHIndexer.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c indexer/LSHIndexer.cpp -o $(OBJDIR_DEBUGSERVER)/indexer/LSHIndexer.o
+
+$(OBJDIR_DEBUGSERVER)/indexer/MSIDXIndexer.o: indexer/MSIDXIndexer.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c indexer/MSIDXIndexer.cpp -o $(OBJDIR_DEBUGSERVER)/indexer/MSIDXIndexer.o
+
+$(OBJDIR_DEBUGSERVER)/indexer/SphericalHashIndexer.o: indexer/SphericalHashIndexer.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c indexer/SphericalHashIndexer.cpp -o $(OBJDIR_DEBUGSERVER)/indexer/SphericalHashIndexer.o
+
+$(OBJDIR_DEBUGSERVER)/indexer/e2lsh/BucketHashing.o: indexer/e2lsh/BucketHashing.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c indexer/e2lsh/BucketHashing.cpp -o $(OBJDIR_DEBUGSERVER)/indexer/e2lsh/BucketHashing.o
+
+$(OBJDIR_DEBUGSERVER)/indexer/FlannkNNIndexer.o: indexer/FlannkNNIndexer.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c indexer/FlannkNNIndexer.cpp -o $(OBJDIR_DEBUGSERVER)/indexer/FlannkNNIndexer.o
+
+$(OBJDIR_DEBUGSERVER)/indexer/e2lsh/GlobalVars.o: indexer/e2lsh/GlobalVars.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c indexer/e2lsh/GlobalVars.cpp -o $(OBJDIR_DEBUGSERVER)/indexer/e2lsh/GlobalVars.o
+
+$(OBJDIR_DEBUGSERVER)/indexer/e2lsh/LSHMain.o: indexer/e2lsh/LSHMain.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c indexer/e2lsh/LSHMain.cpp -o $(OBJDIR_DEBUGSERVER)/indexer/e2lsh/LSHMain.o
+
+$(OBJDIR_DEBUGSERVER)/indexer/e2lsh/LocalitySensitiveHashing.o: indexer/e2lsh/LocalitySensitiveHashing.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c indexer/e2lsh/LocalitySensitiveHashing.cpp -o $(OBJDIR_DEBUGSERVER)/indexer/e2lsh/LocalitySensitiveHashing.o
+
+$(OBJDIR_DEBUGSERVER)/indexer/e2lsh/NearNeighbors.o: indexer/e2lsh/NearNeighbors.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c indexer/e2lsh/NearNeighbors.cpp -o $(OBJDIR_DEBUGSERVER)/indexer/e2lsh/NearNeighbors.o
+
+$(OBJDIR_DEBUGSERVER)/indexer/e2lsh/Random.o: indexer/e2lsh/Random.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c indexer/e2lsh/Random.cpp -o $(OBJDIR_DEBUGSERVER)/indexer/e2lsh/Random.o
+
+$(OBJDIR_DEBUGSERVER)/commons/StringTools.o: commons/StringTools.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c commons/StringTools.cpp -o $(OBJDIR_DEBUGSERVER)/commons/StringTools.o
+
+$(OBJDIR_DEBUGSERVER)/commons/factory/Factory.o: commons/factory/Factory.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c commons/factory/Factory.cpp -o $(OBJDIR_DEBUGSERVER)/commons/factory/Factory.o
+
+$(OBJDIR_DEBUGSERVER)/dataModel/DataModelController.o: dataModel/DataModelController.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c dataModel/DataModelController.cpp -o $(OBJDIR_DEBUGSERVER)/dataModel/DataModelController.o
+
+$(OBJDIR_DEBUGSERVER)/dataModel/DatabaseConnection.o: dataModel/DatabaseConnection.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c dataModel/DatabaseConnection.cpp -o $(OBJDIR_DEBUGSERVER)/dataModel/DatabaseConnection.o
+
+$(OBJDIR_DEBUGSERVER)/indexer/e2lsh/SelfTuning.o: indexer/e2lsh/SelfTuning.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c indexer/e2lsh/SelfTuning.cpp -o $(OBJDIR_DEBUGSERVER)/indexer/e2lsh/SelfTuning.o
+
+$(OBJDIR_DEBUGSERVER)/dataModel/NKeypoint.o: dataModel/NKeypoint.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c dataModel/NKeypoint.cpp -o $(OBJDIR_DEBUGSERVER)/dataModel/NKeypoint.o
+
+$(OBJDIR_DEBUGSERVER)/dataModel/NRoi.o: dataModel/NRoi.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c dataModel/NRoi.cpp -o $(OBJDIR_DEBUGSERVER)/dataModel/NRoi.o
+
+$(OBJDIR_DEBUGSERVER)/dataModel/NTag.o: dataModel/NTag.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c dataModel/NTag.cpp -o $(OBJDIR_DEBUGSERVER)/dataModel/NTag.o
+
+$(OBJDIR_DEBUGSERVER)/dataModel/NVector.o: dataModel/NVector.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c dataModel/NVector.cpp -o $(OBJDIR_DEBUGSERVER)/dataModel/NVector.o
+
+$(OBJDIR_DEBUGSERVER)/indexer/FactoryIndexer.o: indexer/FactoryIndexer.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c indexer/FactoryIndexer.cpp -o $(OBJDIR_DEBUGSERVER)/indexer/FactoryIndexer.o
+
+$(OBJDIR_DEBUGSERVER)/rest/Endpoints/analyser/GenericClassifier.o: rest/Endpoints/analyser/GenericClassifier.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c rest/Endpoints/analyser/GenericClassifier.cpp -o $(OBJDIR_DEBUGSERVER)/rest/Endpoints/analyser/GenericClassifier.o
+
+$(OBJDIR_DEBUGSERVER)/rest/Endpoints/analyser/GetObjectFeatures.o: rest/Endpoints/analyser/GetObjectFeatures.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c rest/Endpoints/analyser/GetObjectFeatures.cpp -o $(OBJDIR_DEBUGSERVER)/rest/Endpoints/analyser/GetObjectFeatures.o
+
+$(OBJDIR_DEBUGSERVER)/rest/Endpoints/analyser/MedicalSearchEngine.o: rest/Endpoints/analyser/MedicalSearchEngine.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c rest/Endpoints/analyser/MedicalSearchEngine.cpp -o $(OBJDIR_DEBUGSERVER)/rest/Endpoints/analyser/MedicalSearchEngine.o
+
+$(OBJDIR_DEBUGSERVER)/rest/Endpoints/analyser/SearchResult.o: rest/Endpoints/analyser/SearchResult.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c rest/Endpoints/analyser/SearchResult.cpp -o $(OBJDIR_DEBUGSERVER)/rest/Endpoints/analyser/SearchResult.o
+
+$(OBJDIR_DEBUGSERVER)/rest/Endpoints/codebits/Codebits.o: rest/Endpoints/codebits/Codebits.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c rest/Endpoints/codebits/Codebits.cpp -o $(OBJDIR_DEBUGSERVER)/rest/Endpoints/codebits/Codebits.o
+
+$(OBJDIR_DEBUGSERVER)/rest/Endpoints/database/GetMetadata.o: rest/Endpoints/database/GetMetadata.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c rest/Endpoints/database/GetMetadata.cpp -o $(OBJDIR_DEBUGSERVER)/rest/Endpoints/database/GetMetadata.o
+
+$(OBJDIR_DEBUGSERVER)/rest/Endpoints/indexer/GenericIndexer.o: rest/Endpoints/indexer/GenericIndexer.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c rest/Endpoints/indexer/GenericIndexer.cpp -o $(OBJDIR_DEBUGSERVER)/rest/Endpoints/indexer/GenericIndexer.o
+
+$(OBJDIR_DEBUGSERVER)/rest/FactoryEndpoint.o: rest/FactoryEndpoint.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c rest/FactoryEndpoint.cpp -o $(OBJDIR_DEBUGSERVER)/rest/FactoryEndpoint.o
+
+$(OBJDIR_DEBUGSERVER)/rest/RestRequestHandler.o: rest/RestRequestHandler.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c rest/RestRequestHandler.cpp -o $(OBJDIR_DEBUGSERVER)/rest/RestRequestHandler.o
+
+$(OBJDIR_DEBUGSERVER)/rest/RestServer.o: rest/RestServer.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c rest/RestServer.cpp -o $(OBJDIR_DEBUGSERVER)/rest/RestServer.o
+
+$(OBJDIR_DEBUGSERVER)/rest/main.o: rest/main.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c rest/main.cpp -o $(OBJDIR_DEBUGSERVER)/rest/main.o
+
+$(OBJDIR_DEBUGSERVER)/indexer/e2lsh/Util.o: indexer/e2lsh/Util.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c indexer/e2lsh/Util.cpp -o $(OBJDIR_DEBUGSERVER)/indexer/e2lsh/Util.o
+
+$(OBJDIR_DEBUGSERVER)/indexer/sphericalHashing/BinaryHash.o: indexer/sphericalHashing/BinaryHash.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c indexer/sphericalHashing/BinaryHash.cpp -o $(OBJDIR_DEBUGSERVER)/indexer/sphericalHashing/BinaryHash.o
+
+$(OBJDIR_DEBUGSERVER)/indexer/sphericalHashing/Common.o: indexer/sphericalHashing/Common.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c indexer/sphericalHashing/Common.cpp -o $(OBJDIR_DEBUGSERVER)/indexer/sphericalHashing/Common.o
+
+$(OBJDIR_DEBUGSERVER)/indexer/sphericalHashing/Main.o: indexer/sphericalHashing/Main.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c indexer/sphericalHashing/Main.cpp -o $(OBJDIR_DEBUGSERVER)/indexer/sphericalHashing/Main.o
+
+$(OBJDIR_DEBUGSERVER)/commons/LoadConfig.o: commons/LoadConfig.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c commons/LoadConfig.cpp -o $(OBJDIR_DEBUGSERVER)/commons/LoadConfig.o
+
+$(OBJDIR_DEBUGSERVER)/indexer/sphericalHashing/Stopwatch.o: indexer/sphericalHashing/Stopwatch.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c indexer/sphericalHashing/Stopwatch.cpp -o $(OBJDIR_DEBUGSERVER)/indexer/sphericalHashing/Stopwatch.o
+
+$(OBJDIR_DEBUGSERVER)/rest/Endpoints/TestEndpoint.o: rest/Endpoints/TestEndpoint.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c rest/Endpoints/TestEndpoint.cpp -o $(OBJDIR_DEBUGSERVER)/rest/Endpoints/TestEndpoint.o
+
+$(OBJDIR_DEBUGSERVER)/rest/Endpoints/analyser/CombSearchResult.o: rest/Endpoints/analyser/CombSearchResult.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c rest/Endpoints/analyser/CombSearchResult.cpp -o $(OBJDIR_DEBUGSERVER)/rest/Endpoints/analyser/CombSearchResult.o
+
+$(OBJDIR_DEBUGSERVER)/rest/Endpoints/analyser/EnsembleClassifier.o: rest/Endpoints/analyser/EnsembleClassifier.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c rest/Endpoints/analyser/EnsembleClassifier.cpp -o $(OBJDIR_DEBUGSERVER)/rest/Endpoints/analyser/EnsembleClassifier.o
+
+$(OBJDIR_DEBUGSERVER)/rest/Endpoints/analyser/ExtractFeatures.o: rest/Endpoints/analyser/ExtractFeatures.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c rest/Endpoints/analyser/ExtractFeatures.cpp -o $(OBJDIR_DEBUGSERVER)/rest/Endpoints/analyser/ExtractFeatures.o
+
+$(OBJDIR_DEBUGSERVER)/analyser/nTag/VWBasicClassifier.o: analyser/nTag/VWBasicClassifier.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c analyser/nTag/VWBasicClassifier.cpp -o $(OBJDIR_DEBUGSERVER)/analyser/nTag/VWBasicClassifier.o
+
+$(OBJDIR_DEBUGSERVER)/analyser/nTag/kNNClassifier.o: analyser/nTag/kNNClassifier.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c analyser/nTag/kNNClassifier.cpp -o $(OBJDIR_DEBUGSERVER)/analyser/nTag/kNNClassifier.o
+
+$(OBJDIR_DEBUGSERVER)/analyser/nVector/EigenExtractor.o: analyser/nVector/EigenExtractor.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c analyser/nVector/EigenExtractor.cpp -o $(OBJDIR_DEBUGSERVER)/analyser/nVector/EigenExtractor.o
+
+$(OBJDIR_DEBUGSERVER)/analyser/nVector/GISTExtractor.o: analyser/nVector/GISTExtractor.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c analyser/nVector/GISTExtractor.cpp -o $(OBJDIR_DEBUGSERVER)/analyser/nVector/GISTExtractor.o
+
+$(OBJDIR_DEBUGSERVER)/analyser/nVector/GaborExtractor.o: analyser/nVector/GaborExtractor.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c analyser/nVector/GaborExtractor.cpp -o $(OBJDIR_DEBUGSERVER)/analyser/nVector/GaborExtractor.o
+
+$(OBJDIR_DEBUGSERVER)/analyser/nVector/HistogramExtractor.o: analyser/nVector/HistogramExtractor.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c analyser/nVector/HistogramExtractor.cpp -o $(OBJDIR_DEBUGSERVER)/analyser/nVector/HistogramExtractor.o
+
+$(OBJDIR_DEBUGSERVER)/analyser/nVector/LBPExtractor.o: analyser/nVector/LBPExtractor.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c analyser/nVector/LBPExtractor.cpp -o $(OBJDIR_DEBUGSERVER)/analyser/nVector/LBPExtractor.o
+
+$(OBJDIR_DEBUGSERVER)/analyser/nVector/LireExtractor.o: analyser/nVector/LireExtractor.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c analyser/nVector/LireExtractor.cpp -o $(OBJDIR_DEBUGSERVER)/analyser/nVector/LireExtractor.o
+
+$(OBJDIR_DEBUGSERVER)/analyser/nRoi/FaceDetection.o: analyser/nRoi/FaceDetection.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c analyser/nRoi/FaceDetection.cpp -o $(OBJDIR_DEBUGSERVER)/analyser/nRoi/FaceDetection.o
+
+$(OBJDIR_DEBUGSERVER)/analyser/FactoryClassifier.o: analyser/FactoryClassifier.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c analyser/FactoryClassifier.cpp -o $(OBJDIR_DEBUGSERVER)/analyser/FactoryClassifier.o
+
+$(OBJDIR_DEBUGSERVER)/analyser/nKeypoint/SURFExtractor.o: analyser/nKeypoint/SURFExtractor.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c analyser/nKeypoint/SURFExtractor.cpp -o $(OBJDIR_DEBUGSERVER)/analyser/nKeypoint/SURFExtractor.o
+
+$(OBJDIR_DEBUGSERVER)/analyser/nVector/NullExtractor.o: analyser/nVector/NullExtractor.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c analyser/nVector/NullExtractor.cpp -o $(OBJDIR_DEBUGSERVER)/analyser/nVector/NullExtractor.o
+
+$(OBJDIR_DEBUGSERVER)/analyser/nTag/FaceRecognition.o: analyser/nTag/FaceRecognition.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c analyser/nTag/FaceRecognition.cpp -o $(OBJDIR_DEBUGSERVER)/analyser/nTag/FaceRecognition.o
+
+$(OBJDIR_DEBUGSERVER)/analyser/nTag/FacialExpressionRecognition.o: analyser/nTag/FacialExpressionRecognition.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c analyser/nTag/FacialExpressionRecognition.cpp -o $(OBJDIR_DEBUGSERVER)/analyser/nTag/FacialExpressionRecognition.o
+
+$(OBJDIR_DEBUGSERVER)/analyser/nTag/SRClassifier.o: analyser/nTag/SRClassifier.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c analyser/nTag/SRClassifier.cpp -o $(OBJDIR_DEBUGSERVER)/analyser/nTag/SRClassifier.o
+
+$(OBJDIR_DEBUGSERVER)/analyser/nTag/SVMClassifier.o: analyser/nTag/SVMClassifier.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c analyser/nTag/SVMClassifier.cpp -o $(OBJDIR_DEBUGSERVER)/analyser/nTag/SVMClassifier.o
+
+$(OBJDIR_DEBUGSERVER)/analyser/tools/ImageSegmentator.o: analyser/tools/ImageSegmentator.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c analyser/tools/ImageSegmentator.cpp -o $(OBJDIR_DEBUGSERVER)/analyser/tools/ImageSegmentator.o
+
+$(OBJDIR_DEBUGSERVER)/analyser/tools/MIRFlickrImporter.o: analyser/tools/MIRFlickrImporter.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c analyser/tools/MIRFlickrImporter.cpp -o $(OBJDIR_DEBUGSERVER)/analyser/tools/MIRFlickrImporter.o
+
+$(OBJDIR_DEBUGSERVER)/analyser/tools/MatrixTools.o: analyser/tools/MatrixTools.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c analyser/tools/MatrixTools.cpp -o $(OBJDIR_DEBUGSERVER)/analyser/tools/MatrixTools.o
+
+$(OBJDIR_DEBUGSERVER)/analyser/tools/TestFunctions.o: analyser/tools/TestFunctions.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c analyser/tools/TestFunctions.cpp -o $(OBJDIR_DEBUGSERVER)/analyser/tools/TestFunctions.o
+
+$(OBJDIR_DEBUGSERVER)/analyser/tools/TrainTestFeaturesTools.o: analyser/tools/TrainTestFeaturesTools.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c analyser/tools/TrainTestFeaturesTools.cpp -o $(OBJDIR_DEBUGSERVER)/analyser/tools/TrainTestFeaturesTools.o
+
+$(OBJDIR_DEBUGSERVER)/analyser/tools/IlluminationCorrectionFilter.o: analyser/tools/IlluminationCorrectionFilter.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c analyser/tools/IlluminationCorrectionFilter.cpp -o $(OBJDIR_DEBUGSERVER)/analyser/tools/IlluminationCorrectionFilter.o
+
+$(OBJDIR_DEBUGSERVER)/analyser/tools/oneBillionImporter.o: analyser/tools/oneBillionImporter.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c analyser/tools/oneBillionImporter.cpp -o $(OBJDIR_DEBUGSERVER)/analyser/tools/oneBillionImporter.o
+
+$(OBJDIR_DEBUGSERVER)/analyser/tools/tinyImageImporter.o: analyser/tools/tinyImageImporter.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c analyser/tools/tinyImageImporter.cpp -o $(OBJDIR_DEBUGSERVER)/analyser/tools/tinyImageImporter.o
+
+$(OBJDIR_DEBUGSERVER)/appData/GameImage.o: appData/GameImage.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c appData/GameImage.cpp -o $(OBJDIR_DEBUGSERVER)/appData/GameImage.o
+
+$(OBJDIR_DEBUGSERVER)/commons/AppConfig.o: commons/AppConfig.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c commons/AppConfig.cpp -o $(OBJDIR_DEBUGSERVER)/commons/AppConfig.o
+
+$(OBJDIR_DEBUGSERVER)/commons/FileDownloader.o: commons/FileDownloader.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c commons/FileDownloader.cpp -o $(OBJDIR_DEBUGSERVER)/commons/FileDownloader.o
+
+$(OBJDIR_DEBUGSERVER)/analyser/nVector/SegmentedHistogramExtractor.o: analyser/nVector/SegmentedHistogramExtractor.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c analyser/nVector/SegmentedHistogramExtractor.cpp -o $(OBJDIR_DEBUGSERVER)/analyser/nVector/SegmentedHistogramExtractor.o
+
+$(OBJDIR_DEBUGSERVER)/analyser/nVector/gist.o: analyser/nVector/gist.c
+	$(CC) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c analyser/nVector/gist.c -o $(OBJDIR_DEBUGSERVER)/analyser/nVector/gist.o
+
+$(OBJDIR_DEBUGSERVER)/analyser/nVector/lbp.o: analyser/nVector/lbp.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c analyser/nVector/lbp.cpp -o $(OBJDIR_DEBUGSERVER)/analyser/nVector/lbp.o
+
+$(OBJDIR_DEBUGSERVER)/analyser/nVector/standalone_image.o: analyser/nVector/standalone_image.c
+	$(CC) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c analyser/nVector/standalone_image.c -o $(OBJDIR_DEBUGSERVER)/analyser/nVector/standalone_image.o
+
+$(OBJDIR_DEBUGSERVER)/analyser/sources/CamSource.o: analyser/sources/CamSource.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c analyser/sources/CamSource.cpp -o $(OBJDIR_DEBUGSERVER)/analyser/sources/CamSource.o
+
+$(OBJDIR_DEBUGSERVER)/analyser/FactoryAnalyser.o: analyser/FactoryAnalyser.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c analyser/FactoryAnalyser.cpp -o $(OBJDIR_DEBUGSERVER)/analyser/FactoryAnalyser.o
+
+$(OBJDIR_DEBUGSERVER)/analyser/sources/SingleImageSource.o: analyser/sources/SingleImageSource.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c analyser/sources/SingleImageSource.cpp -o $(OBJDIR_DEBUGSERVER)/analyser/sources/SingleImageSource.o
+
+$(OBJDIR_DEBUGSERVER)/analyser/sources/TextFileSource.o: analyser/sources/TextFileSource.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c analyser/sources/TextFileSource.cpp -o $(OBJDIR_DEBUGSERVER)/analyser/sources/TextFileSource.o
+
+$(OBJDIR_DEBUGSERVER)/analyser/sources/TextFileSourceV2.o: analyser/sources/TextFileSourceV2.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c analyser/sources/TextFileSourceV2.cpp -o $(OBJDIR_DEBUGSERVER)/analyser/sources/TextFileSourceV2.o
+
+$(OBJDIR_DEBUGSERVER)/analyser/sources/VideoSource.o: analyser/sources/VideoSource.cpp
+	$(CXX) $(CFLAGS_DEBUGSERVER) $(INC_DEBUGSERVER) -c analyser/sources/VideoSource.cpp -o $(OBJDIR_DEBUGSERVER)/analyser/sources/VideoSource.o
+
+clean_debugserver: 
+	rm -f $(OBJ_DEBUGSERVER) $(OUT_DEBUGSERVER)
+	rm -rf bin/Debug
+	rm -rf $(OBJDIR_DEBUGSERVER)/indexer/e2lsh
+	rm -rf $(OBJDIR_DEBUGSERVER)/indexer
+	rm -rf $(OBJDIR_DEBUGSERVER)/commons
+	rm -rf $(OBJDIR_DEBUGSERVER)/commons/factory
+	rm -rf $(OBJDIR_DEBUGSERVER)/dataModel
+	rm -rf $(OBJDIR_DEBUGSERVER)/rest/Endpoints/analyser
+	rm -rf $(OBJDIR_DEBUGSERVER)/rest/Endpoints/codebits
+	rm -rf $(OBJDIR_DEBUGSERVER)/rest/Endpoints/database
+	rm -rf $(OBJDIR_DEBUGSERVER)/rest/Endpoints/indexer
+	rm -rf $(OBJDIR_DEBUGSERVER)/rest
+	rm -rf $(OBJDIR_DEBUGSERVER)/indexer/sphericalHashing
+	rm -rf $(OBJDIR_DEBUGSERVER)/rest/Endpoints
+	rm -rf $(OBJDIR_DEBUGSERVER)/analyser/nTag
+	rm -rf $(OBJDIR_DEBUGSERVER)/analyser/nVector
+	rm -rf $(OBJDIR_DEBUGSERVER)/analyser/nRoi
+	rm -rf $(OBJDIR_DEBUGSERVER)/analyser
+	rm -rf $(OBJDIR_DEBUGSERVER)/analyser/nKeypoint
+	rm -rf $(OBJDIR_DEBUGSERVER)/analyser/tools
+	rm -rf $(OBJDIR_DEBUGSERVER)/appData
+	rm -rf $(OBJDIR_DEBUGSERVER)/analyser/sources
+
+.PHONY: before_releasemainind after_releasemainind clean_releasemainind before_releasemainana after_releasemainana clean_releasemainana before_releaseserver after_releaseserver clean_releaseserver before_debugmainind after_debugmainind clean_debugmainind before_debugmainana after_debugmainana clean_debugmainana before_debugserver after_debugserver clean_debugserver
 
