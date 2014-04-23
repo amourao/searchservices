@@ -946,7 +946,7 @@ void classifyAllImagesCondor(int argc, char *argv[]) {
     int imagesToProcess = (imageCount/totalDivisions)+1;
     int startAt = imagesToProcess*myDivision;
 
-    if ((imageCount+startAt)>imageCount){
+    if ((imagesToProcess+startAt)>imageCount){
         imagesToProcess = imageCount-startAt;
     }
 
