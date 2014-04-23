@@ -135,6 +135,8 @@
 		<Unit filename="analyser/nTag/kNNClassifier.h" />
 		<Unit filename="analyser/nTag/omp.h" />
 		<Unit filename="analyser/nTag/thresholding.h" />
+		<Unit filename="analyser/nVector/CombinedExtractor.cpp" />
+		<Unit filename="analyser/nVector/CombinedExtractor.h" />
 		<Unit filename="analyser/nVector/EigenExtractor.cpp" />
 		<Unit filename="analyser/nVector/EigenExtractor.h" />
 		<Unit filename="analyser/nVector/FeatureExtractor.h" />

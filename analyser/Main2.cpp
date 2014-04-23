@@ -1013,7 +1013,13 @@ void classifyAllImagesCondor(int argc, char *argv[]) {
 int testDatabaseConnection(int argc, char *argv[]){
     DatabaseConnection db;
 
-    map<string,string> s = db.getRow("images","doi,iri,caption","iri","1471-2091-1-1-5");
+    vector<string> keys;
+    vector<string> values;
+
+    keys.push_back("iri");
+    values.push_back("1471-2091-1-1-5");
+
+    vector<map<string,string> > s = db.getRows("images","doi,iri,caption",keys,values,true,-1);
 }
 
 int main(int argc, char *argv[])

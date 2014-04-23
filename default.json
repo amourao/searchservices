@@ -1,5 +1,5 @@
 {"parameters": {
-    "port" : "9191"
+    "port" : "9083"
     },
  "endpoints": {
     "indexer": [
@@ -137,13 +137,10 @@
                 "useCenterRegion": "false" 
             }
         },{
-            "newName": "hsvSegHistogramExtractor16",
-            "originalName": "hsvSegHistogramExtractor",
+            "newName": "cedd_fcth",
+            "originalName": "CombinedExtractor",
             "params": {
-                "binCount": "16",
-                "horizontalDivisions": "2",
-                "verticalDivisions": "2",
-                "useCenterRegion": "false"
+                "algorithms": "cedd,fcth"
             }
         }
     ],
@@ -167,10 +164,10 @@
                 "trainFile": "medical_fcth_vw"
             }
         },{
-            "newName": "SVMClassifierMed",
+            "newName": "NovaMedCategoryClass",
             "originalName": "SVMClassifier",
             "params": {
-                "trainFile": "medical_fcth_vw"
+                "trainFile": "medClassifier"
             }
         }
     ]
