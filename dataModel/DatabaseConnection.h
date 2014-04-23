@@ -29,10 +29,8 @@ class DatabaseConnection
         DatabaseConnection();
         ~DatabaseConnection();
 
-        std::map<std::string,std::string> getRow(std::string table, std::string fieldsToGet, std::string key, std::string value);
-        std::map<std::string,std::string> getRow(std::string table, std::string key, int value);
+        static std::vector<std::map<std::string,std::string> > getRows(std::string table, std::string fieldsToGet, std::vector<std::string> keys, std::vector<std::string> values, bool isOr, int limit);
 
-    private:
 
 };
 

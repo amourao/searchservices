@@ -3,6 +3,11 @@
 #include <iostream>
 #include <sstream>
 
+
+#include <jsoncpp/json/json.h>
+#include <jsoncpp/json/autolink.h>
+
+
 #include "../../IEndpoint.h"
 #include "../../FactoryEndpoint.h"
 
@@ -13,10 +18,10 @@
 
 #include "../../../analyser/tools/MatrixTools.h"
 
-#include <jsoncpp/json/json.h>
-#include <jsoncpp/json/autolink.h>
-
 #include "../../../commons/FileDownloader.h"
+
+#include "../../../dataModel/DatabaseConnection.h"
+
 
 class GetMetadata: public IEndpoint
 {
@@ -34,5 +39,7 @@ public:
 
 private:
 
+	string get(map<string, string> queryStrings);
+	
 	std::string type;
 };

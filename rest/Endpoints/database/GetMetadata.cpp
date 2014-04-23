@@ -7,9 +7,7 @@ GetMetadata::GetMetadata(string type){
 }
 
 GetMetadata::GetMetadata(){
-
 	FactoryEndpoint::getInstance()->registerType("/getMetadata",this);
-
 }
 
 GetMetadata::~GetMetadata(){}
@@ -39,16 +37,11 @@ void GetMetadata::handleRequest(string method, map<string, string> queryStrings,
 
 		string action = queryStrings["action"];
 
-		if (action == "create"){
-			//response = create(queryStrings);
-		} else if (action == "retrieve"){
-			//response = retrieve(queryStrings);
-
-			if(queryStrings["output"] == "json")
-				resp.setContentType("application/json");
-			else if(queryStrings["output"] == "trec")
-				resp.setContentType("text/plain");
+		if (action == "get"){
+			response = get(queryStrings);
 		}
+
+		resp.setContentType("application/json");
 
 		std::ostream& out = resp.send();
 
@@ -56,4 +49,37 @@ void GetMetadata::handleRequest(string method, map<string, string> queryStrings,
 		out.flush();
 	}
 
+}
+
+
+std::string GetMetadata::get(map<string, string> parameters){
+
+    if (!(parameters.count("table") > 0 &&
+        parameters.count("fieldsToGet") > 0 &&
+        parameters.count("keys") > 0 &&
+        parameters.count("values") > 0 &&
+        parameters.count("isOr") > 0
+        ))
+        return "";
+
+    int limit = -1;
+    if (parameters.count("limit") > 0)
+        limit = atoi(parameters["limit"].c_str());
+
+	vector<map<string,string> > s = DatabaseConnection::getRows(parameters["table"] ,parameters["fieldsToGet"],StringTools::split(parameters["keys"],','),StringTools::split(parameters["values"],','),parameters["isOr"]=="true",limit);
+
+	Json::Value resultArray(Json::arrayValue);
+
+	for(unsigned int i = 0; i < s.size(); i++){
+        std::map<std::string, std::string> sp = s.at(i);
+		std::map<std::string, std::string>::iterator iter;
+        Json::Value node;
+        for (iter = sp.begin(); iter != sp.end(); ++iter) {
+           node[iter->first] = iter->second;
+        }
+		resultArray.append(node);
+	}
+	stringstream ss;
+	ss << resultArray;
+	return ss.str();
 }
