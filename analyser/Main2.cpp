@@ -50,7 +50,7 @@
 
 #include "../dataModel/DatabaseConnection.h"
 
-
+#include "../commons/LoadConfig.h"
 
 
 using namespace std;
@@ -1010,6 +1010,130 @@ void classifyAllImagesCondor(int argc, char *argv[]) {
 }
 
 
+void classifyAllBlipImagesCondor(int argc, char *argv[]) {
+
+    cout << "Loading" << endl;
+
+    string paramFile(argv[1]);
+    int myDivision = atoi(argv[2]);
+    int totalDivisions = atoi(argv[3]);
+
+	map<string,string> parameters;
+
+	LoadConfig::load(paramFile,parameters);
+
+    TextFileSourceV2 is(parameters["infilename"]);
+
+    int imageCount = is.getImageCount();
+
+    int imagesToProcess = (imageCount/totalDivisions)+1;
+    int startAt = imagesToProcess*myDivision;
+
+    if ((imageCount+startAt)>imageCount){
+        imagesToProcess = imageCount-startAt;
+    }
+
+    cout << startAt << " " << imagesToProcess << endl;
+    is.skipTo(startAt);
+
+	Mat src;
+
+    vector<FeatureExtractor*> fExtractors;
+    vector<KeypointFeatureExtractor*> kExtractors;
+    vector<RoiFeatureExtractor*> rExtractors;
+
+    vector<string> fExtractorsS = StringTools::split(parameters["vectorAnalysers"],',');
+
+    for(uint i = 0; i < fExtractorsS.size(); i++)
+        fExtractors.push_back((FeatureExtractor*)FactoryAnalyser::getInstance()->createType(fExtractorsS.at(i)));
+
+    vector<string> kExtractorsS = StringTools::split(parameters["pointAnalysers"],',');
+
+    for(uint i = 0; i < kExtractorsS.size(); i++)
+        kExtractors.push_back((KeypointFeatureExtractor*)FactoryAnalyser::getInstance()->createType(kExtractorsS.at(i)));
+
+    vector<string> rExtractorsS = StringTools::split(parameters["roiAnalysers"],',');
+
+    for(uint i = 0; i < rExtractorsS.size(); i++)
+        rExtractors.push_back((RoiFeatureExtractor*)FactoryAnalyser::getInstance()->createType(rExtractorsS.at(i)));
+
+    int i = -1;
+    int j = 0;
+    string lastCateg = "";
+
+    vector<Mat> fFeatures(fExtractors.size());
+    vector<vector<Mat> > kFeatures(kExtractors.size());
+    vector<vector<vector<KeyPoint> > > kPoints(kExtractors.size());
+    Mat labels;
+
+    for (int j = 0; j < imagesToProcess; j++) {
+        try{
+            src = is.nextImage();
+
+            //cout <<  StringTools::split(is.getCurrentImageInfoField(0),'.')[0] << endl;
+            if (!src.empty()){
+
+                for(uint i = 0; i < fExtractors.size(); i++){
+                    Mat features;
+                    fExtractors.at(i)->extractFeatures(src,features);
+                    fFeatures.at(i).push_back(features);
+                }
+
+
+                for(uint i = 0; i < kExtractors.size(); i++){
+                    Mat features;
+                    vector<KeyPoint> keypoints;
+                    kExtractors.at(i)->extractFeatures(src,keypoints,features);
+                    kFeatures.at(i).push_back(features);
+                    kPoints.at(i).push_back(keypoints);
+                }
+
+                cout << is.getCurrentImageInfoField(0) << ";" << j << ";" << j+startAt << endl;
+                for(uint i = 0; i < rExtractors.size(); i++){
+                    map<string,region> features;
+                    rExtractors.at(i)->extractFeatures(src,features);
+                    map<string,region>::iterator iter;
+                    for (iter = features.begin(); iter != features.end(); ++iter){
+                        cout << iter->second.annotationType << ";" << iter->second.x << ";" << iter->second.y << ";";
+                        cout << iter->second.width << ";" << iter->second.height << endl;
+                    }
+                }
+                cout << endl;
+                Mat label(1,1,CV_32F);
+                labels.push_back(label);
+
+
+            } else  {
+                cout << "Missed A" << endl;
+            }
+        } catch(const std::exception &e){
+            cout << e.what() << endl;
+            cout << "Missed B" << endl;
+        } catch(...){
+            cout << "Missed C" << endl;
+        }
+    }
+    cout << "Writing files" << endl;
+    for(uint i = 0; i < fExtractors.size(); i++){
+        stringstream ss;
+        ss << "blip_" << fExtractors.at(i)->getName() << "_";
+        ss << std::setw(2) << std::setfill('0') << myDivision << ".bin";
+        string filename = ss.str();
+        MatrixTools::writeBinV2(filename,fFeatures.at(i),labels);
+    }
+
+    for(uint i = 0; i < kExtractors.size(); i++){
+        stringstream ss;
+        ss << "blip_" << kExtractors.at(i)->getName() << "_";
+        ss << std::setw(2) << std::setfill('0') << myDivision << ".bin";
+        string filename = ss.str();
+        MatrixTools::writeBinV3(filename,kFeatures.at(i),kPoints.at(i),labels);
+    }
+    cout << "Writing files: DONE" << endl;
+
+}
+
+
 int testDatabaseConnection(int argc, char *argv[]){
     DatabaseConnection db;
 
@@ -1022,6 +1146,68 @@ int testDatabaseConnection(int argc, char *argv[]){
     vector<map<string,string> > s = db.getRows("images","doi,iri,caption",keys,values,true,-1);
 }
 
+int testBinFormat(int argc, char *argv[]){
+
+    string paramFile(argv[1]);
+
+	map<string,string> parameters;
+
+	LoadConfig::load(paramFile,parameters);
+
+    FeatureDetector* detector = new SiftFeatureDetector(0, // nFeatures
+                                                        4, // nOctaveLayers
+                                                        0.04, // contrastThreshold
+                                                        10, //edgeThreshold
+                                                        1.6 //sigma
+                                                        );
+    DescriptorExtractor* extractor = new SiftDescriptorExtractor();
+
+    vector<KeyPoint> keypoints;
+    Mat descriptors;
+
+    Mat originalGrayImage = imread(parameters["filename"]);
+
+    detector->detect(originalGrayImage, keypoints);
+    extractor->compute(originalGrayImage, keypoints, descriptors);
+
+    Mat label(2,2,CV_32F);
+
+    label.at<float>(0,0) = descriptors.cols;
+    label.at<float>(0,1) = descriptors.cols;
+
+    label.at<float>(1,0) = descriptors.cols;
+    label.at<float>(1,1) = descriptors.cols;
+
+    vector<Mat> descriptorsMat;
+    descriptorsMat.push_back(descriptors);
+    descriptorsMat.push_back(descriptors);
+
+    vector<vector<KeyPoint> > keypointsVec;
+    keypointsVec.push_back(keypoints);
+    keypointsVec.push_back(keypoints);
+
+    string s = parameters["outfilename"];
+    MatrixTools::writeBinV3(s,descriptorsMat,keypointsVec,label);
+
+    cout << descriptorsMat.at(0).row(0).colRange(0,2) << " " << descriptorsMat.at(0).rows << " " << label.cols << " " << label.rows << " " << keypointsVec.at(0).at(0).pt.x << " " << keypointsVec.at(0).at(1).pt.y << endl;
+
+    vector<Mat> descriptorsMat2;
+    vector<vector<KeyPoint> > keypointsVec2;
+    Mat label2;
+    MatrixTools::readBinV3(s,descriptorsMat2,keypointsVec2,label2);
+
+    cout << descriptorsMat2.at(0).row(0).colRange(0,2) << " " << descriptorsMat2.at(0).rows << " " << label2.cols << " " << label2.rows << " " << keypointsVec2.at(0).at(0).pt.x << " " << keypointsVec2.at(0).at(1).pt.y << endl;
+
+    for (uint i = 0; i < descriptorsMat2.size(); i++)
+        cout << cv::countNonZero(descriptorsMat.at(i) != descriptorsMat2.at(i)) << endl;
+
+
+    for (uint i = 0; i < keypoints.size(); i++)
+        circle(originalGrayImage,keypoints.at(i).pt,1,CV_RGB(0,255,0));
+    imshow("a",originalGrayImage);
+    waitKey();
+}
+
 int main(int argc, char *argv[])
 {
 	//testLoadSaveIClassifier(argc, argv);
@@ -1030,10 +1216,15 @@ int main(int argc, char *argv[])
     //testAllClassifiersBin(argc, argv);
     //createMedCatClassifier(argc, argv);
     //testDatabaseConnection(argc, argv);
-    classifyAllImagesCondor(argc, argv);
+    //classifyAllImagesCondor(argc, argv);
+
     //extractAllFeaturesCKv2(argc, argv);
     //merger(argc, argv);
     //extractAllFeaturesCK(argc, argv);
 	//testMSIDXIndexer(argc, argv);
+
+    //testBinFormat(argc, argv);
+    classifyAllBlipImagesCondor(argc, argv);
+
     return 0;
 }

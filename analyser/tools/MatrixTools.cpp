@@ -228,6 +228,59 @@ void MatrixTools::readBinV2(string& file, vector<cv::Mat>& features, cv::Mat& la
 	}
 }
 
+
+//Atention, matrices must be in CV_32F format (single dimensional float matrix)
+void MatrixTools::readBinV3(string& file, vector<cv::Mat>& features, cv::Mat& labels){
+	string f = file;
+
+ 	int signature,binV,nSamples,dimsX,dimsY,dimsZ;
+
+	std::fstream ifs( f.c_str(), std::ios::in | std::ios::binary );
+
+
+	ifs.read( (char*) &signature, sizeof(signature));
+	if (signature != BIN_SIGNATURE_INT){
+		cerr << "Read error: Wrong signature" << endl;
+		return;
+	}
+
+	ifs.read( (char*) &binV, sizeof(binV));
+
+	if (binV != NBIN_VERSION){
+		cerr << "Read error: Wrong version" << endl;
+		return;
+	}
+
+	ifs.read( (char*) &nSamples, sizeof(nSamples));
+
+	for (int s = 0; s < nSamples; s++) {
+
+        ifs.read( (char*) &dimsX, sizeof(dimsX));
+        ifs.read( (char*) &dimsY, sizeof(dimsY));
+        ifs.read( (char*) &dimsZ, sizeof(dimsZ));
+
+		float value;
+		Mat tmpLabels;
+
+
+		for (int i = 0; i < dimsZ; i++) {
+			ifs.read( (char*) &value, sizeof(value));
+			tmpLabels.push_back(value);
+		}
+		transpose(tmpLabels, tmpLabels);
+		labels.push_back(tmpLabels);
+
+		Mat featureMatrix (dimsY,dimsX,CV_32F);
+		for (int x = 0; x < dimsX; x++) {
+			for (int y = 0; y < dimsY; y++) {
+				ifs.read( (char*) &value, sizeof(value));
+				featureMatrix.at<float>(y,x) = value;
+			}
+		}
+		features.push_back(featureMatrix);
+	}
+}
+
 //Atention, matrices must be in CV_32F format (single dimensional float matrix)
 void MatrixTools::writeBinV2(string& filename, vector<cv::Mat>& features, cv::Mat& labels){
 	std::fstream binFile;
@@ -276,3 +329,120 @@ void MatrixTools::writeBinV2(string& filename, vector<cv::Mat>& features, cv::Ma
 	binFile.close();
 
 }
+
+//Atention, matrices must be in CV_32F format (single dimensional float matrix)
+void MatrixTools::writeBinV3(string& filename, vector<cv::Mat>& features, cv::Mat& labels){
+	std::fstream binFile;
+	binFile.open(filename.c_str(), std::ios::out | std::ios::binary);
+
+	int signature = BIN_SIGNATURE_INT;
+	int binV = NBIN_VERSION;
+
+	binFile.write((const char*) &signature, sizeof(int));
+	binFile.write((const char*) &binV, sizeof(int));
+
+	int nSamples = (int)features.size();
+
+	binFile.write((const char*) &nSamples, sizeof(int));
+
+	//std::cout << features.cols << " " << features.rows << endl;
+
+	for (int s = 0; s < nSamples; s++) {
+
+        int dimsX = features.at(s).cols;
+        int dimsY = features.at(s).rows;
+        int dimsZ = labels.cols;
+
+        binFile.write((const char*) &dimsX, sizeof(int));
+        binFile.write((const char*) &dimsY, sizeof(int));
+        binFile.write((const char*) &dimsZ, sizeof(int));
+
+		float value;
+		for (int i = 0; i < dimsZ; i++) {
+			value = (float) labels.at<float>(s,i);
+			binFile.write((const char*) &value, sizeof(float));
+		}
+		Mat featureSingle = features.at(s);
+		for (int x = 0; x < dimsX; x++) {
+			for (int y = 0; y < dimsY; y++) {
+				value = featureSingle.at<float>(y,x);
+				binFile.write((const char*) &value, sizeof(float));
+			}
+			binFile.flush();
+		}
+		binFile.flush();
+	}
+
+	binFile.close();
+
+}
+
+void MatrixTools::readBinV3(string& file, vector<cv::Mat>& features, vector<vector<cv::KeyPoint> >& keypoints, cv::Mat& labels){
+
+    std::vector<cv::Mat> descKeypoints;
+    MatrixTools::readBinV3(file,descKeypoints,labels);
+
+    for (uint i = 0; i < descKeypoints.size(); i++){
+        Mat keypointsMat;
+        Mat descriptorMat;
+        vector<cv::KeyPoint> kp;
+
+        Mat keypointsMatTmp = descKeypoints.at(i).colRange(0,7);
+        Mat descriptorMatTmp = descKeypoints.at(i).colRange(7,descKeypoints.at(i).cols);
+
+        keypointsMatTmp.copyTo(keypointsMat);
+        descriptorMatTmp.copyTo(descriptorMat);
+
+        MatrixTools::matToKeypoints(keypointsMat,kp);
+
+        keypoints.push_back(kp);
+        features.push_back(descriptorMat);
+    }
+
+}
+
+void MatrixTools::writeBinV3(string& file, vector<cv::Mat>& features, vector<vector<cv::KeyPoint> >& keypoints, cv::Mat& labels){
+    std::vector<cv::Mat> descKeypoints;
+
+    for (uint i = 0; i < keypoints.size(); i++){
+        Mat descKeypointsMat;
+        Mat keypointsMat;
+        MatrixTools::keypointsToMats(keypoints.at(i),keypointsMat);
+        cv::hconcat(keypointsMat,features.at(i),descKeypointsMat);
+        descKeypoints.push_back(descKeypointsMat);
+    }
+    MatrixTools::writeBinV3(file,descKeypoints,labels);
+}
+
+void MatrixTools::keypointsToMats(std::vector<cv::KeyPoint>& p, cv::Mat& m){
+    for (uint i = 0; i < p.size(); i++){
+        Mat m1;
+        MatrixTools::keypointToMat(p.at(i), m1);
+        m.push_back(m1);
+    }
+}
+
+void MatrixTools::keypointToMat(cv::KeyPoint& p, cv::Mat& m){
+    m = Mat(1,7,CV_32F);
+
+    m.at<float>(0) = p.pt.x;
+    m.at<float>(1) = p.pt.y;
+
+    m.at<float>(2) = p.size;
+    m.at<float>(3) = p.angle;
+    m.at<float>(4) = p.response;
+    m.at<float>(5) = p.octave;
+    m.at<float>(6) = p.class_id;
+}
+
+void MatrixTools::matToKeypoint(cv::Mat& m, cv::KeyPoint& p){
+    p = cv::KeyPoint(Point2f(m.at<float>(0),m.at<float>(1)), m.at<float>(2), m.at<float>(3), m.at<float>(4), m.at<float>(5), m.at<float>(6));
+}
+
+void MatrixTools::matToKeypoints(Mat& m, std::vector<cv::KeyPoint>& p){
+    for (uint i = 0; i < m.rows; i++){
+        cv::KeyPoint p1;
+        Mat m1 = m.row(i);
+        MatrixTools::matToKeypoint(m1, p1);
+        p.push_back(p1);
+    }}

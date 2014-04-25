@@ -1,5 +1,16 @@
 {"parameters": {
-    "port" : "9083"
+    "port" : "9083",
+    "vectorAnalysers" : "gist883",
+    "roiAnalysers": "faceDetectorNoEyes,carDetector,faceSide,pedestrian",
+    "pointAnalysers": "sift0",
+
+	"infilename": "/media/Share/data/CarData2/data.txt",
+	"infilename2": "/media/Share/data/medicalClassifier/medicalClassifierData.txt",
+	"infilename3": "/media/Share/data/CarData/testData.txt",
+
+    "filename": "/media/Share/data/medicalClassifier/COMP/12178_2007_9002_Fig3_HTML.jpg",
+    "outfilename": "/home/amourao/code/searchservices/127.bin"
+    
     },
  "endpoints": {
     "indexer": [
@@ -37,9 +48,45 @@
                 "eyeScaleChangeFactor": "1",
                 "minSizeW": "20",
                 "minSizeH": "20",
-                "maxSizeW": "50",
-                "maxSizeH": "50",
+                "maxSizeW": "100",
+                "maxSizeH": "100",
                 "preProcess": "false"
+            }
+        },{
+            "newName": "carDetector",
+            "originalName": "haarDetector",
+            "params": {
+                "cascadePath": "cars3.xml",
+                "scaleChangeFactor": "1",
+                "minSizeW": "20",
+                "minSizeH": "20",
+                "maxSizeW": "1000",
+                "maxSizeH": "1000",
+                "objectType": "Car"
+            }
+        },{
+            "newName": "faceSide",
+            "originalName": "haarDetector",
+            "params": {
+                "cascadePath": "haarcascade_profileface.xml",
+                "scaleChangeFactor": "1",
+                "minSizeW": "20",
+                "minSizeH": "20",
+                "maxSizeW": "1000",
+                "maxSizeH": "1000",
+                "objectType": "Face"
+            }
+        },{
+            "newName": "pedestrian",
+            "originalName": "haarDetector",
+            "params": {
+                "cascadePath": "hogcascade_pedestrians.xml",
+                "scaleChangeFactor": "2",
+                "minSizeW": "50",
+                "minSizeH": "50",
+                "maxSizeW": "1000",
+                "maxSizeH": "1000",
+                "objectType": "Person"
             }
         },{
             "newName": "surf1000",
@@ -50,6 +97,16 @@
                 "nOctaveLayers": "2",
                 "extended": "true",
                 "upright": "false"
+            }
+        },{
+            "newName": "sift0",
+            "originalName": "sift",
+            "params": {
+                "nFeatures": "0",
+                "nOctaveLayers": "4",
+                "contrastThreshold": "0.04",
+                "edgeThreshold": "10",
+                "sigma": "1.6"
             }
         },{
             "newName": "gaborFace",
