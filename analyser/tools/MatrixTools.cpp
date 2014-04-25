@@ -168,14 +168,14 @@ void MatrixTools::readBinV2(string& file, cv::Mat& features, cv::Mat& labels){
 	}
 }
 
-void MatrixTools::writeBinV2(string& file, cv::Mat& features, cv::Mat& labels){
+void MatrixTools::writeBinV2(string& file, cv::Mat& features, cv::Mat& labels, bool append ){
 	vector<cv::Mat> featuresNew;
 
 	for (int i = 0; i < features.rows; i++){
 		Mat row = features.row(i);
 		featuresNew.push_back(row);
 	}
-	MatrixTools::writeBinV2(file, featuresNew, labels);
+	MatrixTools::writeBinV2(file, featuresNew, labels, append);
 }
 
 //Atention, matrices must be in CV_32F format (single dimensional float matrix)
@@ -282,30 +282,64 @@ void MatrixTools::readBinV3(string& file, vector<cv::Mat>& features, cv::Mat& la
 }
 
 //Atention, matrices must be in CV_32F format (single dimensional float matrix)
-void MatrixTools::writeBinV2(string& filename, vector<cv::Mat>& features, cv::Mat& labels){
+void MatrixTools::writeBinV2(string& filename, vector<cv::Mat>& features, cv::Mat& labels, bool append ){
 	std::fstream binFile;
-	binFile.open(filename.c_str(), std::ios::out | std::ios::binary);
+	binFile.open(filename.c_str(),std::ios::binary | std::ios::in | std::ios::out);
 
-	int signature = BIN_SIGNATURE_INT;
-	int binV = BIN_VERSION;
+    bool isEmpty = binFile.peek() == std::ifstream::traits_type::eof();
+    binFile.clear();
+    binFile.seekg(0, std::ios::beg);
+    binFile.seekp(0, std::ios::beg);
 
-	binFile.write((const char*) &signature, sizeof(int));
-	binFile.write((const char*) &binV, sizeof(int));
+    if (isEmpty){
+        binFile.open(filename.c_str(), std::ios::binary | std::ios::out | std::ios::trunc);
+    }
 
+    int signature,binV;
 
-	int nSamples = (int)features.size();
+    int nSamples = (int)features.size();
+    int dimsX = features.at(0).cols;
+    int dimsY = features.at(0).rows;
+    int dimsZ = labels.cols;
 
-	binFile.write((const char*) &nSamples, sizeof(int));
+    if (!append || isEmpty){
+        signature = BIN_SIGNATURE_INT;
+        binV = BIN_VERSION;
 
-	int dimsX = features.at(0).cols;
-	int dimsY = features.at(0).rows;
+        binFile.write((const char*) &signature, sizeof(int));
+        binFile.write((const char*) &binV, sizeof(int));
+        binFile.write((const char*) &nSamples, sizeof(int));
 
-	int dimsZ = labels.cols;
+        binFile.write((const char*) &dimsX, sizeof(int));
+        binFile.write((const char*) &dimsY, sizeof(int));
+        binFile.write((const char*) &dimsZ, sizeof(int));
 
-	binFile.write((const char*) &dimsX, sizeof(int));
-	binFile.write((const char*) &dimsY, sizeof(int));
-	binFile.write((const char*) &dimsZ, sizeof(int));
+    } else {
 
+        binFile.read( (char*) &signature, sizeof(signature));
+        if (signature != BIN_SIGNATURE_INT){
+            cerr << "Read error: Wrong signature" << endl;
+            return;
+        }
+
+        binFile.read( (char*) &binV, sizeof(binV));
+        if (binV != BIN_VERSION){
+            cerr << "Read error: Wrong version" << endl;
+            return;
+        }
+        int nSamplesExisting;
+        binFile.read( (char*) &nSamplesExisting, sizeof(nSamplesExisting));
+        int nSamplesExisting2 = nSamples + nSamplesExisting;
+        binFile.read( (char*) &binV, sizeof(binV));
+
+        binFile.clear();
+        binFile.seekp(8);
+        binFile.seekg(8);
+        binFile.write((const char*) &nSamplesExisting2, sizeof(int));
+        binFile.flush();
+        binFile.seekp(0,std::ios::end);
+        binFile.seekp(0,std::ios::end);
+    }
 	//std::cout << features.cols << " " << features.rows << endl;
 
 	for (int s = 0; s < nSamples; s++) {
@@ -331,22 +365,61 @@ void MatrixTools::writeBinV2(string& filename, vector<cv::Mat>& features, cv::Ma
 }
 
 //Atention, matrices must be in CV_32F format (single dimensional float matrix)
-void MatrixTools::writeBinV3(string& filename, vector<cv::Mat>& features, cv::Mat& labels){
+void MatrixTools::writeBinV3(string& filename, vector<cv::Mat>& features, cv::Mat& labels, bool append){
+    int nSamples = (int)features.size();
+
+    if (nSamples == 0)
+        return;
+
 	std::fstream binFile;
-	binFile.open(filename.c_str(), std::ios::out | std::ios::binary);
+	binFile.open(filename.c_str(), std::ios::binary | std::ios::in | std::ios::out);
 
-	int signature = BIN_SIGNATURE_INT;
-	int binV = NBIN_VERSION;
+    bool isEmpty = binFile.peek() == std::ifstream::traits_type::eof();
+    binFile.clear();
+    binFile.seekg(0, std::ios::beg);
+    binFile.seekp(0, std::ios::beg);
 
-	binFile.write((const char*) &signature, sizeof(int));
-	binFile.write((const char*) &binV, sizeof(int));
+    if (isEmpty){
+        binFile.open(filename.c_str(), std::ios::binary | std::ios::out | std::ios::trunc);
+    }
 
-	int nSamples = (int)features.size();
+    int signature,binV;
 
-	binFile.write((const char*) &nSamples, sizeof(int));
+    if (!append || isEmpty){
+        cout << "empty" << endl;
+        signature = BIN_SIGNATURE_INT;
+        binV = NBIN_VERSION;
+
+        binFile.write((const char*) &signature, sizeof(int));
+        binFile.write((const char*) &binV, sizeof(int));
+        binFile.write((const char*) &nSamples, sizeof(int));
+    } else {
+        binFile.read( (char*) &signature, sizeof(signature));
+        if (signature != BIN_SIGNATURE_INT){
+            cerr << "Read error: Wrong signature" << endl;
+            return;
+        }
+
+        binFile.read( (char*) &binV, sizeof(binV));
+        if (binV != NBIN_VERSION){
+            cerr << "Read error: Wrong version" << endl;
+            return;
+        }
+        int nSamplesExisting;
+        binFile.read( (char*) &nSamplesExisting, sizeof(nSamplesExisting));
+        int nSamplesExisting2 = nSamples + nSamplesExisting;
+        binFile.read( (char*) &binV, sizeof(binV));
+
+        binFile.clear();
+        binFile.seekp(8);
+        binFile.seekg(8);
+        binFile.write((const char*) &nSamplesExisting2, sizeof(int));
+        binFile.flush();
+        binFile.seekp(0,std::ios::end);
+        binFile.seekp(0,std::ios::end);
+    }
 
 	//std::cout << features.cols << " " << features.rows << endl;
-
 	for (int s = 0; s < nSamples; s++) {
 
         int dimsX = features.at(s).cols;
@@ -401,7 +474,7 @@ void MatrixTools::readBinV3(string& file, vector<cv::Mat>& features, vector<vect
 
 }
 
-void MatrixTools::writeBinV3(string& file, vector<cv::Mat>& features, vector<vector<cv::KeyPoint> >& keypoints, cv::Mat& labels){
+void MatrixTools::writeBinV3(string& file, vector<cv::Mat>& features, vector<vector<cv::KeyPoint> >& keypoints, cv::Mat& labels, bool append){
     std::vector<cv::Mat> descKeypoints;
 
     for (uint i = 0; i < keypoints.size(); i++){
@@ -411,7 +484,7 @@ void MatrixTools::writeBinV3(string& file, vector<cv::Mat>& features, vector<vec
         cv::hconcat(keypointsMat,features.at(i),descKeypointsMat);
         descKeypoints.push_back(descKeypointsMat);
     }
-    MatrixTools::writeBinV3(file,descKeypoints,labels);
+    MatrixTools::writeBinV3(file,descKeypoints,labels,append);
 }
 
 void MatrixTools::keypointsToMats(std::vector<cv::KeyPoint>& p, cv::Mat& m){
@@ -440,7 +513,7 @@ void MatrixTools::matToKeypoint(cv::Mat& m, cv::KeyPoint& p){
 }
 
 void MatrixTools::matToKeypoints(Mat& m, std::vector<cv::KeyPoint>& p){
-    for (uint i = 0; i < m.rows; i++){
+    for (int i = 0; i < m.rows; i++){
         cv::KeyPoint p1;
         Mat m1 = m.row(i);
         MatrixTools::matToKeypoint(m1, p1);

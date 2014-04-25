@@ -1190,33 +1190,29 @@ int testBinFormat(int argc, char *argv[]){
     detector->detect(originalGrayImage, keypoints);
     extractor->compute(originalGrayImage, keypoints, descriptors);
 
-    Mat label(2,2,CV_32F);
+    Mat label(1,2,CV_32F);
 
     label.at<float>(0,0) = descriptors.cols;
     label.at<float>(0,1) = descriptors.cols;
 
-    label.at<float>(1,0) = descriptors.cols;
-    label.at<float>(1,1) = descriptors.cols;
-
     vector<Mat> descriptorsMat;
-    descriptorsMat.push_back(descriptors);
     descriptorsMat.push_back(descriptors);
 
     vector<vector<KeyPoint> > keypointsVec;
     keypointsVec.push_back(keypoints);
-    keypointsVec.push_back(keypoints);
 
     string s = parameters["outfilename"];
-    MatrixTools::writeBinV3(s,descriptorsMat,keypointsVec,label);
+
+    MatrixTools::writeBinV2(s,descriptorsMat,label,true);
+    //MatrixTools::writeBinV3(s,descriptorsMat,keypointsVec,label,true);
 
     cout << descriptorsMat.at(0).row(0).colRange(0,2) << " " << descriptorsMat.at(0).rows << " " << label.cols << " " << label.rows << " " << keypointsVec.at(0).at(0).pt.x << " " << keypointsVec.at(0).at(1).pt.y << endl;
 
     vector<Mat> descriptorsMat2;
-    vector<vector<KeyPoint> > keypointsVec2;
     Mat label2;
-    MatrixTools::readBinV3(s,descriptorsMat2,keypointsVec2,label2);
+    MatrixTools::readBinV2(s,descriptorsMat2,label2);
 
-    cout << descriptorsMat2.at(0).row(0).colRange(0,2) << " " << descriptorsMat2.at(0).rows << " " << label2.cols << " " << label2.rows << " " << keypointsVec2.at(0).at(0).pt.x << " " << keypointsVec2.at(0).at(1).pt.y << endl;
+    cout << descriptorsMat2.at(0).row(0).colRange(0,2) << " " << descriptorsMat2.at(0).rows << " " << label2.cols << " " << label2.rows << endl;
 
     for (uint i = 0; i < descriptorsMat2.size(); i++)
         cout << cv::countNonZero(descriptorsMat.at(i) != descriptorsMat2.at(i)) << endl;
@@ -1243,8 +1239,8 @@ int main(int argc, char *argv[])
     //extractAllFeaturesCK(argc, argv);
 	//testMSIDXIndexer(argc, argv);
 
-    //testBinFormat(argc, argv);
-    classifyAllBlipImagesCondor(argc, argv);
+    testBinFormat(argc, argv);
+    //classifyAllBlipImagesCondor(argc, argv);
 
     return 0;
 }
