@@ -11,7 +11,6 @@ FaceDetection::FaceDetection(){
     //return new FaceDetection(FACE_DETECTION_CASCADE_PATH + "haarcascade_frontalface_default.xml",FACE_DETECTION_CASCADE_PATH + "haarcascade_eye.xml",4,1, cv::Size(20,20),cv::Size(50,50),true);
     //else if (typeId == "FastFaceDetection")
     //return new FaceDetection(FACE_DETECTION_CASCADE_PATH + "haarcascade_frontalface_default.xml",FACE_DETECTION_CASCADE_PATH + "haarcascade_eye.xml",4,1, cv::Size(20,20),cv::Size(50,50),false);
-
 	FactoryAnalyser::getInstance()->registerType("faceDetection",this);
 }
 
@@ -96,6 +95,7 @@ void FaceDetection::extractFeatures(Mat& source,
 		r.y = roi.y;
 		r.width = roi.width;
 		r.height = roi.height;
+		r.annotationType = "Face";
 
 		stringstream ss;
 		ss << "Face" << i;

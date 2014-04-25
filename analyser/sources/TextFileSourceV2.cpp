@@ -41,6 +41,7 @@ void TextFileSourceV2::readFile(string trainDataFile){
 			string fullPath = ss2.str();
 
 			imagesPath.push_back(fullPath);
+
 			imagesOriginalInfo.push_back(line);
 		}
 	}

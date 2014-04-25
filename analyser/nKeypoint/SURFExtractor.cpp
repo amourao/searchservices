@@ -47,6 +47,7 @@ void SURFExtractor::extractFeatures(Mat& src,vector< cv::KeyPoint>& keypoints, M
 	}
 	detector.detect( srcGray, keypoints );
 	extractor.compute( srcGray, keypoints, features);
+	features.convertTo(features,CV_32F);
 }
 
 
@@ -56,5 +57,5 @@ int SURFExtractor::getDescriptorSize(){
 
 
 string SURFExtractor::getName(){
-	return "SURFExtractor";
+	return type;
 }

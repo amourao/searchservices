@@ -107,11 +107,12 @@
 	"../tools/MatrixTools.h"
 	"../../commons/factory/Factory.h"
 
-1397645635 /home/amourao/code/searchservices/analyser/tools/MatrixTools.h
+1398363892 /home/amourao/code/searchservices/analyser/tools/MatrixTools.h
 	<armadillo>
 	<opencv2/core/core.hpp>
 	<opencv2/highgui/highgui.hpp>
 	<opencv2/imgproc/imgproc.hpp>
+	<opencv2/features2d/features2d.hpp>
 	<string>
 	<vector>
 	<fstream>
@@ -175,7 +176,7 @@
 1390951648 /home/amourao/code/searchservices/dataModel/NVector.h
 	"IDataModel.h"
 
-1397656934 /home/amourao/code/searchservices/analyser/nKeypoint/SURFExtractor.h
+1398336657 /home/amourao/code/searchservices/analyser/nKeypoint/SURFExtractor.h
 	"KeypointFeatureExtractor.h"
 	<opencv2/highgui/highgui.hpp>
 	<stdio.h>
@@ -276,7 +277,7 @@
 	<string>
 	<map>
 
-1398260843 source:/home/amourao/code/searchservices/analyser/Main2.cpp
+1398429251 source:/home/amourao/code/searchservices/analyser/Main2.cpp
 	<iostream>
 	<string>
 	<sstream>
@@ -315,6 +316,7 @@
 	"../indexer/MSIDXIndexer.h"
 	"../commons/StringTools.h"
 	"../dataModel/DatabaseConnection.h"
+	"../commons/LoadConfig.h"
 
 1397990244 /home/amourao/code/searchservices/analyser/sources/TextFileSourceV2.h
 	"ImageSource.h"
@@ -481,10 +483,10 @@
 	<sys/time.h>
 	<time.h>
 
-1397657147 source:/home/amourao/code/searchservices/analyser/nKeypoint/SURFExtractor.cpp
+1398423012 source:/home/amourao/code/searchservices/analyser/nKeypoint/SURFExtractor.cpp
 	"SURFExtractor.h"
 
-1397660460 source:/home/amourao/code/searchservices/analyser/nRoi/FaceDetection.cpp
+1398367702 source:/home/amourao/code/searchservices/analyser/nRoi/FaceDetection.cpp
 	"FaceDetection.h"
 
 1390951642 source:/home/amourao/code/searchservices/analyser/nTag/FaceRecognition.cpp
@@ -603,7 +605,7 @@
 1390951642 source:/home/amourao/code/searchservices/analyser/sources/TextFileSource.cpp
 	"TextFileSource.h"
 
-1397990305 source:/home/amourao/code/searchservices/analyser/sources/TextFileSourceV2.cpp
+1398428722 source:/home/amourao/code/searchservices/analyser/sources/TextFileSourceV2.cpp
 	"TextFileSourceV2.h"
 
 1390951642 source:/home/amourao/code/searchservices/analyser/sources/VideoSource.cpp
@@ -621,7 +623,7 @@
 	<opencv2/highgui/highgui.hpp>
 	<opencv2/imgproc/imgproc.hpp>
 
-1397645635 source:/home/amourao/code/searchservices/analyser/tools/MatrixTools.cpp
+1398363909 source:/home/amourao/code/searchservices/analyser/tools/MatrixTools.cpp
 	"MatrixTools.h"
 
 1390951642 source:/home/amourao/code/searchservices/analyser/tools/MIRFlickrImporter.cpp
@@ -668,7 +670,7 @@
 	<jsoncpp/json/json.h>
 	<jsoncpp/json/autolink.h>
 
-1397655375 source:/home/amourao/code/searchservices/commons/factory/Factory.cpp
+1398428014 source:/home/amourao/code/searchservices/commons/factory/Factory.cpp
 	"Factory.h"
 
 1397645635 source:/home/amourao/code/searchservices/commons/FileDownloader.cpp
@@ -3929,7 +3931,7 @@
 	<sys/times.h>
 	"headers.h"
 
-1397658699 /home/amourao/code/searchservices/commons/LoadConfig.h
+1398337656 /home/amourao/code/searchservices/commons/LoadConfig.h
 	"../indexer/FactoryIndexer.h"
 	"../indexer/IIndexer.h"
 	"../analyser/FactoryAnalyser.h"
@@ -3941,7 +3943,7 @@
 	<iomanip>
 	<jsoncpp/json/json.h>
 
-1397660392 source:/home/amourao/code/searchservices/commons/LoadConfig.cpp
+1398337637 source:/home/amourao/code/searchservices/commons/LoadConfig.cpp
 	"LoadConfig.h"
 
 1397645635 source:/home/amourao/code/searchservices/analyser/tools/oneBillionImporter.cpp
@@ -4105,4 +4107,34 @@
 	"../../../analyser/tools/MatrixTools.h"
 	"../../../commons/FileDownloader.h"
 	"../../../dataModel/DatabaseConnection.h"
+
+1398364339 source:/home/amourao/code/searchservices/analyser/nKeypoint/SIFTExtractor.cpp
+	"SIFTExtractor.h"
+
+1398358229 /home/amourao/code/searchservices/analyser/nKeypoint/SIFTExtractor.h
+	"KeypointFeatureExtractor.h"
+	<opencv2/highgui/highgui.hpp>
+	<stdio.h>
+	<iostream>
+	<opencv2/core/core.hpp>
+	<opencv2/features2d/features2d.hpp>
+	<opencv2/highgui/highgui.hpp>
+	<opencv2/nonfree/features2d.hpp>
+	"../FactoryAnalyser.h"
+	<map>
+
+1398370728 source:/home/amourao/code/searchservices/analyser/nRoi/HaarDetector.cpp
+	"HaarDetector.h"
+
+1398367638 /home/amourao/code/searchservices/analyser/nRoi/HaarDetector.h
+	<opencv2/objdetect/objdetect.hpp>
+	<opencv2/core/core.hpp>
+	<opencv2/imgproc/imgproc.hpp>
+	<opencv2/highgui/highgui.hpp>
+	<string>
+	<iostream>
+	<sstream>
+	<cstdlib>
+	"RoiFeatureExtractor.h"
+	"../FactoryAnalyser.h"
 

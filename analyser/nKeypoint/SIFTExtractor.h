@@ -11,25 +11,18 @@
 #include "../FactoryAnalyser.h"
 
 #include <map>
-/*
- * [Bay06]
- * Bay, H. and Tuytelaars, T. and Van Gool, L.
- * “SURF: Speeded Up Robust Features”,
- * 9th European Conference on Computer Vision, 2006
- *
- */
 
 using namespace std;
 
-class SURFExtractor :
+class SIFTExtractor :
 	public KeypointFeatureExtractor
 {
 public:
-	SURFExtractor();
-	SURFExtractor(string& type);
-	SURFExtractor(string& type, map<string,string>& params);
-	SURFExtractor(double hessianThreshold, int nOctaves=4, int nOctaveLayers=2, bool extended=true, bool upright=false);
-	~SURFExtractor();
+	SIFTExtractor();
+	SIFTExtractor(string& type);
+	SIFTExtractor(string& type, map<string,string>& params);
+	SIFTExtractor(int nFeatures, int nOctaveLayers, double contrastThreshold, double edgeThreshold, double sigma);
+	~SIFTExtractor();
 
     void* createType(string &typeId);
     void* createType(string &typeId, map<string,string>& params);
@@ -45,7 +38,7 @@ public:
 
 private:
     string type;
-	SurfFeatureDetector detector;
-	SurfDescriptorExtractor extractor;
+	SiftFeatureDetector detector;
+	SiftDescriptorExtractor extractor;
 };
 
