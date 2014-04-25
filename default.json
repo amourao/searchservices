@@ -6,9 +6,9 @@
 
     "infilename0": "/media/Share/data/blipListParsed",
     "infilename": "/localstore/amourao/blip/Dev/Shots/blipListParsed",
-	"infilename1": "/media/Share/data/CarData2/data.txt",
-	"infilename2": "/media/Share/data/medicalClassifier/medicalClassifierData.txt",
-	"infilename3": "/media/Share/data/CarData/testData.txt",
+    "infilename1": "/media/Share/data/CarData2/data.txt",
+    "infilename2": "/media/Share/data/medicalClassifier/medicalClassifierData.txt",
+    "infilename3": "/media/Share/data/CarData/testData.txt",
 
     "outfilename": "/localstore/amourao/blip/Dev/Shots/blipList_n_",
     "outfilenameROI": "/localstore/amourao/blip/Dev/Shots/blipList_roi_"
@@ -201,33 +201,6 @@
             "originalName": "CombinedExtractor",
             "params": {
                 "algorithms": "cedd,fcth"
-            }
-        }
-    ],
-    "classifier": [
-        {
-            "newName": "kNNClassifierMed",
-            "originalName": "kNNClassifier",
-            "params": {
-                "trainFile": "medical_fcth_knn"
-            }
-        },{
-            "newName": "SRClassifierMed",
-            "originalName": "SRClassifier",
-            "params": {
-                "trainFile": "medical_fcth_sr"
-            }
-        },{
-            "newName": "VWBasicClassifierMed",
-            "originalName": "VWBasicClassifier",
-            "params": {
-                "trainFile": "medical_fcth_vw"
-            }
-        },{
-            "newName": "NovaMedCategoryClass",
-            "originalName": "SVMClassifier",
-            "params": {
-                "trainFile": "medClassifier"
             }
         }
     ]
