@@ -4,12 +4,14 @@
     "roiAnalysers": "faceDetectorNoEyes,carDetector,faceSide,pedestrian",
     "pointAnalysers": "sift0",
 
-	"infilename": "/media/Share/data/CarData2/data.txt",
+    "infilename0": "/media/Share/data/blipListParsed",
+    "infilename": "/localstore/amourao/blip/Dev/Shots/blipListParsed",
+	"infilename1": "/media/Share/data/CarData2/data.txt",
 	"infilename2": "/media/Share/data/medicalClassifier/medicalClassifierData.txt",
 	"infilename3": "/media/Share/data/CarData/testData.txt",
 
-    "filename": "/media/Share/data/medicalClassifier/COMP/12178_2007_9002_Fig3_HTML.jpg",
-    "outfilename": "/home/amourao/code/searchservices/127.bin"
+    "outfilename": "/localstore/amourao/blip/Dev/Shots/blipList_n_",
+    "outfilenameROI": "/localstore/amourao/blip/Dev/Shots/blipList_roi_"
     
     },
  "endpoints": {
@@ -27,6 +29,7 @@
         {
             "newName": "faceDetectorWithEyes",
             "originalName": "faceDetection",
+
             "params": {
                 "cascadePath": "haarcascade_frontalface_default.xml",
                 "nestedCascadePath": "haarcascade_eye.xml",
@@ -74,7 +77,7 @@
                 "minSizeH": "20",
                 "maxSizeW": "1000",
                 "maxSizeH": "1000",
-                "objectType": "Face"
+                "objectType": "FaceP"
             }
         },{
             "newName": "pedestrian",
@@ -82,7 +85,7 @@
             "params": {
                 "cascadePath": "hogcascade_pedestrians.xml",
                 "scaleChangeFactor": "2",
-                "minSizeW": "50",
+                "minSizeW": "20",
                 "minSizeH": "50",
                 "maxSizeW": "1000",
                 "maxSizeH": "1000",

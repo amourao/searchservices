@@ -57,5 +57,5 @@ int SURFExtractor::getDescriptorSize(){
 
 
 string SURFExtractor::getName(){
-	return "SURFExtractor";
+	return type;
 }

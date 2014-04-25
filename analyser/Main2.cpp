@@ -1012,7 +1012,7 @@ void classifyAllImagesCondor(int argc, char *argv[]) {
 
 void classifyAllBlipImagesCondor(int argc, char *argv[]) {
 
-    cout << "Loading" << endl;
+    //cout << "Loading" << endl;
 
     string paramFile(argv[1]);
     int myDivision = atoi(argv[2]);
@@ -1024,6 +1024,19 @@ void classifyAllBlipImagesCondor(int argc, char *argv[]) {
 
     TextFileSourceV2 is(parameters["infilename"]);
 
+    ofstream fout;
+    stringstream ss;
+    ss << parameters["outfilename"] << "_";
+    ss << std::setw(2) << std::setfill('0') << myDivision << ".txt";
+    fout.open(ss.str().c_str());
+
+    ofstream foutRoi;
+    stringstream ss2;
+    ss2 << parameters["outfilenameROI"] << "_";
+    ss2 << std::setw(2) << std::setfill('0') << myDivision << ".txt";
+    foutRoi.open(ss2.str().c_str());
+
+
     int imageCount = is.getImageCount();
 
     int imagesToProcess = (imageCount/totalDivisions)+1;
@@ -1033,7 +1046,6 @@ void classifyAllBlipImagesCondor(int argc, char *argv[]) {
         imagesToProcess = imageCount-startAt;
     }
 
-    cout << startAt << " " << imagesToProcess << endl;
     is.skipTo(startAt);
 
 	Mat src;
@@ -1058,13 +1070,14 @@ void classifyAllBlipImagesCondor(int argc, char *argv[]) {
         rExtractors.push_back((RoiFeatureExtractor*)FactoryAnalyser::getInstance()->createType(rExtractorsS.at(i)));
 
     int i = -1;
-    int j = 0;
+    int totalImages = 0;
     string lastCateg = "";
 
     vector<Mat> fFeatures(fExtractors.size());
     vector<vector<Mat> > kFeatures(kExtractors.size());
     vector<vector<vector<KeyPoint> > > kPoints(kExtractors.size());
     Mat labels;
+
 
     for (int j = 0; j < imagesToProcess; j++) {
         try{
@@ -1088,29 +1101,36 @@ void classifyAllBlipImagesCondor(int argc, char *argv[]) {
                     kPoints.at(i).push_back(keypoints);
                 }
 
-                cout << is.getCurrentImageInfoField(0) << ";" << j << ";" << j+startAt << endl;
+                foutRoi << is.getImageInfo() << ";" << totalImages << endl;
                 for(uint i = 0; i < rExtractors.size(); i++){
                     map<string,region> features;
                     rExtractors.at(i)->extractFeatures(src,features);
                     map<string,region>::iterator iter;
                     for (iter = features.begin(); iter != features.end(); ++iter){
-                        cout << iter->second.annotationType << ";" << iter->second.x << ";" << iter->second.y << ";";
-                        cout << iter->second.width << ";" << iter->second.height << endl;
+                        foutRoi << totalImages << ";" << iter->second.annotationType << ";" << iter->second.x << ";" << iter->second.y << ";";
+                        foutRoi << iter->second.width << ";" << iter->second.height << endl;
                     }
                 }
-                cout << endl;
-                Mat label(1,1,CV_32F);
-                labels.push_back(label);
+                foutRoi << endl;
+                Mat label(1,2,CV_32F);
 
+                label.at<float>(0,0) = totalImages;
+                label.at<float>(0,1) = totalImages;
+                labels.push_back(label);
+                fout << is.getImageInfo() << ";" << totalImages << endl;
+
+                totalImages++;
 
             } else  {
-                cout << "Missed A" << endl;
+               cout << "A: " << is.getImageInfo() << endl;
             }
         } catch(const std::exception &e){
-            cout << e.what() << endl;
-            cout << "Missed B" << endl;
+            cout << "B: " << is.getImageInfo() << endl;
+            //cout << e.what() << endl;
+            //cout << "Missed B" << endl;
         } catch(...){
-            cout << "Missed C" << endl;
+            cout << "C: " << is.getImageInfo() << endl;
+            //cout << "Missed C" << endl;
         }
     }
     cout << "Writing files" << endl;
