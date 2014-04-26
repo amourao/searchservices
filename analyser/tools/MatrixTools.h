@@ -62,7 +62,7 @@ static void writeBinV2(string& file, vector<cv::Mat>& features, cv::Mat& labels,
 static void readBinV3(string& file, vector<cv::Mat>& features, cv::Mat& labels);
 static void writeBinV3(string& file, vector<cv::Mat>& features, cv::Mat& labels, bool append = false);
 static void readBinV3(string& file, vector<cv::Mat>& features, vector<vector<cv::KeyPoint> >& keypoints, cv::Mat& labels);
-static void writeBinV3(string& file, vector<cv::Mat>& features, vector<vector<cv::KeyPoint> >& keypoints, cv::Mat& labels, bool append = false);
+static void writeBinV3(string& file, cv::Mat& features, vector<cv::KeyPoint>& keypoints, cv::Mat& labels, bool append = false);
 
 static void keypointToMat(cv::KeyPoint& p, cv::Mat& m);
 static void matToKeypoint(cv::Mat& m, cv::KeyPoint& p);

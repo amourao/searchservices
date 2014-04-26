@@ -41,7 +41,6 @@ void* SIFTExtractor::createType(string& type, map<string,string>& params){
 void SIFTExtractor::extractFeatures(Mat& src,vector< cv::KeyPoint>& keypoints, Mat& features){
 	detector.detect( src, keypoints );
 	extractor.compute( src, keypoints, features);
-	features.convertTo(features,CV_32F);
 }
 
 

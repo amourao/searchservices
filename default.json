@@ -203,5 +203,7 @@
                 "algorithms": "cedd,fcth"
             }
         }
+    ],
+    "classifier": [
     ]
-} }    
+} }

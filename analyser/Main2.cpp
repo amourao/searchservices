@@ -1012,11 +1012,12 @@ void classifyAllImagesCondor(int argc, char *argv[]) {
 
 void classifyAllBlipImagesCondor(int argc, char *argv[]) {
 
-    //cout << "Loading" << endl;
-
     string paramFile(argv[1]);
     int myDivision = atoi(argv[2]);
-    int totalDivisions = atoi(argv[3]);
+    int divisionOffset = atoi(argv[3]);
+    int totalDivisions = atoi(argv[4]);
+    
+    myDivision += divisionOffset;
 
 	map<string,string> parameters;
 
@@ -1072,24 +1073,27 @@ void classifyAllBlipImagesCondor(int argc, char *argv[]) {
     int i = -1;
     int totalImages = 0;
     string lastCateg = "";
-
-    vector<Mat> fFeatures(fExtractors.size());
-    vector<vector<Mat> > kFeatures(kExtractors.size());
-    vector<vector<vector<KeyPoint> > > kPoints(kExtractors.size());
-    Mat labels;
-
-
+    
     for (int j = 0; j < imagesToProcess; j++) {
         try{
             src = is.nextImage();
 
             //cout <<  StringTools::split(is.getCurrentImageInfoField(0),'.')[0] << endl;
             if (!src.empty()){
+            	Mat labels(1,2,CV_32F);
+
+                labels.at<float>(0,0) = totalImages;
+                labels.at<float>(0,1) = totalImages;
 
                 for(uint i = 0; i < fExtractors.size(); i++){
                     Mat features;
                     fExtractors.at(i)->extractFeatures(src,features);
-                    fFeatures.at(i).push_back(features);
+                	stringstream ss;
+			        ss << "blip_" << fExtractors.at(i)->getName() << "_";
+			        ss << std::setw(2) << std::setfill('0') << myDivision << ".bin";
+			        string filename = ss.str();
+			        MatrixTools::writeBinV2(filename,features,labels,true);
+			        features.release();
                 }
 
 
@@ -1097,8 +1101,13 @@ void classifyAllBlipImagesCondor(int argc, char *argv[]) {
                     Mat features;
                     vector<KeyPoint> keypoints;
                     kExtractors.at(i)->extractFeatures(src,keypoints,features);
-                    kFeatures.at(i).push_back(features);
-                    kPoints.at(i).push_back(keypoints);
+
+                    stringstream ss;
+        			ss << "blip_" << kExtractors.at(i)->getName() << "_";
+        			ss << std::setw(2) << std::setfill('0') << myDivision << ".bin";
+        			string filename = ss.str();
+        			MatrixTools::writeBinV3(filename,features,keypoints,labels,true);
+        			features.release();
                 }
 
                 foutRoi << is.getImageInfo() << ";" << totalImages << endl;
@@ -1112,14 +1121,12 @@ void classifyAllBlipImagesCondor(int argc, char *argv[]) {
                     }
                 }
                 foutRoi << endl;
-                Mat label(1,2,CV_32F);
 
-                label.at<float>(0,0) = totalImages;
-                label.at<float>(0,1) = totalImages;
-                labels.push_back(label);
                 fout << is.getImageInfo() << ";" << totalImages << endl;
 
                 totalImages++;
+                labels.release();
+                src.release();
 
             } else  {
                cout << "A: " << is.getImageInfo() << endl;
@@ -1133,24 +1140,6 @@ void classifyAllBlipImagesCondor(int argc, char *argv[]) {
             //cout << "Missed C" << endl;
         }
     }
-    cout << "Writing files" << endl;
-    for(uint i = 0; i < fExtractors.size(); i++){
-        stringstream ss;
-        ss << "blip_" << fExtractors.at(i)->getName() << "_";
-        ss << std::setw(2) << std::setfill('0') << myDivision << ".bin";
-        string filename = ss.str();
-        MatrixTools::writeBinV2(filename,fFeatures.at(i),labels);
-    }
-
-    for(uint i = 0; i < kExtractors.size(); i++){
-        stringstream ss;
-        ss << "blip_" << kExtractors.at(i)->getName() << "_";
-        ss << std::setw(2) << std::setfill('0') << myDivision << ".bin";
-        string filename = ss.str();
-        MatrixTools::writeBinV3(filename,kFeatures.at(i),kPoints.at(i),labels);
-    }
-    cout << "Writing files: DONE" << endl;
-
 }
 
 
@@ -1239,7 +1228,7 @@ int main(int argc, char *argv[])
     //extractAllFeaturesCK(argc, argv);
 	//testMSIDXIndexer(argc, argv);
 
-    testBinFormat(argc, argv);
+    classifyAllBlipImagesCondor(argc, argv);
     //classifyAllBlipImagesCondor(argc, argv);
 
     return 0;

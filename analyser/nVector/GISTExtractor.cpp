@@ -98,7 +98,8 @@ void GISTExtractor::extractFeatures(Mat& src, Mat& dst){
     for (int i = 0; i < descsize; i++)
         newDst.at<float>(0,i) = desc[i];
 
-    delete im;
+    delete[] im;
+    delete[] desc;
     newDst.copyTo(dst);
 }
 

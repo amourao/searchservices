@@ -386,7 +386,6 @@ void MatrixTools::writeBinV3(string& filename, vector<cv::Mat>& features, cv::Ma
     int signature,binV;
 
     if (!append || isEmpty){
-        cout << "empty" << endl;
         signature = BIN_SIGNATURE_INT;
         binV = NBIN_VERSION;
 
@@ -474,16 +473,15 @@ void MatrixTools::readBinV3(string& file, vector<cv::Mat>& features, vector<vect
 
 }
 
-void MatrixTools::writeBinV3(string& file, vector<cv::Mat>& features, vector<vector<cv::KeyPoint> >& keypoints, cv::Mat& labels, bool append){
+void MatrixTools::writeBinV3(string& file, cv::Mat& features, vector<cv::KeyPoint>& keypoints, cv::Mat& labels, bool append){
     std::vector<cv::Mat> descKeypoints;
 
-    for (uint i = 0; i < keypoints.size(); i++){
         Mat descKeypointsMat;
         Mat keypointsMat;
-        MatrixTools::keypointsToMats(keypoints.at(i),keypointsMat);
-        cv::hconcat(keypointsMat,features.at(i),descKeypointsMat);
+        MatrixTools::keypointsToMats(keypoints,keypointsMat);
+        cv::hconcat(keypointsMat,features,descKeypointsMat);
         descKeypoints.push_back(descKeypointsMat);
-    }
+
     MatrixTools::writeBinV3(file,descKeypoints,labels,append);
 }
 
