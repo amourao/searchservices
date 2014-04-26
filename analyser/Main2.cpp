@@ -1017,6 +1017,7 @@ void classifyAllBlipImagesCondor(int argc, char *argv[]) {
     int divisionOffset = atoi(argv[3]);
     int totalDivisions = atoi(argv[4]);
     
+
     myDivision += divisionOffset;
 
 	map<string,string> parameters;
@@ -1043,7 +1044,7 @@ void classifyAllBlipImagesCondor(int argc, char *argv[]) {
     int imagesToProcess = (imageCount/totalDivisions)+1;
     int startAt = imagesToProcess*myDivision;
 
-    if ((imageCount+startAt)>imageCount){
+    if ((imagesToProcess+startAt)>imageCount){
         imagesToProcess = imageCount-startAt;
     }
 
