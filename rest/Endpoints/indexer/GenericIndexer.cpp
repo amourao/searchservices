@@ -12,6 +12,8 @@ GenericIndexer::GenericIndexer(){
 
 }
 
+//http://ariadne:9383/genericIndexer?action=create&trainData=/home/amourao/data/blip/blip_gist883_fixed.bin&analyser=gist883&indexer=linearIndexer&task=blip
+//ariadne:9383/genericIndexer?action=retrieve&type=normal&analyser=gist883&indexer=linearIndexer&task=blip&output=json&url=http://andremourao.com/wp-content/uploads/2013/07/cropped-passe_square.png&n=100
 GenericIndexer::~GenericIndexer(){}
 
 void* GenericIndexer::createType(string& type){
@@ -152,7 +154,7 @@ string GenericIndexer::retrieve(map<string, string> parameters){
 string GenericIndexer::create(map<string, string> parameters){
 	FileDownloader fd;
 
-	string filename = fd.getFile(parameters["trainData"]);
+	string filename = parameters["trainData"];
 	string analyserName = parameters["analyser"];
 	string indexerName = parameters["indexer"];
 	string taskName = parameters["task"];
