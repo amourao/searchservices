@@ -38,7 +38,7 @@ public:
 
 private:
     string type;
-	SiftFeatureDetector detector;
-	SiftDescriptorExtractor extractor;
+	SiftFeatureDetector* detector;
+	SiftDescriptorExtractor* extractor;
 };
 

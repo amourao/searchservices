@@ -1081,11 +1081,19 @@ void classifyAllBlipImagesCondor(int argc, char *argv[]) {
 
             //cout <<  StringTools::split(is.getCurrentImageInfoField(0),'.')[0] << endl;
             if (!src.empty()){
+
+            	foutRoi << is.getImageInfo() << ";" << totalImages << ";" << totalImages+startAt  <<endl;
+                fout << is.getImageInfo() << ";" << totalImages << ";" << totalImages+startAt << endl;
+
+                
+
             	Mat labels(1,2,CV_32F);
 
-                labels.at<float>(0,0) = totalImages;
+                labels.at<float>(0,0) = totalImages + startAt;
                 labels.at<float>(0,1) = totalImages;
 
+
+                totalImages++;
                 for(uint i = 0; i < fExtractors.size(); i++){
                     Mat features;
                     fExtractors.at(i)->extractFeatures(src,features);
@@ -1111,21 +1119,17 @@ void classifyAllBlipImagesCondor(int argc, char *argv[]) {
         			features.release();
                 }
 
-                foutRoi << is.getImageInfo() << ";" << totalImages << endl;
                 for(uint i = 0; i < rExtractors.size(); i++){
                     map<string,region> features;
                     rExtractors.at(i)->extractFeatures(src,features);
                     map<string,region>::iterator iter;
                     for (iter = features.begin(); iter != features.end(); ++iter){
-                        foutRoi << totalImages << ";" << iter->second.annotationType << ";" << iter->second.x << ";" << iter->second.y << ";";
+                        foutRoi << totalImages-1 << ";" << iter->second.annotationType << ";" << iter->second.x << ";" << iter->second.y << ";";
                         foutRoi << iter->second.width << ";" << iter->second.height << endl;
                     }
                 }
                 foutRoi << endl;
 
-                fout << is.getImageInfo() << ";" << totalImages << endl;
-
-                totalImages++;
                 labels.release();
                 src.release();
 
@@ -1134,8 +1138,8 @@ void classifyAllBlipImagesCondor(int argc, char *argv[]) {
             }
         } catch(const std::exception &e){
             cout << "B: " << is.getImageInfo() << endl;
-            //cout << e.what() << endl;
-            //cout << "Missed B" << endl;
+            cout << e.what() << endl;
+            cout << "Missed B" << endl;
         } catch(...){
             cout << "C: " << is.getImageInfo() << endl;
             //cout << "Missed C" << endl;
