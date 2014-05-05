@@ -3,6 +3,7 @@
 #include <sstream>
 #include <cstdlib>
 #include <opencv2/features2d/features2d.hpp>
+#include <opencv2/nonfree/nonfree.hpp>
 #include <time.h>
 //#include <math>
 
@@ -1052,6 +1053,14 @@ void classifyAllBlipImagesCondor(int argc, char *argv[]) {
 
 	Mat src;
 
+
+	Mat vocabulary, labelsAll;
+	string outV = "/localstore/amourao/code/vocabulary.bin";
+	MatrixTools::readBinV2(outV,vocabulary,labelsAll);
+	BOWImgDescriptorExtractor bowMatcher(DescriptorExtractor::create("SIFT"),DescriptorMatcher::create("BruteForce"));
+	bowMatcher.setVocabulary(vocabulary);
+
+
     vector<FeatureExtractor*> fExtractors;
     vector<KeypointFeatureExtractor*> kExtractors;
     vector<RoiFeatureExtractor*> rExtractors;
@@ -1082,6 +1091,7 @@ void classifyAllBlipImagesCondor(int argc, char *argv[]) {
             //cout <<  StringTools::split(is.getCurrentImageInfoField(0),'.')[0] << endl;
             if (!src.empty()){
 
+            	foutRoi << endl;
             	foutRoi << is.getImageInfo() << ";" << totalImages << ";" << totalImages+startAt  <<endl;
                 fout << is.getImageInfo() << ";" << totalImages << ";" << totalImages+startAt << endl;
 
@@ -1117,6 +1127,15 @@ void classifyAllBlipImagesCondor(int argc, char *argv[]) {
         			string filename = ss.str();
         			MatrixTools::writeBinV3(filename,features,keypoints,labels,true);
         			features.release();
+        			//if (kExtractors.at(i)->getName() == "SIFTExtractor"){
+        				Mat imgDescriptor;
+        				bowMatcher.compute(src, keypoints, imgDescriptor);
+        				stringstream ss2;
+        				ss2 << "blip_" << kExtractors.at(i)->getName() << "_bow_";
+        				ss2 << std::setw(2) << std::setfill('0') << myDivision << ".bin";
+        				string filename2 = ss2.str();
+        				MatrixTools::writeBinV2(filename2,imgDescriptor,labels,true);
+        			//}
                 }
 
                 for(uint i = 0; i < rExtractors.size(); i++){
@@ -1128,8 +1147,7 @@ void classifyAllBlipImagesCondor(int argc, char *argv[]) {
                         foutRoi << iter->second.width << ";" << iter->second.height << endl;
                     }
                 }
-                foutRoi << endl;
-
+                
                 labels.release();
                 src.release();
 
@@ -1218,6 +1236,75 @@ int testBinFormat(int argc, char *argv[]){
     waitKey();
 }
 
+int createBlipKnnVWDict(int argc, char *argv[]){
+
+	/*
+	string paramFile(argv[1]);
+
+	vector<cv::Mat> features;
+	vector<vector<cv::KeyPoint> > keypoints;
+	cv::Mat labels;
+
+	cout << "reading" << endl;
+	MatrixTools::readBinV3(paramFile,features,keypoints,labels);
+
+	Mat bigFeatures;
+
+	int maxSize = 500000;
+	int K = 1000;
+
+	cout << "making big mat" << endl;
+	for(uint i = 0; i < features.size() && bigFeatures.rows < maxSize; i++)
+		bigFeatures.push_back(features.at(i));
+	cout << "bigFeatures: "<< bigFeatures.rows << " " << bigFeatures.cols << endl;
+	Mat bestLabels, clustered;
+	Mat centers(K, bigFeatures.cols, CV_32F);
+
+	cout << "Training kmeans" << endl;
+	BOWKMeansTrainer bowTrainer (K, TermCriteria( CV_TERMCRIT_ITER, 50, 1),5, KMEANS_PP_CENTERS);
+	bowTrainer.add(bigFeatures);
+	cout << "running kmeans" << endl;
+	Mat vocabulary = bowTrainer.cluster();*/
+	cout << "read vocabulary" << endl;
+
+	Mat vocabulary, labelsAll;
+	string outV = "/localstore/amourao/blip/vocabulary.bin";
+	MatrixTools::readBinV2(outV,vocabulary,labelsAll);
+	
+	cout << "setting vocabulary" << endl;
+	Ptr<FeatureDetector> detector = new SiftFeatureDetector(0, // nFeatures
+                                                        4, // nOctaveLayers
+                                                        0.04, // contrastThreshold
+                                                        10, //edgeThreshold
+                                                        1.6 //sigma
+                                                        );
+	BOWImgDescriptorExtractor bowMatcher(DescriptorExtractor::create("SIFT"),DescriptorMatcher::create("BruteForce"));
+	bowMatcher.setVocabulary(vocabulary);
+
+	Mat imgDescriptor;
+	vector<KeyPoint> keypoints2;
+	Mat image = imread("/home/amourao/code/searchservices/bush.jpg");
+	detector->detect(image, keypoints2);
+
+	cout << "extracting demo image" << endl;
+	bowMatcher.compute(image, keypoints2, imgDescriptor);
+
+	Mat tempLabels;
+
+	
+	string outD = "/localstore/amourao/blip/descriptor.bin";
+
+	cout << "writing outfiles" << endl;
+
+	
+	cout << bowMatcher.descriptorSize() << " " << bowMatcher.descriptorType() << endl;
+	cout << image.cols << " " << image.rows << endl;
+	cout << imgDescriptor.cols << " " << imgDescriptor.rows << endl;
+
+	MatrixTools::writeBinV2(outD,imgDescriptor,tempLabels);
+	
+}
+
 int main(int argc, char *argv[])
 {
 	//testLoadSaveIClassifier(argc, argv);
@@ -1233,8 +1320,9 @@ int main(int argc, char *argv[])
     //extractAllFeaturesCK(argc, argv);
 	//testMSIDXIndexer(argc, argv);
 
-    classifyAllBlipImagesCondor(argc, argv);
     //classifyAllBlipImagesCondor(argc, argv);
+    classifyAllBlipImagesCondor(argc, argv);
 
+	//createBlipKnnVWDict(argc, argv);
     return 0;
 }

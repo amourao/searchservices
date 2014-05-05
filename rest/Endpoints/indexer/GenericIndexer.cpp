@@ -1,6 +1,8 @@
 #include "GenericIndexer.h"
 
-static GenericIndexer mdicalImageClassifierEndpointFactory;
+static GenericIndexer indexerEndpointFactory;
+
+static map<string,IIndexer*> indexerInstances;
 
 GenericIndexer::GenericIndexer(string type){
 	this->type = type;
@@ -70,14 +72,23 @@ string GenericIndexer::retrieve(map<string, string> parameters){
     string taskName = parameters["task"];
     string retrievalType = parameters["type"];
     string outputFormat = parameters["output"];
-    int n = atoi(parameters["n"].c_str());
+    string outputType = parameters["retrievalOutput"];
 
-    FactoryIndexer * fc = FactoryIndexer::getInstance();
-    IIndexer* indexer = (IIndexer*)fc->createType(indexerName);
+    int n = atoi(parameters["n"].c_str());
 
     stringstream ss;
     ss << taskName << "_" << analyserName << "_" << indexerName;
-    indexer->load(ss.str());
+  	
+
+    IIndexer* indexer;
+    if (indexerInstances.count(ss.str()) == 0){
+    	FactoryIndexer * fc = FactoryIndexer::getInstance();
+    	indexer = (IIndexer*)fc->createType(indexerName);
+  	  	indexer->load(ss.str());
+  	  	indexerInstances[ss.str()] = indexer;
+	} else {
+		indexer = indexerInstances[ss.str()];
+	}
 
     FactoryAnalyser * f = FactoryAnalyser::getInstance();
     IAnalyser* analyser= (IAnalyser*)f->createType(analyserName);
@@ -90,11 +101,18 @@ string GenericIndexer::retrieve(map<string, string> parameters){
         vector<float>* features = (vector<float>*) data->getValue();
         std::pair< vector<string>, vector<float> > resultList;
 
-        if (retrievalType == "normal"){
+        if (retrievalType == "normal" && outputType == "name"){
             resultList = indexer->knnSearchName(*features,n);
-        } else if (retrievalType == "radius"){
+        } else if (retrievalType == "normal" && outputType == "id"){
+            std::pair< vector<float>, vector<float> > resultListF = indexer->knnSearchId(*features,n);
+            resultList = idToLabels(resultListF);
+        } else if (retrievalType == "radius" && outputType == "name"){
             float radius = atof(parameters["radius"].c_str());
             resultList = indexer->radiusSearchName(*features,radius,n);
+        } else if (retrievalType == "radius" && outputType == "id"){
+            float radius = atof(parameters["radius"].c_str());
+            std::pair< vector<float>, vector<float> > resultListF = indexer->radiusSearchId(*features,radius,n);
+            resultList = idToLabels(resultListF);
         }
         resultLists.push_back(resultList);
 
@@ -110,7 +128,9 @@ string GenericIndexer::retrieve(map<string, string> parameters){
             Json::Value distArray(Json::arrayValue);
             std::pair< vector<string>, vector<float> > resultList = resultLists.at(j);
             for (int i = 0; i < resultList.first.size(); i++){
-                featureArray.append(resultList.first.at(i));
+            	Json::Value tmp;
+            	tmp["id"] = resultList.first.at(i);
+                featureArray.append(tmp);
                 distArray.append(resultList.second.at(i));
 			}
 			Json::Value pairArray;
@@ -188,3 +208,16 @@ string GenericIndexer::create(map<string, string> parameters){
 	ssJ << root;
 	return ssJ.str();
 }
+
+std::pair< vector<string>, vector<float> > GenericIndexer::idToLabels(std::pair< vector<float>, vector<float> > v1){
+		vector<string> result;
+
+		for(uint i = 0; i < v1.first.size(); i++){
+				stringstream ss;
+				ss << v1.first.at(i);
+				string s = ss.str();
+				result.push_back(s);
+		}
+
+		return make_pair(result,v1.second);
+	}

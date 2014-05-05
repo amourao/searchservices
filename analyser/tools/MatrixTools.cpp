@@ -214,9 +214,10 @@ void MatrixTools::readBinV2(string& file, vector<cv::Mat>& features, cv::Mat& la
 			ifs.read( (char*) &value, sizeof(value));
 			tmpLabels.push_back(value);
 		}
-		transpose(tmpLabels, tmpLabels);
-		labels.push_back(tmpLabels);
-
+		if (!tmpLabels.empty()){
+			transpose(tmpLabels, tmpLabels);
+			labels.push_back(tmpLabels);
+		}
 		Mat featureMatrix (dimsY,dimsX,CV_32F);
 		for (int x = 0; x < dimsX; x++) {
 			for (int y = 0; y < dimsY; y++) {

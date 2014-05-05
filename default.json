@@ -1,7 +1,7 @@
 {"parameters": {
     "port" : "9383",
-    "vectorAnalysers" : "gist883",
-    "roiAnalysers": "faceDetectorNoEyes,carDetector,faceSide,pedestrian",
+    "vectorAnalysers2" : "gist883",
+    "roiAnalysers2": "faceDetectorNoEyes,carDetector,faceSide,pedestrian",
     "pointAnalysers": "sift0",
 
     "infilename0": "/media/Share/data/blipListParsed",
