@@ -156,6 +156,8 @@
 		<Unit filename="analyser/nVector/LireExtractor.h" />
 		<Unit filename="analyser/nVector/NullExtractor.cpp" />
 		<Unit filename="analyser/nVector/NullExtractor.h" />
+		<Unit filename="analyser/nVector/SIFTBowExtractor.cpp" />
+		<Unit filename="analyser/nVector/SIFTBowExtractor.h" />
 		<Unit filename="analyser/nVector/SegmentedHistogramExtractor.cpp" />
 		<Unit filename="analyser/nVector/SegmentedHistogramExtractor.h" />
 		<Unit filename="analyser/nVector/gist.c">

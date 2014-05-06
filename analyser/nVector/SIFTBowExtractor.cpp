@@ -15,14 +15,9 @@ SIFTBowExtractor::SIFTBowExtractor(string& _type, map<string,string>& params){
 
     if (params.size() > 0){
         loadVocabulary(params["vocabulary"]);
-		detector = new SiftFeatureDetector(0, // nFeatures
-                                                        4, // nOctaveLayers
-                                                        0.04, // contrastThreshold
-                                                        10, //edgeThreshold
-                                                        1.6 //sigma
-                                                        );
-		bowMatcher = BOWImgDescriptorExtractor(DescriptorExtractor::create("SIFT"),DescriptorMatcher::create("BruteForce"));
-		bowMatcher.setVocabulary(vocabulary);
+		detector = new SiftFeatureDetector(0, 4, 0.04, 10, 1.6);
+		bowMatcher = new BOWImgDescriptorExtractor(DescriptorExtractor::create("SIFT"),DescriptorMatcher::create("BruteForce"));
+		bowMatcher->setVocabulary(vocabulary);
 	}
 }
 
@@ -41,7 +36,8 @@ void* SIFTBowExtractor::createType(string& type, map<string,string>& params){
 }
 
 void SIFTBowExtractor::loadVocabulary(string trainDataFile){
-	vocabulary = readFile(trainDataFile);	
+    Mat l;
+	MatrixTools::readBinV2(trainDataFile,vocabulary,l);
 }
 
 void SIFTBowExtractor::load(string xmlDataFile){
@@ -53,11 +49,11 @@ void SIFTBowExtractor::save(string xmlDataFile){
 void SIFTBowExtractor::extractFeatures(Mat& src, Mat& dst){
 	vector<KeyPoint> keypoints;
 	detector->detect(src, keypoints);
-	bowMatcher.compute(src, keypoints, dst);
+	bowMatcher->compute(src, keypoints, dst);
 }
 
 int SIFTBowExtractor::getFeatureVectorSize(){
-	return bowMatcher.descriptorSize();
+	return bowMatcher->descriptorSize();
 }
 
 string SIFTBowExtractor::getName(){
