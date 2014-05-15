@@ -11,7 +11,7 @@
     "infilename3": "/media/Share/data/CarData/testData.txt",
 
     "outfilename": "/localstore/amourao/blip/Dev/Shots/blipList_n_",
-    "outfilenameROI": "/localstore/amourao/blip/Dev/Shots/blipList_roi_"
+    "outfilenameROI": "/localstore/amourao/blip/Dev/Shots/blipList_k_"
     
     },
  "endpoints": {
@@ -201,6 +201,12 @@
             "originalName": "CombinedExtractor",
             "params": {
                 "algorithms": "cedd,fcth"
+            }
+        },{
+            "newName": "SIFTBowBlip",
+            "originalName": "SIFTBowExtractor",
+            "params": {
+                "vocabulary": "/localstore/amourao/code/vocabulary.bin"
             }
         }
     ],

@@ -1091,8 +1091,8 @@ void classifyAllBlipImagesCondor(int argc, char *argv[]) {
             //cout <<  StringTools::split(is.getCurrentImageInfoField(0),'.')[0] << endl;
             if (!src.empty()){
 
-            	foutRoi << endl;
-            	foutRoi << is.getImageInfo() << ";" << totalImages << ";" << totalImages+startAt  <<endl;
+            	//foutRoi << endl;
+            	//foutRoi << is.getImageInfo() << ";" << totalImages << ";" << totalImages+startAt  <<endl;
                 fout << is.getImageInfo() << ";" << totalImages << ";" << totalImages+startAt << endl;
 
                 
@@ -1125,7 +1125,7 @@ void classifyAllBlipImagesCondor(int argc, char *argv[]) {
         			ss << "blip_" << kExtractors.at(i)->getName() << "_";
         			ss << std::setw(2) << std::setfill('0') << myDivision << ".bin";
         			string filename = ss.str();
-        			MatrixTools::writeBinV3(filename,features,keypoints,labels,true);
+        			//MatrixTools::writeBinV3(filename,features,keypoints,labels,true);
         			features.release();
         			//if (kExtractors.at(i)->getName() == "SIFTExtractor"){
         				Mat imgDescriptor;
@@ -1134,7 +1134,8 @@ void classifyAllBlipImagesCondor(int argc, char *argv[]) {
         				ss2 << "blip_" << kExtractors.at(i)->getName() << "_bow_";
         				ss2 << std::setw(2) << std::setfill('0') << myDivision << ".bin";
         				string filename2 = ss2.str();
-        				MatrixTools::writeBinV2(filename2,imgDescriptor,labels,true);
+        				//MatrixTools::writeBinV2(filename2,imgDescriptor,labels,true);
+        				foutRoi << totalImages+startAt << ";" << is.getImageInfo() <<endl; 
         			//}
                 }
 
@@ -1143,8 +1144,8 @@ void classifyAllBlipImagesCondor(int argc, char *argv[]) {
                     rExtractors.at(i)->extractFeatures(src,features);
                     map<string,region>::iterator iter;
                     for (iter = features.begin(); iter != features.end(); ++iter){
-                        foutRoi << totalImages-1 << ";" << iter->second.annotationType << ";" << iter->second.x << ";" << iter->second.y << ";";
-                        foutRoi << iter->second.width << ";" << iter->second.height << endl;
+                        //foutRoi << totalImages-1 << ";" << iter->second.annotationType << ";" << iter->second.x << ";" << iter->second.y << ";";
+                        //foutRoi << iter->second.width << ";" << iter->second.height << endl;
                     }
                 }
                 
