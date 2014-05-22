@@ -235,16 +235,13 @@ void extractAllFeaturesCK(int argc, char *argv[]) {
 			lbpOwnNeutralD[is.getCurrentImageInfoField(1)] = lbpOwnNeutralTmp;
 		}
 
-		int isd = 0;
-		int isd2 = 50;
-
 		cv::Mat gaborOwnNeutral = gaborOwnNeutralD[is.getCurrentImageInfoField(1)];
 		cv::Mat lbpOwnNeutral = lbpOwnNeutralD[is.getCurrentImageInfoField(1)];
 
 		gaborOwnNeutralD[is.getCurrentImageInfoField(1)];
 		//float id;
 		//float detected;
-		float expected;
+		//float expected;
 
 		stringstream neutralPath;
 
@@ -474,8 +471,8 @@ int faceDetectionParameterChallenge(int argc, char *argv[]){
 	int facesDetected = 0;
 
 
-	int angles[] = {-20,20};
-	int anglesLen = 2;
+	//int angles[] = {-20,20};
+	//int anglesLen = 2;
 	while (!(src = is.nextImage()).empty()) {
 
 		vector<Mat> faceImages;
@@ -543,6 +540,8 @@ int faceDetectionParameterChallenge(int argc, char *argv[]){
 	lastT = cvGetTickCount();
 	double rem = (double)(lastT - startT) / ((double) cvGetTickFrequency() * 1000000);
 	cout << rem << " seconds elapsed" << endl;
+
+	return 0;
 }
 
 
@@ -551,7 +550,7 @@ void testMSIDXIndexer(int argc, char *argv[]){
 
 
 	int n = atoi(argv[2]);
-	int w = atoi(argv[3]);
+	//int w = atoi(argv[3]);
 	int k = atoi(argv[4]);
 
 	Mat features;
@@ -635,6 +634,8 @@ int merger(int argc, char *argv[]){
 	l1.push_back(l2);
 
 	MatrixTools::writeBinV2(c,t1,l1);
+
+	return 0;
 }
 
 //normalize(dst, dst, 0,255, CV_MINMAX);
@@ -778,15 +779,15 @@ void extractAllFeaturesCKv2(int argc, char *argv[]) {
 			gaborOwnNeutralD[is.getCurrentImageInfoField(1)] = gaborOwnNeutralTmp;
 		}
 
-		int isd = 0;
-		int isd2 = 50;
+		//int isd = 0;
+		//int isd2 = 50;
 
 		cv::Mat gaborOwnNeutral = gaborOwnNeutralD[is.getCurrentImageInfoField(1)];
 
 		gaborOwnNeutralD[is.getCurrentImageInfoField(1)];
 		//float id;
 		//float detected;
-		float expected;
+		//float expected;
 
 		stringstream neutralPath;
 
@@ -883,7 +884,7 @@ void classifyAllImages(int argc, char *argv[]) {
     paramsB["algorithm"] = "fcth";
     LireExtractor fcthExtractor (aa,paramsB);
 
-    int i = -1;
+    //int i = -1;
     int j = 0;
     string lastCateg = "";
 
@@ -965,8 +966,8 @@ void classifyAllImagesCondor(int argc, char *argv[]) {
     paramsB["algorithm"] = "fcth";
     LireExtractor fcthExtractor (aa,paramsB);
 
-    int i = -1;
-    int j = 0;
+    //int i = -1;
+    //int j = 0;
     string lastCateg = "";
 
     Mat features, labels;
@@ -1017,7 +1018,7 @@ void classifyAllBlipImagesCondor(int argc, char *argv[]) {
     int myDivision = atoi(argv[2]);
     int divisionOffset = atoi(argv[3]);
     int totalDivisions = atoi(argv[4]);
-    
+
 
     myDivision += divisionOffset;
 
@@ -1080,10 +1081,10 @@ void classifyAllBlipImagesCondor(int argc, char *argv[]) {
     for(uint i = 0; i < rExtractorsS.size(); i++)
         rExtractors.push_back((RoiFeatureExtractor*)FactoryAnalyser::getInstance()->createType(rExtractorsS.at(i)));
 
-    int i = -1;
+    //int i = -1;
     int totalImages = 0;
     string lastCateg = "";
-    
+
     for (int j = 0; j < imagesToProcess; j++) {
         try{
             src = is.nextImage();
@@ -1095,7 +1096,7 @@ void classifyAllBlipImagesCondor(int argc, char *argv[]) {
             	//foutRoi << is.getImageInfo() << ";" << totalImages << ";" << totalImages+startAt  <<endl;
                 fout << is.getImageInfo() << ";" << totalImages << ";" << totalImages+startAt << endl;
 
-                
+
 
             	Mat labels(1,2,CV_32F);
 
@@ -1135,7 +1136,7 @@ void classifyAllBlipImagesCondor(int argc, char *argv[]) {
         				ss2 << std::setw(2) << std::setfill('0') << myDivision << ".bin";
         				string filename2 = ss2.str();
         				//MatrixTools::writeBinV2(filename2,imgDescriptor,labels,true);
-        				foutRoi << totalImages+startAt << ";" << is.getImageInfo() <<endl; 
+        				foutRoi << totalImages+startAt << ";" << is.getImageInfo() <<endl;
         			//}
                 }
 
@@ -1148,7 +1149,7 @@ void classifyAllBlipImagesCondor(int argc, char *argv[]) {
                         //foutRoi << iter->second.width << ";" << iter->second.height << endl;
                     }
                 }
-                
+
                 labels.release();
                 src.release();
 
@@ -1177,6 +1178,9 @@ int testDatabaseConnection(int argc, char *argv[]){
     values.push_back("1471-2091-1-1-5");
 
     vector<map<string,string> > s = db.getRows("images","doi,iri,caption",keys,values,true,-1);
+
+    return 0;
+
 }
 
 int testBinFormat(int argc, char *argv[]){
@@ -1235,6 +1239,8 @@ int testBinFormat(int argc, char *argv[]){
         circle(originalGrayImage,keypoints.at(i).pt,1,CV_RGB(0,255,0));
     imshow("a",originalGrayImage);
     waitKey();
+
+    return 0;
 }
 
 int createBlipKnnVWDict(int argc, char *argv[]){
@@ -1271,7 +1277,7 @@ int createBlipKnnVWDict(int argc, char *argv[]){
 	Mat vocabulary, labelsAll;
 	string outV = "/localstore/amourao/blip/vocabulary.bin";
 	MatrixTools::readBinV2(outV,vocabulary,labelsAll);
-	
+
 	cout << "setting vocabulary" << endl;
 	Ptr<FeatureDetector> detector = new SiftFeatureDetector(0, // nFeatures
                                                         4, // nOctaveLayers
@@ -1292,18 +1298,20 @@ int createBlipKnnVWDict(int argc, char *argv[]){
 
 	Mat tempLabels;
 
-	
+
 	string outD = "/localstore/amourao/blip/descriptor.bin";
 
 	cout << "writing outfiles" << endl;
 
-	
+
 	cout << bowMatcher.descriptorSize() << " " << bowMatcher.descriptorType() << endl;
 	cout << image.cols << " " << image.rows << endl;
 	cout << imgDescriptor.cols << " " << imgDescriptor.rows << endl;
 
 	MatrixTools::writeBinV2(outD,imgDescriptor,tempLabels);
-	
+
+	return 0;
+
 }
 
 int main(int argc, char *argv[])

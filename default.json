@@ -23,6 +23,13 @@
                 "algorithm": "linear",
                 "distance": "EUCLIDEAN"
             }
+        },{
+            "newName": "linearIndexer",
+            "originalName": "SRIndexer",
+            "params": {
+                "algorithm": "linear",
+                "distance": "EUCLIDEAN"
+            }
         }
     ],
     "analyser": [

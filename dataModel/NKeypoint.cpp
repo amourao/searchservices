@@ -8,7 +8,7 @@ NKeypoint::NKeypoint(string url, string SQLTable, vector<pair<vector<float>,vect
 	this->value = value;
 	this->SQLTable = SQLTable;
 	this->rawSize = sizeof(int);
-	for(int i = 0; i < this->value.size(); i++){
+	for(uint i = 0; i < this->value.size(); i++){
 		this->rawSize+= sizeof(int)+value[i].first.size()*sizeof(float);
 		this->rawSize+= sizeof(int)+value[i].second.size()*sizeof(float);
 	}

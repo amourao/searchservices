@@ -60,26 +60,84 @@ public:
 		return radiusSearchName(vMat,radius,n);
 	}
 
+	virtual std::pair<vector<float>,vector<float> > knnSearchId(cv::Mat& features, int n){
+        arma::fmat vMat;
+		MatrixTools::matToFMat(features, vMat);
+        return knnSearchId(vMat,n);
+	}
 
-	virtual std::pair<vector<float>,vector<float> > knnSearchId(cv::Mat& features, int n) = 0;
+	virtual std::pair<vector<float>,vector<float> > knnSearchId(arma::fmat& features, int n){
+        cv::Mat vMat;
+		MatrixTools::fmatToMat(features, vMat);
+        return knnSearchId(vMat,n);
+	}
 
 	virtual std::pair<vector<string>,vector<float> > knnSearchName(cv::Mat& features, int n){
         std::pair<vector<float>,vector<float> > knnSearch = knnSearchId(features,n);
         return make_pair(idToLabels(knnSearch.first),knnSearch.second);
 	}
 
-	virtual std::pair<vector<float>,vector<float> > radiusSearchId(cv::Mat& features, double radius, int n = 1000) = 0;
+	virtual std::pair<vector<float>,vector<float> > radiusSearchId(cv::Mat& features, double radius, int n = 1000){
+        arma::fmat vMat;
+		MatrixTools::matToFMat(features, vMat);
+        return radiusSearchId(vMat,radius,n);
+	}
+
+	virtual std::pair<vector<float>,vector<float> > radiusSearchId(arma::fmat& features, double radius, int n = 1000){
+        cv::Mat vMat;
+		MatrixTools::fmatToMat(features, vMat);
+        return radiusSearchId(vMat,radius,n);
+	}
 
 	virtual std::pair<vector<string>,vector<float> > radiusSearchName(cv::Mat& features, double radius, int n = 1000){
         std::pair<vector<float>,vector<float> > rSearch = radiusSearchId(features,radius,n);
         return make_pair(idToLabels(rSearch.first),rSearch.second);
 	}
 
-    virtual void train(cv::Mat& featuresTrain,cv::Mat& featuresValidationI,cv::Mat& featuresValidationQ) = 0;
+	virtual std::pair<vector<string>,vector<float> > radiusSearchName(arma::fmat& features, double radius, int n = 1000){
+        std::pair<vector<float>,vector<float> > rSearch = radiusSearchId(features,radius,n);
+        return make_pair(idToLabels(rSearch.first),rSearch.second);
+	}
 
-	virtual void indexWithTrainedParams(cv::Mat& features) = 0;
+    virtual void train(cv::Mat& featuresTrain,cv::Mat& featuresValidationI,cv::Mat& featuresValidationQ){
+        arma::fmat vMat1,vMat2,vMat3;
+		MatrixTools::matToFMat(featuresTrain, vMat1);
+		MatrixTools::matToFMat(featuresValidationI, vMat2);
+		MatrixTools::matToFMat(featuresValidationQ, vMat3);
+        train(vMat1,vMat2,vMat3);
+    }
 
-	virtual void index(cv::Mat& features) = 0;
+    virtual void train(arma::fmat& featuresTrain,arma::fmat& featuresValidationI,arma::fmat& featuresValidationQ){
+        cv::Mat vMat1,vMat2,vMat3;
+		MatrixTools::fmatToMat(featuresTrain, vMat1);
+		MatrixTools::fmatToMat(featuresValidationI, vMat2);
+		MatrixTools::fmatToMat(featuresValidationQ, vMat3);
+        train(vMat1,vMat2,vMat3);
+    }
+
+	virtual void indexWithTrainedParams(cv::Mat& features){
+        arma::fmat vMat;
+		MatrixTools::matToFMat(features, vMat);
+        indexWithTrainedParams(vMat);
+    }
+
+	virtual void indexWithTrainedParams(arma::fmat& features){
+        cv::Mat vMat;
+		MatrixTools::fmatToMat(features, vMat);
+        indexWithTrainedParams(vMat);
+    }
+
+	virtual void index(cv::Mat& features){
+        arma::fmat vMat;
+		MatrixTools::matToFMat(features, vMat);
+        index(vMat);
+	}
+
+	virtual void index(arma::fmat& features){
+        cv::Mat vMat;
+		MatrixTools::fmatToMat(features, vMat);
+        index(vMat);
+	}
 
 	vector<string> idToLabels(vector<float> v1){
 		vector<string> result;

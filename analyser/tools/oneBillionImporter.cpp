@@ -9,7 +9,11 @@ void oneBillionImporter::readBin(std::string filenamep, int numberOfRows, cv::Ma
 
     int dimensions;
 
-    fread(&dimensions,sizeof(int),1,out);
+    if (fread(&dimensions,sizeof(int),1,out) == 0){
+        std::cout << "error: cannot read begininig of file" << std::endl;
+        return;
+    }
+
 
     features = cv::Mat(numberOfRows,dimensions,CV_32F);
 
@@ -20,13 +24,16 @@ void oneBillionImporter::readBin(std::string filenamep, int numberOfRows, cv::Ma
 		for (int i=0;i<numberOfRows;i++){
 
         int currDimensions = 0;
-  			fread(&currDimensions,sizeof(int),1,out);
+  			if (fread(&currDimensions,sizeof(int),1,out) == 0){
+                std::cout << "error: cannot read middle of file" << std::endl;
+                return;
+            }
 	   		if(currDimensions != dimensions){
           features = cv::Mat();
          std::cout << "error: dims dont match" << std::endl;
           return;
         }
-        
+
       if( ferror( out ) )      {
         features = cv::Mat();
          std::cout << "error: EOF reached" << std::endl;
@@ -35,11 +42,13 @@ void oneBillionImporter::readBin(std::string filenamep, int numberOfRows, cv::Ma
 
         for (int g = 0; g < dimensions; g++){
           float aa = 0;
-          fread(&aa,sizeof(float),1,out);
-
-                if( ferror( out ) )      {
+          if (fread(&aa,sizeof(float),1,out) == 0){
+                std::cout << "error: cannot read middle of file" << std::endl;
+                return;
+          }
+        if( ferror( out ) )      {
                   features = cv::Mat();
-         std::cout << "error: EOF reached" << std::endl;
+                    std::cout << "error: EOF reached" << std::endl;
           return;
       }
 

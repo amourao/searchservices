@@ -62,7 +62,7 @@ float SRClassifier::classify( cv::Mat query){
 
 void SRClassifier::train(arma::fmat _trainData, arma::fmat trainLabels){
 
-	int i = 0;
+	//int i = 0;
 	trainData = trans(_trainData);
 	//l1min::FISTA::option_type opt;
 	//opt.eps = 1e-7;
@@ -88,7 +88,6 @@ void SRClassifier::train(arma::fmat _trainData, arma::fmat trainLabels){
 
 
 float SRClassifier::classify(arma::fmat query, double* error, arma::fmat* recErrors){
-	int trash = 0;
 
 	query = trans(query);
 	vector<int> correctGuesses(numberOfClasses,0);
@@ -107,12 +106,11 @@ float SRClassifier::classify(arma::fmat query, double* error, arma::fmat* recErr
 	float minFromReconstruct = FLT_MAX;
 	float detectedLabelFromReconstruct= -1;
 	arma::fmat bestReconstruction;
-	double bestMultiFactor = -1;
+	//double bestMultiFactor = -1;
 	if(recErrors != NULL)
 		recErrors->set_size(labelsCute.n_rows,2);
 
 	for (int j = 0; j < numberOfClasses; j++){
-		int trash2 = 0;
 
 		if (correctGuesses.at(j) != 0){
 
@@ -137,7 +135,7 @@ float SRClassifier::classify(arma::fmat query, double* error, arma::fmat* recErr
 
 
 
-			double multiFactor = arma::mean(arma::mean(reconstruction/query));
+			//double multiFactor = arma::mean(arma::mean(reconstruction/query));
 			float reconstructionError;
 			reconstructionError = norm(reconstruction-query,2);
 
@@ -146,7 +144,7 @@ float SRClassifier::classify(arma::fmat query, double* error, arma::fmat* recErr
 				minFromReconstruct = reconstructionError;
 				detectedLabelFromReconstruct = j;
 				bestReconstruction = reconstruction;
-				bestMultiFactor = multiFactor;
+				//bestMultiFactor = multiFactor;
 			}
 		}
 

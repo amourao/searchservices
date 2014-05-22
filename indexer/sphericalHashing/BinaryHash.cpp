@@ -135,7 +135,7 @@ void SphericalHashing::Compute_Num_Overlaps(int **overlaps)
 */
 void SphericalHashing::Set_Spheres()
 {
-	float	marginT = 0.05;
+	//float	marginT = 0.05;
 
 	double allowedErrorMean, allowedErrorVar;
 	allowedErrorMean = (double)tps.nP * overRatio * epsMean;

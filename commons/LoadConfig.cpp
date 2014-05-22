@@ -7,7 +7,7 @@ vector<IIndexer*> LoadConfig::getRegisteredIndeces(string filename){
 
     std::fstream file (filename.c_str(), std::fstream::in | std::fstream::out);
 
-    bool parsingSuccessful = reader.parse( file, root );
+    reader.parse( file, root );
 
     const Json::Value indexes = root["endpoints"]["indexer"];
 
@@ -29,7 +29,7 @@ void LoadConfig::load(string filename, map<string,string>& params, vector<IIndex
 
     std::fstream file (filename.c_str(), std::fstream::in | std::fstream::out);
 
-    bool parsingSuccessful = reader.parse( file, root );
+    reader.parse( file, root );
 
     const Json::Value parameters = root["parameters"];
 
@@ -69,7 +69,7 @@ void LoadConfig::generatePermutations(Json::Value root, vector<map<string,string
         mapIntName.push_back(itr.key().asString());
 
         if (innerArray.isArray()){
-            for ( int j = 0; j < innerArray.size(); j++ ){
+            for (uint j = 0; j < innerArray.size(); j++ ){
                 innerList.push_back(innerArray[j].asString());
             }
         } else {
@@ -81,13 +81,13 @@ void LoadConfig::generatePermutations(Json::Value root, vector<map<string,string
 
 
 
-    for(int i = 0; i < lists.at(0).size(); i++){
+    for(uint i = 0; i < lists.at(0).size(); i++){
         map<string,string> inner;
         inner[mapIntName.at(0)] = lists.at(0).at(i);
         combinations.push_back(inner);
     }
 
-    for(int i = 1; i < lists.size(); i++){
+    for(uint i = 1; i < lists.size(); i++){
         vector<string> next = lists.at(i);
         newCombinations = vector<map<string,string> >();
         for (vector<map<string,string> >::iterator it=combinations.begin(); it!=combinations.end(); ++it){ // *it
@@ -114,7 +114,7 @@ vector<IIndexer*> LoadConfig::registerIndeces(Json::Value plugins){
 
     vector<IIndexer*> indexers;
 
-    for ( int i = 0; i < plugins.size(); i++ ){
+    for (uint i = 0; i < plugins.size(); i++ ){
         const Json::Value p = plugins[i];
 
         string newName = p["newName"].asString();
@@ -127,7 +127,7 @@ vector<IIndexer*> LoadConfig::registerIndeces(Json::Value plugins){
 
         LoadConfig::generatePermutations(paramsJSON,allParams);
 
-        for( int j = 0; j < allParams.size(); j++){
+        for(uint j = 0; j < allParams.size(); j++){
             string newNameId;
             map<string,string> params = allParams.at(j);
             if (allParams.size() > 1){
@@ -153,7 +153,7 @@ vector<IAnalyser*> LoadConfig::registerAnalysers(Json::Value plugins){
 
     vector<IAnalyser*> analysers;
 
-    for ( int i = 0; i < plugins.size(); i++ ){
+    for (uint i = 0; i < plugins.size(); i++ ){
         const Json::Value p = plugins[i];
 
         string newName = p["newName"].asString();
@@ -165,7 +165,7 @@ vector<IAnalyser*> LoadConfig::registerAnalysers(Json::Value plugins){
 
         LoadConfig::generatePermutations(paramsJSON,allParams);
 
-        for( int j = 0; j < allParams.size(); j++){
+        for(uint j = 0; j < allParams.size(); j++){
             map<string,string> params = allParams.at(j);
             string newNameId;
             if (allParams.size() > 1){
@@ -190,7 +190,7 @@ vector<IClassifier*> LoadConfig::registerClassifiers(Json::Value plugins){
 
     vector<IClassifier*> analysers;
 
-    for ( int i = 0; i < plugins.size(); i++ ){
+    for (uint i = 0; i < plugins.size(); i++ ){
         const Json::Value p = plugins[i];
 
         string newName = p["newName"].asString();
@@ -203,7 +203,7 @@ vector<IClassifier*> LoadConfig::registerClassifiers(Json::Value plugins){
 
         LoadConfig::generatePermutations(paramsJSON,allParams);
 
-        for( int j = 0; j < allParams.size(); j++){
+        for(uint j = 0; j < allParams.size(); j++){
             map<string,string> params = allParams.at(j);
             string newNameId;
             if (allParams.size() > 1){
@@ -229,7 +229,7 @@ vector<IEndpoint*> LoadConfig::registerEndpoints(Json::Value plugins){
 
     vector<IEndpoint*> analysers;
 
-    for ( int i = 0; i < plugins.size(); i++ ){
+    for (uint i = 0; i < plugins.size(); i++ ){
         const Json::Value p = plugins[i];
 
         string newName = p["newName"].asString();
@@ -242,7 +242,7 @@ vector<IEndpoint*> LoadConfig::registerEndpoints(Json::Value plugins){
 
         LoadConfig::generatePermutations(paramsJSON,allParams);
 
-        for( int j = 0; j < allParams.size(); j++){
+        for(uint j = 0; j < allParams.size(); j++){
             map<string,string> params = allParams.at(j);
             string newNameId;
             if (allParams.size() > 1){

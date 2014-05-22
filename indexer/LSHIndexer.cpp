@@ -36,11 +36,11 @@ LSHIndexer::LSHIndexer(const string& type, map<string,string>& params){
             l = m;
         else
             l = m*(m-1.0)/2.0;
-        
+
         int w = atof(params["w"].c_str());
 
         int t = atof(params["t"].c_str());
-        
+
         int ht = atof(params["ht"].c_str());
 
         learnedParams.parameterR = r;
@@ -278,6 +278,7 @@ Mat LSHIndexer::pPointsTToMat(const PPointT *(&input), int d, int n){
     for(int i = 0; i < n; i++)
         for(int j = 0; j < d; j++)
             result.at<float>(i,j) = input[i]->coordinates[j];
+    return result;
 }
 
 vector<float> LSHIndexer::pPointsTToIndeces(PPointT *(&input), int n){

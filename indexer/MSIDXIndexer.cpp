@@ -121,7 +121,7 @@ int MSIDXIndexer::compareToMatCardinality(const cv::Mat& mat1, const cv::Mat& ma
 }
 
 std::pair<vector<float>,vector<float> > MSIDXIndexer::knnSearchId(cv::Mat& query, int k){
-    timestamp_type start, end;
+    //timestamp_type start, end;
     //get_timestamp(&start);
 	std::vector<float> indicesFloat;
 	std::vector<float> dists;

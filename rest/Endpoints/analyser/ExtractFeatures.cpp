@@ -19,10 +19,10 @@ ExtractFeatures::~ExtractFeatures()
 void* ExtractFeatures::createType(string& type){
 	//TODO
 	std::cout << "New type requested: " << type << std::endl;
-	
+
 	if (type == "/analyser" || (type == "/analyserSingleFile"))
 		return new ExtractFeatures(type);
-		
+
 	std::cerr << "Error registering type from constructor (this should never happen)" << std::endl;
 	return NULL;
 }
@@ -54,31 +54,31 @@ void ExtractFeatures::handleRequest(string method, map<string, string> queryStri
 }
 
 string ExtractFeatures::getFeaturesSingle(map<string, string > parameters){
-	
+
 	FileDownloader fd;
-	
+
 	string filename = fd.getFile(parameters["url"]);
 	string extractorName = parameters["extractor"];
-	
-	
+
+
 	FactoryAnalyser * f = FactoryAnalyser::getInstance();
 
 	f->listTypes();
 	IAnalyser* extractor= (IAnalyser*)f->createType(extractorName);
 	IDataModel* data = extractor->getFeatures(filename);
 	vector<float>* features = (vector<float>*) data->getValue();
-	
-	for (int i = 0; i < features->size(); i++){
+
+	for (uint i = 0; i < features->size(); i++){
 		cout << features->at(i) << " " ;
 	}
 	cout << endl;
 
 	Json::Value root;
 	Json::Value results;
-	
+
 	Json::Value featureArray(Json::arrayValue);
-	for (int i = 0; i < features->size(); i++){
-		
+	for (uint i = 0; i < features->size(); i++){
+
 		featureArray.append(features->at(i));
 		//cout << features->at(i) << " " ;
 	}
@@ -118,7 +118,7 @@ void ExtractFeatures::exportLabels(string filename, vector<map<string, int> > la
 	    ofstream labelData(ss.str().c_str());
 
 	    labelData << labels.at(i).size() << endl;
-	    
+
    	    for (iter = labels.at(i).begin(); iter != labels.at(i).end(); ++iter) {
 	    	sortedMap[iter->second] = iter->first;
 	    }
@@ -135,20 +135,20 @@ void ExtractFeatures::exportLabels(string filename, vector<map<string, int> > la
 }
 
 string ExtractFeatures::getFeatures(map<string, string > parameters){
-	
+
 	FileDownloader fd;
-	
+
 	string filename = parameters["input"];
 	string analyserName = parameters["analyser"];
 	string taskName = parameters["task"];
 	string outputLocation = parameters["output"];
-	
+
 	FactoryAnalyser * f = FactoryAnalyser::getInstance();
 
 	IAnalyser* analyser= (IAnalyser*)f->createType(analyserName);
 
 	Mat src, features, labels;
-	
+
 	TextFileSourceV2 is(filename);
 	cout << is.getImageCount() << endl;
 
@@ -159,14 +159,14 @@ string ExtractFeatures::getFeatures(map<string, string > parameters){
 	vector<map<string,int> > idsToInternalIds (imageInfoFieldCount);
 
 	for (int k = 0; k < is.getImageCount(); k++) {
-		if (!(src = is.nextImage()).empty()) { // src contains the image, but the IAnalyser interface needs a path 
+		if (!(src = is.nextImage()).empty()) { // src contains the image, but the IAnalyser interface needs a path
 			cv::Mat featuresRow;
 
 			cv::Mat label;
 			if (classFieldId == indexFieldId)
 				label = cv::Mat (1, imageInfoFieldCount+1, CV_32F);
 			else
-				label = cv::Mat (1, imageInfoFieldCount, CV_32F);	
+				label = cv::Mat (1, imageInfoFieldCount, CV_32F);
 
 
 			//parse the label from the info in the txt file
@@ -191,12 +191,12 @@ string ExtractFeatures::getFeatures(map<string, string > parameters){
 			}
 
 			path = is.getImagePath();
-			
+
 			IDataModel* data = analyser->getFeatures(path);
 			vector<float>* v = (vector<float>*) data->getValue();
 			vector<float> v2 = *v;
 			MatrixTools::vectorToMat(v2, featuresRow);
-			
+
 			//cout << featuresRow << endl;
 			// add the features to the main feature and label matrix
 			features.push_back(featuresRow);
@@ -216,7 +216,7 @@ string ExtractFeatures::getFeatures(map<string, string > parameters){
 		Mat featuresTrain = tt.getTrainingData();
 		Mat labelsTrain = tt.getTrainingLabels();
 
-		Mat featuresTest = tt.getTestData();	
+		Mat featuresTest = tt.getTestData();
 		Mat labelsTest = tt.getTestLabels();
 
 		stringstream ss;
@@ -226,24 +226,24 @@ string ExtractFeatures::getFeatures(map<string, string > parameters){
 		cout << featuresTest.rows << " " << featuresTest.cols << " " << labelsTest.rows << " " << labelsTest.cols << endl;
 
 		ss << outputLocation << ".train";
-		
+
 		string name = ss.str();
-		MatrixTools::writeBinV2(name,featuresTrain,labelsTrain);	
+		MatrixTools::writeBinV2(name,featuresTrain,labelsTrain);
 
 		stringstream ss2;
 		ss2 << outputLocation << ".test";
 		name = ss2.str();
-		MatrixTools::writeBinV2(name,featuresTest,labelsTest);	
+		MatrixTools::writeBinV2(name,featuresTest,labelsTest);
 	} else {
-		MatrixTools::writeBinV2(outputLocation,features,labels);	
+		MatrixTools::writeBinV2(outputLocation,features,labels);
 	}
 
-	
+
 	exportLabels(filename,idsToInternalIds);
 	/*
 	for(int i = 0; i < 8; i++)
 	{
-		
+
 		Json::Value tags;
 		result["id"] = rand() % 25000;
 		result["rank"] = rand() % 10;

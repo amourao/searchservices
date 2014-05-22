@@ -96,7 +96,7 @@ void SphericalHashIndexer::index(cv::Mat& features){
     matToPoints(features,dps);
     dataCenter = new float[ dps.dim ];
 	// compute mean position of data points
-	
+
 
     nP = features.rows;
     dims = features.cols;
@@ -143,16 +143,16 @@ std::pair<vector<float>,vector<float> > SphericalHashIndexer::knnSearchId(cv::Ma
     int nQ = 1;
 
 
-    timestamp_type start, end;
+    //timestamp_type start, end;
 
-    
+
     boost::dynamic_bitset<> *bCodeDataQ = new boost::dynamic_bitset<> [nQ];
 
     for(int i=0;i<nQ;i++){
         bCodeDataQ[i] = boost::dynamic_bitset<>(bCodeLen);
     }
 
-    
+
 
     if (isLSH){
         Do_ZeroCentering(qps,dataCenter);
@@ -168,9 +168,9 @@ std::pair<vector<float>,vector<float> > SphericalHashIndexer::knnSearchId(cv::Ma
 
     std::vector<pair<float,float> > H(nP);
 
-   	Result_Element<int> *res = new Result_Element<int> [ nP ];
+   	//Result_Element<int> *res = new Result_Element<int> [ nP ];
 
-    
+
     for(int i=0;i<nP*examineRatio;i++){
         float dist;
 

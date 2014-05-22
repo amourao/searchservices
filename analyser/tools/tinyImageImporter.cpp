@@ -16,7 +16,10 @@ void tinyImageImporter::readBin(std::string filenamep, int numberOfRows, cv::Mat
 		for (int i=0;i<numberOfRows;i++){
 
 			/* do binary read direct into datap */
-			fread(&(datap[i*dimensions]),sizeof(float),dimensions,out);
+			if (fread(&(datap[i*dimensions]),sizeof(float),dimensions,out) == 0){
+                std::cout << "error: cannot read middle of file" << std::endl;
+                return;
+          }
       	}
 	    /* Flush buffer and close file */
       	fclose(out);

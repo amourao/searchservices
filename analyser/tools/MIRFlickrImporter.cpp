@@ -66,7 +66,7 @@ void MIRFlickrImporter::readTags(std::string file, arma::uvec& features) {
 	std::string tagName= file.substr(found+1,foundDot-found-1);
 
 	while (getline(backstory,line)){
-		int index = atoi(line.c_str())-1;
+		uint index = atoi(line.c_str())-1;
 
 	    features.insert_rows(i,1);
 	    features.at(i++) = index;
@@ -112,7 +112,7 @@ void MIRFlickrImporter::subtractTags(std::string tagName,std::string tagToSubtra
 	arma::uvec subtract = tags[tagToSubtract];
 
 
-	int lastIdOfTheTaggedElement = 0;
+	uint lastIdOfTheTaggedElement = 0;
 	int tmpIndex = 0;
 
 	//Removes duplicated tags

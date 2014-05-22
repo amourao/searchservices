@@ -41,7 +41,7 @@ bool NTag::loadSQL(int mediaId)
 	vector<float> values;
 	Session ses("SQLite", SQLFILE);
 	ses << "SELECT name, importance FROM autoAnnotation,word WHERE mediaId = :mediaId AND word.Id=autoAnnotation.wordId", Keywords::use(mediaId), Keywords::into(keys),Keywords::into(values), Keywords::now;
-	for(int i = 0; i < keys.size(); i++)
+	for(uint i = 0; i < keys.size(); i++)
 		value[keys[i]] = values[i];
 	ses.close();
 	return true;

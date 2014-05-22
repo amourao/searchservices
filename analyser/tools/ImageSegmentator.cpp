@@ -2,7 +2,7 @@
 
 
 ImageSegmentator::ImageSegmentator(){
-    
+
 }
 
 ImageSegmentator::~ImageSegmentator(){
@@ -35,24 +35,24 @@ Mat ImageSegmentator::getStdImage(Mat image){
 }
 
 vector<int> ImageSegmentator::getCuts(Mat image2){
-    
+
     vector<int> results;
 
     Mat image = image2;
 
-    
+
     vector<double> values;
     vector<double> valuesMax;
-    
+
     double max = 0;
     double min = DBL_MAX;
-    
+
     double maxQ = 0;
     double minQ = DBL_MAX;
-    
-    
+
+
     for (int i = 0; i < image.cols; i++){
-    
+
         double m, M;
         Point p_min, p_max;
 
@@ -70,7 +70,7 @@ vector<int> ImageSegmentator::getCuts(Mat image2){
         cv::meanStdDev(image.col(i), mean1, stddev1);
         m = stddev1.val[0];
 
-        
+
         /*
         m = 0;
         for (int j = 0; j < image.rows; j++){
@@ -78,25 +78,25 @@ vector<int> ImageSegmentator::getCuts(Mat image2){
         }
         m /= image.rows;
         */
-        
+
         values.push_back(m);
-    
+
         if (m > max)
             max = m;
         if (m < min)
             min = m;
     }
-    
+
     int contours = 0;
-    
+
     int last = 0;
-    
+
     bool wasContour = false;
-    
-    for (int i = 0; i < values.size(); i++){
-    
+
+    for (uint i = 0; i < values.size(); i++){
+
         //if (values.at(i) > max*0.9 && !wasContour && (i-last) > values.size()*0.15){
-        if (((valuesMax.at(i) > (maxQ*0.9)) && valuesMax.at(i) > 240 || (values.at(i) <= (min*1.2) && values.at(i) < 2)) && !wasContour && (i-last) > values.size()*0.15 && i < values.size()*(1-0.15) ){
+        if ((((valuesMax.at(i) > (maxQ*0.9)) && (valuesMax.at(i) > 240)) || (values.at(i) <= (min*1.2) && values.at(i) < 2)) && !wasContour && (i-last) > values.size()*0.15 && i < values.size()*(1-0.15) ){
             contours++;
             last = i;
             results.push_back(i);
@@ -116,20 +116,20 @@ cv::Rect ImageSegmentator::getRelevantROI(Mat image){
     Mat image2,image3,image4;
     int x,y,w,h;
     x = getRelevantROISingleSide(image);
-    
+
     /*
      * flipCode  Specifies how to flip the array: 0 means flipping around the x-axis, positive (e.g., 1) means flipping around y-axis, and negative (e.g., -1) means flipping around both axes. See also the discussion below for the formulas.
      */
     flip(image, image2, 0);
     w = image.cols - getRelevantROISingleSide(image2) - x;
-    
+
     cv::transpose(image, image3);
     cv::flip(image3, image3, 1);
     y = getRelevantROISingleSide(image3);
-    
+
     flip(image3, image4, 0);
     h = image.rows - getRelevantROISingleSide(image4) - y;
-    
+
     cout << cv::Rect(x,y,w,h) << endl;
     return cv::Rect(x,y,w,h);
 }

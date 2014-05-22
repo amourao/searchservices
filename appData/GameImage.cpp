@@ -159,7 +159,7 @@ bool GameImage::deserialize(std::istream &is)
 
 	gaborFace.unserialize(is);
     cout << gaborFace.getRawVector().size() << endl;
-    int i =0;
+    uint i =0;
     for(i = 0; i < gaborFace.getRawVector().size(); i++){
     	cout << gaborFace.getRawVector()[i] << " ";
     }
@@ -265,8 +265,8 @@ void GameImage::executeQuery(int id, vector<string> params, vector<GameImage> &r
 	string q = AppConfig::getInstance()->getQuery(id);
 	for(it = params.begin(); it != params.end(); it++)
 	{
-		int pos = q.find(":",0);
-		int pos2 = q.find(" ", pos);
+		uint pos = q.find(":",0);
+		uint pos2 = q.find(" ", pos);
 		if(pos2 == q.npos)
 			pos2 = q.size();
 		string param = q.substr(pos, pos2-pos);
@@ -284,11 +284,11 @@ void GameImage::executeQuery(int id, vector<string> params, vector<GameImage> &r
 			Keywords::into(usernames), Keywords::into(flannIds), Keywords::now;
 	cout << "Query done" << endl;
 	result.reserve(mediaIds.size());
-	for(int i = 0; i < mediaIds.size(); i++)
+	for(uint i = 0; i < mediaIds.size(); i++)
 	{
 		string url;
 		ses << "SELECT uri FROM media WHERE id=" << mediaIds[i], Keywords::into(url),Keywords::now;
-		
+
 	gaborFace = *(new NVector(url, "FACE_GABOR"));
 	histFace = *(new NVector(url, "FACE_HIST"));
 	reconFace = *(new NVector(url, "FACE_RECON"));

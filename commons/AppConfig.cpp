@@ -58,11 +58,11 @@ map<string,vector<map<string,string> > > AppConfig::getFeaturesVec(){
 
 void AppConfig::parseMetadata(Value appMetadata){
 	vector<std::string> appEntitys = appMetadata.getMemberNames();
-	for ( int index = 0; index < appMetadata.size(); ++index ){
+	for (uint index = 0; index < appMetadata.size(); ++index ){
 		vector<pair<string,string> > objectData;
 		Value appEntity = appMetadata[appEntitys[index]];
 		vector<std::string> appEntrys = appEntity.getMemberNames();
-		for(int i = 0; i < appEntrys.size(); ++i){
+		for(uint i = 0; i < appEntrys.size(); ++i){
 			string first = appEntrys[i];
 			string second = appEntity[appEntrys[i]].asString();
 			pair<string,string> entry(first,second);
@@ -75,12 +75,12 @@ void AppConfig::parseMetadata(Value appMetadata){
 map<string,vector<map<string,string> > > AppConfig::parseFeatures(Value feature){
 	map<string,vector<map<string,string> > > features;
 	Value analyser = feature["analyser"];
-	for ( int index = 0; index < analyser.size(); ++index)
+	for (uint index = 0; index < analyser.size(); ++index)
 	{
 		Value feature = analyser[index];
 		vector<string> members = feature.getMemberNames();
 		map<string,string> map;
-		for (int i = 0; i < feature.size(); i++)
+		for (uint i = 0; i < feature.size(); i++)
 		{
 			map[members[i]] = feature[members[i]].asString();
 		}
@@ -90,7 +90,7 @@ map<string,vector<map<string,string> > > AppConfig::parseFeatures(Value feature)
 }
 
 void AppConfig::parseQuerys(Value queries){
-	for(int i = 0; i < queries.size(); i++)
+	for(uint i = 0; i < queries.size(); i++)
 	{
 	  this->queries.push_back(queries[i].asString());
 	}

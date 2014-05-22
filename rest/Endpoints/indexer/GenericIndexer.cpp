@@ -78,7 +78,7 @@ string GenericIndexer::retrieve(map<string, string> parameters){
 
     stringstream ss;
     ss << taskName << "_" << analyserName << "_" << indexerName;
-  	
+
 
     IIndexer* indexer;
     if (indexerInstances.count(ss.str()) == 0){
@@ -123,11 +123,11 @@ string GenericIndexer::retrieve(map<string, string> parameters){
 		Json::Value results;
 
         Json::Value images(Json::arrayValue);
-		for (int j = 0; j < resultLists.size(); j++){
+		for (uint j = 0; j < resultLists.size(); j++){
             Json::Value featureArray(Json::arrayValue);
             Json::Value distArray(Json::arrayValue);
             std::pair< vector<string>, vector<float> > resultList = resultLists.at(j);
-            for (int i = 0; i < resultList.first.size(); i++){
+            for (uint i = 0; i < resultList.first.size(); i++){
             	Json::Value tmp;
             	tmp["id"] = resultList.first.at(i);
                 featureArray.append(tmp);
@@ -159,16 +159,16 @@ string GenericIndexer::retrieve(map<string, string> parameters){
 	} if(outputFormat == "trec"){
 		stringstream ssJ;
 
-        for (int j = 0; j < resultLists.size(); j++){
+        for (uint j = 0; j < resultLists.size(); j++){
             std::pair< vector<string>, vector<float> > resultList = resultLists.at(j);
-            for (int i = 0; i < resultList.first.size(); i++){
+            for (uint i = 0; i < resultList.first.size(); i++){
                 ssJ << j << "\t1\t" << resultList.first.at(i) << "\t" << (i+1) << "\t" << "\t" << resultList.second.at(i) << "\t" << taskName << endl;
             }
         }
 		return ssJ.str();
 	}
 
-
+    return "";
 }
 
 string GenericIndexer::create(map<string, string> parameters){
