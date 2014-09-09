@@ -5,10 +5,16 @@
     }
 	FileDownloader::~FileDownloader(){}
 
+string FileDownloader::getCurrentDir(){
+  char cwd[1024];
+  getcwd(cwd, sizeof(cwd));
+  return string(cwd);
+}
+
 void FileDownloader::getFile(std::string url, std::string location){
   CURL *curl;
   CURLcode res;
-
+  
   url = StringTools::replaceAll(url," ", "%20");
 
   curl = curl_easy_init();
@@ -16,6 +22,7 @@ void FileDownloader::getFile(std::string url, std::string location){
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
     /* example.com is redirected, so we tell libcurl to follow redirection */
     curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+    curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
 
     std::FILE* file = std::fopen( location.c_str(), "w" ) ;
     curl_easy_setopt( curl, CURLOPT_WRITEDATA, file ) ;
@@ -36,7 +43,7 @@ void FileDownloader::getFile(std::string url, std::string location){
 std::vector<std::string> FileDownloader::getFiles(std::string url){
     std::vector<std::string> results;
     std::vector<std::string> x = StringTools::split(url, ';');
-    for (uint i = 0; i < x.size(); i++)
+    for (int i = 0; i < x.size(); i++)
         results.push_back(getFile(x[i]));
     return results;
 }

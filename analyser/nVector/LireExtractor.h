@@ -1,12 +1,26 @@
 #pragma once
 
-#include "FeatureExtractor.h"
+
 #include <iostream>
+
+#include <cstdlib>
+#include <Poco/Net/HTTPClientSession.h>
+#include <Poco/Net/HTTPRequest.h>
+#include <Poco/Net/HTTPResponse.h>
+#include <Poco/StreamCopier.h>
+#include <Poco/Path.h>
+#include <Poco/URI.h>
+#include <Poco/Exception.h>
+#include <iostream>
+#include <string> 
+#include <jsoncpp/json/json.h>
+					
 #include "../FactoryAnalyser.h"
 #include "../../commons/StringTools.h"
-#include <cstdlib>
+#include "FeatureExtractor.h"
 
-
+using namespace Poco::Net;
+using namespace Poco;
 using namespace std;
 
 class LireExtractor :
@@ -25,18 +39,15 @@ public:
 
 	void extractFeatures(Mat& src, Mat& dst);
 	void extractFeatures(string filename, vector<float>& features);
+	void extractFeaturesMulti(string filename, vector<vector<float> >& features);
 
 	int getFeatureVectorSize();
 
 	string getName();
-
-
-
-
 private:
 
 	string type;
 	string algorithm;
-
+	string host,endpoint;
 };
 

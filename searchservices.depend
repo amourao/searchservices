@@ -107,7 +107,7 @@
 	"../tools/MatrixTools.h"
 	"../../commons/factory/Factory.h"
 
-1398514842 /home/amourao/code/searchservices/analyser/tools/MatrixTools.h
+1409738527 /home/amourao/code/searchservices/analyser/tools/MatrixTools.h
 	<armadillo>
 	<opencv2/core/core.hpp>
 	<opencv2/highgui/highgui.hpp>
@@ -162,7 +162,7 @@
 	<opencv2/highgui/highgui.hpp>
 	<opencv2/imgproc/imgproc.hpp>
 
-1390951648 /home/amourao/code/searchservices/analyser/nVector/FeatureExtractor.h
+1410255598 /home/amourao/code/searchservices/analyser/nVector/FeatureExtractor.h
 	<opencv2/core/core.hpp>
 	<opencv2/highgui/highgui.hpp>
 	<opencv2/imgproc/imgproc.hpp>
@@ -172,6 +172,7 @@
 	"../IAnalyser.h"
 	"../../dataModel/IDataModel.h"
 	"../../dataModel/NVector.h"
+	"../../commons/StringTools.h"
 
 1390951648 /home/amourao/code/searchservices/dataModel/NVector.h
 	"IDataModel.h"
@@ -277,7 +278,7 @@
 	<string>
 	<map>
 
-1400513929 source:/home/amourao/code/searchservices/analyser/Main2.cpp
+1409738527 source:/home/amourao/code/searchservices/analyser/Main2.cpp
 	<iostream>
 	<string>
 	<sstream>
@@ -385,7 +386,7 @@
 	"../commons/factory/Factory.h"
 	"IIndexer.h"
 
-1400713708 /home/amourao/code/searchservices/indexer/IIndexer.h
+1410257952 /home/amourao/code/searchservices/indexer/IIndexer.h
 	<map>
 	<string>
 	<iostream>
@@ -576,15 +577,25 @@
 1397670874 source:/home/amourao/code/searchservices/analyser/nVector/LBPExtractor.cpp
 	"LBPExtractor.h"
 
-1397671466 source:/home/amourao/code/searchservices/analyser/nVector/LireExtractor.cpp
+1410254050 source:/home/amourao/code/searchservices/analyser/nVector/LireExtractor.cpp
 	"LireExtractor.h"
 
-1397671474 /home/amourao/code/searchservices/analyser/nVector/LireExtractor.h
-	"FeatureExtractor.h"
+1410254050 /home/amourao/code/searchservices/analyser/nVector/LireExtractor.h
 	<iostream>
+	<cstdlib>
+	<Poco/Net/HTTPClientSession.h>
+	<Poco/Net/HTTPRequest.h>
+	<Poco/Net/HTTPResponse.h>
+	<Poco/StreamCopier.h>
+	<Poco/Path.h>
+	<Poco/URI.h>
+	<Poco/Exception.h>
+	<iostream>
+	<string>
+	<jsoncpp/json/json.h>
 	"../FactoryAnalyser.h"
 	"../../commons/StringTools.h"
-	<cstdlib>
+	"FeatureExtractor.h"
 
 1391563053 source:/home/amourao/code/searchservices/analyser/nVector/NullExtractor.cpp
 	"NullExtractor.h"
@@ -624,7 +635,7 @@
 	<opencv2/highgui/highgui.hpp>
 	<opencv2/imgproc/imgproc.hpp>
 
-1399334168 source:/home/amourao/code/searchservices/analyser/tools/MatrixTools.cpp
+1409738527 source:/home/amourao/code/searchservices/analyser/tools/MatrixTools.cpp
 	"MatrixTools.h"
 
 1400531651 source:/home/amourao/code/searchservices/analyser/tools/MIRFlickrImporter.cpp
@@ -674,10 +685,10 @@
 1398428014 source:/home/amourao/code/searchservices/commons/factory/Factory.cpp
 	"Factory.h"
 
-1400531652 source:/home/amourao/code/searchservices/commons/FileDownloader.cpp
+1410255794 source:/home/amourao/code/searchservices/commons/FileDownloader.cpp
 	"FileDownloader.h"
 
-1397645635 /home/amourao/code/searchservices/commons/FileDownloader.h
+1410255849 /home/amourao/code/searchservices/commons/FileDownloader.h
 	<curl/curl.h>
 	<string>
 	<cstdio>
@@ -687,6 +698,7 @@
 	<stdio.h>
 	<stdlib.h>
 	<time.h>
+	<unistd.h>
 	"StringTools.h"
 
 1397645635 source:/home/amourao/code/searchservices/commons/StringTools.cpp
@@ -728,7 +740,7 @@
 1397645635 source:/home/amourao/code/searchservices/indexer/FactoryIndexer.cpp
 	"FactoryIndexer.h"
 
-1397658812 source:/home/amourao/code/searchservices/indexer/FlannkNNIndexer.cpp
+1410255520 source:/home/amourao/code/searchservices/indexer/FlannkNNIndexer.cpp
 	"FlannkNNIndexer.h"
 
 1391563053 source:/home/amourao/code/searchservices/indexer/LSHkNNIndexer.cpp
@@ -874,21 +886,23 @@
 	"../../FactoryEndpoint.h"
 	"../../IEndpoint.h"
 
-1400531645 source:/home/amourao/code/searchservices/rest/Endpoints/indexer/GenericIndexer.cpp
+1410255947 source:/home/amourao/code/searchservices/rest/Endpoints/indexer/GenericIndexer.cpp
 	"GenericIndexer.h"
 
-1399334168 /home/amourao/code/searchservices/rest/Endpoints/indexer/GenericIndexer.h
+1410257852 /home/amourao/code/searchservices/rest/Endpoints/indexer/GenericIndexer.h
 	<iostream>
 	<sstream>
 	"../../IEndpoint.h"
 	"../../FactoryEndpoint.h"
 	"../../../analyser/FactoryAnalyser.h"
+	"../../../analyser/nVector/FeatureExtractor.h"
 	"../../../indexer/FactoryIndexer.h"
 	"../../../indexer/IIndexer.h"
 	"../../../analyser/tools/MatrixTools.h"
 	<jsoncpp/json/json.h>
 	<jsoncpp/json/autolink.h>
 	"../../../commons/FileDownloader.h"
+	"../../../commons/Timing.h"
 
 1390951642 source:/home/amourao/code/searchservices/rest/Endpoints/searchDemo/populateSearchDemo.cpp
 	"populateSearchDemo.h"
@@ -4158,14 +4172,15 @@
 	"../FactoryAnalyser.h"
 	"../tools/MatrixTools.h"
 
-1400711728 source:/home/amourao/code/searchservices/indexer/SRIndexer.cpp
+1409738527 source:/home/amourao/code/searchservices/indexer/SRIndexer.cpp
 	"SRIndexer.h"
 
-1400705364 /home/amourao/code/searchservices/indexer/SRIndexer.h
+1409738527 /home/amourao/code/searchservices/indexer/SRIndexer.h
 	<map>
 	<string>
 	<iostream>
 	<vector>
+	<json/json.h>
 	<ksvd-indexing-experiment/ksvd_index_mp.h>
 	<ksvd/ksvd.h>
 	<utils/utils.h>
@@ -4203,7 +4218,7 @@
 	<set>
 	<armadillo>
 
-1400061914 /home/amourao/code/sparsereconstruction//ksvd-indexing-experiment/ksvd_index_mp.h
+1400873585 /home/amourao/code/sparsereconstruction//ksvd-indexing-experiment/ksvd_index_mp.h
 	<algorithm>
 	<cassert>
 	<memory>
@@ -4279,4 +4294,68 @@
 1400670804 /home/amourao/code/sparsereconstruction//l1min/thresholding_io.h
 	<pugixml.hpp>
 	"l1min/thresholding.h"
+
+1381498926 /home/amourao/myLibs/include//Poco/Net/HTTPClientSession.h
+	"Poco/Net/Net.h"
+	"Poco/Net/HTTPSession.h"
+	"Poco/Net/SocketAddress.h"
+	<istream>
+	<ostream>
+
+1381498927 /home/amourao/myLibs/include//Poco/Net/HTTPSession.h
+	"Poco/Net/Net.h"
+	"Poco/Net/StreamSocket.h"
+	"Poco/Timespan.h"
+	"Poco/Exception.h"
+	"Poco/Any.h"
+	<ios>
+
+1381498924 /home/amourao/myLibs/include//Poco/StreamCopier.h
+	"Poco/Foundation.h"
+	<istream>
+	<ostream>
+	<cstddef>
+
+1304372844 /home/amourao/myLibs/include//json/json.h
+	"autolink.h"
+	"value.h"
+	"reader.h"
+	"writer.h"
+	"features.h"
+
+1304372844 /home/amourao/myLibs/include//json/autolink.h
+	"config.h"
+	<cpptl/cpptl_autolink.h>
+	"autolink.h"
+
+1304372844 /home/amourao/myLibs/include//json/config.h
+	<cpptl/config.h>
+
+1304372844 /home/amourao/myLibs/include//json/value.h
+	"forwards.h"
+	<string>
+	<vector>
+	<map>
+	<cpptl/smallmap.h>
+	<cpptl/forwards.h>
+
+1304372844 /home/amourao/myLibs/include//json/forwards.h
+	"config.h"
+
+1304372844 /home/amourao/myLibs/include//json/reader.h
+	"features.h"
+	"value.h"
+	<deque>
+	<stack>
+	<string>
+	<iostream>
+
+1304372818 /home/amourao/myLibs/include//json/features.h
+	"forwards.h"
+
+1304372844 /home/amourao/myLibs/include//json/writer.h
+	"value.h"
+	<vector>
+	<string>
+	<iostream>
 

@@ -60,7 +60,7 @@ FlannkNNIndexer::FlannkNNIndexer(string& typeId, map<string,string>& params){
 			centers_init = cvflann::CENTERS_RANDOM;
 		else if(params["centers_init"] == "CENTERS_GONZALES")
 			centers_init = cvflann::CENTERS_GONZALES;
-		else if(params["centers_init"] == "CENTERS_KMEANSPP")
+		else //if(params["centers_init"] == "CENTERS_KMEANSPP")
 			centers_init = cvflann::CENTERS_KMEANSPP;
 
 		//branching The branching factor to use for the hierarchical k-means tree (32)
@@ -80,7 +80,7 @@ FlannkNNIndexer::FlannkNNIndexer(string& typeId, map<string,string>& params){
 			centers_init = cvflann::CENTERS_RANDOM;
 		else if(params["centers_init"] == "CENTERS_GONZALES")
 			centers_init = cvflann::CENTERS_GONZALES;
-		else if(params["centers_init"] == "CENTERS_KMEANSPP")
+		else //if(params["centers_init"] == "CENTERS_KMEANSPP")
 			centers_init = cvflann::CENTERS_KMEANSPP;
 
 		flannParams = new flann::CompositeIndexParams(atoi(params["trees"].c_str()),
@@ -175,18 +175,13 @@ std::pair<vector<float>,vector<float> > FlannkNNIndexer::radiusSearchId(cv::Mat&
 }
 
 bool FlannkNNIndexer::save(string basePath){
+	saveLabels(basePath);
+
 	stringstream ss;
 	ss << INDEXER_BASE_SAVE_PATH << basePath << INDEX_DATA_EXTENSION_KNN;
-
-	FileStorage fs(ss.str().c_str(), FileStorage::WRITE);
-
-	fs << "indexData" << indexData;
-	fs.release();
-
-	stringstream ssL;
-	ssL << INDEXER_BASE_SAVE_PATH << basePath << INDEXER_LABELS_EXTENSION;
-
-	saveLabels(ssL.str());
+	string path = ss.str();
+	Mat lab;
+	MatrixTools::writeBinV2(path,indexData,lab);
 
 	stringstream ssF;
 	ssF << INDEXER_BASE_SAVE_PATH << basePath << INDEX_FLANN_EXTENSION_KNN;
@@ -197,15 +192,13 @@ bool FlannkNNIndexer::save(string basePath){
 }
 
 bool FlannkNNIndexer::load(string basePath){
+	loadLabels(basePath);
 
 	stringstream ss;
 	ss << INDEXER_BASE_SAVE_PATH << basePath << INDEX_DATA_EXTENSION_KNN;
-
-
-	FileStorage fs(ss.str().c_str(), FileStorage::READ);
-
-	fs["indexData"] >> indexData;
-
+	string path = ss.str();
+	Mat lab;
+	MatrixTools::readBinV2(path,indexData,indexToLabels);
 	//if ( flannIndex != NULL)
 	//	delete flannIndex;
 
@@ -217,9 +210,6 @@ bool FlannkNNIndexer::load(string basePath){
 	flannIndexs = new flann::Index(indexData,*flannParams);
 
 	//flannIndexs->build(indexData,params);
-	stringstream ssL;
-	ssL << INDEXER_BASE_SAVE_PATH << basePath << INDEXER_LABELS_EXTENSION;
-	loadLabels(ssL.str());
 	return true;
 }
 

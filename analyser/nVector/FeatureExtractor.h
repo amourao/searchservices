@@ -10,6 +10,9 @@
 #include "../IAnalyser.h"
 #include "../../dataModel/IDataModel.h"
 #include "../../dataModel/NVector.h"
+#include "../../commons/StringTools.h"
+
+
 
 #define VECTOR_FEATURES_NAME "VectorFeatures"
 
@@ -34,6 +37,16 @@ public:
 		extractFeatures(src,dst);
 		float* array = (float*)dst.data;
 		features = vector<float>(array, array + dst.cols*dst.rows);
+	}
+
+	virtual void extractFeaturesMulti(string filename, vector<vector<float> >& features){
+		vector<string> filenames = StringTools::split(filename, ',');
+		for (uint i = 0; i < filenames.size(); i++){
+			vector<float> featuresSingle;
+			extractFeatures(filenames.at(i),featuresSingle);
+			features.push_back(featuresSingle);
+		}
+
 	}
 
 	IDataModel::type getType(){

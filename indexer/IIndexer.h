@@ -22,6 +22,10 @@ using namespace std;
 #define INDEXER_LABELS_EXTENSION ".labels"
 #endif
 
+#ifndef INDEXER_FLABELS_EXTENSION
+#define INDEXER_FLABELS_EXTENSION ".labels.bin"
+#endif
+
 #ifndef INDEXER_PARAMS_EXTENSION
 #define INDEXER_PARAMS_EXTENSION ".params"
 #endif
@@ -36,28 +40,36 @@ public:
 	virtual void* createType(string &typeId, map<string,string>& params) = 0;
 
 
-	virtual std::pair<vector<float>,vector<float> > knnSearchId(std::vector<float>& v, int n = 1000){
+	virtual std::pair<vector<float>,vector<float> > knnSearchId(std::vector<float>& v, int n = 1000, int labels = -1){
 		cv::Mat vMat;
 		MatrixTools::vectorToMat(v, vMat);
-		return knnSearchId(vMat,n);
+		if (indexToLabels.empty() || labels == -1){
+			return knnSearchId(vMat,n);
+		} else {
+			std::pair<vector<float>,vector<float> > res = knnSearchId(vMat,n);
+			return getAltLabels(res,labels);
+		}
 	}
 
-	virtual std::pair<vector<string>,vector<float> > knnSearchName(std::vector<float>& v, int n = 1000){
-		cv::Mat vMat;
-		MatrixTools::vectorToMat(v, vMat);
-		return knnSearchName(vMat,n);
+	virtual std::pair<vector<string>,vector<float> > knnSearchName(std::vector<float>& v, int n = 1000,int labels = -1){
+		std::pair<vector<float>,vector<float> > knnSearch = knnSearchId(v,n,labels);
+        return make_pair(idToLabels(knnSearch.first),knnSearch.second);
 	}
 
-	virtual std::pair<vector<float>,vector<float> > radiusSearchId(std::vector<float>& v, double radius, int n = 1000){
+	virtual std::pair<vector<float>,vector<float> > radiusSearchId(std::vector<float>& v, double radius, int n = 1000,int labels = -1){
 		cv::Mat vMat;
 		MatrixTools::vectorToMat(v, vMat);
-		return radiusSearchId(vMat,radius,n);
+		if (indexToLabels.empty() || labels == -1){
+			return radiusSearchId(vMat,n);
+		} else {
+			std::pair<vector<float>,vector<float> > res = radiusSearchId(vMat,n);
+			return getAltLabels(res,labels);
+		}
 	}
 
-	virtual std::pair<vector<string>,vector<float> > radiusSearchName(std::vector<float>& v, double radius, int n = 1000){
-		cv::Mat vMat;
-		MatrixTools::vectorToMat(v, vMat);
-		return radiusSearchName(vMat,radius,n);
+	virtual std::pair<vector<string>,vector<float> > radiusSearchName(std::vector<float>& v, double radius, int n = 1000,int labels = -1){
+		std::pair<vector<float>,vector<float> > knnSearch = radiusSearchId(v,n,labels);
+        return make_pair(idToLabels(knnSearch.first),knnSearch.second);
 	}
 
 	virtual std::pair<vector<float>,vector<float> > knnSearchId(cv::Mat& features, int n){
@@ -143,10 +155,9 @@ public:
 		vector<string> result;
 
 		for(uint i = 0; i < v1.size(); i++){
-			if (labels.size() > 0){
-				result.push_back(labels[v1.at(i)]);
-			}
-			else {
+			if ((chosenLabels >= 0) && (chosenLabels < allLabels.size()) && allLabels.at(chosenLabels).size() > 0){
+				result.push_back(allLabels.at(chosenLabels)[v1.at(i)]);
+			} else {
 				stringstream ss;
 				ss << v1.at(i);
 				string s = ss.str();
@@ -158,45 +169,86 @@ public:
 	}
 
 	virtual void loadLabels(string basePath){
+		allLabels.clear();
 
-	    labels.clear();
+		stringstream ss;
 
-		ifstream file(basePath.c_str(), ifstream::in);
+        ss << INDEXER_BASE_SAVE_PATH << basePath << INDEXER_LABELS_EXTENSION;
+
+		ifstream file(ss.str().c_str(), ifstream::in);
 		string line, numberOfClassesStr,id1,id2;
 
 		getline(file, line);
 		stringstream liness(line);
 		getline(liness, numberOfClassesStr);
-		numberOfElements = atoi(numberOfClassesStr.c_str());
-		//int i = 0;
-		while (getline(file, line)) {
+		int labelsCount = atoi(numberOfClassesStr.c_str());
+
+		for (int i = 0; i < labelsCount; i++){
+			std::map<float,string> labels;
+			getline(file, line);
 			stringstream liness(line);
-			getline(liness, id1, ',');
-			getline(liness, id2);
+			getline(liness, numberOfClassesStr);
+			int numberOfElements = atoi(numberOfClassesStr.c_str());
+			//int i = 0;
+			for (int j = 0; j < numberOfElements; j++){
+				getline(file, line);
+				stringstream liness(line);
+				getline(liness, id1, ',');
+				getline(liness, id2);
 
-			float labelFloat = atof(id1.c_str());
-			string label = id2;
+				float labelFloat = atof(id1.c_str());
+				string label = id2;
 
-			labels.insert(std::pair<float,string>(labelFloat,label));
+				labels.insert(std::pair<float,string>(labelFloat,label));
 
+			}
+			allLabels.push_back(labels);
 		}
+
+		stringstream ss2;
+
+        ss2 << INDEXER_BASE_SAVE_PATH << basePath << INDEXER_FLABELS_EXTENSION;
+
+		string filePath = ss2.str();
+		cv::Mat a;
+		MatrixTools::readBinV2(filePath,indexToLabels,a);
 	}
 
 	virtual void saveLabels(string basePath){
 
         stringstream ss;
 
-        ss << basePath << INDEXER_LABELS_EXTENSION;
+        ss << INDEXER_BASE_SAVE_PATH << basePath << INDEXER_LABELS_EXTENSION;
+        ofstream labelData(ss.str().c_str());
 
-		std::map<float,string>::iterator iter;
+        labelData << allLabels.size() << endl;
 
-	    ofstream labelData(ss.str().c_str());
+        for (uint i = 0; i < allLabels.size(); i++){
+        	std::map<float,string> labels = allLabels.at(i);
+			std::map<float,string>::iterator iter;
 
-	    labelData << numberOfElements << endl;
-	    for (iter = labels.begin(); iter != labels.end(); ++iter) {
-	    	labelData << iter->first << "," << iter->second << endl;
-	    }
+		    labelData << labels.size() << endl;
+		    for (iter = labels.begin(); iter != labels.end(); ++iter) {
+		    	labelData << iter->first << "," << iter->second << endl;
+		    }
+		}
 		labelData.close();
+
+		stringstream ss2;
+
+        ss2 << INDEXER_BASE_SAVE_PATH << basePath << INDEXER_FLABELS_EXTENSION;
+
+		string filePath = ss2.str();
+		cv::Mat a;
+		MatrixTools::writeBinV2(filePath,indexToLabels,a);
+	}
+
+	virtual void chooseLabels(int i){
+		chosenLabels = i;
+	}
+
+	virtual void setFlabels(Mat& flabels){
+		indexToLabels = flabels;
 	}
 
 	virtual void saveParams(string basePath){
@@ -224,12 +276,22 @@ public:
 protected:
 
     map<string,string> paramsB;
+    cv::Mat indexToLabels;
 
 private:
 
+	std::pair<vector<float>,vector<float> > getAltLabels(std::pair<vector<float>,vector<float> >& results, int lIndex){
+		vector<float> f = results.first;
+		vector<float> altResult;
+		for(uint i = 0; i < f.size(); i++){
+			altResult.push_back(indexToLabels.at<float>(f[i],lIndex));
+		}
+		return make_pair(altResult,results.second);
+	}
 
-	std::map<float,string> labels;
-	int numberOfElements;
+	vector<std::map<float,string> > allLabels;
+
+	int chosenLabels;
 };
 
 

@@ -9,9 +9,10 @@
 #include <stdio.h>      /* printf, scanf, puts, NULL */
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
+#include <unistd.h>
 #include "StringTools.h"
 
-#define DOWNLOAD_FOLDER "./tmpData/"
+#define DOWNLOAD_FOLDER "/localstore/amourao/code/searchservices/tmpData/"
 #define RANDOM_NAME_SIZE 32
 
 class FileDownloader {
@@ -24,6 +25,8 @@ public:
     
     std::string getFile(std::string url);
     std::vector<std::string> getFiles(std::string url);
+
+    string getCurrentDir();
     
     
 	

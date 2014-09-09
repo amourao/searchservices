@@ -64,6 +64,11 @@ void GenericIndexer::handleRequest(string method, map<string, string> queryStrin
 
 
 string GenericIndexer::retrieve(map<string, string> parameters){
+	cout << "**************** start GENREIRC INDEXER ****************" << endl;
+	timestamp_type start, end, totalStart, totalEnd;
+	get_timestamp(&totalStart);
+
+
 	FileDownloader fd;
 
     vector<string> filenames = StringTools::split(parameters["url"],',');
@@ -73,50 +78,83 @@ string GenericIndexer::retrieve(map<string, string> parameters){
     string retrievalType = parameters["type"];
     string outputFormat = parameters["output"];
     string outputType = parameters["retrievalOutput"];
+    string labelsIndexStr = parameters["labelsIndex"];
+    string flabelsIndexStr = parameters["flabelsIndex"];
 
     int n = atoi(parameters["n"].c_str());
 
     stringstream ss;
     ss << taskName << "_" << analyserName << "_" << indexerName;
 
-
     IIndexer* indexer;
     if (indexerInstances.count(ss.str()) == 0){
     	FactoryIndexer * fc = FactoryIndexer::getInstance();
     	indexer = (IIndexer*)fc->createType(indexerName);
+    	get_timestamp(&start);
   	  	indexer->load(ss.str());
-  	  	indexerInstances[ss.str()] = indexer;
+		get_timestamp(&end);
+    	cout << "loading index: " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
+    	indexerInstances[ss.str()] = indexer;
 	} else {
 		indexer = indexerInstances[ss.str()];
 	}
 
-    FactoryAnalyser * f = FactoryAnalyser::getInstance();
-    IAnalyser* analyser= (IAnalyser*)f->createType(analyserName);
+	int labelsIndex = atoi(labelsIndexStr.c_str());
+	if (labelsIndex >= 0)
+		indexer->chooseLabels(labelsIndex);
 
+	int flabelsIndex = atoi(flabelsIndexStr.c_str());
+
+    FactoryAnalyser * f = FactoryAnalyser::getInstance();
+    cout << "get feature extractor" << endl;
+    FeatureExtractor* analyser= (FeatureExtractor*)f->createType(analyserName);
+    cout << "feature extractor " << analyser << endl;
+    cout << "start downloading files" << endl;
     vector<std::pair< vector<string>, vector<float> > > resultLists;
 
+    get_timestamp(&start);
+    string localFilenames = "";
     for (uint ii = 0; ii < filenames.size(); ii++){
         string filename = fd.getFile(filenames.at(ii));
-        IDataModel* data = analyser->getFeatures(filename);
-        vector<float>* features = (vector<float>*) data->getValue();
+        localFilenames += filename;
+        if (ii != filenames.size())
+        	localFilenames += ",";
+
+    }
+    get_timestamp(&end);
+    cout << "downloading files : " << timestamp_diff_in_milliseconds(start, end) << " ms " << localFilenames << endl;
+
+    vector<vector<float> > allFeatures;
+    get_timestamp(&start);
+    analyser->extractFeaturesMulti(localFilenames, allFeatures);
+    get_timestamp(&end);
+    cout << "get features : " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
+
+	for (uint ii = 0; ii < allFeatures.size(); ii++){
+		vector<float> features = allFeatures.at(ii);
         std::pair< vector<string>, vector<float> > resultList;
 
+        get_timestamp(&start);
         if (retrievalType == "normal" && outputType == "name"){
-            resultList = indexer->knnSearchName(*features,n);
+            resultList = indexer->knnSearchName(features,n,flabelsIndex);
         } else if (retrievalType == "normal" && outputType == "id"){
-            std::pair< vector<float>, vector<float> > resultListF = indexer->knnSearchId(*features,n);
+            std::pair< vector<float>, vector<float> > resultListF = indexer->knnSearchId(features,n,flabelsIndex);
             resultList = idToLabels(resultListF);
         } else if (retrievalType == "radius" && outputType == "name"){
             float radius = atof(parameters["radius"].c_str());
-            resultList = indexer->radiusSearchName(*features,radius,n);
+            resultList = indexer->radiusSearchName(features,radius,n,flabelsIndex);
         } else if (retrievalType == "radius" && outputType == "id"){
             float radius = atof(parameters["radius"].c_str());
-            std::pair< vector<float>, vector<float> > resultListF = indexer->radiusSearchId(*features,radius,n);
+            std::pair< vector<float>, vector<float> > resultListF = indexer->radiusSearchId(features,radius,n,flabelsIndex);
             resultList = idToLabels(resultListF);
         }
         resultLists.push_back(resultList);
-
+        get_timestamp(&end);
+    	cout << "retrieving " << ii << ": " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
     }
+    delete analyser;
+    string result;
+    get_timestamp(&start);
 	if(outputFormat == "json"){
 
 		Json::Value root;
@@ -155,7 +193,7 @@ string GenericIndexer::retrieve(map<string, string> parameters){
 
 		stringstream ssJ;
 		ssJ << root;
-		return ssJ.str();
+		result = ssJ.str();
 	} if(outputFormat == "trec"){
 		stringstream ssJ;
 
@@ -165,10 +203,14 @@ string GenericIndexer::retrieve(map<string, string> parameters){
                 ssJ << j << "\t1\t" << resultList.first.at(i) << "\t" << (i+1) << "\t" << "\t" << resultList.second.at(i) << "\t" << taskName << endl;
             }
         }
-		return ssJ.str();
+		result = ssJ.str();
 	}
+	get_timestamp(&end);
+    cout << "formating : " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
+    get_timestamp(&totalEnd);
+    cout << "**************** total : " << timestamp_diff_in_milliseconds(totalStart, totalEnd) << " ms ****************" << endl;
+	return result;
 
-    return "";
 }
 
 string GenericIndexer::create(map<string, string> parameters){
@@ -195,6 +237,7 @@ string GenericIndexer::create(map<string, string> parameters){
 
 	ss << taskName << "_" << analyserName << "_" << indexerName;
 
+	indexer->setFlabels(labels);
 	indexer->save(ss.str());
 
 	Json::Value root;
