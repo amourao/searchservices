@@ -150,7 +150,6 @@ string ExtractFeatures::getFeatures(map<string, string > parameters){
 	Mat src, features, labels;
 
 	TextFileSourceV2 is(filename);
-	cout << is.getImageCount() << endl;
 
 	int imageInfoFieldCount = is.getImageInfoFieldCount();
 	int classFieldId = is.getClassFieldId();
@@ -191,7 +190,7 @@ string ExtractFeatures::getFeatures(map<string, string > parameters){
 			}
 
 			path = is.getImagePath();
-
+            cout << path << endl;
 			IDataModel* data = analyser->getFeatures(path);
 			vector<float>* v = (vector<float>*) data->getValue();
 			vector<float> v2 = *v;

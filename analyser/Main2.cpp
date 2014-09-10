@@ -53,6 +53,9 @@
 
 #include "../commons/LoadConfig.h"
 
+#include "../rest/Endpoints/analyser/ExtractFeatures.h"
+#include "../rest/RestServer.h"
+
 
 using namespace std;
 
@@ -1314,6 +1317,27 @@ int createBlipKnnVWDict(int argc, char *argv[]){
 
 }
 
+int extractREST(int argc, char *argv[]){
+
+    map<string, string> parameters;
+    string paramFile(argv[5]);
+
+	LoadConfig::load(paramFile,parameters);
+
+    map<string,string> params;
+
+    params["input"] = string(argv[1]);
+	params["analyser"] = string(argv[2]);
+	params["task"] = string(argv[3]);
+	params["output"] = string(argv[4]);
+
+	ExtractFeatures ef ("a");
+    ef.getFeatures(params);
+
+
+    return 0;
+}
+
 int main(int argc, char *argv[])
 {
 	//testLoadSaveIClassifier(argc, argv);
@@ -1330,8 +1354,9 @@ int main(int argc, char *argv[])
 	//testMSIDXIndexer(argc, argv);
 
     //classifyAllBlipImagesCondor(argc, argv);
-    classifyAllBlipImagesCondor(argc, argv);
+    //classifyAllBlipImagesCondor(argc, argv);
 
+    extractREST(argc, argv);
 	//createBlipKnnVWDict(argc, argv);
     return 0;
 }

@@ -278,7 +278,7 @@
 	<string>
 	<map>
 
-1409738527 source:/home/amourao/code/searchservices/analyser/Main2.cpp
+1410273863 source:/home/amourao/code/searchservices/analyser/Main2.cpp
 	<iostream>
 	<string>
 	<sstream>
@@ -319,6 +319,8 @@
 	"../commons/StringTools.h"
 	"../dataModel/DatabaseConnection.h"
 	"../commons/LoadConfig.h"
+	"../rest/Endpoints/analyser/ExtractFeatures.h"
+	"../rest/RestServer.h"
 
 1397990244 /home/amourao/code/searchservices/analyser/sources/TextFileSourceV2.h
 	"ImageSource.h"
@@ -419,7 +421,7 @@
 	"FactoryIndexer.h"
 	"../commons/Timing.h"
 
-1400609246 source:/home/amourao/code/searchservices/analyser/Main3.cpp
+1409738527 source:/home/amourao/code/searchservices/analyser/Main3.cpp
 	<iostream>
 	<fstream>
 	<string>
@@ -577,7 +579,7 @@
 1397670874 source:/home/amourao/code/searchservices/analyser/nVector/LBPExtractor.cpp
 	"LBPExtractor.h"
 
-1410254050 source:/home/amourao/code/searchservices/analyser/nVector/LireExtractor.cpp
+1410273565 source:/home/amourao/code/searchservices/analyser/nVector/LireExtractor.cpp
 	"LireExtractor.h"
 
 1410254050 /home/amourao/code/searchservices/analyser/nVector/LireExtractor.h
@@ -682,7 +684,7 @@
 	<jsoncpp/json/json.h>
 	<jsoncpp/json/autolink.h>
 
-1398428014 source:/home/amourao/code/searchservices/commons/factory/Factory.cpp
+1410344332 source:/home/amourao/code/searchservices/commons/factory/Factory.cpp
 	"Factory.h"
 
 1410255794 source:/home/amourao/code/searchservices/commons/FileDownloader.cpp
@@ -740,7 +742,7 @@
 1397645635 source:/home/amourao/code/searchservices/indexer/FactoryIndexer.cpp
 	"FactoryIndexer.h"
 
-1410255520 source:/home/amourao/code/searchservices/indexer/FlannkNNIndexer.cpp
+1410258062 source:/home/amourao/code/searchservices/indexer/FlannkNNIndexer.cpp
 	"FlannkNNIndexer.h"
 
 1391563053 source:/home/amourao/code/searchservices/indexer/LSHkNNIndexer.cpp
@@ -802,7 +804,7 @@
 	<Poco/Net/HTTPServerResponse.h>
 	"../commons/factory/Factory.h"
 
-1400516190 source:/home/amourao/code/searchservices/rest/Endpoints/analyser/ExtractFeatures.cpp
+1410273943 source:/home/amourao/code/searchservices/rest/Endpoints/analyser/ExtractFeatures.cpp
 	"ExtractFeatures.h"
 
 1391563053 /home/amourao/code/searchservices/rest/Endpoints/analyser/ExtractFeatures.h
@@ -886,7 +888,7 @@
 	"../../FactoryEndpoint.h"
 	"../../IEndpoint.h"
 
-1410255947 source:/home/amourao/code/searchservices/rest/Endpoints/indexer/GenericIndexer.cpp
+1410258097 source:/home/amourao/code/searchservices/rest/Endpoints/indexer/GenericIndexer.cpp
 	"GenericIndexer.h"
 
 1410257852 /home/amourao/code/searchservices/rest/Endpoints/indexer/GenericIndexer.h

@@ -17,7 +17,7 @@ LireExtractor::LireExtractor(string& _type, map<string, string>& params){
     if (params.size() == 0)
         return;
 
-    algorithm = params["algorithm"]; 
+    algorithm = params["algorithm"];
     host = params["host"];
     endpoint = params["endpoint"];
  	//jvm->GetEnv((void**)&env, JNI_VERSION_1_6);
@@ -35,7 +35,8 @@ void* LireExtractor::createType(string& type){
 	return NULL;
 }
 
-void* LireExtractor::createType(string& type, map<string ,string>& params){
+void* LireExtractor::createType(string& createType, map<string ,string>& params){
+    //cout << createType << endl;
 	return new LireExtractor(type,params);
 }
 
@@ -66,7 +67,7 @@ void LireExtractor::extractFeaturesMulti(string filename, vector<vector<float> >
 	stringstream ss;
 	ss << host << "?filename=" << filename << "&extractor=" << algorithm;
 	string uriStr = ss.str();
-	cout << uriStr << endl;
+	//cout << uriStr << endl;
 	try {
 	    // prepare session
 	    string request;
@@ -83,7 +84,7 @@ void LireExtractor::extractFeaturesMulti(string filename, vector<vector<float> >
 
 	    // get response
 	    HTTPResponse res;
-	    cout << res.getStatus() << " " << res.getReason() << endl;
+	    //cout << res.getStatus() << " " << res.getReason() << endl;
 
 	    // print response
 	    istream &is = session.receiveResponse(res);
@@ -93,7 +94,7 @@ void LireExtractor::extractFeaturesMulti(string filename, vector<vector<float> >
 	    bool parsingSuccessful = reader.parse( is, root, false );
 
 	    Json::Value featuresJson = root["featureVector"];
-	     
+
 	    features.reserve(featuresJson.size());
 	    for(int i = 0; i < featuresJson.size(); i++){
 	    	vector<float> featuresOne;
