@@ -1338,6 +1338,133 @@ int extractREST(int argc, char *argv[]){
     return 0;
 }
 
+int classifySapo(int argc, char *argv[]){
+    string paramFile(argv[1]);
+
+    double splitTrainPos = atof(argv[1]);
+    double splitTestPos = atof(argv[2]);
+
+    double splitTrainNeg = atof(argv[3]);
+    double splitTestNeg = atof(argv[4]);
+
+    string positiveExamples = argv[5];
+
+    string negatives = argv[6];
+    vector<string> negativeExamples = StringTools::split(negatives,',');
+
+    Mat featuresNegTrain;
+    Mat featuresNegTrainL;
+    Mat featuresNegTest;
+    Mat featuresNegTestL;
+
+    //get positive examples
+    //number of examples is strictly based on the ratios provided as parameters
+
+    Mat featuresPos, labelsPos;
+    MatrixTools::readBin(positiveExamples,featuresPos,labelsPos);
+
+    int posCountTrain = featuresPos.rows*splitTrainPos;
+    int posCountTest = featuresPos.rows*splitTestPos;
+
+    Mat featurePosTrain = featuresPos.rowRange(0,posCountTrain);
+    Mat featuresPosTest = featuresPos.rowRange(posCountTrain,posCountTrain+posCountTest);
+
+    Mat featurePosTrainL = Mat(posCountTrain,1, CV_32F, 1.0);
+    Mat featuresPosTestL = Mat(posCountTest,1, CV_32F, 1.0);
+
+    //get negative examples
+    //number of examples is counted as a porportion of positive examples
+    //divided equaly across negative classes
+
+    int negCountTrainExpected = posCountTrain*splitTrainNeg;
+    int negCountTestExpected = posCountTest*splitTestNeg;
+
+    int negCountTrain = 0;
+    int negCountTest = 0;
+
+    int negCountTrainExpectedPerClass = negCountTrainExpected/negativeExamples.size();
+    int negCountTestExpectedPerClass = negCountTestExpected/negativeExamples.size();
+
+    for(string negExample: negativeExamples){
+        Mat featuresS, labelsS;
+        MatrixTools::readBin(negExample,featuresS,labelsS);
+
+        int currSplitTrain = negCountTrainExpectedPerClass;
+        int currSplitTest = negCountTestExpectedPerClass;
+
+        //if the number of features required is too big, split all data using the same train/test ratio
+        if((currSplitTrain+currSplitTest)> featuresS.rows){
+            currSplitTrain = featuresS.rows * negCountTrainExpected/(negCountTestExpected+negCountTrainExpected);
+            currSplitTest = featuresS.rows - currSplitTrain;
+        }
+
+        Mat featuresNegTrainC = featuresS.rowRange(0,currSplitTrain);
+        Mat featuresNegTestC = featuresS.rowRange(currSplitTrain,currSplitTrain+currSplitTest);
+
+        Mat featuresNegTrainLC = Mat(currSplitTrain,1, CV_32F, 0.0);
+        Mat featuresNegTestLC = Mat(currSplitTest,1, CV_32F, 0.0);
+
+        featuresNegTrain.push_back(featuresNegTrainC);
+        featuresNegTrainL.push_back(featuresNegTrainLC);
+
+        featuresNegTest.push_back(featuresNegTestC);
+        featuresNegTestL.push_back(featuresNegTestLC);
+
+        negCountTrain+=currSplitTrain;
+        negCountTest+=currSplitTest;
+    }
+
+
+
+
+    Mat train;
+    Mat trainL;
+    Mat test;
+    Mat testL;
+
+    vconcat(featurePosTrain, featuresNegTrain, train);
+    vconcat(featurePosTrainL, featuresNegTrainL, trainL);
+    vconcat(featuresPosTest, featuresNegTest, test);
+    vconcat(featuresPosTestL, featuresNegTestL, testL);
+
+    string type = "sapo";
+    map<string,string> p;
+    SVMClassifier svm(type,p);
+
+    cout << "Read features ok" << endl << "Training with " << posCountTrain << " pos and " << negCountTrain << " neg" << endl;
+    svm.train(train,trainL);
+    cout << "Training ok" << endl << "Testing with " << posCountTest << " pos and " << negCountTest << " neg" << endl;
+    int correctPos = 0;
+    int wrongPos = 0;
+
+    int correctNeg = 0;
+    int wrongNeg = 0;
+    for(int i = 0; i < test.rows; i++){
+        Mat features = test.row(i);
+
+        float label = testL.at<float>(i,0);
+
+        float detected = svm.classify(features);
+
+        if (label == detected && label == 1)
+            correctPos++;
+        else if (label == detected && label == 0)
+            correctNeg++;
+        else if (label != detected && label == 1)
+            wrongPos++;
+        else if (label != detected && label == 0)
+            wrongNeg++;
+
+    }
+    cout << "Test ok" << endl;
+    int correct = correctPos+correctNeg;
+    int wrong = wrongPos+wrongNeg;
+
+    cout << (correct/double(correct+wrong))*100 << " %: tp: " << correctPos << " tn: " << correctNeg << " fp: " << wrongNeg  <<  " fn: " << wrongPos << endl;
+
+    return 0;
+}
+
 int main(int argc, char *argv[])
 {
 	//testLoadSaveIClassifier(argc, argv);
@@ -1356,7 +1483,7 @@ int main(int argc, char *argv[])
     //classifyAllBlipImagesCondor(argc, argv);
     //classifyAllBlipImagesCondor(argc, argv);
 
-    extractREST(argc, argv);
+    classifySapo(argc, argv);
 	//createBlipKnnVWDict(argc, argv);
     return 0;
 }
