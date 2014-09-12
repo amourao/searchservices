@@ -1503,7 +1503,7 @@ int classifySapoAllVideos(int argc, char *argv[]){
         ;
     posCountTrain--;
 
-    int lastTestValue = posCountTrain+posCountTest;
+    int lastTestValue = min(posCountTrain+posCountTest,labelsPos.rows);
     lastVideo = labelsPos.at<float>(lastTestValue,1);
     //go until last frame of the current video to avoid spliting videos across train/test data
     while(lastTestValue < labelsPos.rows && labelsPos.at<float>(++lastTestValue,1) == lastVideo)
@@ -1552,7 +1552,7 @@ int classifySapoAllVideos(int argc, char *argv[]){
             ;
         currSplitTrain--;
 
-        lastTestValue = currSplitTrain+currSplitTest;
+        lastTestValue = min(currSplitTrain+currSplitTest,labelsS.rows);
         lastVideo = labelsS.at<float>(lastTestValue,1);
 
         //go until last frame of the current video to avoid spliting videos across train/test data
