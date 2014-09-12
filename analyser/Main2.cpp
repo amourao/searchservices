@@ -1465,6 +1465,232 @@ int classifySapo(int argc, char *argv[]){
     return 0;
 }
 
+
+int classifySapoAllVideos(int argc, char *argv[]){
+    string paramFile(argv[1]);
+
+    double splitTrainPos = atof(argv[1]);
+    double splitTestPos = atof(argv[2]);
+
+    double splitTrainNeg = atof(argv[3]);
+    double splitTestNeg = atof(argv[4]);
+
+    string positiveExamples = argv[5];
+
+    string negatives = argv[6];
+    vector<string> negativeExamples = StringTools::split(negatives,',');
+
+    Mat featuresNegTrain;
+    Mat featuresNegTrainL;
+    Mat featuresNegTrainLOriginal;
+    Mat featuresNegTest;
+    Mat featuresNegTestL;
+    Mat featuresNegTestLOriginal;
+
+    //get positive examples
+    //number of examples is strictly based on the ratios provided as parameters
+
+    Mat featuresPos, labelsPos;
+    MatrixTools::readBin(positiveExamples,featuresPos,labelsPos);
+
+    int posCountTrain = featuresPos.rows*splitTrainPos;
+    int posCountTest = featuresPos.rows*splitTestPos;
+
+    int lastVideo = labelsPos.at<float>(posCountTrain,1);
+
+    //go until last frame of the current video to avoid spliting videos across train/test data
+    while(labelsPos.at<float>(++posCountTrain,1) == lastVideo)
+        ;
+    posCountTrain--;
+
+    int lastTestValue = posCountTrain+posCountTest;
+    lastVideo = labelsPos.at<float>(lastTestValue,1);
+    //go until last frame of the current video to avoid spliting videos across train/test data
+    while(lastTestValue < labelsPos.rows && labelsPos.at<float>(++lastTestValue,1) == lastVideo)
+        ;
+    lastTestValue--;
+    posCountTest = lastTestValue-posCountTrain;
+
+    Mat featurePosTrain = featuresPos.rowRange(0,posCountTrain);
+    Mat featurePosTrainLOriginal = labelsPos.rowRange(0,posCountTrain);
+    Mat featuresPosTest = featuresPos.rowRange(posCountTrain,lastTestValue);
+    Mat featuresPosTestLOriginal = labelsPos.rowRange(posCountTrain,lastTestValue);
+
+    Mat featurePosTrainL = Mat(posCountTrain,1, CV_32F, 1.0);
+    Mat featuresPosTestL = Mat(posCountTest,1, CV_32F, 1.0);
+
+    //get negative examples
+    //number of examples is counted as a porportion of positive examples
+    //divided equaly across negative classes
+
+    int negCountTrainExpected = posCountTrain*splitTrainNeg;
+    int negCountTestExpected = posCountTest*splitTestNeg;
+
+    int negCountTrain = 0;
+    int negCountTest = 0;
+
+    int negCountTrainExpectedPerClass = negCountTrainExpected/negativeExamples.size();
+    int negCountTestExpectedPerClass = negCountTestExpected/negativeExamples.size();
+
+    for(string negExample: negativeExamples){
+        Mat featuresS, labelsS;
+        MatrixTools::readBin(negExample,featuresS,labelsS);
+
+        int currSplitTrain = negCountTrainExpectedPerClass;
+        int currSplitTest = negCountTestExpectedPerClass;
+
+        //if the number of features required is too big, split all data using the same train/test ratio
+        if((currSplitTrain+currSplitTest)> featuresS.rows){
+            currSplitTrain = featuresS.rows * negCountTrainExpected/(negCountTestExpected+negCountTrainExpected);
+            currSplitTest = featuresS.rows - currSplitTrain;
+        }
+
+        lastVideo = labelsS.at<float>(currSplitTrain,1);
+
+        //go until last frame of the current video to avoid spliting videos across train/test data
+        while(labelsS.at<float>(++currSplitTrain,1) == lastVideo)
+            ;
+        currSplitTrain--;
+
+        lastTestValue = currSplitTrain+currSplitTest;
+        lastVideo = labelsS.at<float>(lastTestValue,1);
+
+        //go until last frame of the current video to avoid spliting videos across train/test data
+        while(lastTestValue++ < labelsS.rows && labelsS.at<float>(lastTestValue,1) == lastVideo)
+            ;
+        lastTestValue--;
+
+        Mat featuresNegTrainC = featuresS.rowRange(0,currSplitTrain);
+        Mat featuresNegTrainLCOriginal = labelsS.rowRange(0,currSplitTrain);
+        Mat featuresNegTestC = featuresS.rowRange(currSplitTrain,lastTestValue);
+        Mat featuresNegTestLCOriginal = labelsS.rowRange(currSplitTrain,lastTestValue);
+
+        Mat featuresNegTrainLC = Mat(currSplitTrain,1, CV_32F, 0.0);
+        Mat featuresNegTestLC = Mat(currSplitTest,1, CV_32F, 0.0);
+
+        featuresNegTrain.push_back(featuresNegTrainC);
+        featuresNegTrainL.push_back(featuresNegTrainLC);
+        featuresNegTrainLOriginal.push_back(featuresNegTrainLCOriginal);
+
+        featuresNegTest.push_back(featuresNegTestC);
+        featuresNegTestL.push_back(featuresNegTestLC);
+        featuresNegTestLOriginal.push_back(featuresNegTestLCOriginal);
+
+        negCountTrain+=currSplitTrain;
+        negCountTest+=currSplitTest;
+    }
+
+
+
+
+    Mat train;
+    Mat trainL;
+    Mat trainLOriginal;
+    Mat test;
+    Mat testL;
+    Mat testLOriginal;
+
+    vconcat(featurePosTrain, featuresNegTrain, train);
+    vconcat(featurePosTrainL, featuresNegTrainL, trainL);
+    vconcat(featurePosTrainLOriginal, featuresNegTrainLOriginal, trainLOriginal);
+    vconcat(featuresPosTest, featuresNegTest, test);
+    vconcat(featuresPosTestL, featuresNegTestL, testL);
+    vconcat(featuresPosTestLOriginal, featuresNegTestLOriginal, testLOriginal);
+
+    string type = "sapo";
+    map<string,string> p;
+    SVMClassifier svm(type,p);
+
+    cout << "Read features ok" << endl << "Training with " << posCountTrain << " pos and " << negCountTrain << " neg" << endl;
+    svm.train(train,trainL);
+    cout << "Training ok" << endl << "Testing with " << posCountTest << " pos and " << negCountTest << " neg" << endl;
+    int tp = 0;
+    int fn = 0;
+
+    int tn = 0;
+    int fp = 0;
+
+    Mat classifications(test.rows,1,CV_32F);
+
+    for(int i = 0; i < test.rows; i++){
+        Mat features = test.row(i);
+
+        float label = testL.at<float>(i,0);
+
+        float detected = svm.classify(features);
+
+        if (label == detected && label == 1)
+            tp++;
+        else if (label == detected && label == 0)
+            tn++;
+        else if (label != detected && label == 1)
+            fn++;
+        else if (label != detected && label == 0)
+            fp++;
+
+        classifications.at<float>(i,0) = label;
+    }
+    int correct = tp+tn;
+    int wrong = fn+fp;
+
+    cout << "keyframes: " << (correct/double(correct+wrong))*100 << " %: tp: " << tp << " tn: " << tn << " fp: " << fp  <<  " fn: " << fn << endl;
+
+    int lastVideoId = -1;
+    int totalVideoFrames = 0;
+    int currentVideoFramesPositives = 0;
+
+    tp = 0;
+    tn = 0;
+    fp = 0;
+    fn = 0;
+
+    float label;
+    float classification;
+
+    for(int i = 0; i < classifications.rows; i++){
+        float videoId = testLOriginal.at<float>(i,1);
+
+        if (lastVideoId != videoId && i != 0){
+            double ratio = currentVideoFramesPositives/(float)totalVideoFrames;
+
+            if (ratio >= 0.5){ //concept was detected in the video
+                if(label == 1)
+                    tp++;
+                else
+                    fp++;
+            } else {
+                if(label == 1)
+                    fn++;
+                else
+                    tn++;
+
+            }
+            currentVideoFramesPositives = 0;
+            totalVideoFrames = 0;
+        }
+
+        label = testL.at<float>(i,0);
+        classification = classifications.at<float>(i,0);
+
+        //if classification is positive, increment
+        currentVideoFramesPositives+= classification;
+        totalVideoFrames++;
+
+        lastVideoId = videoId;
+    }
+
+    correct = tp+tn;
+    wrong = fn+fp;
+
+    cout << "video: " << (correct/double(correct+wrong))*100 << " %: tp: " << tp << " tn: " << tn << " fp: " << fp  <<  " fn: " << fn << endl;
+
+    cout << "Test ok" << endl;
+
+
+    return 0;
+}
+
+
 int main(int argc, char *argv[])
 {
 	//testLoadSaveIClassifier(argc, argv);
@@ -1483,7 +1709,7 @@ int main(int argc, char *argv[])
     //classifyAllBlipImagesCondor(argc, argv);
     //classifyAllBlipImagesCondor(argc, argv);
 
-    classifySapo(argc, argv);
+    classifySapoAllVideos(argc, argv);
 	//createBlipKnnVWDict(argc, argv);
     return 0;
 }

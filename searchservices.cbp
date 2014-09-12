@@ -25,7 +25,7 @@
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="default.json 0 1" />
+				<Option parameters="0.7 0.3 1 1 /home/amourao/code/shotdetection/bin/minecraft_cedd.bin /home/amourao/code/shotdetection/bin/league_cedd.bin,/home/amourao/code/shotdetection/bin/kizomba_cedd.bin,/home/amourao/code/shotdetection/bin/touro_cedd.bin,/home/amourao/code/shotdetection/bin/violetta_cedd.bin,/home/amourao/code/shotdetection/bin/caricas_cedd.bin,/home/amourao/code/shotdetection/bin/zumba_cedd.bin" />
 				<Compiler>
 					<Add option="-O2" />
 					<Add directory="commons" />
@@ -64,7 +64,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="default.json 0 2000" />
+				<Option parameters="0.1 0.3 0.01 0.2 /home/amourao/code/shotdetection/bin/zumba_gist883.bin /home/amourao/code/shotdetection/bin/league_gist883.bin,/home/amourao/code/shotdetection/bin/kizomba_gist883.bin,/home/amourao/code/shotdetection/bin/touro_gist883.bin,/home/amourao/code/shotdetection/bin/violetta_gist883.bin,/home/amourao/code/shotdetection/bin/caricas_gist883.bin,/home/amourao/code/shotdetection/bin/minecraft_gist883.bin" />
 				<Compiler>
 					<Add option="-g" />
 					<Add directory="commons" />
