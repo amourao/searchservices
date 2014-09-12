@@ -1628,7 +1628,7 @@ int classifySapoAllVideos(int argc, char *argv[]){
         else if (label != detected && label == 0)
             fp++;
 
-        classifications.at<float>(i,0) = label;
+        classifications.at<float>(i,0) = detected;
     }
     int correct = tp+tn;
     int wrong = fn+fp;
@@ -1644,10 +1644,12 @@ int classifySapoAllVideos(int argc, char *argv[]){
     fp = 0;
     fn = 0;
 
+    int error = 0;
+
     float label;
     float classification;
 
-    for(int i = 0; i < classifications.rows; i++){
+    for(int i = 0; i < test.rows; i++){
         float videoId = testLOriginal.at<float>(i,1);
 
         if (lastVideoId != videoId && i != 0){
@@ -1656,13 +1658,17 @@ int classifySapoAllVideos(int argc, char *argv[]){
             if (ratio >= 0.5){ //concept was detected in the video
                 if(label == 1)
                     tp++;
-                else
+                else if (label == 0)
                     fp++;
+                else
+                    error++;
             } else {
                 if(label == 1)
                     fn++;
-                else
+                else if (label == 0)
                     tn++;
+                else
+                    error++;
 
             }
             currentVideoFramesPositives = 0;
@@ -1682,7 +1688,7 @@ int classifySapoAllVideos(int argc, char *argv[]){
     correct = tp+tn;
     wrong = fn+fp;
 
-    cout << "video: " << (correct/double(correct+wrong))*100 << " %: tp: " << tp << " tn: " << tn << " fp: " << fp  <<  " fn: " << fn << endl;
+    cout << "video: " << (correct/double(correct+wrong))*100 << " %: tp: " << tp << " tn: " << tn << " fp: " << fp  <<  " fn: " << fn << " err: " << error << endl;
 
     cout << "Test ok" << endl;
 
