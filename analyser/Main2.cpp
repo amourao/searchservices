@@ -1601,7 +1601,7 @@ int classifySapoAllVideos(int argc, char *argv[]){
 
     string type = "sapo";
     map<string,string> p;
-    kNNClassifier svm(type,p);
+    SVMClassifier svm(type,p);
 
     cout << "Read features ok" << endl << "Training with " << posCountTrain << " pos and " << negCountTrain << " neg" << endl;
     svm.train(train,trainL);
@@ -1619,7 +1619,7 @@ int classifySapoAllVideos(int argc, char *argv[]){
 
         float label = testL.at<float>(i,0);
 
-        float detected = svm.classify(features,3);
+        float detected = svm.classify(features);
 
         //cout << label << " " << detected << endl;
 
