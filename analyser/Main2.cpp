@@ -1516,8 +1516,8 @@ int classifySapoAllVideos(int argc, char *argv[]){
     Mat featuresPosTest = featuresPos.rowRange(posCountTrain,lastTestValue);
     Mat featuresPosTestLOriginal = labelsPos.rowRange(posCountTrain,lastTestValue);
 
-    Mat featurePosTrainL = Mat(posCountTrain,1, CV_32F, 1.0);
-    Mat featuresPosTestL = Mat(posCountTest,1, CV_32F, 1.0);
+    Mat featurePosTrainL= Mat::ones(posCountTrain,1, CV_32F);
+    Mat featuresPosTestL= Mat::ones(featuresPosTest.rows,1, CV_32F);
 
     //get negative examples
     //number of examples is counted as a porportion of positive examples
@@ -1565,8 +1565,10 @@ int classifySapoAllVideos(int argc, char *argv[]){
         Mat featuresNegTestC = featuresS.rowRange(currSplitTrain,lastTestValue);
         Mat featuresNegTestLCOriginal = labelsS.rowRange(currSplitTrain,lastTestValue);
 
-        Mat featuresNegTrainLC = Mat(currSplitTrain,1, CV_32F, 0.0);
-        Mat featuresNegTestLC = Mat(currSplitTest,1, CV_32F, 0.0);
+        currSplitTest = featuresNegTestC.rows;
+
+        Mat featuresNegTrainLC = Mat::zeros(currSplitTrain,1, CV_32F);
+        Mat featuresNegTestLC = Mat::zeros(currSplitTest,1, CV_32F);
 
         featuresNegTrain.push_back(featuresNegTrainC);
         featuresNegTrainL.push_back(featuresNegTrainLC);
@@ -1599,7 +1601,7 @@ int classifySapoAllVideos(int argc, char *argv[]){
 
     string type = "sapo";
     map<string,string> p;
-    SVMClassifier svm(type,p);
+    kNNClassifier svm(type,p);
 
     cout << "Read features ok" << endl << "Training with " << posCountTrain << " pos and " << negCountTrain << " neg" << endl;
     svm.train(train,trainL);
@@ -1617,15 +1619,17 @@ int classifySapoAllVideos(int argc, char *argv[]){
 
         float label = testL.at<float>(i,0);
 
-        float detected = svm.classify(features);
+        float detected = svm.classify(features,3);
 
-        if (label == detected && label == 1)
+        //cout << label << " " << detected << endl;
+
+        if (label == detected && label == 1.0f)
             tp++;
-        else if (label == detected && label == 0)
+        else if (label == detected && label == 0.0f)
             tn++;
-        else if (label != detected && label == 1)
+        else if (label != detected && label == 1.0f)
             fn++;
-        else if (label != detected && label == 0)
+        else if (label != detected && label == 0.0f)
             fp++;
 
         classifications.at<float>(i,0) = detected;
@@ -1660,17 +1664,20 @@ int classifySapoAllVideos(int argc, char *argv[]){
                     tp++;
                 else if (label == 0)
                     fp++;
-                else
+                else {
                     error++;
+                }
             } else {
                 if(label == 1)
                     fn++;
                 else if (label == 0)
                     tn++;
-                else
+                else {
                     error++;
-
+                }
             }
+            if(label != 0 || label != 1)
+                cout << "error: line: " << i << " label: " << label << endl;
             currentVideoFramesPositives = 0;
             totalVideoFrames = 0;
         }
@@ -1679,11 +1686,38 @@ int classifySapoAllVideos(int argc, char *argv[]){
         classification = classifications.at<float>(i,0);
 
         //if classification is positive, increment
-        currentVideoFramesPositives+= classification;
+        if (classification == 1)
+            currentVideoFramesPositives++;
         totalVideoFrames++;
 
         lastVideoId = videoId;
     }
+
+
+        double ratio = currentVideoFramesPositives/(float)totalVideoFrames;
+
+            if (ratio >= 0.5){ //concept was detected in the video
+                if(label == 1)
+                    tp++;
+                else if (label == 0)
+                    fp++;
+                else {
+                    cout << "error: " << label << endl;
+                    error++;
+                }
+            } else {
+                if(label == 1)
+                    fn++;
+                else if (label == 0)
+                    tn++;
+                else {
+                    cout << "error: " << label << endl;
+                    error++;
+                }
+
+            }
+            if(label != 0 || label != 1)
+                cout << "error: line: last label: " << label << endl;
 
     correct = tp+tn;
     wrong = fn+fp;
