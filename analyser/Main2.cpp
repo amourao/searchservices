@@ -1466,6 +1466,37 @@ int classifySapo(int argc, char *argv[]){
 }
 
 
+int extractOnlyMiddleFrames(Mat& featurePosTrain, Mat& featurePosTrainL, Mat& featurePosTrainLOriginal){
+        Mat tmpfeaturePosTrain;
+        Mat tmpfeaturePosTrainL;
+        Mat tmpfeaturePosTrainLOriginal;
+
+        featurePosTrain.copyTo(tmpfeaturePosTrain);
+        featurePosTrainL.copyTo(tmpfeaturePosTrainL);
+        featurePosTrainLOriginal.copyTo(tmpfeaturePosTrainLOriginal);
+
+        featurePosTrain = Mat();
+        featurePosTrainL = Mat();
+        featurePosTrainLOriginal = Mat();
+
+        bool isMiddleFrame = false;
+        float lastVideoId = -1;
+        for(int i = 0; i < tmpfeaturePosTrain.rows; i++){
+            isMiddleFrame = !isMiddleFrame; //swap to add every other frame
+            float videoId = tmpfeaturePosTrainLOriginal.at<float>(i,1);
+            if(lastVideoId != videoId) //except when video changes (last frame of video1 next to first frame from video2
+                isMiddleFrame = false;
+            if (isMiddleFrame){
+                featurePosTrain.push_back(tmpfeaturePosTrain.row(i));
+                featurePosTrainL.push_back(tmpfeaturePosTrainL.row(i));
+                featurePosTrainLOriginal.push_back(tmpfeaturePosTrainLOriginal.row(i));
+            }
+            lastVideoId = videoId;
+        }
+
+       return featurePosTrain.rows;
+}
+
 int classifySapoAllVideos(int argc, char *argv[]){
     string paramFile(argv[1]);
 
@@ -1530,35 +1561,11 @@ int classifySapoAllVideos(int argc, char *argv[]){
 
         cout << "Using only middle keyframes positive examples" << endl;
 
-        Mat tmpfeaturePosTrain;
-        Mat tmpfeaturePosTrainL;
-        Mat tmpfeaturePosTrainLOriginal;
+        posCountTrain = extractOnlyMiddleFrames(featurePosTrain,featurePosTrainL,featurePosTrainLOriginal);
+        posCountTest = extractOnlyMiddleFrames(featuresPosTest,featuresPosTestL,featuresPosTestLOriginal);
 
-        featurePosTrain.copyTo(tmpfeaturePosTrain);
-        featurePosTrainL.copyTo(tmpfeaturePosTrainL);
-        featurePosTrainLOriginal.copyTo(tmpfeaturePosTrainLOriginal);
-
-        featurePosTrain = Mat();
-        featurePosTrainL = Mat();
-        featurePosTrainLOriginal = Mat();
-
-        bool isMiddleFrame = false;
-        float lastVideoId = -1;
-        for(int i = 0; i < tmpfeaturePosTrain.rows; i++){
-            isMiddleFrame = !isMiddleFrame; //swap to add every other frame
-            float videoId = tmpfeaturePosTrainLOriginal.at<float>(i,1);
-            if(lastVideoId != videoId) //except when video changes (last frame of video1 next to first frame from video2
-                isMiddleFrame = false;
-            if (isMiddleFrame){
-                featurePosTrain.push_back(tmpfeaturePosTrain.row(i));
-                featurePosTrainL.push_back(tmpfeaturePosTrainL.row(i));
-                featurePosTrainLOriginal.push_back(tmpfeaturePosTrainLOriginal.row(i));
-            }
-            lastVideoId = videoId;
-        }
-
-        posCountTrain = featurePosTrain.rows;
-
+        splitTrainNeg*=2;
+        splitTestNeg*=2;
     }
 
 
@@ -1626,7 +1633,10 @@ int classifySapoAllVideos(int argc, char *argv[]){
     }
 
 
-
+    if(onlyMiddleKeyframes){
+        negCountTrain = extractOnlyMiddleFrames(featuresNegTrain,featuresNegTrainL,featuresNegTrainLOriginal);
+        negCountTest = extractOnlyMiddleFrames(featuresNegTest,featuresNegTestL,featuresNegTestLOriginal);
+    }
 
     Mat train;
     Mat trainL;
