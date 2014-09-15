@@ -1478,6 +1478,11 @@ int classifySapoAllVideos(int argc, char *argv[]){
     string positiveExamples = argv[5];
 
     string negatives = argv[6];
+
+    bool onlyMiddleKeyframes = (argc > 7 && string(argv[7]) == "middleOnly");
+
+
+
     vector<string> negativeExamples = StringTools::split(negatives,',');
 
     Mat featuresNegTrain;
@@ -1513,11 +1518,49 @@ int classifySapoAllVideos(int argc, char *argv[]){
 
     Mat featurePosTrain = featuresPos.rowRange(0,posCountTrain);
     Mat featurePosTrainLOriginal = labelsPos.rowRange(0,posCountTrain);
-    Mat featuresPosTest = featuresPos.rowRange(posCountTrain,lastTestValue);
     Mat featuresPosTestLOriginal = labelsPos.rowRange(posCountTrain,lastTestValue);
+    Mat featuresPosTest = featuresPos.rowRange(posCountTrain,lastTestValue);
 
     Mat featurePosTrainL= Mat::ones(posCountTrain,1, CV_32F);
     Mat featuresPosTestL= Mat::ones(featuresPosTest.rows,1, CV_32F);
+
+
+    //option to select only frames from the middle of the scene
+    if(onlyMiddleKeyframes){
+
+        cout << "Using only middle keyframes positive examples" << endl;
+
+        Mat tmpfeaturePosTrain;
+        Mat tmpfeaturePosTrainL;
+        Mat tmpfeaturePosTrainLOriginal;
+
+        featurePosTrain.copyTo(tmpfeaturePosTrain);
+        featurePosTrainL.copyTo(tmpfeaturePosTrainL);
+        featurePosTrainLOriginal.copyTo(tmpfeaturePosTrainLOriginal);
+
+        featurePosTrain = Mat();
+        featurePosTrainL = Mat();
+        featurePosTrainLOriginal = Mat();
+
+        bool isMiddleFrame = false;
+        float lastVideoId = -1;
+        for(int i = 0; i < tmpfeaturePosTrain.rows; i++){
+            isMiddleFrame = !isMiddleFrame; //swap to add every other frame
+            float videoId = tmpfeaturePosTrainLOriginal.at<float>(i,1);
+            if(lastVideoId != videoId) //except when video changes (last frame of video1 next to first frame from video2
+                isMiddleFrame = false;
+            if (isMiddleFrame){
+                featurePosTrain.push_back(tmpfeaturePosTrain.row(i));
+                featurePosTrainL.push_back(tmpfeaturePosTrainL.row(i));
+                featurePosTrainLOriginal.push_back(tmpfeaturePosTrainLOriginal.row(i));
+            }
+            lastVideoId = videoId;
+        }
+
+        posCountTrain = featurePosTrain.rows;
+
+    }
+
 
     //get negative examples
     //number of examples is counted as a porportion of positive examples
@@ -1651,8 +1694,6 @@ int classifySapoAllVideos(int argc, char *argv[]){
     stringstream ss;
 
     int error = 0;
-    int totalVideos = 0;
-
     float label;
     float classification;
 
@@ -1681,7 +1722,7 @@ int classifySapoAllVideos(int argc, char *argv[]){
             }
             if(label != 0 && label != 1)
                 cout << "error: line: " << i << " label: " << label << endl;
-            ss << totalVideos++ << ";" << label << ";" << ratio << endl;
+            ss << lastVideoId << ";" << label << ";" << ratio << endl;
             currentVideoFramesPositives = 0;
             totalVideoFrames = 0;
         }
