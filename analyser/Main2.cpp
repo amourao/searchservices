@@ -1648,7 +1648,10 @@ int classifySapoAllVideos(int argc, char *argv[]){
     fp = 0;
     fn = 0;
 
+    stringstream ss;
+
     int error = 0;
+    int totalVideos = 0;
 
     float label;
     float classification;
@@ -1676,8 +1679,9 @@ int classifySapoAllVideos(int argc, char *argv[]){
                     error++;
                 }
             }
-            if(label != 0 || label != 1)
+            if(label != 0 && label != 1)
                 cout << "error: line: " << i << " label: " << label << endl;
+            ss << totalVideos++ << ";" << label << ";" << ratio << endl;
             currentVideoFramesPositives = 0;
             totalVideoFrames = 0;
         }
@@ -1716,7 +1720,7 @@ int classifySapoAllVideos(int argc, char *argv[]){
                 }
 
             }
-            if(label != 0 || label != 1)
+            if(label != 0 && label != 1)
                 cout << "error: line: last label: " << label << endl;
 
     correct = tp+tn;
@@ -1725,6 +1729,8 @@ int classifySapoAllVideos(int argc, char *argv[]){
     cout << "video: " << (correct/double(correct+wrong))*100 << " %: tp: " << tp << " tn: " << tn << " fp: " << fp  <<  " fn: " << fn << " err: " << error << endl;
 
     cout << "Test ok" << endl;
+
+    cout << ss.str();
 
 
     return 0;
