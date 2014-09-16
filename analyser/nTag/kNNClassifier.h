@@ -36,7 +36,7 @@ public:
 
 	float classify( cv::Mat query);
 
-	float classify( cv::Mat query, int neighboursCount = 1);
+	float classify( cv::Mat query, int neighboursCount);
 
 	string getName();
 

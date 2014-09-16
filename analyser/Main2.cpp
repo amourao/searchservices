@@ -1537,14 +1537,13 @@ int classifySapoAllVideos(int argc, char *argv[]){
     //go until last frame of the current video to avoid spliting videos across train/test data
     while(labelsPos.at<float>(++posCountTrain,1) == lastVideo)
         ;
-    posCountTrain--;
 
     int lastTestValue = min(posCountTrain+posCountTest,labelsPos.rows);
     lastVideo = labelsPos.at<float>(lastTestValue,1);
     //go until last frame of the current video to avoid spliting videos across train/test data
     while(lastTestValue < labelsPos.rows && labelsPos.at<float>(++lastTestValue,1) == lastVideo)
         ;
-    lastTestValue--;
+
     posCountTest = lastTestValue-posCountTrain;
 
     Mat featurePosTrain = featuresPos.rowRange(0,posCountTrain);
@@ -1600,7 +1599,6 @@ int classifySapoAllVideos(int argc, char *argv[]){
         //go until last frame of the current video to avoid spliting videos across train/test data
         while(labelsS.at<float>(++currSplitTrain,1) == lastVideo)
             ;
-        currSplitTrain--;
 
         lastTestValue = min(currSplitTrain+currSplitTest,labelsS.rows);
         lastVideo = labelsS.at<float>(lastTestValue,1);
@@ -1608,7 +1606,6 @@ int classifySapoAllVideos(int argc, char *argv[]){
         //go until last frame of the current video to avoid spliting videos across train/test data
         while(lastTestValue++ < labelsS.rows && labelsS.at<float>(lastTestValue,1) == lastVideo)
             ;
-        lastTestValue--;
 
         Mat featuresNegTrainC = featuresS.rowRange(0,currSplitTrain);
         Mat featuresNegTrainLCOriginal = labelsS.rowRange(0,currSplitTrain);
@@ -1707,6 +1704,9 @@ int classifySapoAllVideos(int argc, char *argv[]){
     float label;
     float classification;
 
+
+     fstream file("log.txt",fstream::out);
+
     for(int i = 0; i < test.rows; i++){
         float videoId = testLOriginal.at<float>(i,1);
 
@@ -1732,7 +1732,8 @@ int classifySapoAllVideos(int argc, char *argv[]){
             }
             if(label != 0 && label != 1)
                 cout << "error: line: " << i << " label: " << label << endl;
-            ss << lastVideoId << ";" << label << ";" << ratio << endl;
+
+            file << lastVideoId << ";" << label << ";" << ratio << endl;
             currentVideoFramesPositives = 0;
             totalVideoFrames = 0;
         }
@@ -1773,6 +1774,7 @@ int classifySapoAllVideos(int argc, char *argv[]){
             }
             if(label != 0 && label != 1)
                 cout << "error: line: last label: " << label << endl;
+            file << lastVideoId << ";" << label << ";" << ratio << endl;
 
     correct = tp+tn;
     wrong = fn+fp;
@@ -1781,9 +1783,16 @@ int classifySapoAllVideos(int argc, char *argv[]){
 
     cout << "Test ok" << endl;
 
-    cout << ss.str();
 
-
+    /*
+    for (int i = 0; i < trainLOriginal.rows; i++){
+        file << trainL.row(i) << " " << trainLOriginal.row(i) << endl;
+    }
+    file << endl << endl;
+    for (int i = 0; i < testLOriginal.rows; i++){
+        file << testL.row(i) << " " << testLOriginal.row(i) << endl;
+    }
+    */
     return 0;
 }
 
