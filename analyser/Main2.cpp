@@ -1544,6 +1544,8 @@ int classifySapoAllVideos(int argc, char *argv[]){
     while(lastTestValue < labelsPos.rows && labelsPos.at<float>(++lastTestValue,1) == lastVideo)
         ;
 
+    lastTestValue = min(lastTestValue,labelsPos.rows);
+
     posCountTest = lastTestValue-posCountTrain;
 
     Mat featurePosTrain = featuresPos.rowRange(0,posCountTrain);
@@ -1606,6 +1608,7 @@ int classifySapoAllVideos(int argc, char *argv[]){
         //go until last frame of the current video to avoid spliting videos across train/test data
         while(lastTestValue++ < labelsS.rows && labelsS.at<float>(lastTestValue,1) == lastVideo)
             ;
+        lastTestValue = min(lastTestValue,labelsS.rows);
 
         Mat featuresNegTrainC = featuresS.rowRange(0,currSplitTrain);
         Mat featuresNegTrainLCOriginal = labelsS.rowRange(0,currSplitTrain);
