@@ -1512,8 +1512,6 @@ int classifySapoAllVideos(int argc, char *argv[]){
 
     bool onlyMiddleKeyframes = (argc > 7 && string(argv[7]) == "middleOnly");
 
-
-
     vector<string> negativeExamples = StringTools::split(negatives,',');
 
     Mat featuresNegTrain;
@@ -1586,6 +1584,11 @@ int classifySapoAllVideos(int argc, char *argv[]){
     for(string negExample: negativeExamples){
         Mat featuresS, labelsS;
         MatrixTools::readBin(negExample,featuresS,labelsS);
+
+        if(labelsS.cols == 8){
+            labelsS.col(2).copyTo(labelsS.col(1));
+            labelsS = labelsS.colRange(0,5);
+        }
 
         int currSplitTrain = negCountTrainExpectedPerClass;
         int currSplitTest = negCountTestExpectedPerClass;
@@ -1709,7 +1712,7 @@ int classifySapoAllVideos(int argc, char *argv[]){
     stringstream ss;
 
     int error = 0;
-    float label;
+    float label = -1;
     float classification;
 
     const vector<double> ratios({0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1});
@@ -1725,10 +1728,7 @@ int classifySapoAllVideos(int argc, char *argv[]){
     for(int i = 0; i < test.rows; i++){
         float videoId;
 
-        if(testLOriginal.cols == 8)
-            videoId = testLOriginal.at<float>(i,2);
-        else
-            videoId = testLOriginal.at<float>(i,1);
+        videoId = testLOriginal.at<float>(i,1);
 
         if (lastVideoId != videoId && i != 0){
             totalVideos++;
