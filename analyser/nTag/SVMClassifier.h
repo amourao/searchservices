@@ -3,6 +3,7 @@
 #include <opencv2/ml/ml.hpp>
 #include "IClassifier.h"
 #include "../FactoryClassifier.h"
+#include "../../commons/FileDownloader.h"
 
 #ifndef TRAINDATA_EXTENSION_SVM
 #define TRAINDATA_EXTENSION_SVM ".xml"

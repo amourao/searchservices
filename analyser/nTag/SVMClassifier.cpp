@@ -75,8 +75,14 @@ bool SVMClassifier::save(string basePath){
 bool SVMClassifier::load(string basePath){
 	stringstream ss;
 	ss << CLASSIFIER_BASE_SAVE_PATH << basePath << TRAINDATA_EXTENSION_SVM;
+    string path = ss.str();
 
 	svm = new CvSVM();
-	svm->load(ss.str().c_str());
-	return true;
+
+	if (FileDownloader::fileExists(path)){
+        svm->load(ss.str().c_str());
+        return true;
+	} else {
+        return false;
+	}
 }

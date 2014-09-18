@@ -1560,7 +1560,7 @@ int classifySapoAllVideos(int argc, char *argv[]){
     //option to select only frames from the middle of the scene
     if(onlyMiddleKeyframes){
 
-        cout << "Using only middle keyframes positive examples" << endl;
+        //cout << "Using only middle keyframes positive examples" << endl;
 
         posCountTrain = extractOnlyMiddleFrames(featurePosTrain,featurePosTrainL,featurePosTrainLOriginal);
         posCountTest = extractOnlyMiddleFrames(featuresPosTest,featuresPosTestL,featuresPosTestLOriginal);
@@ -1656,9 +1656,21 @@ int classifySapoAllVideos(int argc, char *argv[]){
     map<string,string> p;
     SVMClassifier svm(type,p);
 
-    cout << "Read features ok" << endl << "Training with " << posCountTrain << " pos and " << negCountTrain << " neg" << endl;
-    svm.train(train,trainL);
-    cout << "Training ok" << endl << "Testing with " << posCountTest << " pos and " << negCountTest << " neg" << endl;
+    cout << posCountTrain << ";" << negCountTrain << endl;
+
+    stringstream modelSS;
+    vector<string> trainNameV = StringTools::split(positiveExamples,'/');
+    trainNameV = StringTools::split(trainNameV[trainNameV.size()-1],'.');
+
+    modelSS << type << "_" << trainNameV[0];
+    string trainName = modelSS.str();
+
+    if(!svm.load(trainName)){
+        svm.train(train,trainL);
+        svm.save(trainName);
+    }
+
+    cout << posCountTest << ";" << negCountTest << endl << endl;
     int tp = 0;
     int fn = 0;
 
@@ -1687,19 +1699,12 @@ int classifySapoAllVideos(int argc, char *argv[]){
 
         classifications.at<float>(i,0) = detected;
     }
-    int correct = tp+tn;
-    int wrong = fn+fp;
 
-    cout << "keyframes: " << (correct/double(correct+wrong))*100 << " %: tp: " << tp << " tn: " << tn << " fp: " << fp  <<  " fn: " << fn << endl;
+    cout << ";" << (tp + tn)/float(tp+tn+fp+fn) << ";" << (tp)/float(tp+fp) << ";;;"  << tp << ";" << tn << ";" << fp  <<  ";" << fn << endl << endl;
 
     int lastVideoId = -1;
     int totalVideoFrames = 0;
     int currentVideoFramesPositives = 0;
-
-    tp = 0;
-    tn = 0;
-    fp = 0;
-    fn = 0;
 
     stringstream ss;
 
@@ -1707,36 +1712,48 @@ int classifySapoAllVideos(int argc, char *argv[]){
     float label;
     float classification;
 
+    const vector<double> ratios({0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1});
+    vector<int> tpv(ratios.size(),0);
+    vector<int> tnv(ratios.size(),0);
+    vector<int> fpv(ratios.size(),0);
+    vector<int> fnv(ratios.size(),0);
 
-     fstream file("log.txt",fstream::out);
+    int totalVideos = 0;
+
+    //fstream file("log.txt",fstream::out);
 
     for(int i = 0; i < test.rows; i++){
-        float videoId = testLOriginal.at<float>(i,1);
+        float videoId;
+
+        if(testLOriginal.cols == 8)
+            videoId = testLOriginal.at<float>(i,2);
+        else
+            videoId = testLOriginal.at<float>(i,1);
 
         if (lastVideoId != videoId && i != 0){
+            totalVideos++;
             double ratio = currentVideoFramesPositives/(float)totalVideoFrames;
+            for (uint j = 0; j < ratios.size(); j++){
 
-            if (ratio >= 0.5){ //concept was detected in the video
-                if(label == 1)
-                    tp++;
-                else if (label == 0)
-                    fp++;
-                else {
-                    error++;
-                }
-            } else {
-                if(label == 1)
-                    fn++;
-                else if (label == 0)
-                    tn++;
-                else {
-                    error++;
+                if (ratio >= ratios.at(j)){ //concept was detected in the video
+                    if(label == 1)
+                        tpv.at(j)++;
+                    else if (label == 0)
+                        fpv.at(j)++;
+                    else {
+                        error++;
+                    }
+                } else {
+                    if(label == 1)
+                        fnv.at(j)++;
+                    else if (label == 0)
+                        tnv.at(j)++;
+                    else {
+                        error++;
+                    }
                 }
             }
-            if(label != 0 && label != 1)
-                cout << "error: line: " << i << " label: " << label << endl;
-
-            file << lastVideoId << ";" << label << ";" << ratio << endl;
+            //file << lastVideoId << ";" << label << ";" << ratio << endl;
             currentVideoFramesPositives = 0;
             totalVideoFrames = 0;
         }
@@ -1752,40 +1769,36 @@ int classifySapoAllVideos(int argc, char *argv[]){
         lastVideoId = videoId;
     }
 
-
-        double ratio = currentVideoFramesPositives/(float)totalVideoFrames;
-
-            if (ratio >= 0.5){ //concept was detected in the video
-                if(label == 1)
-                    tp++;
-                else if (label == 0)
-                    fp++;
-                else {
-                    cout << "error: " << label << endl;
-                    error++;
-                }
-            } else {
-                if(label == 1)
-                    fn++;
-                else if (label == 0)
-                    tn++;
-                else {
-                    cout << "error: " << label << endl;
-                    error++;
-                }
-
+    totalVideos++;
+    double ratio = currentVideoFramesPositives/(float)totalVideoFrames;
+    for (uint j = 0; j < ratios.size(); j++){
+        if (ratio >= ratios.at(j)){ //concept was detected in the video
+            if(label == 1)
+                tpv.at(j)++;
+            else if (label == 0)
+                fpv.at(j)++;
+            else {
+                error++;
             }
-            if(label != 0 && label != 1)
-                cout << "error: line: last label: " << label << endl;
-            file << lastVideoId << ";" << label << ";" << ratio << endl;
+        } else {
+            if(label == 1)
+                fnv.at(j)++;
+            else if (label == 0)
+                tnv.at(j)++;
+            else {
+                error++;
+            }
+        }
+    }
 
-    correct = tp+tn;
-    wrong = fn+fp;
+    if(label != 0 && label != 1)
+        cout << "error: line: last label: " << label << endl;
+    //file << lastVideoId << ";" << label << ";" << ratio << endl;
 
-    cout << "video: " << (correct/double(correct+wrong))*100 << " %: tp: " << tp << " tn: " << tn << " fp: " << fp  <<  " fn: " << fn << " err: " << error << endl;
 
-    cout << "Test ok" << endl;
-
+    for (uint j = 0; j < ratios.size(); j++){
+        cout << ratios.at(j) << ";" << (tpv.at(j) + tnv.at(j))/float(tpv.at(j)+tnv.at(j)+fpv.at(j)+fnv.at(j)) << ";" << (tpv.at(j))/float(tpv.at(j)+fpv.at(j)) << ";;;" << tpv.at(j) << ";" << tnv.at(j) << ";" << fpv.at(j)  <<  ";" << fnv.at(j) << endl;
+    }
 
     /*
     for (int i = 0; i < trainLOriginal.rows; i++){

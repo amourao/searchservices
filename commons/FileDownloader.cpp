@@ -1,9 +1,10 @@
 #include "FileDownloader.h"
 
-	FileDownloader::FileDownloader(){
+FileDownloader::FileDownloader(){
     srand (time(NULL));
-    }
-	FileDownloader::~FileDownloader(){}
+}
+
+FileDownloader::~FileDownloader(){}
 
 string FileDownloader::getCurrentDir(){
   char cwd[1024];
@@ -14,7 +15,7 @@ string FileDownloader::getCurrentDir(){
 void FileDownloader::getFile(std::string url, std::string location){
   CURL *curl;
   CURLcode res;
-  
+
   url = StringTools::replaceAll(url," ", "%20");
 
   curl = curl_easy_init();
@@ -64,5 +65,10 @@ std::string FileDownloader::getExtension(std::string name) {
     if(name.find_last_of(".") != std::string::npos)
         return name.substr(name.find_last_of(".")+1);
     return "";
+}
+
+bool FileDownloader::fileExists(std::string path){
+    struct stat buffer;
+    return (stat (path.c_str(), &buffer) == 0);
 }
 
