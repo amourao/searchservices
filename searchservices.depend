@@ -514,7 +514,7 @@
 1400514104 source:/home/amourao/code/searchservices/analyser/nTag/SRClassifier.cpp
 	"SRClassifier.h"
 
-1411036799 source:/home/amourao/code/searchservices/analyser/nTag/SVMClassifier.cpp
+1411059692 source:/home/amourao/code/searchservices/analyser/nTag/SVMClassifier.cpp
 	"SVMClassifier.h"
 
 1397661393 source:/home/amourao/code/searchservices/analyser/nTag/VWBasicClassifier.cpp
@@ -688,10 +688,10 @@
 1410344940 source:/home/amourao/code/searchservices/commons/factory/Factory.cpp
 	"Factory.h"
 
-1411036634 source:/home/amourao/code/searchservices/commons/FileDownloader.cpp
+1411053454 source:/home/amourao/code/searchservices/commons/FileDownloader.cpp
 	"FileDownloader.h"
 
-1411036645 /home/amourao/code/searchservices/commons/FileDownloader.h
+1411053439 /home/amourao/code/searchservices/commons/FileDownloader.h
 	<curl/curl.h>
 	<string>
 	<cstdio>
@@ -4362,4 +4362,30 @@
 	<vector>
 	<string>
 	<iostream>
+
+1411059013 source:/home/amourao/code/searchservices/rest/Endpoints/analyser/VideoTagger.cpp
+	"VideoTagger.h"
+
+1411057796 /home/amourao/code/searchservices/rest/Endpoints/analyser/VideoTagger.h
+	<utility>
+	<iostream>
+	<sstream>
+	<map>
+	"../../FactoryEndpoint.h"
+	"../../../analyser/FactoryAnalyser.h"
+	"../../../analyser/nTag/SVMClassifier.h"
+	"../../../analyser/tools/ShotDetector.h"
+	"../../../analyser/sources/TextFileSourceV2.h"
+	"../../IEndpoint.h"
+	<jsoncpp/json/json.h>
+	<jsoncpp/json/autolink.h>
+	"../../../commons/FileDownloader.h"
+
+1411056077 source:/home/amourao/code/searchservices/analyser/tools/ShotDetector.cpp
+	"ShotDetector.h"
+
+1411055427 /home/amourao/code/searchservices/analyser/tools/ShotDetector.h
+	<opencv2/opencv.hpp>
+	<numeric>
+	<fstream>
 

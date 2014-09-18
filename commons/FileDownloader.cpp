@@ -2,7 +2,15 @@
 
 FileDownloader::FileDownloader(){
     srand (time(NULL));
+    baseFolder = DOWNLOAD_FOLDER;
 }
+
+FileDownloader::FileDownloader(std::string downloadFolder){
+    srand (time(NULL));
+    baseFolder = downloadFolder;
+}
+
+
 
 FileDownloader::~FileDownloader(){}
 
@@ -52,7 +60,7 @@ std::vector<std::string> FileDownloader::getFiles(std::string url){
 std::string FileDownloader::getFile(std::string url){
   std::stringstream ss;
   std::string name;
-  ss << DOWNLOAD_FOLDER << StringTools::genRandom(RANDOM_NAME_SIZE) << "." << getExtension(url);
+  ss << baseFolder << StringTools::genRandom(RANDOM_NAME_SIZE) << "." << getExtension(url);
   name = ss.str();
   getFile(url,name);
   return name;

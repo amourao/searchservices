@@ -57,7 +57,7 @@ void SVMClassifier::test( cv::Mat testData, cv::Mat testLabels ){
 	//TODO
 }
 string SVMClassifier::getName(){
-	return "SVMClassifier";
+	return type;
 }
 
 bool SVMClassifier::save(string basePath){

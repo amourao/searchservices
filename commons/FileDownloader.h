@@ -20,6 +20,7 @@ class FileDownloader {
 
 public:
 	FileDownloader();
+	FileDownloader(std::string downloadFolder);
 	~FileDownloader();
 
     void getFile(std::string url, std::string location);
@@ -37,4 +38,5 @@ private:
     std::string getExtension(std::string name);
 
     std::string type;
+    std::string baseFolder;
 };
