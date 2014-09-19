@@ -15,6 +15,7 @@ public:
 	void getPeaks(const vector<int>& diffs, const vector<int>& frames, vector<int>& keyframes, vector<int>& keyframesDiffs);
 	void addMiddleKeyframes(const vector<int>& keyframes, vector<int>& newKeyframes);
 	void writeFrames(const string filename, const vector<int>& frames, vector<string>& framesPaths);
+	void convertFramesIndexToTimes(const string filename,const vector<int>& frames, vector<double>& times);
 
 	void processOneVideo(string filename, int step);
 

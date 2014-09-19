@@ -36,6 +36,16 @@ void ShotDetector::detectScenes(const string filename,const  int step, vector<in
 	}
 }
 
+void ShotDetector::convertFramesIndexToTimes(const string filename,const vector<int>& frames, vector<double>& times){
+	VideoCapture capture = VideoCapture(filename);
+	if(!capture.isOpened())
+		cout << "Capture from video " << filename <<  " didn't work"<< endl;
+    double fps = capture.get(CV_CAP_PROP_FPS);
+    for(int frame: frames)
+        times.push_back(frame/fps);
+}
+
+
 void ShotDetector::getPeaks(const vector<int>& diffs, const vector<int>& frames, vector<int>& keyframes, vector<int>& keyframesDiffs){
 
 	double mean = std::accumulate(diffs.begin(), diffs.end(), 0.0) / diffs.size();

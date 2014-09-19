@@ -76,6 +76,7 @@ string VideoTagger::getTags(map<string, string > parameters){
 	int step = 5;
 
 	vector<int> diffs,frames,keyframes,keyframesWithMiddle, keyframesDiffs;
+	vector<double> keyframesWithMiddleTimes;
 	vector<string> framesPaths;
 
 	ShotDetector s;
@@ -83,6 +84,7 @@ string VideoTagger::getTags(map<string, string > parameters){
 	s.getPeaks(diffs,frames,keyframes,keyframesDiffs);
 	s.addMiddleKeyframes(keyframes,keyframesWithMiddle);
 	s.writeFrames(filename,keyframesWithMiddle,framesPaths);
+	s.convertFramesIndexToTimes(filename,keyframesWithMiddle,keyframesWithMiddleTimes);
 
     vector<pair<int,vector<string> > > conceptsPerFrame;
     vector<int> conceptsCountPerVideo(classifierInstances.size(),0);
@@ -146,7 +148,7 @@ string VideoTagger::getTags(map<string, string > parameters){
         Json::Value frame;
 
         frame["pos"] = conceptsPerFrame.at(i).first;
-        frame["path"] = framesPaths.at(i);
+        frame["time"] = keyframesWithMiddleTimes.at(i);
         vector<string> spath = StringTools::split(framesPaths.at(i), '/');
         frame["name"] = spath.at(spath.size()-1);
 
