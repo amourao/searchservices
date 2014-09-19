@@ -63,7 +63,6 @@ string VideoTagger::getTags(map<string, string > parameters){
             SVMClassifier* s = new SVMClassifier(c);
             cout << "loaded " << base << ": " << s->load(base) << endl;
             classifierInstances.push_back(s);
-
         }
     }
 
@@ -148,6 +147,8 @@ string VideoTagger::getTags(map<string, string > parameters){
 
         frame["pos"] = conceptsPerFrame.at(i).first;
         frame["path"] = framesPaths.at(i);
+        vector<string> spath = StringTools::split(framesPaths.at(i), '/');
+        frame["name"] = spath.at(spath.size()-1);
 
         Json::Value frameConceptArray(Json::arrayValue);
         for(string c: conceptsPerFrame.at(i).second)
@@ -175,6 +176,10 @@ string VideoTagger::getTags(map<string, string > parameters){
 	}
 	*/
 	root["url"] = parameters["url"];
+	root["localUrl"] = filename;
+	vector<string> spath = StringTools::split(filename, '/');
+    root["localName"] = spath.at(spath.size()-1);
+
 	root["frames"] = frameArray;
 	root["detectedConcepts"] = conceptArray;
 	root["conceptThresholds"] = conceptThresholds;
