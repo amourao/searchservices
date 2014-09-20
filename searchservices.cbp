@@ -64,7 +64,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="/media/Share/data/sapo/frames/tmp/filelist" />
+				<Option parameters="/media/Share/data/sapo/frames/sapo_keyframes_full_info_violetta cedd kizomba_cedd kizomba_cedd.bin true default.json" />
 				<Compiler>
 					<Add option="-g" />
 					<Add directory="commons" />

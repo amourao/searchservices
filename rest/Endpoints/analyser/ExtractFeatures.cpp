@@ -164,7 +164,7 @@ string ExtractFeatures::getFeatures(map<string, string > parameters){
 
 	for (int k = 0; k < is.getImageCount(); k++) {
 		if (!(src = is.nextImage()).empty()) { // src contains the image, but the IAnalyser interface needs a path
-			if(!filter && FrameFilter::hasEdges(src)){
+			if(!filter || FrameFilter::hasEdges(src)){
 
                 cv::Mat featuresRow;
 
