@@ -39,6 +39,7 @@
 #include "tools/TrainTestFeaturesTools.h"
 #include "tools/MIRFlickrImporter.h"
 #include "tools/tinyImageImporter.h"
+#include "tools/FrameFilter.h"
 
 #include "FactoryAnalyser.h"
 
@@ -1320,7 +1321,7 @@ int createBlipKnnVWDict(int argc, char *argv[]){
 int extractREST(int argc, char *argv[]){
 
     map<string, string> parameters;
-    string paramFile(argv[5]);
+    string paramFile(argv[6]);
 
 	LoadConfig::load(paramFile,parameters);
 
@@ -1330,6 +1331,7 @@ int extractREST(int argc, char *argv[]){
 	params["analyser"] = string(argv[2]);
 	params["task"] = string(argv[3]);
 	params["output"] = string(argv[4]);
+	params["filter"] = string(argv[5]);
 
 	ExtractFeatures ef ("a");
     ef.getFeatures(params);
@@ -1337,6 +1339,8 @@ int extractREST(int argc, char *argv[]){
 
     return 0;
 }
+
+
 
 int classifySapo(int argc, char *argv[]){
     string paramFile(argv[1]);
@@ -1831,7 +1835,9 @@ int main(int argc, char *argv[])
     //classifyAllBlipImagesCondor(argc, argv);
     //classifyAllBlipImagesCondor(argc, argv);
 
-    classifySapoAllVideos(argc, argv);
+    //FrameFilter::maine(argc, argv);
+    extractREST(argc, argv);
 	//createBlipKnnVWDict(argc, argv);
     return 0;
 }
+

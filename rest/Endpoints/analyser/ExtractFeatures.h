@@ -7,6 +7,7 @@
 #include "../../../analyser/FactoryAnalyser.h"
 #include "../../../analyser/tools/MatrixTools.h"
 #include "../../../analyser/tools/TrainTestFeaturesTools.h"
+#include "../../../analyser/tools/FrameFilter.h"
 #include "../../../analyser/sources/TextFileSourceV2.h"
 #include "../../IEndpoint.h"
 #include <jsoncpp/json/json.h>
@@ -25,14 +26,14 @@ public:
 	ExtractFeatures();
 	ExtractFeatures(string type);
 	~ExtractFeatures();
-	
+
 	void* createType(string &typeId);
-	
+
 	void handleRequest(string method, map<string, string> queryStrings, istream&, HTTPServerResponse &resp);
-	
+
 	string getFeatures(map<string, string> parameters);
 	string getFeaturesSingle(map<string, string> parameters);
-	
+
 
 private:
   string type;

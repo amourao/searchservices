@@ -279,7 +279,7 @@
 	<string>
 	<map>
 
-1411045538 source:/home/amourao/code/searchservices/analyser/Main2.cpp
+1411223403 source:/home/amourao/code/searchservices/analyser/Main2.cpp
 	<iostream>
 	<string>
 	<sstream>
@@ -312,6 +312,7 @@
 	"tools/TrainTestFeaturesTools.h"
 	"tools/MIRFlickrImporter.h"
 	"tools/tinyImageImporter.h"
+	"tools/FrameFilter.h"
 	"FactoryAnalyser.h"
 	"../indexer/FactoryIndexer.h"
 	"../indexer/IIndexer.h"
@@ -806,10 +807,10 @@
 	<Poco/Net/HTTPServerResponse.h>
 	"../commons/factory/Factory.h"
 
-1410345003 source:/home/amourao/code/searchservices/rest/Endpoints/analyser/ExtractFeatures.cpp
+1411224478 source:/home/amourao/code/searchservices/rest/Endpoints/analyser/ExtractFeatures.cpp
 	"ExtractFeatures.h"
 
-1391563053 /home/amourao/code/searchservices/rest/Endpoints/analyser/ExtractFeatures.h
+1411224414 /home/amourao/code/searchservices/rest/Endpoints/analyser/ExtractFeatures.h
 	<iostream>
 	<sstream>
 	<map>
@@ -817,6 +818,7 @@
 	"../../../analyser/FactoryAnalyser.h"
 	"../../../analyser/tools/MatrixTools.h"
 	"../../../analyser/tools/TrainTestFeaturesTools.h"
+	"../../../analyser/tools/FrameFilter.h"
 	"../../../analyser/sources/TextFileSourceV2.h"
 	"../../IEndpoint.h"
 	<jsoncpp/json/json.h>
@@ -4363,10 +4365,10 @@
 	<string>
 	<iostream>
 
-1411124636 source:/home/amourao/code/searchservices/rest/Endpoints/analyser/VideoTagger.cpp
+1411223602 source:/home/amourao/code/searchservices/rest/Endpoints/analyser/VideoTagger.cpp
 	"VideoTagger.h"
 
-1411057796 /home/amourao/code/searchservices/rest/Endpoints/analyser/VideoTagger.h
+1411223532 /home/amourao/code/searchservices/rest/Endpoints/analyser/VideoTagger.h
 	<utility>
 	<iostream>
 	<sstream>
@@ -4375,6 +4377,7 @@
 	"../../../analyser/FactoryAnalyser.h"
 	"../../../analyser/nTag/SVMClassifier.h"
 	"../../../analyser/tools/ShotDetector.h"
+	"../../../analyser/tools/FrameFilter.h"
 	"../../../analyser/sources/TextFileSourceV2.h"
 	"../../IEndpoint.h"
 	<jsoncpp/json/json.h>
@@ -4388,4 +4391,14 @@
 	<opencv2/opencv.hpp>
 	<numeric>
 	<fstream>
+
+1411223674 /home/amourao/code/searchservices/analyser/tools/FrameFilter.h
+	<opencv2/core/core.hpp>
+	<opencv2/highgui/highgui.hpp>
+	<opencv2/imgproc/imgproc.hpp>
+	<opencv2/features2d/features2d.hpp>
+	"../sources/TextFileSourceV2.h"
+
+1411223860 source:/home/amourao/code/searchservices/analyser/tools/FrameFilter.cpp
+	"FrameFilter.h"
 

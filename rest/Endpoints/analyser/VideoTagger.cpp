@@ -91,21 +91,29 @@ string VideoTagger::getTags(map<string, string > parameters){
 
 	for(uint i = 0; i < framesPaths.size(); i++){
         string path = framesPaths.at(i);
-        Mat features;
-
-        IDataModel* data = analyser->getFeatures(path);
-        vector<float>* v = (vector<float>*) data->getValue();
-		vector<float> v2 = *v;
-		MatrixTools::vectorToMat(v2, features);
+        Mat frame = imread(path);
 
         pair<int,vector<string> > frameConcepts (keyframesWithMiddle.at(i),vector<string>());
-		for(uint j = 0; j < classifierInstances.size(); j++){
-            SVMClassifier* svm = classifierInstances.at(j);
-            float detected = svm->classify(features);
-            if(detected == 1){
-                conceptsCountPerVideo.at(j)++;
-                frameConcepts.second.push_back(svm->getName());
+        if(FrameFilter::hasEdges(frame)){
+
+            Mat features;
+
+            IDataModel* data = analyser->getFeatures(path);
+            vector<float>* v = (vector<float>*) data->getValue();
+            vector<float> v2 = *v;
+            MatrixTools::vectorToMat(v2, features);
+
+
+            for(uint j = 0; j < classifierInstances.size(); j++){
+                SVMClassifier* svm = classifierInstances.at(j);
+                float detected = svm->classify(features);
+                if(detected == 1){
+                    conceptsCountPerVideo.at(j)++;
+                    frameConcepts.second.push_back(svm->getName());
+                }
             }
+		} else {
+            frameConcepts.second.push_back("(ignored)");
 		}
 		conceptsPerFrame.push_back(frameConcepts);
 

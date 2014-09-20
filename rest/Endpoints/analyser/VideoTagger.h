@@ -8,7 +8,9 @@
 #include "../../../analyser/FactoryAnalyser.h"
 #include "../../../analyser/nTag/SVMClassifier.h"
 #include "../../../analyser/tools/ShotDetector.h"
+#include "../../../analyser/tools/FrameFilter.h"
 #include "../../../analyser/sources/TextFileSourceV2.h"
+
 #include "../../IEndpoint.h"
 #include <jsoncpp/json/json.h>
 #include <jsoncpp/json/autolink.h>

@@ -64,7 +64,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="0.05 0.3 1 5 /home/amourao/code/shotdetection/bin/minecraft_cedd.bin /home/amourao/code/shotdetection/bin/league_cedd.bin,/home/amourao/code/shotdetection/bin/kizomba_cedd.bin,/home/amourao/code/shotdetection/bin/zumba_cedd.bin,/home/amourao/code/shotdetection/bin/touro_cedd.bin,/home/amourao/code/shotdetection/bin/caricas_cedd.bin,/home/amourao/code/shotdetection/bin/violetta_cedd.bin,/home/amourao/code/shotdetection/bin/blip_cedd.bin" />
+				<Option parameters="/media/Share/data/sapo/frames/tmp/filelist" />
 				<Compiler>
 					<Add option="-g" />
 					<Add directory="commons" />
@@ -185,6 +185,8 @@
 		<Unit filename="analyser/sources/TextFileSourceV2.h" />
 		<Unit filename="analyser/sources/VideoSource.cpp" />
 		<Unit filename="analyser/sources/VideoSource.h" />
+		<Unit filename="analyser/tools/FrameFilter.cpp" />
+		<Unit filename="analyser/tools/FrameFilter.h" />
 		<Unit filename="analyser/tools/IBinImporter.h" />
 		<Unit filename="analyser/tools/IlluminationCorrectionFilter.cpp" />
 		<Unit filename="analyser/tools/IlluminationCorrectionFilter.h" />

@@ -143,6 +143,11 @@ string ExtractFeatures::getFeatures(map<string, string > parameters){
 	string taskName = parameters["task"];
 	string outputLocation = parameters["output"];
 
+    bool filter = false;
+	if(parameters.count("filter") > 0){
+        filter = parameters["filter"] == "true";
+	}
+
 	FactoryAnalyser * f = FactoryAnalyser::getInstance();
 
 	IAnalyser* analyser= (IAnalyser*)f->createType(analyserName);
@@ -159,47 +164,50 @@ string ExtractFeatures::getFeatures(map<string, string > parameters){
 
 	for (int k = 0; k < is.getImageCount(); k++) {
 		if (!(src = is.nextImage()).empty()) { // src contains the image, but the IAnalyser interface needs a path
-			cv::Mat featuresRow;
+			if(!filter && FrameFilter::hasEdges(src)){
 
-			cv::Mat label;
-			if (classFieldId == indexFieldId)
-				label = cv::Mat (1, imageInfoFieldCount+1, CV_32F);
-			else
-				label = cv::Mat (1, imageInfoFieldCount, CV_32F);
+                cv::Mat featuresRow;
+
+                cv::Mat label;
+                if (classFieldId == indexFieldId)
+                    label = cv::Mat (1, imageInfoFieldCount+1, CV_32F);
+                else
+                    label = cv::Mat (1, imageInfoFieldCount, CV_32F);
 
 
-			//parse the label from the info in the txt file
-			string path, id1, id2;
-			//stringstream liness(is.getImageInfo());
+                //parse the label from the info in the txt file
+                string path, id1, id2;
+                //stringstream liness(is.getImageInfo());
 
-			vector<string> info = is.getCurrentImageInfoVector();
+                vector<string> info = is.getCurrentImageInfoVector();
 
-			for(int i = 0; i < imageInfoFieldCount; i++)
-				if (idsToInternalIds.at(i).count(info.at(i)) == 0)
- 			 		idsToInternalIds.at(i)[info.at(i)] = idsToInternalIds.at(i).size()-1;
+                for(int i = 0; i < imageInfoFieldCount; i++)
+                    if (idsToInternalIds.at(i).count(info.at(i)) == 0)
+                        idsToInternalIds.at(i)[info.at(i)] = idsToInternalIds.at(i).size()-1;
 
-			label.at<float>(0, 0) = idsToInternalIds.at(indexFieldId)[info.at(indexFieldId)];
-			label.at<float>(0, 1) = idsToInternalIds.at(classFieldId)[info.at(classFieldId)];
+                label.at<float>(0, 0) = idsToInternalIds.at(indexFieldId)[info.at(indexFieldId)];
+                label.at<float>(0, 1) = idsToInternalIds.at(classFieldId)[info.at(classFieldId)];
 
-			int increment = 2; //the first two fields are reserved for index and class lables
-			for(int i = 0; i < imageInfoFieldCount; i++){ // the remaining are saved after them, skipping the index and class indexes
-				if (i == indexFieldId || i == classFieldId)
-					increment--;
-				else
-					label.at<float>(0, i+increment) = idsToInternalIds.at(i)[info.at(i)];
-			}
+                int increment = 2; //the first two fields are reserved for index and class lables
+                for(int i = 0; i < imageInfoFieldCount; i++){ // the remaining are saved after them, skipping the index and class indexes
+                    if (i == indexFieldId || i == classFieldId)
+                        increment--;
+                    else
+                        label.at<float>(0, i+increment) = idsToInternalIds.at(i)[info.at(i)];
+                }
 
-			path = is.getImagePath();
-            cout << path << endl;
-			IDataModel* data = analyser->getFeatures(path);
-			vector<float>* v = (vector<float>*) data->getValue();
-			vector<float> v2 = *v;
-			MatrixTools::vectorToMat(v2, featuresRow);
+                path = is.getImagePath();
+                cout << path << endl;
+                IDataModel* data = analyser->getFeatures(path);
+                vector<float>* v = (vector<float>*) data->getValue();
+                vector<float> v2 = *v;
+                MatrixTools::vectorToMat(v2, featuresRow);
 
-			//cout << featuresRow << endl;
-			// add the features to the main feature and label matrix
-			features.push_back(featuresRow);
-			labels.push_back(label);
+                //cout << featuresRow << endl;
+                // add the features to the main feature and label matrix
+                features.push_back(featuresRow);
+                labels.push_back(label);
+            }
 		}
 	}
 
