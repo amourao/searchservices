@@ -89,13 +89,15 @@ string VideoTagger::getTags(map<string, string > parameters){
     vector<pair<int,vector<string> > > conceptsPerFrame;
     vector<int> conceptsCountPerVideo(classifierInstances.size(),0);
 
+    int analysedFrames = 0;
+
 	for(uint i = 0; i < framesPaths.size(); i++){
         string path = framesPaths.at(i);
         Mat frame = imread(path);
 
         pair<int,vector<string> > frameConcepts (keyframesWithMiddle.at(i),vector<string>());
         if(FrameFilter::hasEdges(frame)){
-
+            analysedFrames++;
             Mat features;
 
             IDataModel* data = analyser->getFeatures(path);
@@ -122,10 +124,13 @@ string VideoTagger::getTags(map<string, string > parameters){
     int totalFrames = framesPaths.size();
     vector<string> detectedConcepts;
     vector<double> detectedRatios;
+    vector<double> detectedRatiosAlt;
 
     for(uint i = 0; i < conceptsCountPerVideo.size(); i++){
-        double ratio = conceptsCountPerVideo.at(i)/double(totalFrames);
+        double ratio = conceptsCountPerVideo.at(i)/double(analysedFrames);
+        double ratioAlt = conceptsCountPerVideo.at(i)/double(totalFrames);
         detectedRatios.push_back(ratio);
+        detectedRatiosAlt.push_back(ratioAlt);
         if (ratio >= thresholds.at(i)){
             detectedConcepts.push_back(concepts.at(i));
         }
@@ -146,6 +151,7 @@ string VideoTagger::getTags(map<string, string > parameters){
 	for (uint i = 0; i < detectedRatios.size(); i++){
         Json::Value concept;
         concept["ratio"] = detectedRatios.at(i);
+        concept["ratioAlt"] = detectedRatiosAlt.at(i);
         concept["concept"] = concepts.at(i);
 		conceptThresholds.append(concept);
 		//cout << features->at(i) << " " ;
