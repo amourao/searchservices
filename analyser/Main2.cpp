@@ -1684,14 +1684,22 @@ int classifySapoAllVideos(int argc, char *argv[]){
     int tn = 0;
     int fp = 0;
 
+    const vector<double> ratiosk({-1,-0.9,-0.8,-0.7,-0.6,-0.5,-0.4,-0.3,-0.2,-0.1,0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1});
+    vector<int> tpk(ratiosk.size(),0);
+    vector<int> tnk(ratiosk.size(),0);
+    vector<int> fpk(ratiosk.size(),0);
+    vector<int> fnk(ratiosk.size(),0);
+
     Mat classifications(test.rows,1,CV_32F);
+    Mat classificationsScore(test.rows,1,CV_32F);
 
     for(int i = 0; i < test.rows; i++){
         Mat features = test.row(i);
 
         float label = testL.at<float>(i,0);
 
-        float detected = svm.classify(features);
+        float prediction = svm.getClassificationConfidence(features);
+        float detected = prediction < 0;
 
         //cout << label << " " << detected << endl;
 
@@ -1704,14 +1712,39 @@ int classifySapoAllVideos(int argc, char *argv[]){
         else if (label != detected && label == 0.0f)
             fp++;
 
+            double ratio = -prediction;
+            for (uint j = 0; j < ratiosk.size(); j++){
+
+                if (ratio >= ratiosk.at(j)){
+                    if(label == 1)
+                        tpk.at(j)++;
+                    else if (label == 0)
+                        fpk.at(j)++;
+                } else {
+                    if(label == 1)
+                        fnk.at(j)++;
+                    else if (label == 0)
+                        tnk.at(j)++;
+                }
+            }
+
         classifications.at<float>(i,0) = detected;
+        classificationsScore.at<float>(i,0) = ratio;
     }
 
+    cout << "Keyframe Binary"
     cout << ";" << (tp + tn)/float(tp+tn+fp+fn) << ";" << (tp)/float(tp+fp) << ";;;"  << tp << ";" << tn << ";" << fp  <<  ";" << fn << endl << endl;
+
+    cout << "Keyframe Thresholded"
+    for (uint j = 0; j < ratiosk.size(); j++){
+        cout << ratiosk.at(j) << ";" << (tpk.at(j) + tnk.at(j))/float(tpk.at(j)+tnk.at(j)+fpk.at(j)+fnk.at(j)) << ";" << (tpk.at(j))/float(tpk.at(j)+fpk.at(j)) << ";;;" << tpk.at(j) << ";" << tnk.at(j) << ";" << fpk.at(j)  <<  ";" << fnk.at(j) << endl;
+    }
+    cout << endl;
 
     int lastVideoId = -1;
     int totalVideoFrames = 0;
     int currentVideoFramesPositives = 0;
+    double currentVideoFramesScore = 0;
 
     stringstream ss;
 
@@ -1724,6 +1757,12 @@ int classifySapoAllVideos(int argc, char *argv[]){
     vector<int> tnv(ratios.size(),0);
     vector<int> fpv(ratios.size(),0);
     vector<int> fnv(ratios.size(),0);
+
+    const vector<double> ratiosvalt({-1,-0.9,-0.8,-0.7,-0.6,-0.5,-0.4,-0.3,-0.2,-0.1,0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1});
+    vector<int> tpvalt(ratiosvalt.size(),0);
+    vector<int> tnvalt(ratiosvalt.size(),0);
+    vector<int> fpvalt(ratiosvalt.size(),0);
+    vector<int> fnvalt(ratiosvalt.size(),0);
 
     int totalVideos = 0;
 
@@ -1757,14 +1796,39 @@ int classifySapoAllVideos(int argc, char *argv[]){
                     }
                 }
             }
+
+            ratio = currentVideoFramesScore/(float)totalVideoFrames;
+            for (uint j = 0; j < ratiosvalt.size(); j++){
+
+                if (ratio >= ratiosvalt.at(j)){ //concept was detected in the video
+                    if(label == 1)
+                        tpvalt.at(j)++;
+                    else if (label == 0)
+                        fpvalt.at(j)++;
+                    else {
+                        error++;
+                    }
+                } else {
+                    if(label == 1)
+                        fnvalt.at(j)++;
+                    else if (label == 0)
+                        tnvalt.at(j)++;
+                    else {
+                        error++;
+                    }
+                }
+            }
             //file << lastVideoId << ";" << label << ";" << ratio << endl;
             currentVideoFramesPositives = 0;
+            currentVideoFramesScore = 0;
             totalVideoFrames = 0;
         }
 
         label = testL.at<float>(i,0);
         classification = classifications.at<float>(i,0);
+        float classificationsScoreFrame = classificationsScore.at<float>(i,0);
 
+        currentVideoFramesScore+=classificationsScoreFrame;
         //if classification is positive, increment
         if (classification == 1)
             currentVideoFramesPositives++;
@@ -1795,13 +1859,40 @@ int classifySapoAllVideos(int argc, char *argv[]){
         }
     }
 
+    ratio = currentVideoFramesScore/(float)totalVideoFrames;
+            for (uint j = 0; j < ratiosvalt.size(); j++){
+
+                if (ratio >= ratiosvalt.at(j)){ //concept was detected in the video
+                    if(label == 1)
+                        tpvalt.at(j)++;
+                    else if (label == 0)
+                        fpvalt.at(j)++;
+                    else {
+                        error++;
+                    }
+                } else {
+                    if(label == 1)
+                        fnvalt.at(j)++;
+                    else if (label == 0)
+                        tnvalt.at(j)++;
+                    else {
+                        error++;
+                    }
+                }
+            }
+
     if(label != 0 && label != 1)
         cout << "error: line: last label: " << label << endl;
     //file << lastVideoId << ";" << label << ";" << ratio << endl;
 
-
+    cout << "Video Thresholded \"Keyframe Binary\""
     for (uint j = 0; j < ratios.size(); j++){
-        cout << ratios.at(j) << ";" << (tpv.at(j) + tnv.at(j))/float(tpv.at(j)+tnv.at(j)+fpv.at(j)+fnv.at(j)) << ";" << (tpv.at(j))/float(tpv.at(j)+fpv.at(j)) << ";;;" << tpv.at(j) << ";" << tnv.at(j) << ";" << fpv.at(j)  <<  ";" << fnv.at(j) << endl;
+        cout << ratios.at(j) << ";" << (tpv.at(j) + tnv.at(j))/float(tpv.at(j)+tnv.at(j)+fpv.at(j)+fnv.at(j)) << ";" << (tpv.at(j))/float(tpv.at(j)+fpv.at(j)) << ";;;" << tpv.at(j) << ";" << tnv.at(j) << ";" << fpv.at(j)  <<  ";" << fnv.at(j) << endl << endl;
+    }
+
+    cout << "Video Thresholded \"Keyframe Thresholded \""
+    for (uint j = 0; j < ratiosvalt.size(); j++){
+        cout << ratiosvalt.at(j) << ";" << (tpvalt.at(j) + tnvalt.at(j))/float(tpvalt.at(j)+tnvalt.at(j)+fpvalt.at(j)+fnvalt.at(j)) << ";" << (tpvalt.at(j))/float(tpvalt.at(j)+fpvalt.at(j)) << ";;;" << tpvalt.at(j) << ";" << tnvalt.at(j) << ";" << fpvalt.at(j)  <<  ";" << fnv.at(j) << endl;
     }
 
     /*
@@ -1836,7 +1927,7 @@ int main(int argc, char *argv[])
     //classifyAllBlipImagesCondor(argc, argv);
 
     //FrameFilter::maine(argc, argv);
-    extractREST(argc, argv);
+    classifySapoAllVideos(argc, argv);
 	//createBlipKnnVWDict(argc, argv);
     return 0;
 }
