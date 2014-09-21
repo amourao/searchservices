@@ -1887,9 +1887,9 @@ int classifySapoAllVideos(int argc, char *argv[]){
 
     cout << "Video Thresholded \"Keyframe Binary\"" << endl;
     for (uint j = 0; j < ratios.size(); j++){
-        cout << ratios.at(j) << ";" << (tpv.at(j) + tnv.at(j))/float(tpv.at(j)+tnv.at(j)+fpv.at(j)+fnv.at(j)) << ";" << (tpv.at(j))/float(tpv.at(j)+fpv.at(j)) << ";;;" << tpv.at(j) << ";" << tnv.at(j) << ";" << fpv.at(j)  <<  ";" << fnv.at(j) << endl << endl;
+        cout << ratios.at(j) << ";" << (tpv.at(j) + tnv.at(j))/float(tpv.at(j)+tnv.at(j)+fpv.at(j)+fnv.at(j)) << ";" << (tpv.at(j))/float(tpv.at(j)+fpv.at(j)) << ";;;" << tpv.at(j) << ";" << tnv.at(j) << ";" << fpv.at(j)  <<  ";" << fnv.at(j) << endl;
     }
-
+    cout << endl;
     cout << "Video Thresholded \"Keyframe Thresholded \"" << endl;
     for (uint j = 0; j < ratiosvalt.size(); j++){
         cout << ratiosvalt.at(j) << ";" << (tpvalt.at(j) + tnvalt.at(j))/float(tpvalt.at(j)+tnvalt.at(j)+fpvalt.at(j)+fnvalt.at(j)) << ";" << (tpvalt.at(j))/float(tpvalt.at(j)+fpvalt.at(j)) << ";;;" << tpvalt.at(j) << ";" << tnvalt.at(j) << ";" << fpvalt.at(j)  <<  ";" << fnv.at(j) << endl;
