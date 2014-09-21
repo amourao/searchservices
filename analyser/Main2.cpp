@@ -1599,7 +1599,7 @@ int classifySapoAllVideos(int argc, char *argv[]){
 
         //if the number of features required is too big, split all data using the same train/test ratio
         if((currSplitTrain+currSplitTest)> featuresS.rows){
-            currSplitTrain = featuresS.rows * negCountTrainExpected/(negCountTestExpected+negCountTrainExpected);
+            currSplitTrain = featuresS.rows * (negCountTrainExpected/(float)(negCountTestExpected+negCountTrainExpected));
             currSplitTest = featuresS.rows - currSplitTrain;
         }
 
