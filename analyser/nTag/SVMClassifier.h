@@ -25,6 +25,7 @@ public:
 	void train(cv::Mat trainData, cv::Mat trainLabels);
 	void test(cv::Mat testData, cv::Mat testLabels);
 	float classify( cv::Mat query);
+	float getClassificationConfidence( cv::Mat query);
 
 	bool save(string basePath);
 	bool load(string basePath);

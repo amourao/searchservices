@@ -53,6 +53,10 @@ float SVMClassifier::classify( cv::Mat query){
 	return svm->predict(query);
 }
 
+float SVMClassifier::getClassificationConfidence( cv::Mat query){
+	return svm->predict(query,true);
+}
+
 void SVMClassifier::test( cv::Mat testData, cv::Mat testLabels ){
 	//TODO
 }
