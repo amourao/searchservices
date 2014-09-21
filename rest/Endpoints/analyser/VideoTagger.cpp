@@ -4,7 +4,9 @@ static VideoTagger VideoTaggerEndpointFactory;
 
 static vector<SVMClassifier*> classifierInstances;
 
+static const vector<double> thresholdsAlt({0.3,0.4,0.4,0.4,0.4,-0.3,0.4});
 static const vector<double> thresholds({0.8,0.75,0.7,0.7,0.6,0.7,0.85});
+
 static const vector<string> concepts({"caricas","kizomba","league","minecraft","touro","violetta","zumba"});
 static const vector<string> features({"cedd"});
 
@@ -87,6 +89,7 @@ string VideoTagger::getTags(map<string, string > parameters){
 	s.convertFramesIndexToTimes(filename,keyframesWithMiddle,keyframesWithMiddleTimes);
 
     vector<pair<int,vector<string> > > conceptsPerFrame;
+    vector<pair<int,vector<string> > > conceptsPerFrameAlt;
     vector<int> conceptsCountPerVideo(classifierInstances.size(),0);
     vector<double> conceptsScorePerVideo(classifierInstances.size(),0);
     vector<vector<double> > confidencePerFrame;
@@ -99,6 +102,7 @@ string VideoTagger::getTags(map<string, string > parameters){
 
         vector<double> confidences;
         pair<int,vector<string> > frameConcepts (keyframesWithMiddle.at(i),vector<string>());
+        pair<int,vector<string> > frameConceptsAlt (keyframesWithMiddle.at(i),vector<string>());
         if(FrameFilter::hasEdges(frame)){
             analysedFrames++;
             Mat features;
@@ -112,24 +116,30 @@ string VideoTagger::getTags(map<string, string > parameters){
             for(uint j = 0; j < classifierInstances.size(); j++){
                 SVMClassifier* svm = classifierInstances.at(j);
                 float detected = svm->classify(features);
-                float conf = svm->getClassificationConfidence(features);
+                float conf = -svm->getClassificationConfidence(features);
                 confidences.push_back(conf);
                 conceptsScorePerVideo.at(j)+=conf;
                 if(detected == 1){
                     conceptsCountPerVideo.at(j)++;
                     frameConcepts.second.push_back(svm->getName());
                 }
+                if(conf >= thresholdsAlt.at(j)){
+                    frameConceptsAlt.second.push_back(svm->getName());
+                }
             }
 		} else {
             frameConcepts.second.push_back("(ignored)");
+            frameConceptsAlt.second.push_back("(ignored)");
 		}
 		conceptsPerFrame.push_back(frameConcepts);
+		conceptsPerFrameAlt.push_back(frameConceptsAlt);
 		confidencePerFrame.push_back(confidences);
 
 	}
 
     int totalFrames = framesPaths.size();
     vector<string> detectedConcepts;
+    vector<string> detectedConceptsAlt;
     vector<double> detectedRatios;
     vector<double> detectedRatiosAlt;
 
@@ -152,6 +162,10 @@ string VideoTagger::getTags(map<string, string > parameters){
         if (ratio >= thresholds.at(i)){
             detectedConcepts.push_back(concepts.at(i));
         }
+
+        if (ratio2 >= thresholdsAlt.at(i)){
+            detectedConceptsAlt.push_back(concepts.at(i));
+        }
     }
 
 	Json::Value root;
@@ -164,6 +178,15 @@ string VideoTagger::getTags(map<string, string > parameters){
 		//cout << features->at(i) << " " ;
 	}
 
+	Json::Value conceptArrayAlt(Json::arrayValue);
+
+	for (uint i = 0; i < detectedConceptsAlt.size(); i++){
+		conceptArrayAlt.append(detectedConceptsAlt.at(i));
+		//cout << features->at(i) << " " ;
+	}
+
+
+
     Json::Value conceptThresholds(Json::arrayValue);
 
 	for (uint i = 0; i < detectedRatios.size(); i++){
@@ -171,8 +194,8 @@ string VideoTagger::getTags(map<string, string > parameters){
         concept["ratio"] = detectedRatios.at(i);
         concept["ratioAlt"] = detectedRatiosAlt.at(i);
 
-        concept["ratio2"] = -detectedRatios2.at(i);
-        concept["ratioAlt2"] = -detectedRatiosAlt2.at(i);
+        concept["ratio2"] = detectedRatios2.at(i);
+        concept["ratioAlt2"] = detectedRatiosAlt2.at(i);
 
         concept["concept"] = concepts.at(i);
 		conceptThresholds.append(concept);
@@ -194,11 +217,17 @@ string VideoTagger::getTags(map<string, string > parameters){
 
         frame["concepts"] = frameConceptArray;
 
+        Json::Value frameConceptArrayAlt(Json::arrayValue);
+        for(string c: conceptsPerFrameAlt.at(i).second)
+            frameConceptArrayAlt.append(c);
+
+        frame["conceptsAlt"] = frameConceptArrayAlt;
+
         Json::Value frameConfArray(Json::arrayValue);
         for(uint j = 0; j < confidencePerFrame.at(i).size(); j++){
             Json::Value cc;
             cc["concept"] = concepts.at(j);
-            cc["score"] = -confidencePerFrame.at(i).at(j);
+            cc["score"] = confidencePerFrame.at(i).at(j);
             frameConfArray.append(cc);
         }
 
@@ -231,6 +260,8 @@ string VideoTagger::getTags(map<string, string > parameters){
 
 	root["frames"] = frameArray;
 	root["detectedConcepts"] = conceptArray;
+	root["detectedConceptsAlt"] = conceptArrayAlt;
+
 	root["conceptThresholds"] = conceptThresholds;
 	stringstream ss;
 	ss << root;
