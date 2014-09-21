@@ -1733,11 +1733,11 @@ int classifySapoAllVideos(int argc, char *argv[]){
     }
 
     cout << "Keyframe Binary" << endl;
-    cout << ";" << (tp + tn)/float(tp+tn+fp+fn) << ";" << (tp)/float(tp+fp) << ";;;"  << tp << ";" << tn << ";" << fp  <<  ";" << fn << endl << endl;
+    cout << ";" << (tp + tn)/float(tp+tn+fp+fn) << ";" << (tp)/float(tp+fp) << ";" << (tp)/float(tp+fn) << ";;;"  << tp << ";" << tn << ";" << fp  <<  ";" << fn << endl << endl;
 
     cout << "Keyframe Thresholded" << endl;
     for (uint j = 0; j < ratiosk.size(); j++){
-        cout << ratiosk.at(j) << ";" << (tpk.at(j) + tnk.at(j))/float(tpk.at(j)+tnk.at(j)+fpk.at(j)+fnk.at(j)) << ";" << (tpk.at(j))/float(tpk.at(j)+fpk.at(j)) << ";;;" << tpk.at(j) << ";" << tnk.at(j) << ";" << fpk.at(j)  <<  ";" << fnk.at(j) << endl;
+        cout << ratiosk.at(j) << ";" << (tpk.at(j) + tnk.at(j))/float(tpk.at(j)+tnk.at(j)+fpk.at(j)+fnk.at(j)) << ";" << (tpk.at(j))/float(tpk.at(j)+fpk.at(j)) << ";" << (tpk.at(j))/float(tpk.at(j)+fnk.at(j)) << ";;;" << tpk.at(j) << ";" << tnk.at(j) << ";" << fpk.at(j)  <<  ";" << fnk.at(j) << endl;
     }
     cout << endl;
 
@@ -1887,12 +1887,12 @@ int classifySapoAllVideos(int argc, char *argv[]){
 
     cout << "Video Thresholded \"Keyframe Binary\"" << endl;
     for (uint j = 0; j < ratios.size(); j++){
-        cout << ratios.at(j) << ";" << (tpv.at(j) + tnv.at(j))/float(tpv.at(j)+tnv.at(j)+fpv.at(j)+fnv.at(j)) << ";" << (tpv.at(j))/float(tpv.at(j)+fpv.at(j)) << ";;;" << tpv.at(j) << ";" << tnv.at(j) << ";" << fpv.at(j)  <<  ";" << fnv.at(j) << endl;
+        cout << ratios.at(j) << ";" << (tpv.at(j) + tnv.at(j))/float(tpv.at(j)+tnv.at(j)+fpv.at(j)+fnv.at(j))  << ";" << (tpv.at(j))/float(tpv.at(j)+fnv.at(j)) << ";;;" << tpv.at(j) << ";" << tnv.at(j) << ";" << fpv.at(j)  <<  ";" << fnv.at(j) << endl;
     }
     cout << endl;
     cout << "Video Thresholded \"Keyframe Thresholded \"" << endl;
     for (uint j = 0; j < ratiosvalt.size(); j++){
-        cout << ratiosvalt.at(j) << ";" << (tpvalt.at(j) + tnvalt.at(j))/float(tpvalt.at(j)+tnvalt.at(j)+fpvalt.at(j)+fnvalt.at(j)) << ";" << (tpvalt.at(j))/float(tpvalt.at(j)+fpvalt.at(j)) << ";;;" << tpvalt.at(j) << ";" << tnvalt.at(j) << ";" << fpvalt.at(j)  <<  ";" << fnv.at(j) << endl;
+        cout << ratiosvalt.at(j) << ";" << (tpvalt.at(j) + tnvalt.at(j))/float(tpvalt.at(j)+tnvalt.at(j)+fpvalt.at(j)+fnvalt.at(j)) << ";" << (tpvalt.at(j))/float(tpvalt.at(j)+fpvalt.at(j)) << ";" << (tpvalt.at(j))/float(tpvalt.at(j)+fnvalt.at(j)) << ";;;" << tpvalt.at(j) << ";" << tnvalt.at(j) << ";" << fpvalt.at(j)  <<  ";" << fnv.at(j) << endl;
     }
 
     /*
