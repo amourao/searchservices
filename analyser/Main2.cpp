@@ -1684,7 +1684,7 @@ int classifySapoAllVideos(int argc, char *argv[]){
     int tn = 0;
     int fp = 0;
 
-    const vector<double> ratiosk({-1,-0.9,-0.8,-0.7,-0.6,-0.5,-0.4,-0.3,-0.2,-0.1,0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1});
+    const vector<double> ratiosk({-1,-0.9,-0.8,-0.7,-0.6,-0.5,-0.4,-0.3,-0.2,-0.1,-0.05,-0.02,0,0.02,0.05,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1});
     vector<int> tpk(ratiosk.size(),0);
     vector<int> tnk(ratiosk.size(),0);
     vector<int> fpk(ratiosk.size(),0);
@@ -1758,7 +1758,7 @@ int classifySapoAllVideos(int argc, char *argv[]){
     vector<int> fpv(ratios.size(),0);
     vector<int> fnv(ratios.size(),0);
 
-    const vector<double> ratiosvalt({-1,-0.9,-0.8,-0.7,-0.6,-0.5,-0.4,-0.3,-0.2,-0.1,0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1});
+    const vector<double> ratiosvalt({-1,-0.9,-0.8,-0.7,-0.6,-0.5,-0.4,-0.3,-0.2,-0.1,-0.05,-0.02,0,0.02,0.05,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1});
     vector<int> tpvalt(ratiosvalt.size(),0);
     vector<int> tnvalt(ratiosvalt.size(),0);
     vector<int> fpvalt(ratiosvalt.size(),0);
