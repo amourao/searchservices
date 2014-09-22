@@ -4,7 +4,7 @@ static VideoTagger VideoTaggerEndpointFactory;
 
 static vector<SVMClassifier*> classifierInstances;
 
-static const vector<double> thresholdsAlt({0.2,-0.02,0.4,0.01,-0.02,-0.4,-0.5});
+static const vector<double> thresholdsAlt({0.2,0,0.4,0.01,0,0,0});
 static const vector<double> thresholds({0.8,0.75,0.7,0.7,0.6,0.7,0.85});
 
 static const vector<string> concepts({"caricas","kizomba","league","minecraft","touro","violetta","zumba"});

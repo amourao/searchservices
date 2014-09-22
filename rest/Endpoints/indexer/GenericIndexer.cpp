@@ -52,6 +52,8 @@ void GenericIndexer::handleRequest(string method, map<string, string> queryStrin
 				resp.setContentType("application/json");
 			else if(queryStrings["output"] == "trec")
 				resp.setContentType("text/plain");
+		} else if (action == "addToIndex"){
+            response = addToIndexLive(queryStrings);
 		}
 
 		std::ostream& out = resp.send();
@@ -247,6 +249,66 @@ string GenericIndexer::create(map<string, string> parameters){
 	root["indexer"] = ss.str();
 	root["indexer"] = parameters["indexer"];
 	root["task"] = parameters["task"];
+	stringstream ssJ;
+	ssJ << root;
+	return ssJ.str();
+}
+
+string GenericIndexer::addToIndexLive(map<string, string> parameters){
+	FileDownloader fd;
+	timestamp_type start, end, totalStart, totalEnd;
+
+
+	string filename = parameters["filename"];
+	string analyserName = parameters["analyser"];
+	string indexerName = parameters["indexer"];
+	string taskName = parameters["task"];
+
+    stringstream ss;
+    ss << taskName << "_" << analyserName << "_" << indexerName;
+
+    IIndexer* indexer;
+    if (indexerInstances.count(ss.str()) == 0){
+    	FactoryIndexer * fc = FactoryIndexer::getInstance();
+    	indexer = (IIndexer*)fc->createType(indexerName);
+    	get_timestamp(&start);
+  	  	indexer->load(ss.str());
+		get_timestamp(&end);
+    	cout << "loading index: " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
+    	indexerInstances[ss.str()] = indexer;
+	} else {
+		indexer = indexerInstances[ss.str()];
+	}
+
+    FactoryAnalyser * f = FactoryAnalyser::getInstance();
+    cout << "get feature extractor" << endl;
+    FeatureExtractor* analyser= (FeatureExtractor*)f->createType(analyserName);
+    cout << "feature extractor " << analyser << endl;
+    cout << "start downloading files" << endl;
+    get_timestamp(&end);
+
+    Mat features;
+    get_timestamp(&start);
+
+    string localfile = fd.getFile(filename);
+    analyser->extractFeatures(localfile, features);
+    get_timestamp(&end);
+    cout << "get features : " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
+
+
+    stringstream ss2;
+
+	ss2 << taskName << "_" << analyserName << "_" << indexerName;
+
+
+	indexer->addToIndexLive(features);
+	indexer->save(ss2.str());
+
+
+	Json::Value root;
+	Json::Value results;
+
+	root["result"] = "ok";
 	stringstream ssJ;
 	ssJ << root;
 	return ssJ.str();

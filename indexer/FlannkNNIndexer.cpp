@@ -156,7 +156,7 @@ std::pair<vector<float>,vector<float> > FlannkNNIndexer::knnSearchId(cv::Mat& qu
 	vector<int> indices (n);
 	vector<float> dists (n);
 	//cout << j++ << endl;
-
+    cout << flannIndexs << endl;
 	flannIndexs->knnSearch(query,indices,dists,n);
 
 	std::vector<float> indicesFloat(indices.begin(), indices.end());
@@ -215,4 +215,21 @@ bool FlannkNNIndexer::load(string basePath){
 
 string FlannkNNIndexer::getName(){
 	return type;
+}
+
+void FlannkNNIndexer::addToIndexLive(Mat& features){
+
+    Mat newData;
+    vconcat(indexData,features,newData);
+    newData.copyTo(indexData);
+
+    cout << flannIndexs << endl;
+
+    flannParams = new flann::LinearIndexParams();
+	flannIndexs = new flann::Index(indexData,*flannParams,flannDistance);
+	cout << flannIndexs << endl;
+
+
+    //flannIndexs->add
+    //flannIndexs->addPoints(features);
 }
