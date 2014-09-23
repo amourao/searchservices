@@ -17,6 +17,9 @@
 
 
 #include "../../../commons/FileDownloader.h"
+#include "../../../commons/Timing.h"
+
+#include "../indexer/GenericIndexer.h"
 
 #define LABELS_EXT_EXTRACT_FEATURES ".labels"
 
@@ -34,6 +37,7 @@ public:
 	void handleRequest(string method, map<string, string> queryStrings, istream&, HTTPServerResponse &resp);
 
 	string getTags(map<string, string> parameters);
+	string index(map<string, string> parameters);
 private:
   string type;
 };

@@ -118,7 +118,10 @@ FlannkNNIndexer::FlannkNNIndexer(string& typeId, map<string,string>& params){
 }
 
 FlannkNNIndexer::~FlannkNNIndexer(){
-
+    if(flannIndexs != NULL)
+        delete flannIndexs;
+    if(flannParams != NULL)
+        delete flannParams;
 }
 
 void* FlannkNNIndexer::createType(string &typeId, map<string,string>& params){
@@ -219,16 +222,21 @@ string FlannkNNIndexer::getName(){
 
 void FlannkNNIndexer::addToIndexLive(Mat& features){
 
+    indexData.push_back(features);
+    /*
     Mat newData;
     vconcat(indexData,features,newData);
     newData.copyTo(indexData);
+    */
+    if(flannIndexs != NULL)
+        delete flannIndexs;
 
-    cout << flannIndexs << endl;
+    if(flannParams != NULL)
+        delete flannParams;
+
 
     flannParams = new flann::LinearIndexParams();
 	flannIndexs = new flann::Index(indexData,*flannParams,flannDistance);
-	cout << flannIndexs << endl;
-
 
     //flannIndexs->add
     //flannIndexs->addPoints(features);
