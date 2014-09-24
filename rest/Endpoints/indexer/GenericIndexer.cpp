@@ -299,7 +299,7 @@ string GenericIndexer::addToIndexLive(map<string, string> parameters){
 	ss2 << taskName << "_" << analyserName << "_" << indexerName;
 
 
-	indexer->addToIndexLive(features);
+	int flannIndex = indexer->addToIndexLive(features);
 	//indexer->save(ss2.str());
 
 
@@ -307,6 +307,8 @@ string GenericIndexer::addToIndexLive(map<string, string> parameters){
 	Json::Value results;
 
 	root["result"] = "ok";
+	root["flannIndex"] = flannIndex;
+
 	stringstream ssJ;
 	ssJ << root;
 	return ssJ.str();

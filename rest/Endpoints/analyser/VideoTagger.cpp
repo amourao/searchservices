@@ -292,7 +292,12 @@ string VideoTagger::index(map<string, string > parameters){
         param["indexer"] = parameters["indexer"];
         param["task"] = parameters["task"];
 
-        indexArray.append(gi.addToIndexLive(param));
+        string json = gi.addToIndexLive(param);
+        Json::Value root;
+        Json::Reader reader;
+        reader.parse( json, root );
+
+        indexArray.append(root["flannIndex"]);
     }
 
     Json::Value root;
