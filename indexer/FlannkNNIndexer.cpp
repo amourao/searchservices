@@ -237,7 +237,7 @@ int FlannkNNIndexer::addToIndexLive(Mat& features){
     flannParams = new flann::LinearIndexParams();
 	flannIndexs = new flann::Index(indexData,*flannParams,flannDistance);
 
-    return indexData.rows;
+    return indexData.rows-1;
     //flannIndexs->add
     //flannIndexs->addPoints(features);
 }
