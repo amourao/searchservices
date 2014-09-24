@@ -44,6 +44,8 @@ public:
 	bool save(string basePath);
 	bool load(string basePath);
 
+	void addToIndexLive(Mat& features);
+
 	string getName();
 
 private:

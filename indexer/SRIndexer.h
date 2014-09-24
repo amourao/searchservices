@@ -58,6 +58,8 @@ public:
 	bool save(string basePath);
 	bool load(string basePath);
 
+	void addToIndexLive(arma::fmat& features);
+
 	string getName();
 
 private:
@@ -82,6 +84,7 @@ private:
     lnmin_Ptr lnMinQuery;
     ksvdb_Ptr ksvd;
     indexk_Ptr indexKSVD;
+
 
     lnmin::option_type opt;
     ksvdb::option_type optKSVD;

@@ -151,6 +151,18 @@ public:
         index(vMat);
 	}
 
+	virtual void addToIndexLive(arma::fmat& features){
+        cv::Mat vMat;
+		MatrixTools::fmatToMat(features, vMat);
+        addToIndexLive(vMat);
+	}
+
+	virtual void addToIndexLive(cv::Mat& features){
+        arma::fmat vMat;
+		MatrixTools::matToFMat(features, vMat);
+        addToIndexLive(vMat);
+	}
+
 	vector<string> idToLabels(vector<float> v1){
 		vector<string> result;
 

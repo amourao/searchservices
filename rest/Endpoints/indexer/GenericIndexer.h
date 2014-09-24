@@ -34,11 +34,13 @@ public:
 	void handleRequest(string method, map<string, string> queryStrings, istream& input, HTTPServerResponse &resp);
 
 
+    string retrieve(map<string, string> queryStrings);
+	string create(map<string, string> queryStrings);
+	string addToIndexLive(map<string, string> parameters);
 
 private:
 
-	string retrieve(map<string, string> queryStrings);
-	string create(map<string, string> queryStrings);
+
 
 	std::pair< vector<string>, vector<float> > idToLabels(std::pair< vector<float>, vector<float> > v1);
 

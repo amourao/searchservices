@@ -118,7 +118,10 @@ FlannkNNIndexer::FlannkNNIndexer(string& typeId, map<string,string>& params){
 }
 
 FlannkNNIndexer::~FlannkNNIndexer(){
-
+    if(flannIndexs != NULL)
+        delete flannIndexs;
+    if(flannParams != NULL)
+        delete flannParams;
 }
 
 void* FlannkNNIndexer::createType(string &typeId, map<string,string>& params){
@@ -156,7 +159,7 @@ std::pair<vector<float>,vector<float> > FlannkNNIndexer::knnSearchId(cv::Mat& qu
 	vector<int> indices (n);
 	vector<float> dists (n);
 	//cout << j++ << endl;
-
+    cout << flannIndexs << endl;
 	flannIndexs->knnSearch(query,indices,dists,n);
 
 	std::vector<float> indicesFloat(indices.begin(), indices.end());
@@ -215,4 +218,26 @@ bool FlannkNNIndexer::load(string basePath){
 
 string FlannkNNIndexer::getName(){
 	return type;
+}
+
+void FlannkNNIndexer::addToIndexLive(Mat& features){
+
+    indexData.push_back(features);
+    /*
+    Mat newData;
+    vconcat(indexData,features,newData);
+    newData.copyTo(indexData);
+    */
+    if(flannIndexs != NULL)
+        delete flannIndexs;
+
+    if(flannParams != NULL)
+        delete flannParams;
+
+
+    flannParams = new flann::LinearIndexParams();
+	flannIndexs = new flann::Index(indexData,*flannParams,flannDistance);
+
+    //flannIndexs->add
+    //flannIndexs->addPoints(features);
 }

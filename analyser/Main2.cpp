@@ -1927,7 +1927,8 @@ int main(int argc, char *argv[])
     //classifyAllBlipImagesCondor(argc, argv);
 
     //FrameFilter::maine(argc, argv);
-    classifySapoAllVideos(argc, argv);
+    //classifySapoAllVideos(argc, argv);
+    extractREST(argc, argv);
 	//createBlipKnnVWDict(argc, argv);
     return 0;
 }

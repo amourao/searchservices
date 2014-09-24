@@ -4,7 +4,7 @@ static VideoTagger VideoTaggerEndpointFactory;
 
 static vector<SVMClassifier*> classifierInstances;
 
-static const vector<double> thresholdsAlt({0.2,-0.02,0.4,0.01,-0.02,-0.4,-0.5});
+static const vector<double> thresholdsAlt({0.2,0,0.4,0.01,0,0,0});
 static const vector<double> thresholds({0.8,0.75,0.7,0.7,0.6,0.7,0.85});
 
 static const vector<string> concepts({"caricas","kizomba","league","minecraft","touro","violetta","zumba"});
@@ -46,8 +46,13 @@ void VideoTagger::handleRequest(string method, map<string, string> queryStrings,
 
 	std::string response("");
 
-	if (type == "/videoTagger")
-		response = getTags(queryStrings);
+	if (type == "/videoTagger"){
+        if (queryStrings["action"] == "tag")
+            response = getTags(queryStrings);
+		else if (queryStrings["action"] == "upload")
+            response = index(queryStrings);
+
+    }
 
 	//std::cout << response << std::endl;
 	out << response;
@@ -57,6 +62,9 @@ void VideoTagger::handleRequest(string method, map<string, string> queryStrings,
 }
 
 string VideoTagger::getTags(map<string, string > parameters){
+    timestamp_type start, end;
+
+    int downloadTime, keyframeTime, feTime, posProcessingTime;
 
     vector<SVMClassifier*> classifierInstances;
     for(string c: concepts){
@@ -74,6 +82,7 @@ string VideoTagger::getTags(map<string, string > parameters){
 
 	FileDownloader fd;
 
+    get_timestamp(&start);
 	string filename = fd.getFile(parameters["url"]);
 	int step = 5;
 
@@ -263,6 +272,31 @@ string VideoTagger::getTags(map<string, string > parameters){
 	root["detectedConceptsAlt"] = conceptArrayAlt;
 
 	root["conceptThresholds"] = conceptThresholds;
+	stringstream ss;
+	ss << root;
+	return ss.str();
+}
+
+string VideoTagger::index(map<string, string > parameters){
+    GenericIndexer gi("a");
+
+    string filename = parameters["url"];
+    vector<string> framesPaths = StringTools::split(parameters["url"],',');
+
+    for(uint i = 0; i < framesPaths.size(); i++){
+        map<string,string> param;
+
+        param["filename"] = framesPaths.at(i);
+        cout << param["filename"] << endl;
+        param["analyser"] = parameters["analyser"];
+        param["indexer"] = parameters["indexer"];
+        param["task"] = parameters["task"];
+
+        gi.addToIndexLive(param);
+    }
+
+    Json::Value root;
+    root["result"] = "ok";
 	stringstream ss;
 	ss << root;
 	return ss.str();
