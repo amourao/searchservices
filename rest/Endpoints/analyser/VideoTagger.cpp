@@ -287,7 +287,7 @@ string VideoTagger::index(map<string, string > parameters){
     for(uint i = 0; i < framesPaths.size(); i++){
         map<string,string> param;
 
-        param["filename"] = "file://" + framesPaths.at(i);
+        param["filename"] = framesPaths.at(i);
         param["analyser"] = parameters["analyser"];
         param["indexer"] = parameters["indexer"];
         param["task"] = parameters["task"];
