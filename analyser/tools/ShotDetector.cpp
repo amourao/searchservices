@@ -71,7 +71,7 @@ void ShotDetector::getPeaks(const vector<int>& diffs, const vector<int>& frames,
 		double currDiff = diffs.at(i);
 		double currFrame = frames.at(i);
 
-		if(lastDiff2 < lastDiff && currDiff < lastDiff && lastDiff > threshold){
+		if(lastDiff2 < lastDiff && currDiff < lastDiff && lastDiff > threshold && mean > 0.5 && stdDev > 0.5){
 			keyframes.push_back(lastFrame);
 			keyframesDiffs.push_back(lastDiff);
 		}

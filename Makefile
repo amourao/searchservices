@@ -5,10 +5,10 @@
 
 WORKDIR = `pwd`
 
-CC = gcc
-CXX = g++
+CC = gcc-4.7
+CXX = g++-4.7
 AR = ar
-LD = g++
+LD = g++-4.7
 WINDRES = windres
 
 INC = -I/home/amourao/myLibs/include/ -I/home/amourao/code/sparsereconstruction/

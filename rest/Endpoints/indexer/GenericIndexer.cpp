@@ -289,9 +289,7 @@ string GenericIndexer::addToIndexLive(map<string, string> parameters){
 
     Mat features;
     get_timestamp(&start);
-
-    string localfile = fd.getFile(filename);
-    analyser->extractFeatures(localfile, features);
+    analyser->extractFeatures(filename, features);
     get_timestamp(&end);
     cout << "get features : " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
 

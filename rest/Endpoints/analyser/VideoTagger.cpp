@@ -82,7 +82,6 @@ string VideoTagger::getTags(map<string, string > parameters){
 
 	FileDownloader fd;
 
-    get_timestamp(&start);
 	string filename = fd.getFile(parameters["url"]);
 	int step = 5;
 
