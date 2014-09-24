@@ -222,6 +222,7 @@ string FlannkNNIndexer::getName(){
 
 void FlannkNNIndexer::addToIndexLive(Mat& features){
 
+<<<<<<< HEAD
     indexData.push_back(features);
     /*
     Mat newData;
@@ -237,6 +238,18 @@ void FlannkNNIndexer::addToIndexLive(Mat& features){
 
     flannParams = new flann::LinearIndexParams();
 	flannIndexs = new flann::Index(indexData,*flannParams,flannDistance);
+=======
+    Mat newData;
+    vconcat(indexData,features,newData);
+    newData.copyTo(indexData);
+
+    cout << flannIndexs << endl;
+
+    flannParams = new flann::LinearIndexParams();
+	flannIndexs = new flann::Index(indexData,*flannParams,flannDistance);
+	cout << flannIndexs << endl;
+
+>>>>>>> 2d00567a6145a3036f35a045a30a651f2a31cdb4
 
     //flannIndexs->add
     //flannIndexs->addPoints(features);

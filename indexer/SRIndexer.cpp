@@ -36,15 +36,16 @@ SRIndexer::SRIndexer(string& typeId, map<string,string>& params){
         uword max_iters;
     };
     */
+    if (params.size() > 0){
+        dimensions = std::stoi(params["dimensions"]);
+        n_iter = std::stoi(params["n_iter"]);
+        search_limit = std::stod(params["search_limit"]);
+        //createNewLNReconstructor(params);
 
-    dimensions = std::stoi(params["dimensions"]);
-    n_iter = std::stoi(params["n_iter"]);
-    search_limit = std::stoi(params["search_limit"]);
-    createNewLNReconstructor(params);
 
-
-    type = typeId;
-    paramsB = params;
+        type = typeId;
+        paramsB = params;
+    }
 }
 
 
@@ -88,13 +89,22 @@ void SRIndexer::train(arma::fmat& featuresTrain,arma::fmat& featuresValidationI,
 
 void SRIndexer::indexWithTrainedParams(arma::fmat& features){
     indexData = std::make_shared<fmat>(features);
+    //TODO
+    /*
+    fmat dictionary = randu<fmat>(features.n_rows, dimensions);
+    utils::normalize_columns(dictionary);
+
+    typename sparse_trait<Algorithm>::ksvd::option_type ksvd_options;
+    ksvd_options.max_iters = iters;
+    ksvd_options.eps       = eps;
+    */
     indexKSVD = indexk_Ptr( new indexk(*lnMinQuery, ksvd->D));
     indexKSVD->load(indexData, lnMinQuery->options.max_iters);
 
 }
 
 void SRIndexer::index(arma::fmat& features){
-
+    indexWithTrainedParams(features);
 }
 
 std::pair<vector<float>,vector<float> > SRIndexer::knnSearchId(arma::fmat& query, int n){
@@ -148,7 +158,7 @@ bool SRIndexer::load(string basePath){
 
     dimensions = std::stoi(paramsB["dimensions"]);
     n_iter = std::stoi(paramsB["n_iter"]);
-    search_limit = std::stoi(paramsB["search_limit"]);
+    search_limit = std::stod(paramsB["search_limit"]);
     createNewLNReconstructor(paramsB);
 
 	return true;
@@ -167,4 +177,9 @@ map<string,string> SRIndexer::jsonToDict(Json::Value root){
         }
     }
     return result;
+}
+
+void SRIndexer::addToIndexLive(arma::fmat& features){
+    std::shared_ptr<arma::fmat> featuresPtr(new arma::fmat(features));
+    indexKSVD->addToIndex(featuresPtr);
 }
