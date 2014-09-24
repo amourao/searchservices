@@ -263,6 +263,7 @@ string GenericIndexer::addToIndexLive(map<string, string> parameters){
 	string analyserName = parameters["analyser"];
 	string indexerName = parameters["indexer"];
 	string taskName = parameters["task"];
+	string labels = parameters["labels"];
 
     stringstream ss;
     ss << taskName << "_" << analyserName << "_" << indexerName;
@@ -300,6 +301,7 @@ string GenericIndexer::addToIndexLive(map<string, string> parameters){
 
 
 	int flannIndex = indexer->addToIndexLive(features);
+	indexer->addLabelLive(StringTools::split(labels,','));
 	//indexer->save(ss2.str());
 
 

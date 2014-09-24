@@ -291,6 +291,7 @@ string VideoTagger::index(map<string, string > parameters){
         param["analyser"] = parameters["analyser"];
         param["indexer"] = parameters["indexer"];
         param["task"] = parameters["task"];
+        param["labels"] = parameters["labels"];
 
         string json = gi.addToIndexLive(param);
         Json::Value root;
