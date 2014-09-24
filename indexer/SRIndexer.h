@@ -58,7 +58,7 @@ public:
 	bool save(string basePath);
 	bool load(string basePath);
 
-	void addToIndexLive(arma::fmat& features);
+	int addToIndexLive(arma::fmat& features);
 
 	string getName();
 

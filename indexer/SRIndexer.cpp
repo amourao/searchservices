@@ -179,7 +179,8 @@ map<string,string> SRIndexer::jsonToDict(Json::Value root){
     return result;
 }
 
-void SRIndexer::addToIndexLive(arma::fmat& features){
+int SRIndexer::addToIndexLive(arma::fmat& features){
     std::shared_ptr<arma::fmat> featuresPtr(new arma::fmat(features));
     indexKSVD->addToIndex(featuresPtr);
+    return -1;
 }

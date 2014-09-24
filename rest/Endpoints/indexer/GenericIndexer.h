@@ -40,10 +40,6 @@ public:
 
 private:
 
-	string retrieve(map<string, string> queryStrings);
-	string create(map<string, string> queryStrings);
-	string addToIndexLive(map<string, string> parameters);
-
 	std::pair< vector<string>, vector<float> > idToLabels(std::pair< vector<float>, vector<float> > v1);
 
 	std::string type;

@@ -282,6 +282,8 @@ string VideoTagger::index(map<string, string > parameters){
     string filename = parameters["url"];
     vector<string> framesPaths = StringTools::split(parameters["url"],',');
 
+    Json::Value indexArray(Json::arrayValue);
+
     for(uint i = 0; i < framesPaths.size(); i++){
         map<string,string> param;
 
@@ -290,11 +292,12 @@ string VideoTagger::index(map<string, string > parameters){
         param["indexer"] = parameters["indexer"];
         param["task"] = parameters["task"];
 
-        gi.addToIndexLive(param);
+        indexArray.append(gi.addToIndexLive(param));
     }
 
     Json::Value root;
     root["result"] = "ok";
+    root["frameIndexes"] = indexArray;
 	stringstream ss;
 	ss << root;
 	return ss.str();

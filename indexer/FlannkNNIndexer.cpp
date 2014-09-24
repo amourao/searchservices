@@ -220,7 +220,7 @@ string FlannkNNIndexer::getName(){
 	return type;
 }
 
-void FlannkNNIndexer::addToIndexLive(Mat& features){
+int FlannkNNIndexer::addToIndexLive(Mat& features){
 
     indexData.push_back(features);
     /*
@@ -234,10 +234,10 @@ void FlannkNNIndexer::addToIndexLive(Mat& features){
     if(flannParams != NULL)
         delete flannParams;
 
-
     flannParams = new flann::LinearIndexParams();
 	flannIndexs = new flann::Index(indexData,*flannParams,flannDistance);
 
+    return indexData.rows;
     //flannIndexs->add
     //flannIndexs->addPoints(features);
 }

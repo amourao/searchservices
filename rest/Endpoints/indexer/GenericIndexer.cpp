@@ -300,7 +300,7 @@ string GenericIndexer::addToIndexLive(map<string, string> parameters){
 
 
 	indexer->addToIndexLive(features);
-	indexer->save(ss2.str());
+	//indexer->save(ss2.str());
 
 
 	Json::Value root;
