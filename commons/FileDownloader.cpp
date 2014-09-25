@@ -24,8 +24,7 @@ void FileDownloader::getFile(std::string url, std::string location){
   CURL *curl;
   CURLcode res;
 
-  if (url[0] == '\'' && url[url.size()-1] == '\'')
-    url = url.substr(1,url.size()-2);
+  cout << url << endl;
   url = StringTools::replaceAll(url," ", "%20");
 
   curl_global_init(CURL_GLOBAL_DEFAULT);

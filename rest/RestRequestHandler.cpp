@@ -59,7 +59,16 @@ map<string,string> RestRequestHandler::getParams(string params)
     map<string,string> result;
 
     while(part2.size() > 0){
-        size_t tokenPos = part2.find('&');
+        size_t tokenPos;
+        size_t escapePos = part2.find('\'');
+        size_t escapePosOut = part2.find('\'',escapePos+1);
+        bool escapeQuotes = escapePos != string::npos && escapePosOut != string::npos;
+
+        if(escapeQuotes){
+            tokenPos = part2.find('&',escapePosOut);
+        } else {
+            tokenPos = part2.find('&');
+        }
         if(tokenPos != string::npos)
         {
             part1 = part2.substr(0,tokenPos);
@@ -70,9 +79,16 @@ map<string,string> RestRequestHandler::getParams(string params)
             part1 = part2;
             part2 = "";
         }
-        size_t equalPos = part1.find("=");
+
+        size_t equalPos = part1.find('=');
+
         string key = part1.substr(0,equalPos);
-        string value = part1.substr(equalPos+1,part1.size()-equalPos-1);
+        string value;
+        if(escapeQuotes){
+            value = part1.substr(equalPos+2,part1.size()-equalPos-3);
+        } else {
+            value = part1.substr(equalPos+1,part1.size()-equalPos-1);
+        }
         result[key] = value;
     }
 
