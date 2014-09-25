@@ -228,6 +228,7 @@ public:
 
 	virtual void addLabelLive(int originalIndex, vector<string> labels){
 		for (int i = 0; i < allLabels.size(); i++){
+            cout << i << " " << originalIndex << " " << labels.at(i) << endl;
 			allLabels[i].insert(std::pair<float,string>(originalIndex,labels.at(i)));
 		}
 	}

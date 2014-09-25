@@ -301,7 +301,14 @@ string GenericIndexer::addToIndexLive(map<string, string> parameters){
 
 
 	int flannIndex = indexer->addToIndexLive(features);
-	indexer->addLabelLive(flannIndex,StringTools::split(labels,','));
+	vector<string> labelsS;
+	labelsS.push_back(labels);
+
+	vector<string> labelsS2 = StringTools::split(labels,',');
+	for(string ii: labelsS2)
+        cout << ii << " ";
+    cout << endl;
+	indexer->addLabelLive(flannIndex,labelsS);
 	//indexer->save(ss2.str());
 
 
