@@ -28,9 +28,11 @@ void FileDownloader::getFile(std::string url, std::string location){
     url = url.substr(1,url.size()-2);
   url = StringTools::replaceAll(url," ", "%20");
 
-
+  curl_global_init(CURL_GLOBAL_DEFAULT);
   curl = curl_easy_init();
   if(curl) {
+    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
     /* example.com is redirected, so we tell libcurl to follow redirection */
     curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
@@ -50,6 +52,7 @@ void FileDownloader::getFile(std::string url, std::string location){
     curl_easy_cleanup(curl);
     fclose (file);
   }
+  curl_global_cleanup();
 }
 
 std::vector<std::string> FileDownloader::getFiles(std::string url){
