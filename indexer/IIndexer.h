@@ -226,9 +226,9 @@ public:
 		MatrixTools::readBinV2(filePath,indexToLabels,a);
 	}
 
-	virtual void addLabelLive(vector<string> labels){
+	virtual void addLabelLive(int originalIndex, vector<string> labels){
 		for (int i = 0; i < allLabels.size(); i++){
-			allLabels[i].insert(std::pair<float,string>(i,labels.at(i)));
+			allLabels[i].insert(std::pair<float,string>(originalIndex,labels.at(i)));
 		}
 	}
 
