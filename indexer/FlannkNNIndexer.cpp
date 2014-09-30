@@ -118,6 +118,8 @@ FlannkNNIndexer::FlannkNNIndexer(string& typeId, map<string,string>& params){
 }
 
 FlannkNNIndexer::~FlannkNNIndexer(){
+    if(flannIndexs != NULL && flannParams != NULL && paramsB.count("path") == 1)
+        save(paramsB["path"]);
     if(flannIndexs != NULL)
         delete flannIndexs;
     if(flannParams != NULL)
@@ -156,10 +158,10 @@ void FlannkNNIndexer::index(cv::Mat& features){
 }
 
 std::pair<vector<float>,vector<float> > FlannkNNIndexer::knnSearchId(cv::Mat& query, int n){
+    n=min(indexData.rows,n);
 	vector<int> indices (n);
 	vector<float> dists (n);
 	//cout << j++ << endl;
-    cout << flannIndexs << endl;
 	flannIndexs->knnSearch(query,indices,dists,n);
 
 	std::vector<float> indicesFloat(indices.begin(), indices.end());
@@ -167,6 +169,7 @@ std::pair<vector<float>,vector<float> > FlannkNNIndexer::knnSearchId(cv::Mat& qu
 }
 
 std::pair<vector<float>,vector<float> > FlannkNNIndexer::radiusSearchId(cv::Mat& query, double radius, int n){
+    n=min(indexData.rows,n);
 	vector<int> indices (n);
 	vector<float> dists (n);
 	//cout << j++ << endl;
@@ -178,6 +181,7 @@ std::pair<vector<float>,vector<float> > FlannkNNIndexer::radiusSearchId(cv::Mat&
 }
 
 bool FlannkNNIndexer::save(string basePath){
+    paramsB["path"] = basePath;
 	saveLabels(basePath);
 
 	stringstream ss;
@@ -195,6 +199,7 @@ bool FlannkNNIndexer::save(string basePath){
 }
 
 bool FlannkNNIndexer::load(string basePath){
+    paramsB["path"] = basePath;
 	loadLabels(basePath);
 
 	stringstream ss;

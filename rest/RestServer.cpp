@@ -4,9 +4,10 @@ RestServer::RestServer(int port)
 {
     try {
       HTTPServer s(new RequestHandlerFactory, ServerSocket(port), new HTTPServerParams);
+      srand (time(NULL));
       s.start();
       cout << "Server started" << endl;
-      
+
       DataModelController dmc;
 
       waitForTerminationRequest();
@@ -15,7 +16,7 @@ RestServer::RestServer(int port)
 	    cout << endl << "Shutting down..." << endl;
     } catch (Poco::Net::NetException e){
       cout << endl << "Error while starting server: " << e.message() << endl;
-    } 
+    }
 };
 
 RestServer::~RestServer()

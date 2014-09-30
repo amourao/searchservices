@@ -16,7 +16,13 @@ GenericIndexer::GenericIndexer(){
 
 //http://ariadne:9383/genericIndexer?action=create&trainData=/home/amourao/data/blip/blip_gist883_fixed.bin&analyser=gist883&indexer=linearIndexer&task=blip
 //ariadne:9383/genericIndexer?action=retrieve&type=normal&analyser=gist883&indexer=linearIndexer&task=blip&output=json&url=http://andremourao.com/wp-content/uploads/2013/07/cropped-passe_square.png&n=100
-GenericIndexer::~GenericIndexer(){}
+GenericIndexer::~GenericIndexer(){
+    map<string, IIndexer*>::iterator iter;
+    for(iter = indexerInstances.begin(); iter != indexerInstances.end(); iter++){
+        IIndexer* i = iter->second;
+        delete i;
+    }
+}
 
 void* GenericIndexer::createType(string& type){
 	std::cout << "New type requested: " << type << std::endl;
@@ -29,44 +35,74 @@ void* GenericIndexer::createType(string& type){
 }
 
 
+
+
 void GenericIndexer::handleRequest(string method, map<string, string> queryStrings, istream& input, HTTPServerResponse& resp)
 {
-  	if(method != "GET"){
-		resp.setStatus(HTTPResponse::HTTP_NOT_FOUND);
-		resp.send();
-		return ;
-	}
-	if (type == "/genericIndexer"){
 
-		string response("");
-		resp.setContentType("application/json");
+    Json::Value root;
+    root["result"] = "error";
+    root["code"] = "7";
+    root["description"] = "Unknown error";
+    stringstream ss;
+    ss << root;
+    string response = ss.str();
 
-		string action = queryStrings["action"];
 
-		if (action == "create"){
-			response = create(queryStrings);
-		} else if (action == "retrieve"){
-			response = retrieve(queryStrings);
+    try {
 
-			if(queryStrings["output"] == "json")
-				resp.setContentType("application/json");
-			else if(queryStrings["output"] == "trec")
-				resp.setContentType("text/plain");
-		} else if (action == "addToIndex"){
-            response = addToIndexLive(queryStrings);
-		}
+        if(method != "GET"){
+            resp.setStatus(HTTPResponse::HTTP_NOT_FOUND);
+            resp.send();
+        } else if (type == "/genericIndexer"){
+            resp.setContentType("application/json");
 
-		std::ostream& out = resp.send();
+            string action = queryStrings["action"];
 
-		out << response;
-		out.flush();
-	}
+            if (action == "create"){
+                response = create(queryStrings);
+            } else if (action == "retrieve"){
+                response = retrieve(queryStrings);
+
+                if(queryStrings["output"] == "json")
+                    resp.setContentType("application/json");
+                else if(queryStrings["output"] == "trec")
+                    resp.setContentType("text/plain");
+            } else if (action == "addToIndex"){
+                response = addToIndexLive(queryStrings);
+            }
+        }
+    } catch(...){
+
+    }
+
+    std::ostream& out = resp.send();
+    out << response;
+    out.flush();
+
 
 }
 
+IIndexer* GenericIndexer::getIndexer(string indexerName,string s){
+    timestamp_type start, end;
+    IIndexer* indexer;
+    if (indexerInstances.count(s) == 0){
+        FactoryIndexer * fc = FactoryIndexer::getInstance();
+        indexer = (IIndexer*)fc->createType(indexerName);
+        get_timestamp(&start);
+        indexer->load(s);
+        get_timestamp(&end);
+        cout << "loading index: " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
+        indexerInstances[s] = indexer;
+    } else {
+        indexer = indexerInstances[s];
+    }
+    return indexer;
+}
 
 string GenericIndexer::retrieve(map<string, string> parameters){
-	cout << "**************** start GENREIRC INDEXER ****************" << endl;
+	cout << "**************** start GENERIC INDEXER ****************" << endl;
+	cout << "**************** action retrieve ****************" << endl;
 	timestamp_type start, end, totalStart, totalEnd;
 	get_timestamp(&totalStart);
 
@@ -88,18 +124,8 @@ string GenericIndexer::retrieve(map<string, string> parameters){
     stringstream ss;
     ss << taskName << "_" << analyserName << "_" << indexerName;
 
-    IIndexer* indexer;
-    if (indexerInstances.count(ss.str()) == 0){
-    	FactoryIndexer * fc = FactoryIndexer::getInstance();
-    	indexer = (IIndexer*)fc->createType(indexerName);
-    	get_timestamp(&start);
-  	  	indexer->load(ss.str());
-		get_timestamp(&end);
-    	cout << "loading index: " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
-    	indexerInstances[ss.str()] = indexer;
-	} else {
-		indexer = indexerInstances[ss.str()];
-	}
+    IIndexer* indexer = getIndexer(indexerName,ss.str());
+
 
 	int labelsIndex = atoi(labelsIndexStr.c_str());
 	if (labelsIndex >= 0)
@@ -211,11 +237,17 @@ string GenericIndexer::retrieve(map<string, string> parameters){
     cout << "formating : " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
     get_timestamp(&totalEnd);
     cout << "**************** total : " << timestamp_diff_in_milliseconds(totalStart, totalEnd) << " ms ****************" << endl;
+    cout << "**************** end GENERIC INDEXER ****************" << endl;
 	return result;
 
 }
 
 string GenericIndexer::create(map<string, string> parameters){
+    cout << "**************** start GENERIC INDEXER ****************" << endl;
+	cout << "**************** action create ****************" << endl;
+	timestamp_type totalStart, totalEnd;
+	get_timestamp(&totalStart);
+
 	FileDownloader fd;
 
 	string filename = parameters["trainData"];
@@ -230,14 +262,14 @@ string GenericIndexer::create(map<string, string> parameters){
 
 	MatrixTools::readBin(file, features, labels);
 
+    stringstream ss;
+
+	ss << taskName << "_" << analyserName << "_" << indexerName;
+
 	FactoryIndexer * fc = FactoryIndexer::getInstance();
 	IIndexer* indexer = (IIndexer*)fc->createType(indexerName);
 
 	indexer->index(features);
-
-	stringstream ss;
-
-	ss << taskName << "_" << analyserName << "_" << indexerName;
 
 	indexer->setFlabels(labels);
 	indexer->save(ss.str());
@@ -249,6 +281,10 @@ string GenericIndexer::create(map<string, string> parameters){
 	root["indexer"] = ss.str();
 	root["indexer"] = parameters["indexer"];
 	root["task"] = parameters["task"];
+
+	get_timestamp(&totalEnd);
+    cout << "**************** total : " << timestamp_diff_in_milliseconds(totalStart, totalEnd) << " ms ****************" << endl;
+	cout << "**************** end GENERIC INDEXER ****************" << endl;
 	stringstream ssJ;
 	ssJ << root;
 	return ssJ.str();
@@ -256,8 +292,10 @@ string GenericIndexer::create(map<string, string> parameters){
 
 string GenericIndexer::addToIndexLive(map<string, string> parameters){
 	FileDownloader fd;
+    cout << "**************** start GENERIC INDEXER ****************" << endl;
+	cout << "**************** action addLive ****************" << endl;
 	timestamp_type start, end, totalStart, totalEnd;
-
+	get_timestamp(&totalStart);
 
 	string filename = parameters["filename"];
 	string analyserName = parameters["analyser"];
@@ -268,18 +306,7 @@ string GenericIndexer::addToIndexLive(map<string, string> parameters){
     stringstream ss;
     ss << taskName << "_" << analyserName << "_" << indexerName;
 
-    IIndexer* indexer;
-    if (indexerInstances.count(ss.str()) == 0){
-    	FactoryIndexer * fc = FactoryIndexer::getInstance();
-    	indexer = (IIndexer*)fc->createType(indexerName);
-    	get_timestamp(&start);
-  	  	indexer->load(ss.str());
-		get_timestamp(&end);
-    	cout << "loading index: " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
-    	indexerInstances[ss.str()] = indexer;
-	} else {
-		indexer = indexerInstances[ss.str()];
-	}
+    IIndexer* indexer = getIndexer(indexerName,ss.str());
 
     FactoryAnalyser * f = FactoryAnalyser::getInstance();
     cout << "get feature extractor" << endl;
@@ -318,8 +345,13 @@ string GenericIndexer::addToIndexLive(map<string, string> parameters){
 	root["result"] = "ok";
 	root["flannIndex"] = flannIndex;
 
+    get_timestamp(&totalEnd);
+    cout << "**************** total : " << timestamp_diff_in_milliseconds(totalStart, totalEnd) << " ms ****************" << endl;
+	cout << "**************** end GENERIC INDEXER ****************" << endl;
+
 	stringstream ssJ;
 	ssJ << root;
+
 	return ssJ.str();
 }
 

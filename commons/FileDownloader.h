@@ -23,8 +23,9 @@ public:
 	FileDownloader(std::string downloadFolder);
 	~FileDownloader();
 
-    void getFile(std::string url, std::string location);
+    int getFile(std::string url, std::string location);
 
+    std::string getFile(std::string url, int& status);
     std::string getFile(std::string url);
     std::vector<std::string> getFiles(std::string url);
 

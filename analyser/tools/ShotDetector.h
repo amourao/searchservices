@@ -12,9 +12,12 @@ public:
 	~ShotDetector();
 
 	void detectScenes(const string filename, int step, vector<int>& diffs, vector<int>& frames);
-	void getPeaks(const vector<int>& diffs, const vector<int>& frames, vector<int>& keyframes, vector<int>& keyframesDiffs);
+	void detectScenesV1(const string filename, int step, vector<int>& diffs, vector<int>& frames);
+
+	void getPeaks(const int minSceneDurationFrames, const vector<int>& diffs, const vector<int>& frames, vector<int>& keyframes, vector<int>& keyframesDiffs);
 	void addMiddleKeyframes(const vector<int>& keyframes, vector<int>& newKeyframes);
 	void writeFrames(const string filename, const vector<int>& frames, vector<string>& framesPaths);
+	void writeFramesV1(const string filename, const vector<int>& frames, vector<string>& framesPaths);
 	void convertFramesIndexToTimes(const string filename,const vector<int>& frames, vector<double>& times);
 
 	void processOneVideo(string filename, int step);

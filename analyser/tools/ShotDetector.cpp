@@ -9,6 +9,34 @@ ShotDetector::~ShotDetector(){
 
 }
 
+void ShotDetector::detectScenesV1(const string filename,const  int step, vector<int>& diffs, vector<int>& frames){
+	VideoCapture capture = VideoCapture(filename);
+	if(!capture.isOpened())
+		cout << "Capture from video " << filename <<  " didn't work"<< endl;
+
+	Mat frame, lastFrame;
+	capture >> frame;
+	frame.copyTo(lastFrame);
+
+	int frameTotal = capture.get(CV_CAP_PROP_FRAME_COUNT);
+
+	int frameC = step;
+	while(frameC < frameTotal){
+
+		capture.set(CV_CAP_PROP_POS_FRAMES,frameC);
+		capture >> frame;
+
+        Mat diff;
+        absdiff(lastFrame, frame, diff);
+        Scalar s = mean(diff);
+        diffs.push_back((s[0] + s[1] + s[2]));
+        frames.push_back(frameC);
+
+        frame.copyTo(lastFrame);
+        frameC+=step;
+	}
+}
+
 void ShotDetector::detectScenes(const string filename,const  int step, vector<int>& diffs, vector<int>& frames){
 	VideoCapture capture = VideoCapture(filename);
 	if(!capture.isOpened())
@@ -46,7 +74,7 @@ void ShotDetector::convertFramesIndexToTimes(const string filename,const vector<
 }
 
 
-void ShotDetector::getPeaks(const vector<int>& diffs, const vector<int>& frames, vector<int>& keyframes, vector<int>& keyframesDiffs){
+void ShotDetector::getPeaks(const int minSceneDurationFrames, const vector<int>& diffs, const vector<int>& frames, vector<int>& keyframes, vector<int>& keyframesDiffs){
 
 	double mean = std::accumulate(diffs.begin(), diffs.end(), 0.0) / diffs.size();
 
@@ -60,6 +88,8 @@ void ShotDetector::getPeaks(const vector<int>& diffs, const vector<int>& frames,
 
 	double threshold = mean + (3 * stdDev);
 
+
+
 	double lastDiff = -1;
 	double lastFrame = -1;
 
@@ -67,11 +97,13 @@ void ShotDetector::getPeaks(const vector<int>& diffs, const vector<int>& frames,
 
 	keyframes.push_back(0);
 	keyframesDiffs.push_back(0);
+	double currentSceneStart = 0;
 	for(uint i = 0; i < diffs.size(); i++){
 		double currDiff = diffs.at(i);
 		double currFrame = frames.at(i);
+		double currDuration = currFrame - currentSceneStart;
 
-		if(lastDiff2 < lastDiff && currDiff < lastDiff && lastDiff > threshold && mean > 0.5 && stdDev > 0.5){
+		if(lastDiff2 < lastDiff && currDiff < lastDiff && lastDiff > threshold && mean > 0.5 && stdDev > 0.5 && currDuration > minSceneDurationFrames){
 			keyframes.push_back(lastFrame);
 			keyframesDiffs.push_back(lastDiff);
 		}
@@ -109,6 +141,26 @@ void ShotDetector::writeFrames(const string filename, const vector<int>& frames,
 	}
 
 	Mat frame;
+
+	for(uint frameC = 0; frameC < frames.size(); frameC++){
+        int frameIndex = frames.at(frameC);
+		capture.set(CV_CAP_PROP_POS_FRAMES,frameIndex);
+		capture >> frame;
+		stringstream ss;
+		ss << filename << "." << frameIndex << "." << frameC << ".png";
+		framesPaths.push_back(ss.str());
+		imwrite(ss.str(),frame);
+	}
+}
+
+void ShotDetector::writeFramesV1(const string filename, const vector<int>& frames, vector<string>& framesPaths){
+	VideoCapture capture = VideoCapture(filename);
+	if(!capture.isOpened()){
+		cout << "Capture from video " << filename <<  " didn't work"<< endl;
+		return;
+	}
+
+	Mat frame;
 	capture >> frame;
 
 	int frameC = 0;
@@ -133,7 +185,7 @@ void ShotDetector::processOneVideo(string filename, int step){
 
 	ShotDetector s;
 	s.detectScenes(filename,step,diffs,frames);
-	s.getPeaks(diffs,frames,keyframes,keyframesDiffs);
+	s.getPeaks(60,diffs,frames,keyframes,keyframesDiffs);
 	s.addMiddleKeyframes(keyframes,keyframesWithMiddle);
 	s.writeFrames(filename,keyframesWithMiddle,framesPaths);
 

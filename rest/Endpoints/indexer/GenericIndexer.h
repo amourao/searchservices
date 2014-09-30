@@ -41,6 +41,7 @@ public:
 private:
 
 	std::pair< vector<string>, vector<float> > idToLabels(std::pair< vector<float>, vector<float> > v1);
+	IIndexer* getIndexer(string indexerName,string s);
 
 	std::string type;
 };

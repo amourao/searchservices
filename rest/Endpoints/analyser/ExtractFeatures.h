@@ -18,7 +18,7 @@
 
 #define LABELS_EXT_EXTRACT_FEATURES ".labels"
 
-
+//http://localhost:9383/analyser?input=/home/amourao/code/shotdetection/sapo_keyframes_sample&analyser=cedd&task=blip&output=blip_cedd
 class ExtractFeatures : public IEndpoint
 {
 

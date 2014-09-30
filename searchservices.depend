@@ -689,10 +689,10 @@
 1410344940 source:/home/amourao/code/searchservices/commons/factory/Factory.cpp
 	"Factory.h"
 
-1411053454 source:/home/amourao/code/searchservices/commons/FileDownloader.cpp
+1411999319 source:/home/amourao/code/searchservices/commons/FileDownloader.cpp
 	"FileDownloader.h"
 
-1411053439 /home/amourao/code/searchservices/commons/FileDownloader.h
+1411988229 /home/amourao/code/searchservices/commons/FileDownloader.h
 	<curl/curl.h>
 	<string>
 	<cstdio>
@@ -745,7 +745,7 @@
 1397645635 source:/home/amourao/code/searchservices/indexer/FactoryIndexer.cpp
 	"FactoryIndexer.h"
 
-1411597908 source:/home/amourao/code/searchservices/indexer/FlannkNNIndexer.cpp
+1412071365 source:/home/amourao/code/searchservices/indexer/FlannkNNIndexer.cpp
 	"FlannkNNIndexer.h"
 
 1391563053 source:/home/amourao/code/searchservices/indexer/LSHkNNIndexer.cpp
@@ -810,7 +810,7 @@
 1411235161 source:/home/amourao/code/searchservices/rest/Endpoints/analyser/ExtractFeatures.cpp
 	"ExtractFeatures.h"
 
-1411224414 /home/amourao/code/searchservices/rest/Endpoints/analyser/ExtractFeatures.h
+1412069525 /home/amourao/code/searchservices/rest/Endpoints/analyser/ExtractFeatures.h
 	<iostream>
 	<sstream>
 	<map>
@@ -892,10 +892,10 @@
 	"../../FactoryEndpoint.h"
 	"../../IEndpoint.h"
 
-1411603869 source:/home/amourao/code/searchservices/rest/Endpoints/indexer/GenericIndexer.cpp
+1412071051 source:/home/amourao/code/searchservices/rest/Endpoints/indexer/GenericIndexer.cpp
 	"GenericIndexer.h"
 
-1411588960 /home/amourao/code/searchservices/rest/Endpoints/indexer/GenericIndexer.h
+1412069234 /home/amourao/code/searchservices/rest/Endpoints/indexer/GenericIndexer.h
 	<iostream>
 	<sstream>
 	"../../IEndpoint.h"
@@ -926,7 +926,7 @@
 1390951642 source:/home/amourao/code/searchservices/rest/FactoryEndpoint.cpp
 	"FactoryEndpoint.h"
 
-1397645612 source:/home/amourao/code/searchservices/rest/RestRequestHandler.cpp
+1411668395 source:/home/amourao/code/searchservices/rest/RestRequestHandler.cpp
 	"RestRequestHandler.h"
 
 1390951647 /home/amourao/code/searchservices/rest/RestRequestHandler.h
@@ -944,7 +944,7 @@
 	<string>
 	<map>
 
-1397645612 source:/home/amourao/code/searchservices/rest/RestServer.cpp
+1411999351 source:/home/amourao/code/searchservices/rest/RestServer.cpp
 	"RestServer.h"
 
 1390951647 /home/amourao/code/searchservices/rest/RestServer.h
@@ -4365,7 +4365,7 @@
 	<string>
 	<iostream>
 
-1411600007 source:/home/amourao/code/searchservices/rest/Endpoints/analyser/VideoTagger.cpp
+1411995285 source:/home/amourao/code/searchservices/rest/Endpoints/analyser/VideoTagger.cpp
 	"VideoTagger.h"
 
 1411458546 /home/amourao/code/searchservices/rest/Endpoints/analyser/VideoTagger.h
@@ -4386,10 +4386,10 @@
 	"../../../commons/Timing.h"
 	"../indexer/GenericIndexer.h"
 
-1411588576 source:/home/amourao/code/searchservices/analyser/tools/ShotDetector.cpp
+1411995261 source:/home/amourao/code/searchservices/analyser/tools/ShotDetector.cpp
 	"ShotDetector.h"
 
-1411128334 /home/amourao/code/searchservices/analyser/tools/ShotDetector.h
+1411995067 /home/amourao/code/searchservices/analyser/tools/ShotDetector.h
 	<opencv2/opencv.hpp>
 	<numeric>
 	<fstream>
