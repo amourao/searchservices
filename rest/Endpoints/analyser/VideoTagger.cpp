@@ -90,11 +90,17 @@ void VideoTagger::handleRequest(string method, map<string, string> queryStrings,
 
     } catch(exception& e) {
         root["exception"] = e.what();
+        root["result"] = "error";
+        root["code"] = "7";
+        root["description"] = "Unknown error";
         stringstream ss2;
         ss2 << root;
         response = ss2.str();
     } catch(...) {
         root["exception"] = "(Unknown)";
+        root["result"] = "error";
+        root["code"] = "7";
+        root["description"] = "Unknown error";
         stringstream ss2;
         ss2 << root;
         response = ss2.str();
@@ -387,7 +393,16 @@ string VideoTagger::getTags(map<string, string > parameters){
         stringstream ss;
         ss << root;
         return ss.str();
-    } catch(...){
+    } catch(exception& e) {
+        root["exception"] = e.what();
+        root["result"] = "error";
+        root["code"] = "7";
+        root["description"] = "Unknown error";
+        stringstream ss;
+        ss << root;
+        return ss.str();
+    } catch(...) {
+        root["exception"] = "(Unknown)";
         root["result"] = "error";
         root["code"] = "7";
         root["description"] = "Unknown error";

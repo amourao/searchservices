@@ -78,11 +78,17 @@ void GenericIndexer::handleRequest(string method, map<string, string> queryStrin
         }
     } catch(exception& e) {
         root["exception"] = e.what();
+        root["result"] = "error";
+        root["code"] = "7";
+        root["description"] = "Unknown error";
         stringstream ss2;
         ss2 << root;
         response = ss2.str();
     } catch(...) {
         root["exception"] = "(Unknown)";
+        root["result"] = "error";
+        root["code"] = "7";
+        root["description"] = "Unknown error";
         stringstream ss2;
         ss2 << root;
         response = ss2.str();
