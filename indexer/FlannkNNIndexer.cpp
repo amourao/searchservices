@@ -227,12 +227,11 @@ string FlannkNNIndexer::getName(){
 
 int FlannkNNIndexer::addToIndexLive(Mat& features){
 
-    indexData.push_back(features);
-    /*
+    
     Mat newData;
     vconcat(indexData,features,newData);
     newData.copyTo(indexData);
-    */
+    
     if(flannIndexs != NULL)
         delete flannIndexs;
 

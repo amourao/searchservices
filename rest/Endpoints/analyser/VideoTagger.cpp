@@ -15,36 +15,36 @@ VideoTagger::VideoTagger(string type){
 }
 
 VideoTagger::VideoTagger(){
-	FactoryEndpoint::getInstance()->registerType("/videoTagger",this);
+    FactoryEndpoint::getInstance()->registerType("/videoTagger",this);
 }
 
 VideoTagger::~VideoTagger()
 {}
 
 void* VideoTagger::createType(string& type){
-	//TODO
-	std::cout << "New type requested: " << type << std::endl;
+    //TODO
+    std::cout << "New type requested: " << type << std::endl;
 
-	if (type == "/videoTagger")
-		return new VideoTagger(type);
+    if (type == "/videoTagger")
+        return new VideoTagger(type);
 
-	std::cerr << "Error registering type from constructor (this should never happen)" << std::endl;
-	return NULL;
+    std::cerr << "Error registering type from constructor (this should never happen)" << std::endl;
+    return NULL;
 }
 
 
 void VideoTagger::handleRequest(string method, map<string, string> queryStrings, istream& input, HTTPServerResponse& resp)
 {
-  	if(method != "GET"){
-		resp.setStatus(HTTPResponse::HTTP_NOT_FOUND);
-		resp.send();
-		return ;
-	}
+    if(method != "GET"){
+        resp.setStatus(HTTPResponse::HTTP_NOT_FOUND);
+        resp.send();
+        return ;
+    }
 
-	resp.setContentType("application/json");
+    resp.setContentType("application/json");
 
 
-	Json::Value root;
+    Json::Value root;
     root["result"] = "error";
     root["code"] = "7";
     root["description"] = "Unknown error";
@@ -60,6 +60,7 @@ void VideoTagger::handleRequest(string method, map<string, string> queryStrings,
                 response = getTags(queryStrings);
             } else if (queryStrings["action"] == "upload"){
                 response = index(queryStrings);
+                cout << response << endl;
             } else if (queryStrings["action"] != "") {
                 root["result"] = "error";
                 root["code"] = "2";
@@ -87,14 +88,22 @@ void VideoTagger::handleRequest(string method, map<string, string> queryStrings,
 
         }
 
-    } catch(...){
-
+    } catch(exception& e) {
+        root["exception"] = e.what();
+        stringstream ss2;
+        ss2 << root;
+        response = ss2.str();
+    } catch(...) {
+        root["exception"] = "(Unknown)";
+        stringstream ss2;
+        ss2 << root;
+        response = ss2.str();
     }
 
-	//std::cout << response << std::endl;
-	std::ostream& out = resp.send();
-	out << response;
-	out.flush();
+    //std::cout << response << std::endl;
+    std::ostream& out = resp.send();
+    out << response;
+    out.flush();
 
 
 }
@@ -398,26 +407,28 @@ string VideoTagger::index(map<string, string > parameters){
     Json::Value indexArray(Json::arrayValue);
 
     for(uint i = 0; i < framesPaths.size(); i++){
-        map<string,string> param;
+        if (framesPaths.at(i) != ""){
+            map<string,string> param;
 
-        param["filename"] = framesPaths.at(i);
-        param["analyser"] = parameters["analyser"];
-        param["indexer"] = parameters["indexer"];
-        param["task"] = parameters["task"];
-        param["labels"] = parameters["labels"];
+            param["filename"] = framesPaths.at(i);
+            param["analyser"] = parameters["analyser"];
+            param["indexer"] = parameters["indexer"];
+            param["task"] = parameters["task"];
+            param["labels"] = parameters["labels"];
 
-        string json = gi.addToIndexLive(param);
-        Json::Value root;
-        Json::Reader reader;
-        reader.parse( json, root );
+            string json = gi.addToIndexLive(param);
+            Json::Value root;
+            Json::Reader reader;
+            reader.parse( json, root );
 
-        indexArray.append(root["flannIndex"]);
+            indexArray.append(root["flannIndex"]);
+        }
     }
 
     Json::Value root;
     root["result"] = "ok";
     root["frameIndexes"] = indexArray;
-	stringstream ss;
-	ss << root;
-	return ss.str();
+    stringstream ss;
+    ss << root;
+    return ss.str();
 }

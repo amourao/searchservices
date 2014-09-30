@@ -17,11 +17,12 @@ GenericIndexer::GenericIndexer(){
 //http://ariadne:9383/genericIndexer?action=create&trainData=/home/amourao/data/blip/blip_gist883_fixed.bin&analyser=gist883&indexer=linearIndexer&task=blip
 //ariadne:9383/genericIndexer?action=retrieve&type=normal&analyser=gist883&indexer=linearIndexer&task=blip&output=json&url=http://andremourao.com/wp-content/uploads/2013/07/cropped-passe_square.png&n=100
 GenericIndexer::~GenericIndexer(){
-    map<string, IIndexer*>::iterator iter;
+    /*map<string, IIndexer*>::iterator iter;
     for(iter = indexerInstances.begin(); iter != indexerInstances.end(); iter++){
         IIndexer* i = iter->second;
         delete i;
     }
+    */
 }
 
 void* GenericIndexer::createType(string& type){
@@ -71,10 +72,20 @@ void GenericIndexer::handleRequest(string method, map<string, string> queryStrin
                     resp.setContentType("text/plain");
             } else if (action == "addToIndex"){
                 response = addToIndexLive(queryStrings);
+            } else if (action == "saveIndex"){
+                response = saveIndex(queryStrings);
             }
         }
-    } catch(...){
-
+    } catch(exception& e) {
+        root["exception"] = e.what();
+        stringstream ss2;
+        ss2 << root;
+        response = ss2.str();
+    } catch(...) {
+        root["exception"] = "(Unknown)";
+        stringstream ss2;
+        ss2 << root;
+        response = ss2.str();
     }
 
     std::ostream& out = resp.send();
@@ -354,6 +365,41 @@ string GenericIndexer::addToIndexLive(map<string, string> parameters){
 	ssJ << root;
 
 	return ssJ.str();
+}
+
+string GenericIndexer::saveIndex(map<string, string> parameters){
+    FileDownloader fd;
+    cout << "**************** start GENERIC INDEXER ****************" << endl;
+    cout << "**************** action saveIndex ****************" << endl;
+    timestamp_type start, end, totalStart, totalEnd;
+    get_timestamp(&totalStart);
+
+    string analyserName = parameters["analyser"];
+    string indexerName = parameters["indexer"];
+    string taskName = parameters["task"];
+
+    stringstream ss;
+
+    ss << taskName << "_" << analyserName << "_" << indexerName;
+    string indexName = ss.str();
+    IIndexer* indexer = getIndexer(indexerName,indexName);
+
+    cout << "saving index" << endl;
+    indexer->save(indexName);
+    cout << "index saved" << endl;
+
+    Json::Value root;
+    root["result"] = "ok";
+    root["indexName"] = indexName;
+
+    get_timestamp(&totalEnd);
+    cout << "**************** total : " << timestamp_diff_in_milliseconds(totalStart, totalEnd) << " ms ****************" << endl;
+    cout << "**************** end GENERIC INDEXER ****************" << endl;
+
+    stringstream ssJ;
+    ssJ << root;
+
+    return ssJ.str();
 }
 
 std::pair< vector<string>, vector<float> > GenericIndexer::idToLabels(std::pair< vector<float>, vector<float> > v1){
