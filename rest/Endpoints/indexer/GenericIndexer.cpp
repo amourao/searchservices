@@ -47,6 +47,7 @@ void GenericIndexer::handleRequest(string method, map<string, string> queryStrin
     stringstream ss;
     ss << root;
     string response = ss.str();
+    root = Json::Value();
 
 
     try {

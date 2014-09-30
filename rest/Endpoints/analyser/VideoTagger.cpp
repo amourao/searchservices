@@ -42,46 +42,57 @@ void VideoTagger::handleRequest(string method, map<string, string> queryStrings,
 	}
 
 	resp.setContentType("application/json");
-	std::ostream& out = resp.send();
 
-	std::string response("");
 
-	if (type == "/videoTagger"){
-        if (queryStrings["action"] == "tag"){
-            response = getTags(queryStrings);
-		} else if (queryStrings["action"] == "upload"){
-            response = index(queryStrings);
-        } else if (queryStrings["action"] != "") {
-            Json::Value root;
-            root["result"] = "error";
-            root["code"] = "2";
-            root["description"] = "Undefined action: \'" + queryStrings["action"] + "\'. Available actions: \'tag\' and \'upload\'";
-            stringstream ss;
-            ss << root;
-            response = ss.str();
+	Json::Value root;
+    root["result"] = "error";
+    root["code"] = "7";
+    root["description"] = "Unknown error";
+    stringstream ss;
+    ss << root;
+    string response = ss.str();
+    root = Json::Value();
+
+    try {
+
+        if (type == "/videoTagger"){
+            if (queryStrings["action"] == "tag"){
+                response = getTags(queryStrings);
+            } else if (queryStrings["action"] == "upload"){
+                response = index(queryStrings);
+            } else if (queryStrings["action"] != "") {
+                root["result"] = "error";
+                root["code"] = "2";
+                root["description"] = "Undefined action: \'" + queryStrings["action"] + "\'. Available actions: \'tag\' and \'upload\'";
+                stringstream ss;
+                ss << root;
+                response = ss.str();
+            } else {
+                root["result"] = "error";
+                root["code"] = "3";
+                root["description"] = "Undefined action. Usage:/videoTagger?action=<action>&...>. Available actions: \'tag\' and \'upload\'";
+                stringstream ss;
+                ss << root;
+                response = ss.str();
+            }
+
         } else {
-            Json::Value root;
             root["result"] = "error";
-            root["code"] = "3";
-            root["description"] = "Undefined action. Usage:/videoTagger?action=<action>&...>. Available actions: \'tag\' and \'upload\'";
+            root["code"] = "1";
+            root["description"] = "Request reached wrong endpoint";
             stringstream ss;
             ss << root;
             response = ss.str();
+
+
         }
 
-    } else {
-        Json::Value root;
-        root["result"] = "error";
-        root["code"] = "1";
-        root["description"] = "Request reached wrong endpoint";
-        stringstream ss;
-        ss << root;
-        response = ss.str();
-
+    } catch(...){
 
     }
 
 	//std::cout << response << std::endl;
+	std::ostream& out = resp.send();
 	out << response;
 	out.flush();
 
