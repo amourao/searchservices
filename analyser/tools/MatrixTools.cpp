@@ -284,6 +284,8 @@ void MatrixTools::readBinV3(string& file, vector<cv::Mat>& features, cv::Mat& la
 
 //Atention, matrices must be in CV_32F format (single dimensional float matrix)
 void MatrixTools::writeBinV2(string& filename, vector<cv::Mat>& features, cv::Mat& labels, bool append ){
+
+    if (features.size() > 0){
 	std::fstream binFile;
 	binFile.open(filename.c_str(),std::ios::binary | std::ios::in | std::ios::out);
 
@@ -362,6 +364,7 @@ void MatrixTools::writeBinV2(string& filename, vector<cv::Mat>& features, cv::Ma
 	}
 
 	binFile.close();
+	}
 
 }
 
@@ -479,7 +482,7 @@ void MatrixTools::writeBinV3(string& file, cv::Mat& features, vector<cv::KeyPoin
 
     Mat descKeypointsMat;
     Mat keypointsMat;
-        	
+
     MatrixTools::keypointsToMats(keypoints,keypointsMat);
 
     if (keypointsMat.empty() || features.empty())
