@@ -400,7 +400,7 @@
 	"../analyser/tools/MatrixTools.h"
 	"../commons/factory/Factory.h"
 
-1411594186 /home/amourao/code/searchservices/indexer/FlannkNNIndexer.h
+1412252522 /home/amourao/code/searchservices/indexer/FlannkNNIndexer.h
 	<map>
 	<string>
 	<iostream>
@@ -410,6 +410,7 @@
 	<opencv2/flann/flann.hpp>
 	"IIndexer.h"
 	"FactoryIndexer.h"
+	"../commons/FileDownloader.h"
 
 1397645635 /home/amourao/code/searchservices/indexer/MSIDXIndexer.h
 	<map>
@@ -639,7 +640,7 @@
 	<opencv2/highgui/highgui.hpp>
 	<opencv2/imgproc/imgproc.hpp>
 
-1409738527 source:/home/amourao/code/searchservices/analyser/tools/MatrixTools.cpp
+1412087322 source:/home/amourao/code/searchservices/analyser/tools/MatrixTools.cpp
 	"MatrixTools.h"
 
 1400531651 source:/home/amourao/code/searchservices/analyser/tools/MIRFlickrImporter.cpp
@@ -745,7 +746,7 @@
 1397645635 source:/home/amourao/code/searchservices/indexer/FactoryIndexer.cpp
 	"FactoryIndexer.h"
 
-1412085076 source:/home/amourao/code/searchservices/indexer/FlannkNNIndexer.cpp
+1412252418 source:/home/amourao/code/searchservices/indexer/FlannkNNIndexer.cpp
 	"FlannkNNIndexer.h"
 
 1391563053 source:/home/amourao/code/searchservices/indexer/LSHkNNIndexer.cpp

@@ -11,6 +11,7 @@
 #include "IIndexer.h"
 #include "FactoryIndexer.h"
 
+#include "../commons/FileDownloader.h"
 using namespace std;
 
 #ifndef INDEX_DATA_EXTENSION_KNN
@@ -51,7 +52,9 @@ public:
 private:
 
 	string type;
+	bool syncedWithDisk;
 	cv::Mat indexData;
+	cv::Mat indexDataUnsaved;
 	flann::Index* flannIndexs;
 	flann::IndexParams* flannParams;
 	cvflann::flann_distance_t flannDistance;

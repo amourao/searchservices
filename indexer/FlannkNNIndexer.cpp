@@ -6,10 +6,12 @@ static FlannkNNIndexer linearkNNIndexerFactory;
 
 FlannkNNIndexer::FlannkNNIndexer(){
 	FactoryIndexer::getInstance()->registerType("flannkNNIndexer",this);
+	syncedWithDisk = true;
 }
 
 FlannkNNIndexer::FlannkNNIndexer(string& typeId){
     type = typeId;
+    syncedWithDisk = true;
 }
 
 FlannkNNIndexer::FlannkNNIndexer(string& typeId, map<string,string>& params){
@@ -115,6 +117,7 @@ FlannkNNIndexer::FlannkNNIndexer(string& typeId, map<string,string>& params){
         	atof(params["sample_fraction"].c_str())
         	);
 	}
+	syncedWithDisk = true;
 }
 
 FlannkNNIndexer::~FlannkNNIndexer(){
@@ -146,6 +149,7 @@ void FlannkNNIndexer::indexWithTrainedParams(cv::Mat& features){
 	indexData = features;
 
 	flannIndexs = new flann::Index(indexData,*flannParams,flannDistance);
+	syncedWithDisk = false;
 }
 
 void FlannkNNIndexer::index(cv::Mat& features){
@@ -155,6 +159,7 @@ void FlannkNNIndexer::index(cv::Mat& features){
 
 	flannIndexs = new flann::Index(indexData,*flannParams,flannDistance);
 	//flannIndex->build(indexData,flannParams);
+	syncedWithDisk = false;
 }
 
 std::pair<vector<float>,vector<float> > FlannkNNIndexer::knnSearchId(cv::Mat& query, int n){
@@ -188,17 +193,25 @@ bool FlannkNNIndexer::save(string basePath){
 	ss << INDEXER_BASE_SAVE_PATH << basePath << INDEX_DATA_EXTENSION_KNN;
 	string path = ss.str();
 	Mat lab;
-	MatrixTools::writeBinV2(path,indexData,lab);
+
+	if(!syncedWithDisk || !FileDownloader::fileExists(path))
+        MatrixTools::writeBinV2(path,indexData,lab);
+    else if (!syncedWithDisk && indexDataUnsaved.rows != 0)
+        MatrixTools::writeBinV2(path,indexDataUnsaved,lab,true);
 
 	stringstream ssF;
 	ssF << INDEXER_BASE_SAVE_PATH << basePath << INDEX_FLANN_EXTENSION_KNN;
 
 	flannIndexs->save(ssF.str());
 
+    indexDataUnsaved = Mat();
+    syncedWithDisk = true;
 	return true;
 }
 
 bool FlannkNNIndexer::load(string basePath){
+
+    indexDataUnsaved = Mat();
     paramsB["path"] = basePath;
 	loadLabels(basePath);
 
@@ -218,6 +231,7 @@ bool FlannkNNIndexer::load(string basePath){
 	flannIndexs = new flann::Index(indexData,*flannParams);
 
 	//flannIndexs->build(indexData,params);
+	syncedWithDisk = true;
 	return true;
 }
 
@@ -227,11 +241,9 @@ string FlannkNNIndexer::getName(){
 
 int FlannkNNIndexer::addToIndexLive(Mat& features){
 
-    
-    Mat newData;
-    vconcat(indexData,features,newData);
-    newData.copyTo(indexData);
-    
+    indexData.push_back(features);
+    indexDataUnsaved.push_back(features);
+
     if(flannIndexs != NULL)
         delete flannIndexs;
 
@@ -241,6 +253,7 @@ int FlannkNNIndexer::addToIndexLive(Mat& features){
     flannParams = new flann::LinearIndexParams();
 	flannIndexs = new flann::Index(indexData,*flannParams,flannDistance);
 
+    syncedWithDisk = false;
     return indexData.rows-1;
     //flannIndexs->add
     //flannIndexs->addPoints(features);
