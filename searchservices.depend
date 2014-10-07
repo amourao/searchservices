@@ -400,7 +400,7 @@
 	"../analyser/tools/MatrixTools.h"
 	"../commons/factory/Factory.h"
 
-1412252522 /home/amourao/code/searchservices/indexer/FlannkNNIndexer.h
+1412253010 /home/amourao/code/searchservices/indexer/FlannkNNIndexer.h
 	<map>
 	<string>
 	<iostream>
@@ -424,7 +424,7 @@
 	"FactoryIndexer.h"
 	"../commons/Timing.h"
 
-1409738527 source:/home/amourao/code/searchservices/analyser/Main3.cpp
+1411425357 source:/home/amourao/code/searchservices/analyser/Main3.cpp
 	<iostream>
 	<fstream>
 	<string>
@@ -746,7 +746,7 @@
 1397645635 source:/home/amourao/code/searchservices/indexer/FactoryIndexer.cpp
 	"FactoryIndexer.h"
 
-1412252418 source:/home/amourao/code/searchservices/indexer/FlannkNNIndexer.cpp
+1412253127 source:/home/amourao/code/searchservices/indexer/FlannkNNIndexer.cpp
 	"FlannkNNIndexer.h"
 
 1391563053 source:/home/amourao/code/searchservices/indexer/LSHkNNIndexer.cpp
@@ -4387,10 +4387,10 @@
 	"../../../commons/Timing.h"
 	"../indexer/GenericIndexer.h"
 
-1411995261 source:/home/amourao/code/searchservices/analyser/tools/ShotDetector.cpp
+1412607458 source:/home/amourao/code/searchservices/analyser/tools/ShotDetector.cpp
 	"ShotDetector.h"
 
-1411995067 /home/amourao/code/searchservices/analyser/tools/ShotDetector.h
+1412607657 /home/amourao/code/searchservices/analyser/tools/ShotDetector.h
 	<opencv2/opencv.hpp>
 	<numeric>
 	<fstream>
@@ -4404,4 +4404,253 @@
 
 1411223860 source:/home/amourao/code/searchservices/analyser/tools/FrameFilter.cpp
 	"FrameFilter.h"
+
+1412607295 source:/home/amourao/code/searchservices/analyser/tools/MainShotDetection.cpp
+	"ShotDetector.h"
+	<boost/program_options.hpp>
+
+1397211326 /home/amourao/myLibsAlt/include/opencv2/opencv.hpp
+	"opencv2/core/core_c.h"
+	"opencv2/core/core.hpp"
+	"opencv2/flann/miniflann.hpp"
+	"opencv2/imgproc/imgproc_c.h"
+	"opencv2/imgproc/imgproc.hpp"
+	"opencv2/photo/photo.hpp"
+	"opencv2/video/video.hpp"
+	"opencv2/features2d/features2d.hpp"
+	"opencv2/objdetect/objdetect.hpp"
+	"opencv2/calib3d/calib3d.hpp"
+	"opencv2/ml/ml.hpp"
+	"opencv2/highgui/highgui_c.h"
+	"opencv2/highgui/highgui.hpp"
+	"opencv2/contrib/contrib.hpp"
+
+1397211326 /home/amourao/myLibsAlt/include/opencv2/core/core_c.h
+	"opencv2/core/types_c.h"
+
+1397211326 /home/amourao/myLibsAlt/include/opencv2/core/types_c.h
+	<assert.h>
+	<stdlib.h>
+	<string.h>
+	<float.h>
+	<stdint.h>
+	<intrin.h>
+	<emmintrin.h>
+	<fastmath.h>
+	<math.h>
+	<ipl.h>
+	<ipl/ipl.h>
+	"tegra_round.hpp"
+	"emmintrin.h"
+
+1397211326 /home/amourao/myLibsAlt/include/opencv2/core/core.hpp
+	"opencv2/core/types_c.h"
+	"opencv2/core/version.hpp"
+	<limits.h>
+	<algorithm>
+	<cmath>
+	<cstddef>
+	<complex>
+	<map>
+	<new>
+	<string>
+	<vector>
+	<sstream>
+	"opencv2/core/operations.hpp"
+	"opencv2/core/mat.hpp"
+
+1397211326 /home/amourao/myLibsAlt/include/opencv2/core/version.hpp
+
+1397211326 /home/amourao/myLibsAlt/include/opencv2/core/operations.hpp
+	<string.h>
+	<limits.h>
+	<ext/atomicity.h>
+	<bits/atomicity.h>
+	<limits>
+
+1397211326 /home/amourao/myLibsAlt/include/opencv2/core/mat.hpp
+	<limits.h>
+	<string.h>
+
+1397211326 /home/amourao/myLibsAlt/include/opencv2/imgproc/imgproc_c.h
+	"opencv2/core/core_c.h"
+	"opencv2/imgproc/types_c.h"
+
+1397211326 /home/amourao/myLibsAlt/include/opencv2/imgproc/types_c.h
+	"opencv2/core/core_c.h"
+
+1397211326 /home/amourao/myLibsAlt/include/opencv2/imgproc/imgproc.hpp
+	"opencv2/core/core.hpp"
+	"opencv2/imgproc/types_c.h"
+
+1397211326 /home/amourao/myLibsAlt/include/opencv2/video/video.hpp
+	"opencv2/video/tracking.hpp"
+	"opencv2/video/background_segm.hpp"
+
+1397211326 /home/amourao/myLibsAlt/include/opencv2/video/tracking.hpp
+	"opencv2/core/core.hpp"
+	"opencv2/imgproc/imgproc.hpp"
+
+1397211326 /home/amourao/myLibsAlt/include/opencv2/video/background_segm.hpp
+	"opencv2/core/core.hpp"
+	<list>
+
+1397211326 /home/amourao/myLibsAlt/include/opencv2/highgui/highgui_c.h
+	"opencv2/core/core_c.h"
+
+1397211326 /home/amourao/myLibsAlt/include/opencv2/highgui/highgui.hpp
+	"opencv2/core/core.hpp"
+	"opencv2/highgui/highgui_c.h"
+
+1397211326 /usr/local/include/opencv2/opencv.hpp
+	"opencv2/core/core_c.h"
+	"opencv2/core/core.hpp"
+	"opencv2/flann/miniflann.hpp"
+	"opencv2/imgproc/imgproc_c.h"
+	"opencv2/imgproc/imgproc.hpp"
+	"opencv2/photo/photo.hpp"
+	"opencv2/video/video.hpp"
+	"opencv2/features2d/features2d.hpp"
+	"opencv2/objdetect/objdetect.hpp"
+	"opencv2/calib3d/calib3d.hpp"
+	"opencv2/ml/ml.hpp"
+	"opencv2/highgui/highgui_c.h"
+	"opencv2/highgui/highgui.hpp"
+	"opencv2/contrib/contrib.hpp"
+
+1397211326 /usr/local/include/opencv2/core/core_c.h
+	"opencv2/core/types_c.h"
+
+1397211326 /usr/local/include/opencv2/core/types_c.h
+	<assert.h>
+	<stdlib.h>
+	<string.h>
+	<float.h>
+	<stdint.h>
+	<intrin.h>
+	<emmintrin.h>
+	<fastmath.h>
+	<math.h>
+	<ipl.h>
+	<ipl/ipl.h>
+	"tegra_round.hpp"
+	"emmintrin.h"
+
+1397211326 /usr/local/include/opencv2/core/core.hpp
+	"opencv2/core/types_c.h"
+	"opencv2/core/version.hpp"
+	<limits.h>
+	<algorithm>
+	<cmath>
+	<cstddef>
+	<complex>
+	<map>
+	<new>
+	<string>
+	<vector>
+	<sstream>
+	"opencv2/core/operations.hpp"
+	"opencv2/core/mat.hpp"
+
+1397211326 /usr/local/include/opencv2/core/version.hpp
+
+1397211326 /usr/local/include/opencv2/core/operations.hpp
+	<string.h>
+	<limits.h>
+	<ext/atomicity.h>
+	<bits/atomicity.h>
+	<limits>
+
+1397211326 /usr/local/include/opencv2/core/mat.hpp
+	<limits.h>
+	<string.h>
+
+1397211326 /usr/local/include/opencv2/flann/miniflann.hpp
+	"opencv2/core/core.hpp"
+	"opencv2/flann/defines.h"
+
+1397211326 /usr/local/include/opencv2/flann/defines.h
+	"config.h"
+
+1397211326 /usr/local/include/opencv2/flann/config.h
+
+1397211326 /usr/local/include/opencv2/imgproc/imgproc_c.h
+	"opencv2/core/core_c.h"
+	"opencv2/imgproc/types_c.h"
+
+1397211326 /usr/local/include/opencv2/imgproc/types_c.h
+	"opencv2/core/core_c.h"
+
+1397211326 /usr/local/include/opencv2/imgproc/imgproc.hpp
+	"opencv2/core/core.hpp"
+	"opencv2/imgproc/types_c.h"
+
+1397211326 /usr/local/include/opencv2/photo/photo.hpp
+	"opencv2/core/core.hpp"
+	"opencv2/imgproc/imgproc.hpp"
+	"opencv2/photo/photo_c.h"
+
+1397211326 /usr/local/include/opencv2/photo/photo_c.h
+	"opencv2/core/core_c.h"
+
+1397211326 /usr/local/include/opencv2/video/video.hpp
+	"opencv2/video/tracking.hpp"
+	"opencv2/video/background_segm.hpp"
+
+1397211326 /usr/local/include/opencv2/video/tracking.hpp
+	"opencv2/core/core.hpp"
+	"opencv2/imgproc/imgproc.hpp"
+
+1397211326 /usr/local/include/opencv2/video/background_segm.hpp
+	"opencv2/core/core.hpp"
+	<list>
+
+1397211326 /usr/local/include/opencv2/features2d/features2d.hpp
+	"opencv2/core/core.hpp"
+	"opencv2/flann/miniflann.hpp"
+	<limits>
+
+1397211326 /usr/local/include/opencv2/objdetect/objdetect.hpp
+	"opencv2/core/core.hpp"
+	<map>
+	<deque>
+
+1397211326 /usr/local/include/opencv2/calib3d/calib3d.hpp
+	"opencv2/core/core.hpp"
+	"opencv2/features2d/features2d.hpp"
+
+1397211326 /usr/local/include/opencv2/ml/ml.hpp
+	"opencv2/core/core.hpp"
+	<limits.h>
+	<map>
+	<string>
+	<iostream>
+
+1397211326 /usr/local/include/opencv2/highgui/highgui_c.h
+	"opencv2/core/core_c.h"
+
+1397211326 /usr/local/include/opencv2/highgui/highgui.hpp
+	"opencv2/core/core.hpp"
+	"opencv2/highgui/highgui_c.h"
+
+1397211326 /usr/local/include/opencv2/contrib/contrib.hpp
+	"opencv2/core/core.hpp"
+	"opencv2/imgproc/imgproc.hpp"
+	"opencv2/features2d/features2d.hpp"
+	"opencv2/objdetect/objdetect.hpp"
+	"opencv2/contrib/retina.hpp"
+	"opencv2/contrib/openfabmap.hpp"
+
+1397211326 /usr/local/include/opencv2/contrib/retina.hpp
+	"opencv2/core/core.hpp"
+	<valarray>
+
+1397211326 /usr/local/include/opencv2/contrib/openfabmap.hpp
+	"opencv2/core/core.hpp"
+	"opencv2/features2d/features2d.hpp"
+	<vector>
+	<list>
+	<map>
+	<set>
+	<valarray>
 

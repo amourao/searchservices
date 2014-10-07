@@ -11,8 +11,10 @@ ShotDetector::~ShotDetector(){
 
 void ShotDetector::detectScenesV1(const string filename,const  int step, vector<int>& diffs, vector<int>& frames){
 	VideoCapture capture = VideoCapture(filename);
-	if(!capture.isOpened())
+	if(!capture.isOpened()){
 		cout << "Capture from video " << filename <<  " didn't work"<< endl;
+		return;
+    }
 
 	Mat frame, lastFrame;
 	capture >> frame;
@@ -39,8 +41,10 @@ void ShotDetector::detectScenesV1(const string filename,const  int step, vector<
 
 void ShotDetector::detectScenes(const string filename,const  int step, vector<int>& diffs, vector<int>& frames){
 	VideoCapture capture = VideoCapture(filename);
-	if(!capture.isOpened())
+	if(!capture.isOpened()){
 		cout << "Capture from video " << filename <<  " didn't work"<< endl;
+		return;
+    }
 
 	Mat frame, lastFrame;
 	capture >> frame;
@@ -66,15 +70,17 @@ void ShotDetector::detectScenes(const string filename,const  int step, vector<in
 
 void ShotDetector::convertFramesIndexToTimes(const string filename,const vector<int>& frames, vector<double>& times){
 	VideoCapture capture = VideoCapture(filename);
-	if(!capture.isOpened())
+	if(!capture.isOpened()){
 		cout << "Capture from video " << filename <<  " didn't work"<< endl;
+		return;
+    }
     double fps = capture.get(CV_CAP_PROP_FPS);
     for(int frame: frames)
         times.push_back(frame/fps);
 }
 
 
-void ShotDetector::getPeaks(const int minSceneDurationFrames, const vector<int>& diffs, const vector<int>& frames, vector<int>& keyframes, vector<int>& keyframesDiffs){
+void ShotDetector::getPeaks(const int minSceneDurationFrames,const int numStdDevs, const vector<int>& diffs, const vector<int>& frames, vector<int>& keyframes, vector<int>& keyframesDiffs){
 
 	double mean = std::accumulate(diffs.begin(), diffs.end(), 0.0) / diffs.size();
 
@@ -86,7 +92,7 @@ void ShotDetector::getPeaks(const int minSceneDurationFrames, const vector<int>&
 
 	stdDev = sqrt(stdDev/diffs.size());
 
-	double threshold = mean + (3 * stdDev);
+	double threshold = mean + (numStdDevs * stdDev);
 
 
 
@@ -179,27 +185,35 @@ void ShotDetector::writeFramesV1(const string filename, const vector<int>& frame
 	}
 }
 
-void ShotDetector::processOneVideo(string filename, int step){
+void ShotDetector::processOneVideo(string filename, int step, int numStdDev, int minSceneTime, bool saveFrames, bool saveOutput){
 	vector<int> diffs,frames,keyframes,keyframesWithMiddle, keyframesDiffs;
+
+	vector<double> framesTimes;
 	vector<string> framesPaths;
 
 	ShotDetector s;
 	s.detectScenes(filename,step,diffs,frames);
-	s.getPeaks(60,diffs,frames,keyframes,keyframesDiffs);
+	s.getPeaks(minSceneTime,numStdDev,diffs,frames,keyframes,keyframesDiffs);
 	s.addMiddleKeyframes(keyframes,keyframesWithMiddle);
-	s.writeFrames(filename,keyframesWithMiddle,framesPaths);
+	s.convertFramesIndexToTimes(filename,keyframesWithMiddle,framesTimes);
 
-	stringstream ss;
-	ss << filename << ".csv";
-	string csvFile = ss.str();
-	ofstream f(csvFile.c_str());
-	for(uint i = 0; i < diffs.size(); i++){
-		f << frames.at(i) << ";" << diffs.at(i);
-		if(i < keyframesWithMiddle.size())
-			f << ";;" << keyframesWithMiddle.at(i);
-		f << endl;
+	if(saveFrames)
+        s.writeFrames(filename,keyframesWithMiddle,framesPaths);
+
+    if (saveOutput){
+        string csvFile = filename + ".csv";
+        ofstream f(csvFile.c_str());
+        /*
+        for(uint i = 0; i < diffs.size(); i++){
+            f << frames.at(i) << ";" << diffs.at(i);
+            if(i < keyframesWithMiddle.size())
+                f << ";;" << keyframesWithMiddle.at(i);
+            f << endl;
+        }
+        */
+        for(uint i = 0; i < keyframesWithMiddle.size(); i++){
+            f << i << ";" << keyframesWithMiddle.at(i) << ";" << framesTimes.at(i) << endl;
+        }
+        f.close();
 	}
-	f.close();
-
-
 }

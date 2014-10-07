@@ -179,7 +179,7 @@ string VideoTagger::getTags(map<string, string > parameters){
 
         ShotDetector s;
         s.detectScenes(filename,step,diffs,frames);
-        s.getPeaks(60,diffs,frames,keyframes,keyframesDiffs);
+        s.getPeaks(60,3,diffs,frames,keyframes,keyframesDiffs);
         s.addMiddleKeyframes(keyframes,keyframesWithMiddle);
         s.writeFrames(filename,keyframesWithMiddle,framesPaths);
         s.convertFramesIndexToTimes(filename,keyframesWithMiddle,keyframesWithMiddleTimes);
