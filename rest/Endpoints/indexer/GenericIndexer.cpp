@@ -15,7 +15,7 @@ GenericIndexer::GenericIndexer(){
 }
 
 //http://ariadne:9383/genericIndexer?action=create&trainData=/home/amourao/data/blip/blip_gist883_fixed.bin&analyser=gist883&indexer=linearIndexer&task=blip
-//ariadne:9383/genericIndexer?action=retrieve&type=normal&analyser=gist883&indexer=linearIndexer&task=blip&output=json&url=http://andremourao.com/wp-content/uploads/2013/07/cropped-passe_square.png&n=100
+//ariadne:9383/genericIndexer?action=retrieve&type=normal&analyser=gist883&indexer=linearIndexer&task=blip&output=json&url=http://andremourao.com/wp-content/uploads/2013/07/cropped-passe_square.png&n=100&labelsIndex=-1&flabelsIndex=0&search_limit=0.1&retrievalOutput=id
 GenericIndexer::~GenericIndexer(){
     /*map<string, IIndexer*>::iterator iter;
     for(iter = indexerInstances.begin(); iter != indexerInstances.end(); iter++){
@@ -121,7 +121,8 @@ IIndexer* GenericIndexer::getIndexer(string indexerName,string s){
 string GenericIndexer::retrieve(map<string, string> parameters){
 	cout << "**************** start GENERIC INDEXER ****************" << endl;
 	cout << "**************** action retrieve ****************" << endl;
-	timestamp_type start, end, totalStart, totalEnd;
+	timestamp_type start, end, totalStart, totalEnd, tmpStart, tmpEnd;
+	uint setupTime, downloadTime, feTime, retrievalTime, formatingTime;
 	get_timestamp(&totalStart);
 	get_timestamp(&start);
 
@@ -164,6 +165,9 @@ string GenericIndexer::retrieve(map<string, string> parameters){
     cout << "start downloading files" << endl;
     vector<std::pair< vector<string>, vector<float> > > resultLists;
 
+
+    get_timestamp(&end);
+    setupTime = timestamp_diff_in_milliseconds(start, end);
     get_timestamp(&start);
     string localFilenames = "";
     for (uint ii = 0; ii < filenames.size(); ii++){
@@ -174,19 +178,24 @@ string GenericIndexer::retrieve(map<string, string> parameters){
 
     }
     get_timestamp(&end);
+    downloadTime = timestamp_diff_in_milliseconds(start, end);
     cout << "downloading files : " << timestamp_diff_in_milliseconds(start, end) << " ms " << localFilenames << endl;
+    get_timestamp(&start);
+
 
     vector<vector<float> > allFeatures;
     get_timestamp(&start);
     analyser->extractFeaturesMulti(localFilenames, allFeatures);
     get_timestamp(&end);
     cout << "get features : " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
+    feTime = timestamp_diff_in_milliseconds(start, end);
 
+    get_timestamp(&start);
 	for (uint ii = 0; ii < allFeatures.size(); ii++){
 		vector<float> features = allFeatures.at(ii);
         std::pair< vector<string>, vector<float> > resultList;
 
-        get_timestamp(&start);
+        get_timestamp(&tmpStart);
         if (retrievalType == "normal" && outputType == "name"){
             resultList = indexer->knnSearchName(features,n,flabelsIndex, search_limit);
         } else if (retrievalType == "normal" && outputType == "id"){
@@ -201,12 +210,16 @@ string GenericIndexer::retrieve(map<string, string> parameters){
             resultList = idToLabels(resultListF);
         }
         resultLists.push_back(resultList);
-        get_timestamp(&end);
-    	cout << "retrieving " << ii << ": " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
+        get_timestamp(&tmpEnd);
+        cout << "retrieve " << ii  << ": " << timestamp_diff_in_milliseconds(tmpStart, tmpEnd) << " ms" << endl;
+
     }
+    get_timestamp(&end);
+    cout << "retrieval: " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
+    retrievalTime = timestamp_diff_in_milliseconds(start, end);
+    get_timestamp(&start);
     delete analyser;
     string result;
-    get_timestamp(&start);
 	if(outputFormat == "json"){
 
 		Json::Value root;
@@ -242,19 +255,19 @@ string GenericIndexer::retrieve(map<string, string> parameters){
 		if (retrievalType == "radius")
             root["n"] = atoi(parameters["radius"].c_str());
 
+        get_timestamp(&end);
+        cout << "formating : " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
+        formatingTime = timestamp_diff_in_milliseconds(start, end);
+
         Json::Value times;
 
-        //long setupTime, downloadTime, keyframeTime, feTime, posProcessingTime,formatingTime;
-
-        /*
-        times["0: totalTime"] = timestamp_diff_in_milliseconds(totalStart, totalEnd);
+        times["0: totalTime"] = timestamp_diff_in_milliseconds(totalStart, end);
         times["1: setupTime"] = setupTime;
         times["2: downloadTime"] = downloadTime;
-        times["3: keyframeTime"] = keyframeTime;
-        times["4: feTime"] = feTime;
-        times["5: posProcessingTime"] = posProcessingTime;
-        times["6: formatingTime"] = formatingTime;
-        */
+        times["3: feTime"] = feTime;
+        times["4: retTime"] = retrievalTime;
+        times["5: formatingTime"] = formatingTime;
+
 
         root["times"] = times;
 
@@ -272,8 +285,7 @@ string GenericIndexer::retrieve(map<string, string> parameters){
         }
 		result = ssJ.str();
 	}
-	get_timestamp(&end);
-    cout << "formating : " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
+
     get_timestamp(&totalEnd);
 
 
