@@ -52,8 +52,8 @@ public:
 	void indexWithTrainedParams(arma::fmat& features);
 	void index(arma::fmat& features);
 
-	std::pair<vector<float>,vector<float> > knnSearchId(arma::fmat& name, int n);
-	std::pair<vector<float>,vector<float> > radiusSearchId(arma::fmat& name, double radius, int n);
+	std::pair<vector<float>,vector<float> > knnSearchId(arma::fmat& name, int n, double search_limit);
+	std::pair<vector<float>,vector<float> > radiusSearchId(arma::fmat& name, double radius, int n, double search_limit);
 
 	bool save(string basePath);
 	bool load(string basePath);
@@ -85,13 +85,16 @@ private:
     ksvdb_Ptr ksvd;
     indexk_Ptr indexKSVD;
 
-
     lnmin::option_type opt;
     ksvdb::option_type optKSVD;
 
     int dimensions;
     int n_iter;
-    double search_limit;
+
+    int max_iters;
+    double eps;
+
+    string index_path;
 
     arma::fmat dictionary;
     std::shared_ptr<arma::fmat> indexData;

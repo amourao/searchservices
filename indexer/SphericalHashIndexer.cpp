@@ -131,7 +131,7 @@ void SphericalHashIndexer::index(cv::Mat& features){
 
 }
 
-std::pair<vector<float>,vector<float> > SphericalHashIndexer::knnSearchId(cv::Mat& query, int n){
+std::pair<vector<float>,vector<float> > SphericalHashIndexer::knnSearchId(cv::Mat& query, int n, double search_limit){
 
     vector<float> indicesFloat;
     vector<float> dists;
@@ -199,7 +199,7 @@ std::pair<vector<float>,vector<float> > SphericalHashIndexer::knnSearchId(cv::Ma
 }
 
 
-std::pair<vector<float>,vector<float> > SphericalHashIndexer::radiusSearchId(cv::Mat& query, double radius, int n){
+std::pair<vector<float>,vector<float> > SphericalHashIndexer::radiusSearchId(cv::Mat& query, double radius, int n, double search_limit){
     vector<float> indicesFloat;
     vector<float> dists;
 

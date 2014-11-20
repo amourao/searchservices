@@ -40,74 +40,74 @@ public:
 	virtual void* createType(string &typeId, map<string,string>& params) = 0;
 
 
-	virtual std::pair<vector<float>,vector<float> > knnSearchId(std::vector<float>& v, int n = 1000, int labels = -1){
+	virtual std::pair<vector<float>,vector<float> > knnSearchId(std::vector<float>& v, int n = 1000, int labels = -1, double search_limit = 1){
 		cv::Mat vMat;
 		MatrixTools::vectorToMat(v, vMat);
 		if (indexToLabels.empty() || labels == -1){
-			return knnSearchId(vMat,n);
+			return knnSearchId(vMat,n,search_limit);
 		} else {
-			std::pair<vector<float>,vector<float> > res = knnSearchId(vMat,n);
+			std::pair<vector<float>,vector<float> > res = knnSearchId(vMat,n,search_limit);
 			return getAltLabels(res,labels);
 		}
 	}
 
-	virtual std::pair<vector<string>,vector<float> > knnSearchName(std::vector<float>& v, int n = 1000,int labels = -1){
-		std::pair<vector<float>,vector<float> > knnSearch = knnSearchId(v,n,labels);
+	virtual std::pair<vector<string>,vector<float> > knnSearchName(std::vector<float>& v, int n = 1000,int labels = -1, double search_limit = 1){
+		std::pair<vector<float>,vector<float> > knnSearch = knnSearchId(v,n,labels,search_limit);
         return make_pair(idToLabels(knnSearch.first),knnSearch.second);
 	}
 
-	virtual std::pair<vector<float>,vector<float> > radiusSearchId(std::vector<float>& v, double radius, int n = 1000,int labels = -1){
+	virtual std::pair<vector<float>,vector<float> > radiusSearchId(std::vector<float>& v, double radius, int n = 1000,int labels = -1, double search_limit = 1){
 		cv::Mat vMat;
 		MatrixTools::vectorToMat(v, vMat);
 		if (indexToLabels.empty() || labels == -1){
-			return radiusSearchId(vMat,n);
+			return radiusSearchId(vMat,n,search_limit);
 		} else {
-			std::pair<vector<float>,vector<float> > res = radiusSearchId(vMat,n);
+			std::pair<vector<float>,vector<float> > res = radiusSearchId(vMat,n,search_limit);
 			return getAltLabels(res,labels);
 		}
 	}
 
-	virtual std::pair<vector<string>,vector<float> > radiusSearchName(std::vector<float>& v, double radius, int n = 1000,int labels = -1){
-		std::pair<vector<float>,vector<float> > knnSearch = radiusSearchId(v,n,labels);
+	virtual std::pair<vector<string>,vector<float> > radiusSearchName(std::vector<float>& v, double radius, int n = 1000,int labels = -1, double search_limit = 1){
+		std::pair<vector<float>,vector<float> > knnSearch = radiusSearchId(v,n,labels,search_limit);
         return make_pair(idToLabels(knnSearch.first),knnSearch.second);
 	}
 
-	virtual std::pair<vector<float>,vector<float> > knnSearchId(cv::Mat& features, int n){
+	virtual std::pair<vector<float>,vector<float> > knnSearchId(cv::Mat& features, int n, double search_limit = 1){
         arma::fmat vMat;
 		MatrixTools::matToFMat(features, vMat);
-        return knnSearchId(vMat,n);
+        return knnSearchId(vMat,n,search_limit);
 	}
 
-	virtual std::pair<vector<float>,vector<float> > knnSearchId(arma::fmat& features, int n){
+	virtual std::pair<vector<float>,vector<float> > knnSearchId(arma::fmat& features, int n, double search_limit = 1){
         cv::Mat vMat;
 		MatrixTools::fmatToMat(features, vMat);
-        return knnSearchId(vMat,n);
+        return knnSearchId(vMat,n,search_limit);
 	}
 
-	virtual std::pair<vector<string>,vector<float> > knnSearchName(cv::Mat& features, int n){
-        std::pair<vector<float>,vector<float> > knnSearch = knnSearchId(features,n);
+	virtual std::pair<vector<string>,vector<float> > knnSearchName(cv::Mat& features, int n, double search_limit = 1){
+        std::pair<vector<float>,vector<float> > knnSearch = knnSearchId(features,n,search_limit);
         return make_pair(idToLabels(knnSearch.first),knnSearch.second);
 	}
 
-	virtual std::pair<vector<float>,vector<float> > radiusSearchId(cv::Mat& features, double radius, int n = 1000){
+	virtual std::pair<vector<float>,vector<float> > radiusSearchId(cv::Mat& features, double radius, int n = 1000, double search_limit = 1){
         arma::fmat vMat;
 		MatrixTools::matToFMat(features, vMat);
-        return radiusSearchId(vMat,radius,n);
+        return radiusSearchId(vMat,radius,n,search_limit);
 	}
 
-	virtual std::pair<vector<float>,vector<float> > radiusSearchId(arma::fmat& features, double radius, int n = 1000){
+	virtual std::pair<vector<float>,vector<float> > radiusSearchId(arma::fmat& features, double radius, int n = 1000, double search_limit = 1){
         cv::Mat vMat;
 		MatrixTools::fmatToMat(features, vMat);
-        return radiusSearchId(vMat,radius,n);
+        return radiusSearchId(vMat,radius,n,search_limit);
 	}
 
-	virtual std::pair<vector<string>,vector<float> > radiusSearchName(cv::Mat& features, double radius, int n = 1000){
-        std::pair<vector<float>,vector<float> > rSearch = radiusSearchId(features,radius,n);
+	virtual std::pair<vector<string>,vector<float> > radiusSearchName(cv::Mat& features, double radius, int n = 1000, double search_limit = 1){
+        std::pair<vector<float>,vector<float> > rSearch = radiusSearchId(features,radius,n,search_limit);
         return make_pair(idToLabels(rSearch.first),rSearch.second);
 	}
 
-	virtual std::pair<vector<string>,vector<float> > radiusSearchName(arma::fmat& features, double radius, int n = 1000){
-        std::pair<vector<float>,vector<float> > rSearch = radiusSearchId(features,radius,n);
+	virtual std::pair<vector<string>,vector<float> > radiusSearchName(arma::fmat& features, double radius, int n = 1000, double search_limit = 1){
+        std::pair<vector<float>,vector<float> > rSearch = radiusSearchId(features,radius,n,search_limit);
         return make_pair(idToLabels(rSearch.first),rSearch.second);
 	}
 

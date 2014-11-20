@@ -120,7 +120,7 @@ int MSIDXIndexer::compareToMatCardinality(const cv::Mat& mat1, const cv::Mat& ma
     return 0;
 }
 
-std::pair<vector<float>,vector<float> > MSIDXIndexer::knnSearchId(cv::Mat& query, int k){
+std::pair<vector<float>,vector<float> > MSIDXIndexer::knnSearchId(cv::Mat& query, int k, double search_limit){
     //timestamp_type start, end;
     //get_timestamp(&start);
 	std::vector<float> indicesFloat;
@@ -133,7 +133,7 @@ std::pair<vector<float>,vector<float> > MSIDXIndexer::knnSearchId(cv::Mat& query
 
 
 
-	int n = featuresList.size();
+	int n = featuresList.size()*search_limit;
 
     int searchW = (w*n)/2.0;
     H.reserve(searchW*2);
@@ -183,7 +183,7 @@ std::pair<vector<float>,vector<float> > MSIDXIndexer::knnSearchId(cv::Mat& query
 	return make_pair(indicesFloat,dists);
 }
 
-std::pair<vector<float>,vector<float> > MSIDXIndexer::radiusSearchId(cv::Mat& query, double radius, int k){
+std::pair<vector<float>,vector<float> > MSIDXIndexer::radiusSearchId(cv::Mat& query, double radius, int k, double search_limit){
 	std::vector<float> indicesFloat;
 	std::vector<float> dists;
 	return make_pair(indicesFloat,dists);

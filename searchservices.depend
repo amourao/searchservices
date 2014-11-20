@@ -107,7 +107,7 @@
 	"../tools/MatrixTools.h"
 	"../../commons/factory/Factory.h"
 
-1409738527 /home/amourao/code/searchservices/analyser/tools/MatrixTools.h
+1416440423 /home/amourao/code/searchservices/analyser/tools/MatrixTools.h
 	<armadillo>
 	<opencv2/core/core.hpp>
 	<opencv2/highgui/highgui.hpp>
@@ -116,6 +116,9 @@
 	<string>
 	<vector>
 	<fstream>
+	<algorithm>
+	<cstdlib>
+	<ctime>
 	"IBinImporter.h"
 
 1390951647 /home/amourao/code/searchservices/analyser/sources/ImageSource.h
@@ -390,7 +393,7 @@
 	"../commons/factory/Factory.h"
 	"IIndexer.h"
 
-1411603918 /home/amourao/code/searchservices/indexer/IIndexer.h
+1416448639 /home/amourao/code/searchservices/indexer/IIndexer.h
 	<map>
 	<string>
 	<iostream>
@@ -400,7 +403,7 @@
 	"../analyser/tools/MatrixTools.h"
 	"../commons/factory/Factory.h"
 
-1412253010 /home/amourao/code/searchservices/indexer/FlannkNNIndexer.h
+1416447657 /home/amourao/code/searchservices/indexer/FlannkNNIndexer.h
 	<map>
 	<string>
 	<iostream>
@@ -412,7 +415,7 @@
 	"FactoryIndexer.h"
 	"../commons/FileDownloader.h"
 
-1397645635 /home/amourao/code/searchservices/indexer/MSIDXIndexer.h
+1416447823 /home/amourao/code/searchservices/indexer/MSIDXIndexer.h
 	<map>
 	<set>
 	<string>
@@ -424,7 +427,7 @@
 	"FactoryIndexer.h"
 	"../commons/Timing.h"
 
-1411425357 source:/home/amourao/code/searchservices/analyser/Main3.cpp
+1416449417 source:/home/amourao/code/searchservices/analyser/Main3.cpp
 	<iostream>
 	<fstream>
 	<string>
@@ -640,7 +643,7 @@
 	<opencv2/highgui/highgui.hpp>
 	<opencv2/imgproc/imgproc.hpp>
 
-1412087322 source:/home/amourao/code/searchservices/analyser/tools/MatrixTools.cpp
+1416440460 source:/home/amourao/code/searchservices/analyser/tools/MatrixTools.cpp
 	"MatrixTools.h"
 
 1400531651 source:/home/amourao/code/searchservices/analyser/tools/MIRFlickrImporter.cpp
@@ -746,13 +749,13 @@
 1397645635 source:/home/amourao/code/searchservices/indexer/FactoryIndexer.cpp
 	"FactoryIndexer.h"
 
-1412253127 source:/home/amourao/code/searchservices/indexer/FlannkNNIndexer.cpp
+1416447672 source:/home/amourao/code/searchservices/indexer/FlannkNNIndexer.cpp
 	"FlannkNNIndexer.h"
 
 1391563053 source:/home/amourao/code/searchservices/indexer/LSHkNNIndexer.cpp
 	"LSHkNNIndexer.h"
 
-1400516140 source:/home/amourao/code/searchservices/indexer/MSIDXIndexer.cpp
+1416447790 source:/home/amourao/code/searchservices/indexer/MSIDXIndexer.cpp
 	"MSIDXIndexer.h"
 
 1390951642 source:/home/amourao/code/searchservices/rest/Endpoints/analyser/CombSearchResult.cpp
@@ -893,7 +896,7 @@
 	"../../FactoryEndpoint.h"
 	"../../IEndpoint.h"
 
-1412085076 source:/home/amourao/code/searchservices/rest/Endpoints/indexer/GenericIndexer.cpp
+1416448074 source:/home/amourao/code/searchservices/rest/Endpoints/indexer/GenericIndexer.cpp
 	"GenericIndexer.h"
 
 1412085076 /home/amourao/code/searchservices/rest/Endpoints/indexer/GenericIndexer.h
@@ -3931,10 +3934,10 @@
 1397645635 source:/home/amourao/code/searchservices/indexer/e2lsh/Util.cpp
 	"headers.h"
 
-1400516112 source:/home/amourao/code/searchservices/indexer/LSHIndexer.cpp
+1416448045 source:/home/amourao/code/searchservices/indexer/LSHIndexer.cpp
 	"LSHIndexer.h"
 
-1397645635 /home/amourao/code/searchservices/indexer/LSHIndexer.h
+1416447693 /home/amourao/code/searchservices/indexer/LSHIndexer.h
 	<map>
 	<string>
 	<iostream>
@@ -4051,10 +4054,10 @@
 	"Evaluation.h"
 	<omp.h>
 
-1400516160 source:/home/amourao/code/searchservices/indexer/SphericalHashIndexer.cpp
+1416447839 source:/home/amourao/code/searchservices/indexer/SphericalHashIndexer.cpp
 	"SphericalHashIndexer.h"
 
-1397645635 /home/amourao/code/searchservices/indexer/SphericalHashIndexer.h
+1416447851 /home/amourao/code/searchservices/indexer/SphericalHashIndexer.h
 	<string>
 	<iostream>
 	<vector>
@@ -4179,10 +4182,10 @@
 	"../FactoryAnalyser.h"
 	"../tools/MatrixTools.h"
 
-1411594228 source:/home/amourao/code/searchservices/indexer/SRIndexer.cpp
+1416449184 source:/home/amourao/code/searchservices/indexer/SRIndexer.cpp
 	"SRIndexer.h"
 
-1411594206 /home/amourao/code/searchservices/indexer/SRIndexer.h
+1416448258 /home/amourao/code/searchservices/indexer/SRIndexer.h
 	<map>
 	<string>
 	<iostream>
@@ -4225,12 +4228,13 @@
 	<set>
 	<armadillo>
 
-1411424227 /home/amourao/code/sparsereconstruction//ksvd-indexing-experiment/ksvd_index_mp.h
+1416443329 /home/amourao/code/sparsereconstruction//ksvd-indexing-experiment/ksvd_index_mp.h
 	<algorithm>
 	<cassert>
 	<memory>
 	<unordered_set>
 	<vector>
+	<unordered_set>
 	<armadillo>
 	"ksvd-indexing-experiment/result.h"
 	"utils/utils.h"
@@ -4245,7 +4249,7 @@
 	<set>
 	<armadillo>
 
-1400691646 /home/amourao/code/sparsereconstruction//ksvd/ksvd.h
+1414420538 /home/amourao/code/sparsereconstruction//ksvd/ksvd.h
 	<cassert>
 	<iostream>
 	<map>
@@ -4366,7 +4370,7 @@
 	<string>
 	<iostream>
 
-1412085076 source:/home/amourao/code/searchservices/rest/Endpoints/analyser/VideoTagger.cpp
+1415897459 source:/home/amourao/code/searchservices/rest/Endpoints/analyser/VideoTagger.cpp
 	"VideoTagger.h"
 
 1411458546 /home/amourao/code/searchservices/rest/Endpoints/analyser/VideoTagger.h
@@ -4387,10 +4391,10 @@
 	"../../../commons/Timing.h"
 	"../indexer/GenericIndexer.h"
 
-1412607458 source:/home/amourao/code/searchservices/analyser/tools/ShotDetector.cpp
+1413024218 source:/home/amourao/code/searchservices/analyser/tools/ShotDetector.cpp
 	"ShotDetector.h"
 
-1412607657 /home/amourao/code/searchservices/analyser/tools/ShotDetector.h
+1413192250 /home/amourao/code/searchservices/analyser/tools/ShotDetector.h
 	<opencv2/opencv.hpp>
 	<numeric>
 	<fstream>
@@ -4405,7 +4409,7 @@
 1411223860 source:/home/amourao/code/searchservices/analyser/tools/FrameFilter.cpp
 	"FrameFilter.h"
 
-1412607295 source:/home/amourao/code/searchservices/analyser/tools/MainShotDetection.cpp
+1413022601 source:/home/amourao/code/searchservices/analyser/tools/MainShotDetection.cpp
 	"ShotDetector.h"
 	<boost/program_options.hpp>
 

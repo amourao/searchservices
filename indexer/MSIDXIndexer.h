@@ -101,8 +101,8 @@ public:
 	void indexWithTrainedParams(cv::Mat& features);
 	void index(cv::Mat& features);
 
-	std::pair<vector<float>,vector<float> > knnSearchId(cv::Mat& name, int k);
-    std::pair<vector<float>,vector<float> > radiusSearchId(cv::Mat& name, double radius, int k);
+	std::pair<vector<float>,vector<float> > knnSearchId(cv::Mat& name, int k, double search_limit);
+    std::pair<vector<float>,vector<float> > radiusSearchId(cv::Mat& name, double radius, int k, double search_limit);
 
 	bool save(string basePath);
 	bool load(string basePath);

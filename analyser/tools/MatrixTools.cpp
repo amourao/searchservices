@@ -16,7 +16,7 @@ void MatrixTools::readTags(std::string file, int numberOfRows, cv::Mat& tags){}
 void MatrixTools::fmatToMat(arma::fmat &src, cv::Mat& dst){
 	dst.create(src.n_rows,src.n_cols,CV_32F);
 	for (unsigned int i = 0; i < src.n_rows; i++)
-		for (unsigned int j = 0; j < src.n_cols; j++)
+        for (unsigned int j = 0; j < src.n_cols; j++)
 			dst.at<float>(i,j) = src(i,j);
 }
 
@@ -55,7 +55,7 @@ void MatrixTools::vectorsToMat(vector<vector<float> >&src, cv::Mat& dst){
 	}
 }
 
-void MatrixTools::readBin(string& file, cv::Mat& features, cv::Mat& labels){
+void MatrixTools::readBin(string file, cv::Mat& features, cv::Mat& labels){
 	std::fstream ifs( file.c_str(), std::ios::in | std::ios::binary );
 	int signature;
 	ifs.read( (char*) &signature, sizeof(signature));
@@ -69,12 +69,12 @@ void MatrixTools::readBin(string& file, cv::Mat& features, cv::Mat& labels){
 }
 
 //Atention, matrices must be in CV_32F format (single dimensional float matrix)
-void MatrixTools::writeBin(string& filename, cv::Mat& features, cv::Mat& labels){
+void MatrixTools::writeBin(string filename, cv::Mat& features, cv::Mat& labels){
 	MatrixTools::writeBinV1(filename, features, labels);
 }
 
 //Atention, matrices must be in CV_32F format (single dimensional float matrix)
-void MatrixTools::readBinV1(string& file, cv::Mat& features, cv::Mat& labels){
+void MatrixTools::readBinV1(string file, cv::Mat& features, cv::Mat& labels){
 
 	string f = file;
 
@@ -117,7 +117,7 @@ void MatrixTools::readBinV1(string& file, cv::Mat& features, cv::Mat& labels){
 }
 
 //Atention, matrices must be in CV_32F format (single dimensional float matrix)
-void MatrixTools::writeBinV1(string& filename, cv::Mat& features, cv::Mat& labels){
+void MatrixTools::writeBinV1(string filename, cv::Mat& features, cv::Mat& labels){
 	std::fstream binFile;
 	binFile.open(filename.c_str(), std::ios::out | std::ios::binary);
 
@@ -158,7 +158,7 @@ void MatrixTools::writeBinV1(string& filename, cv::Mat& features, cv::Mat& label
 }
 
 
-void MatrixTools::readBinV2(string& file, cv::Mat& features, cv::Mat& labels){
+void MatrixTools::readBinV2(string file, cv::Mat& features, cv::Mat& labels){
 	vector<cv::Mat> featuresNew;
 
 	MatrixTools::readBinV2(file, featuresNew, labels);
@@ -168,7 +168,7 @@ void MatrixTools::readBinV2(string& file, cv::Mat& features, cv::Mat& labels){
 	}
 }
 
-void MatrixTools::writeBinV2(string& file, cv::Mat& features, cv::Mat& labels, bool append ){
+void MatrixTools::writeBinV2(string file, cv::Mat& features, cv::Mat& labels, bool append ){
 	vector<cv::Mat> featuresNew;
 
 	for (int i = 0; i < features.rows; i++){
@@ -179,7 +179,7 @@ void MatrixTools::writeBinV2(string& file, cv::Mat& features, cv::Mat& labels, b
 }
 
 //Atention, matrices must be in CV_32F format (single dimensional float matrix)
-void MatrixTools::readBinV2(string& file, vector<cv::Mat>& features, cv::Mat& labels){
+void MatrixTools::readBinV2(string file, vector<cv::Mat>& features, cv::Mat& labels){
 	string f = file;
 
  	int signature,binV,nSamples,dimsX,dimsY,dimsZ;
@@ -231,7 +231,7 @@ void MatrixTools::readBinV2(string& file, vector<cv::Mat>& features, cv::Mat& la
 
 
 //Atention, matrices must be in CV_32F format (single dimensional float matrix)
-void MatrixTools::readBinV3(string& file, vector<cv::Mat>& features, cv::Mat& labels){
+void MatrixTools::readBinV3(string file, vector<cv::Mat>& features, cv::Mat& labels){
 	string f = file;
 
  	int signature,binV,nSamples,dimsX,dimsY,dimsZ;
@@ -283,7 +283,7 @@ void MatrixTools::readBinV3(string& file, vector<cv::Mat>& features, cv::Mat& la
 }
 
 //Atention, matrices must be in CV_32F format (single dimensional float matrix)
-void MatrixTools::writeBinV2(string& filename, vector<cv::Mat>& features, cv::Mat& labels, bool append ){
+void MatrixTools::writeBinV2(string filename, vector<cv::Mat>& features, cv::Mat& labels, bool append ){
 
     if (features.size() > 0){
 	std::fstream binFile;
@@ -369,7 +369,7 @@ void MatrixTools::writeBinV2(string& filename, vector<cv::Mat>& features, cv::Ma
 }
 
 //Atention, matrices must be in CV_32F format (single dimensional float matrix)
-void MatrixTools::writeBinV3(string& filename, vector<cv::Mat>& features, cv::Mat& labels, bool append){
+void MatrixTools::writeBinV3(string filename, vector<cv::Mat>& features, cv::Mat& labels, bool append){
     int nSamples = (int)features.size();
 
     if (nSamples == 0)
@@ -453,7 +453,7 @@ void MatrixTools::writeBinV3(string& filename, vector<cv::Mat>& features, cv::Ma
 
 }
 
-void MatrixTools::readBinV3(string& file, vector<cv::Mat>& features, vector<vector<cv::KeyPoint> >& keypoints, cv::Mat& labels){
+void MatrixTools::readBinV3(string file, vector<cv::Mat>& features, vector<vector<cv::KeyPoint> >& keypoints, cv::Mat& labels){
 
     std::vector<cv::Mat> descKeypoints;
     MatrixTools::readBinV3(file,descKeypoints,labels);
@@ -477,7 +477,7 @@ void MatrixTools::readBinV3(string& file, vector<cv::Mat>& features, vector<vect
 
 }
 
-void MatrixTools::writeBinV3(string& file, cv::Mat& features, vector<cv::KeyPoint>& keypoints, cv::Mat& labels, bool append){
+void MatrixTools::writeBinV3(string file, cv::Mat& features, vector<cv::KeyPoint>& keypoints, cv::Mat& labels, bool append){
     std::vector<cv::Mat> descKeypoints;
 
     Mat descKeypointsMat;
@@ -524,4 +524,29 @@ void MatrixTools::matToKeypoints(Mat& m, std::vector<cv::KeyPoint>& p){
         Mat m1 = m.row(i);
         MatrixTools::matToKeypoint(m1, p1);
         p.push_back(p1);
-    }}
+    }
+}
+
+void MatrixTools::getRandomSample(vector<cv::Mat>& mList, int nRows, vector<cv::Mat>& sampleList){
+
+    Mat m = mList.at(0);
+    nRows = min(nRows,m.rows);
+
+    std::vector<int> myvector;
+    std::srand ( unsigned ( std::time(0) ) );
+
+    for (int i=0; i<m.rows; i++) myvector.push_back(i);
+
+    std::random_shuffle ( myvector.begin(), myvector.end() );
+
+    for (int j=0; j<mList.size(); j++){
+        Mat sample;
+        m =mList.at(j);
+        for (int i=0; i<nRows; i++){
+            int index = myvector.at(i);
+            sample.push_back(m.row(index));
+        }
+        sampleList.push_back(sample);
+    }
+
+}

@@ -181,7 +181,7 @@ string VideoTagger::getTags(map<string, string > parameters){
         s.detectScenes(filename,step,diffs,frames);
         s.getPeaks(60,3,diffs,frames,keyframes,keyframesDiffs);
         s.addMiddleKeyframes(keyframes,keyframesWithMiddle);
-        s.writeFrames(filename,keyframesWithMiddle,framesPaths);
+        s.writeFramesV1(filename,keyframesWithMiddle,framesPaths);
         s.convertFramesIndexToTimes(filename,keyframesWithMiddle,keyframesWithMiddleTimes);
 
         vector<pair<int,vector<string> > > conceptsPerFrame;

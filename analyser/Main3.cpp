@@ -1145,17 +1145,100 @@ void testSphericalHashing(int argc, char *argv[]){
     //mainSphericalHashing().main(d1,d2,featuresTestI.rows,featuresTestQ.rows,featuresTestQ.cols);
 }
 
+
+int getMatrixSample(int argc, char *argv[]){
+    string infile(argv[1]);
+    string outfile(argv[2]);
+    string outfileTrain = outfile + "_train";
+    string outfileVal = outfile + "_val";
+    int split1(atoi(argv[3]));
+    int split2(atoi(argv[4]));
+
+    int total = split1 + split2;
+
+    Mat in;
+    Mat inLab;
+
+    MatrixTools::readBin(infile,in,inLab);
+
+    vector<Mat> inVec,outVec;
+
+    inVec.push_back(in);
+    inVec.push_back(inLab);
+
+    MatrixTools::getRandomSample(inVec,total,outVec);
+
+    Mat data1,data2,lab1,lab2;
+
+    data1 = outVec.at(0).rowRange(0,split1);
+    lab1 = outVec.at(1).rowRange(0,split1);
+
+    data2 = outVec.at(0).rowRange(split1,total);
+    lab2 = outVec.at(1).rowRange(split1,total);
+
+    MatrixTools::writeBinV2(outfileTrain,data1,lab1);
+    MatrixTools::writeBinV2(outfileVal,data2,lab2);
+
+    return 0;
+}
+
+int genDictionaryAndIndex(int argc, char *argv[]){
+
+    bool debug = false;
+    IBinImporter* importer;
+
+    string paramFile(argv[1]);
+
+	map<string,string> parameters;
+	vector<IIndexer*> indexers;
+	vector<IAnalyser*> analysers;
+	vector<IClassifier*> classifiers;
+	vector<IEndpoint*> endpoints;
+
+	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
+
+    string a = "srIndexerStd";
+    string b = "linearIndexer";
+    FactoryIndexer * fc = FactoryIndexer::getInstance();
+	IIndexer* indexer = (IIndexer*)fc->createType(a);
+	IIndexer* indexerLinear = (IIndexer*)fc->createType(b);
+
+	Mat tr,val,all;
+	Mat trL,valL,allL;
+
+    MatrixTools::readBin("/media/Share/data/fullFeatures/med_gist_train",tr,trL);
+    MatrixTools::readBin("/media/Share/data/fullFeatures/med_gist_val",val,valL);
+    MatrixTools::readBin("/media/Share/data/fullFeatures/med_gist.bin",all,allL);
+
+	indexer->train(tr,val,val);
+	indexer->index(all);
+	indexer->setFlabels(allL);
+
+	indexerLinear->train(tr,val,val);
+	indexerLinear->index(all);
+	indexerLinear->setFlabels(allL);
+
+
+	indexer->save("med_gist883_srIndexerStd");
+	indexerLinear->save("med_gist883_linearIndexer");
+
+
+    return 0;
+}
+
 int main(int argc, char *argv[]){
 	//awesomeIndexTester(argc, argv);
 	//testSphericalHashing(argc, argv);
+	genDictionaryAndIndex(argc, argv);
+	/*
 	string name(argv[0]);
 	if (name == "./computeGT"){
 		computeGT(argc, argv);
 	} else if (name == "./exportToArmaMat"){
-		cout << "ok" << endl;
 		exportToArmaMat(argc, argv);
 	} else{
 		awesomeIndexTesterSingle(argc, argv);
 	}
+	*/
     return 0;
 }

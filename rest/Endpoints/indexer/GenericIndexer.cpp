@@ -123,6 +123,7 @@ string GenericIndexer::retrieve(map<string, string> parameters){
 	cout << "**************** action retrieve ****************" << endl;
 	timestamp_type start, end, totalStart, totalEnd;
 	get_timestamp(&totalStart);
+	get_timestamp(&start);
 
 
 	FileDownloader fd;
@@ -138,6 +139,11 @@ string GenericIndexer::retrieve(map<string, string> parameters){
     string flabelsIndexStr = parameters["flabelsIndex"];
 
     int n = atoi(parameters["n"].c_str());
+
+    double search_limit = 1;
+
+    if (parameters.count("search_limit") > 0)
+        search_limit = std::stod(parameters["search_limit"]);
 
     stringstream ss;
     ss << taskName << "_" << analyserName << "_" << indexerName;
@@ -182,16 +188,16 @@ string GenericIndexer::retrieve(map<string, string> parameters){
 
         get_timestamp(&start);
         if (retrievalType == "normal" && outputType == "name"){
-            resultList = indexer->knnSearchName(features,n,flabelsIndex);
+            resultList = indexer->knnSearchName(features,n,flabelsIndex, search_limit);
         } else if (retrievalType == "normal" && outputType == "id"){
-            std::pair< vector<float>, vector<float> > resultListF = indexer->knnSearchId(features,n,flabelsIndex);
+            std::pair< vector<float>, vector<float> > resultListF = indexer->knnSearchId(features,n,flabelsIndex, search_limit);
             resultList = idToLabels(resultListF);
         } else if (retrievalType == "radius" && outputType == "name"){
             float radius = atof(parameters["radius"].c_str());
-            resultList = indexer->radiusSearchName(features,radius,n,flabelsIndex);
+            resultList = indexer->radiusSearchName(features,radius,n,flabelsIndex, search_limit);
         } else if (retrievalType == "radius" && outputType == "id"){
             float radius = atof(parameters["radius"].c_str());
-            std::pair< vector<float>, vector<float> > resultListF = indexer->radiusSearchId(features,radius,n,flabelsIndex);
+            std::pair< vector<float>, vector<float> > resultListF = indexer->radiusSearchId(features,radius,n,flabelsIndex, search_limit);
             resultList = idToLabels(resultListF);
         }
         resultLists.push_back(resultList);
@@ -236,6 +242,21 @@ string GenericIndexer::retrieve(map<string, string> parameters){
 		if (retrievalType == "radius")
             root["n"] = atoi(parameters["radius"].c_str());
 
+        Json::Value times;
+
+        //long setupTime, downloadTime, keyframeTime, feTime, posProcessingTime,formatingTime;
+
+        /*
+        times["0: totalTime"] = timestamp_diff_in_milliseconds(totalStart, totalEnd);
+        times["1: setupTime"] = setupTime;
+        times["2: downloadTime"] = downloadTime;
+        times["3: keyframeTime"] = keyframeTime;
+        times["4: feTime"] = feTime;
+        times["5: posProcessingTime"] = posProcessingTime;
+        times["6: formatingTime"] = formatingTime;
+        */
+
+        root["times"] = times;
 
 		stringstream ssJ;
 		ssJ << root;
@@ -254,6 +275,10 @@ string GenericIndexer::retrieve(map<string, string> parameters){
 	get_timestamp(&end);
     cout << "formating : " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
     get_timestamp(&totalEnd);
+
+
+
+
     cout << "**************** total : " << timestamp_diff_in_milliseconds(totalStart, totalEnd) << " ms ****************" << endl;
     cout << "**************** end GENERIC INDEXER ****************" << endl;
 	return result;

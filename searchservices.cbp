@@ -11,7 +11,7 @@
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="~/code/searchservices/config.json" />
+				<Option parameters="~/code/searchservices/default.json" />
 				<Compiler>
 					<Add option="-O2" />
 					<Add directory="commons" />
@@ -53,7 +53,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="config.json" />
+				<Option parameters="~/code/searchservices/default.json" />
 				<Compiler>
 					<Add option="-g" />
 					<Add directory="commons" />
@@ -106,7 +106,7 @@
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="~/code/searchservices/config.json" />
+				<Option parameters="/home/amourao/code/shotdetection/demoVideos/2rWTjNUCvY2qIu4Kv9O4.mp4" />
 				<Option projectCompilerOptionsRelation="1" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Option projectIncludeDirsRelation="1" />
@@ -123,9 +123,10 @@
 			</Target>
 		</Build>
 		<Compiler>
+			<Add option="-O2" />
 			<Add option="-std=c++11" />
 			<Add option="-Wall" />
-			<Add option="-fexceptions" />
+			<Add option="-fexceptions -fopenmp" />
 			<Add option="-DREAL_FLOAT" />
 			<Add option="-DUSE_GIST" />
 			<Add option="-DSTANDALONE_GIST" />

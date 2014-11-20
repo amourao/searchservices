@@ -12,8 +12,8 @@ int main(int argc, char* argv[]){
             ("step,s", po::value<int>()->default_value(5), "set frame analysis step")
             ("threshold,t", po::value<double>()->default_value(3), "set peak detection threshold multiplier")
             ("min_duration,m", po::value<int>()->default_value(60), "set minimum scene frame count")
-            ("sf,f", "save frames to disk")
-            ("so,o", "save frame time and index to file")
+            ("save-all,a", "save begin, middle and end scene frames (by default, it only saves middle)")
+            ("benchmark,b", "do not save or output. For benchmarking only")
         ;
 
         po::options_description hidden("Hidden options");
@@ -49,10 +49,11 @@ int main(int argc, char* argv[]){
         int step = vm["step"].as<int>();
         double threshold = vm["threshold"].as<double>();
         int min_duration = vm["min_duration"].as<int>();
-        bool saveFrames = vm.count("sf");
-        bool saveOutput = vm.count("so");
+        bool saveFrames = (1 - vm.count("benchmark")) > 0;
+        bool saveOutput = (1 - vm.count("benchmark")) > 0;
+        bool saveMiddleOnly = (vm.count("save-all") == 0);
 
-        ShotDetector::processOneVideo(filename,step,threshold,min_duration,saveFrames,saveOutput);
+        ShotDetector::processOneVideo(filename,step,threshold,min_duration,saveFrames,saveOutput,saveMiddleOnly);
 
     }
     catch(exception& e) {

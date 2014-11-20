@@ -17,10 +17,14 @@ public:
 
 	void getPeaks(const int minSceneDurationFrames,const int numStdDevs, const vector<int>& diffs, const vector<int>& frames, vector<int>& keyframes, vector<int>& keyframesDiffs);
 	void addMiddleKeyframes(const vector<int>& keyframes, vector<int>& newKeyframes);
-	void writeFrames(const string filename, const vector<int>& frames, vector<string>& framesPaths);
+	void writeFrames(const string filename, const vector<int>& frames, const bool saveMiddleOnly, vector<string>& framesPaths);
 	void writeFramesV1(const string filename, const vector<int>& frames, vector<string>& framesPaths);
 	void convertFramesIndexToTimes(const string filename,const vector<int>& frames, vector<double>& times);
 
-	static void processOneVideo(string filename, int step, int numStdDev, int minSceneTime, bool saveFrames, bool saveOutput);
+	static void processOneVideo(string filename, int step, int numStdDev, int minSceneTime, bool saveFrames, bool saveOutput, bool saveMiddleOnly);
+
+private:
+
+    double fps;
 
 };

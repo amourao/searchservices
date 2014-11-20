@@ -162,7 +162,7 @@ void FlannkNNIndexer::index(cv::Mat& features){
 	syncedWithDisk = false;
 }
 
-std::pair<vector<float>,vector<float> > FlannkNNIndexer::knnSearchId(cv::Mat& query, int n){
+std::pair<vector<float>,vector<float> > FlannkNNIndexer::knnSearchId(cv::Mat& query, int n, double search_limit){
     n=min(indexData.rows,n);
 	vector<int> indices (n);
 	vector<float> dists (n);
@@ -173,7 +173,7 @@ std::pair<vector<float>,vector<float> > FlannkNNIndexer::knnSearchId(cv::Mat& qu
 	return make_pair(indicesFloat,dists);
 }
 
-std::pair<vector<float>,vector<float> > FlannkNNIndexer::radiusSearchId(cv::Mat& query, double radius, int n){
+std::pair<vector<float>,vector<float> > FlannkNNIndexer::radiusSearchId(cv::Mat& query, double radius, int n, double search_limit){
     n=min(indexData.rows,n);
 	vector<int> indices (n);
 	vector<float> dists (n);

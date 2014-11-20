@@ -9,7 +9,7 @@ ShotDetector::~ShotDetector(){
 
 }
 
-void ShotDetector::detectScenesV1(const string filename,const  int step, vector<int>& diffs, vector<int>& frames){
+void ShotDetector::detectScenesV1(const string filename,const int step, vector<int>& diffs, vector<int>& frames){
 	VideoCapture capture = VideoCapture(filename);
 	if(!capture.isOpened()){
 		cout << "Capture from video " << filename <<  " didn't work"<< endl;
@@ -139,7 +139,7 @@ void ShotDetector::addMiddleKeyframes(const vector<int>& keyframes, vector<int>&
 	newKeyframes.push_back(keyframes.at(keyframes.size()-1));
 }
 
-void ShotDetector::writeFrames(const string filename, const vector<int>& frames, vector<string>& framesPaths){
+void ShotDetector::writeFrames(const string filename, const vector<int>& frames,const bool saveMiddleOnly, vector<string>& framesPaths){
 	VideoCapture capture = VideoCapture(filename);
 	if(!capture.isOpened()){
 		cout << "Capture from video " << filename <<  " didn't work"<< endl;
@@ -149,6 +149,11 @@ void ShotDetector::writeFrames(const string filename, const vector<int>& frames,
 	Mat frame;
 
 	for(uint frameC = 0; frameC < frames.size(); frameC++){
+        if (saveMiddleOnly){
+            frameC++;
+            if (frameC == frames.size())
+                continue;
+        }
         int frameIndex = frames.at(frameC);
 		capture.set(CV_CAP_PROP_POS_FRAMES,frameIndex);
 		capture >> frame;
@@ -185,7 +190,7 @@ void ShotDetector::writeFramesV1(const string filename, const vector<int>& frame
 	}
 }
 
-void ShotDetector::processOneVideo(string filename, int step, int numStdDev, int minSceneTime, bool saveFrames, bool saveOutput){
+void ShotDetector::processOneVideo(string filename, int step, int numStdDev, int minSceneTime, bool saveFrames, bool saveOutput, bool saveMiddleOnly){
 	vector<int> diffs,frames,keyframes,keyframesWithMiddle, keyframesDiffs;
 
 	vector<double> framesTimes;
@@ -198,7 +203,7 @@ void ShotDetector::processOneVideo(string filename, int step, int numStdDev, int
 	s.convertFramesIndexToTimes(filename,keyframesWithMiddle,framesTimes);
 
 	if(saveFrames)
-        s.writeFrames(filename,keyframesWithMiddle,framesPaths);
+        s.writeFrames(filename,keyframesWithMiddle,saveMiddleOnly,framesPaths);
 
     if (saveOutput){
         string csvFile = filename + ".csv";
@@ -211,8 +216,19 @@ void ShotDetector::processOneVideo(string filename, int step, int numStdDev, int
             f << endl;
         }
         */
+        bool first = true;
         for(uint i = 0; i < keyframesWithMiddle.size(); i++){
-            f << i << ";" << keyframesWithMiddle.at(i) << ";" << framesTimes.at(i) << endl;
+            f << ";" << keyframesWithMiddle.at(i) << ";" << framesTimes.at(i) << ";";
+
+            if (i % 2 == 0 && !first){
+                f << endl;
+                if (i+1 == keyframesWithMiddle.size())
+                    continue;
+                i--;
+                first = true;
+            } else {
+                first = false;
+            }
         }
         f.close();
 	}

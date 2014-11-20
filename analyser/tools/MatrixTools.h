@@ -8,6 +8,9 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <algorithm>
+#include <cstdlib>
+#include <ctime>
 
 #include "IBinImporter.h"
 
@@ -43,30 +46,32 @@ static void vectorsToMat(vector<vector<float> >&src, cv::Mat& dst);
 
 
 //Atention, matrices must be in CV_32F format (single dimensional float matrix)
-static void readBin(string& file, cv::Mat& features, cv::Mat& labels);
+static void readBin(string file, cv::Mat& features, cv::Mat& labels);
 //Atention, matrices must be in CV_32F format (single dimensional float matrix)
-static void writeBin(string& file, cv::Mat& features, cv::Mat& labels);
+static void writeBin(string file, cv::Mat& features, cv::Mat& labels);
 
 //Atention, matrices must be in CV_32F format (single dimensional float matrix)
-static void readBinV1(string& file, cv::Mat& features, cv::Mat& labels);
+static void readBinV1(string file, cv::Mat& features, cv::Mat& labels);
 //Atention, matrices must be in CV_32F format (single dimensional float matrix)
-static void writeBinV1(string& file, cv::Mat& features, cv::Mat& labels);
+static void writeBinV1(string file, cv::Mat& features, cv::Mat& labels);
 
 
-static void readBinV2(string& file, cv::Mat& features, cv::Mat& labels);
-static void writeBinV2(string& file, cv::Mat& features, cv::Mat& labels, bool append = false);
-static void readBinV2(string& file, vector<cv::Mat>& features, cv::Mat& labels);
-static void writeBinV2(string& file, vector<cv::Mat>& features, cv::Mat& labels, bool append = false);
+static void readBinV2(string file, cv::Mat& features, cv::Mat& labels);
+static void writeBinV2(string file, cv::Mat& features, cv::Mat& labels, bool append = false);
+static void readBinV2(string file, vector<cv::Mat>& features, cv::Mat& labels);
+static void writeBinV2(string file, vector<cv::Mat>& features, cv::Mat& labels, bool append = false);
 
 
-static void readBinV3(string& file, vector<cv::Mat>& features, cv::Mat& labels);
-static void writeBinV3(string& file, vector<cv::Mat>& features, cv::Mat& labels, bool append = false);
-static void readBinV3(string& file, vector<cv::Mat>& features, vector<vector<cv::KeyPoint> >& keypoints, cv::Mat& labels);
-static void writeBinV3(string& file, cv::Mat& features, vector<cv::KeyPoint>& keypoints, cv::Mat& labels, bool append = false);
+static void readBinV3(string file, vector<cv::Mat>& features, cv::Mat& labels);
+static void writeBinV3(string file, vector<cv::Mat>& features, cv::Mat& labels, bool append = false);
+static void readBinV3(string file, vector<cv::Mat>& features, vector<vector<cv::KeyPoint> >& keypoints, cv::Mat& labels);
+static void writeBinV3(string file, cv::Mat& features, vector<cv::KeyPoint>& keypoints, cv::Mat& labels, bool append = false);
 
 static void keypointToMat(cv::KeyPoint& p, cv::Mat& m);
 static void matToKeypoint(cv::Mat& m, cv::KeyPoint& p);
 
 static void keypointsToMats(std::vector<cv::KeyPoint>& p,cv::Mat& m);
 static void matToKeypoints(cv::Mat& m, std::vector<cv::KeyPoint>& p);
+
+static void getRandomSample(vector<cv::Mat>& mList, int nRows, vector<cv::Mat>& sampleList);
 };

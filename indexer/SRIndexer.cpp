@@ -39,9 +39,12 @@ SRIndexer::SRIndexer(string& typeId, map<string,string>& params){
     if (params.size() > 0){
         dimensions = std::stoi(params["dimensions"]);
         n_iter = std::stoi(params["n_iter"]);
-        search_limit = std::stod(params["search_limit"]);
-        //createNewLNReconstructor(params);
 
+        max_iters = std::stoi(params["max_iters_ksvd"]);
+        eps = std::stod(params["eps_ksvd"]);
+        //index_path = paramsB["index_path"];
+        createNewLNReconstructor(params);
+        //load(paramsB["index_path"]);
 
         type = typeId;
         paramsB = params;
@@ -77,17 +80,24 @@ void* SRIndexer::createType(string &typeId){
 }
 
 void SRIndexer::train(arma::fmat& featuresTrain,arma::fmat& featuresValidationI,arma::fmat& featuresValidationQ){
+    featuresTrain = featuresTrain.t();
+    featuresValidationI = featuresValidationI.t();
+    featuresValidationQ = featuresValidationQ.t();
+
 	dictionary = arma::randu<arma::fmat>(featuresTrain.n_rows, dimensions);
     utils::normalize_columns(dictionary);
     ksvd = ksvdb_Ptr(new ksvdb(optKSVD,*lnMinKSVD,dictionary,featuresTrain));
 
     for (int i = 0; i < n_iter; i++) {
+        std::cout << "Iteration " << i+1 << std::endl;
         ksvd->iterate();
     }
 
 }
 
 void SRIndexer::indexWithTrainedParams(arma::fmat& features){
+    features = features.t();
+
     indexData = std::make_shared<fmat>(features);
     //TODO
     /*
@@ -107,21 +117,25 @@ void SRIndexer::index(arma::fmat& features){
     indexWithTrainedParams(features);
 }
 
-std::pair<vector<float>,vector<float> > SRIndexer::knnSearchId(arma::fmat& query, int n){
-	vector<float> indices (n);
-	vector<float> dists (n);
+std::pair<vector<float>,vector<float> > SRIndexer::knnSearchId(arma::fmat& query, int n, double search_limit){
+    query = query.t();
 
-    auto ksvd_res = indexKSVD->find_k_nearest_limit(query, n, search_limit);
+	vector<float> indices;
+	vector<float> dists;
+
+    auto ksvd_res = indexKSVD->find_k_nearest_limit(query, n, search_limit*indexKSVD->size());
 
     for (auto& res : ksvd_res) {
         indices.push_back(res.vector_pos);
-        dists.push_back(res.value);
+        dists.push_back(std::pow(res.value,2));
     }
 
 	return make_pair(indices,dists);
 }
 
-std::pair<vector<float>,vector<float> > SRIndexer::radiusSearchId(arma::fmat& query, double radius, int n){
+std::pair<vector<float>,vector<float> > SRIndexer::radiusSearchId(arma::fmat& query, double radius, int n, double search_limit){
+    query = query.t();
+
 	vector<float> indices (n);
 	vector<float> dists (n);
 	return make_pair(indices,dists);
@@ -129,37 +143,31 @@ std::pair<vector<float>,vector<float> > SRIndexer::radiusSearchId(arma::fmat& qu
 
 bool SRIndexer::save(string basePath){
 
-    indexKSVD->save(basePath);
-
+    saveLabels(basePath);
+    indexKSVD->save(INDEXER_BASE_SAVE_PATH + basePath);
+    /*
     Json::Value root;
 
     for (auto& kv : paramsB) {
         root[kv.first] =  kv.second;
     }
 
-    std::fstream file (basePath+".json", std::fstream::in | std::fstream::out);
+    std::fstream file (INDEXER_BASE_SAVE_PATH + basePath+ ".json", std::fstream::in | std::fstream::out);
 
     file << root;
     file.close();
-
+    */
 	return true;
 }
 
 bool SRIndexer::load(string basePath){
 
-    Json::Value root;
-    Json::Reader reader;
-
-    std::fstream file (basePath+".json", std::fstream::in | std::fstream::out);
-
-    reader.parse( file, root );
-
-    paramsB = jsonToDict(root);
-
-    dimensions = std::stoi(paramsB["dimensions"]);
-    n_iter = std::stoi(paramsB["n_iter"]);
-    search_limit = std::stod(paramsB["search_limit"]);
+    loadLabels(basePath);
     createNewLNReconstructor(paramsB);
+
+    fmat empty_dictionary;
+    indexKSVD = indexk_Ptr( new indexk(*lnMinQuery, empty_dictionary));
+    indexKSVD->load(INDEXER_BASE_SAVE_PATH + basePath);
 
 	return true;
 }
@@ -180,6 +188,7 @@ map<string,string> SRIndexer::jsonToDict(Json::Value root){
 }
 
 int SRIndexer::addToIndexLive(arma::fmat& features){
+    features = features.t();
     std::shared_ptr<arma::fmat> featuresPtr(new arma::fmat(features));
     indexKSVD->addToIndex(featuresPtr);
     return -1;

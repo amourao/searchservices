@@ -120,11 +120,11 @@ void LSHIndexer::index(cv::Mat& features){
     delete sampleQueries;
 }
 
-std::pair<vector<float>,vector<float> > LSHIndexer::knnSearchId(cv::Mat& query, int n){
-    return radiusSearchId(query,-1,n);
+std::pair<vector<float>,vector<float> > LSHIndexer::knnSearchId(cv::Mat& query, int n, double search_limit){
+    return radiusSearchId(query,-1,n, search_limit);
 }
 
-std::pair<vector<float>,vector<float> > LSHIndexer::radiusSearchId(cv::Mat& query, double radius, int n){
+std::pair<vector<float>,vector<float> > LSHIndexer::radiusSearchId(cv::Mat& query, double radius, int n, double search_limit){
 
     /*
     INDICIES:
