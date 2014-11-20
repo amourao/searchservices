@@ -117,7 +117,7 @@ void SRIndexer::index(arma::fmat& features){
 
     MatrixTools::getRandomSample(in,trainDataSize,out);
 
-    trainSplit = out.at(0);
+    trainSplit = out.at(0).t();
 
     train(trainSplit,trainSplit,trainSplit);
 
