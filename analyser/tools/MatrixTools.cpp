@@ -568,7 +568,7 @@ void MatrixTools::getRandomSample(vector<arma::fmat>& mList, int nRows, vector<a
         m = mList.at(j);
         for (int i=0; i<nRows; i++){
             int index = myvector.at(i);
-            sample = join_cols(sample,m.col(index));
+            sample = join_rows(sample,m.col(index));
         }
         sampleList.push_back(sample);
     }
