@@ -29,6 +29,8 @@
 #include "IIndexer.h"
 #include "FactoryIndexer.h"
 
+#define SR_DEFAULT_TRAIN_DATA_SIZE 5000
+
 using namespace pugi;
 using namespace arma;
 using namespace l1min;
@@ -93,6 +95,8 @@ private:
 
     int max_iters;
     double eps;
+
+    int trainDataSize;
 
     string index_path;
 

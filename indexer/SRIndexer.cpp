@@ -46,6 +46,10 @@ SRIndexer::SRIndexer(string& typeId, map<string,string>& params){
         createNewLNReconstructor(params);
         //load(paramsB["index_path"]);
 
+        trainDataSize = SR_DEFAULT_TRAIN_DATA_SIZE;
+        if(params.count("trainDataSize") > 0)
+            trainDataSize = std::stoi(params["trainDataSize"]);
+
         type = typeId;
         paramsB = params;
     }
@@ -84,6 +88,8 @@ void SRIndexer::train(arma::fmat& featuresTrain,arma::fmat& featuresValidationI,
     featuresValidationI = featuresValidationI.t();
     featuresValidationQ = featuresValidationQ.t();
 
+    trainDataSize = featuresTrain.n_cols;
+
 	dictionary = arma::randu<arma::fmat>(featuresTrain.n_rows, dimensions);
     utils::normalize_columns(dictionary);
     ksvd = ksvdb_Ptr(new ksvdb(optKSVD,*lnMinKSVD,dictionary,featuresTrain));
@@ -96,7 +102,24 @@ void SRIndexer::train(arma::fmat& featuresTrain,arma::fmat& featuresValidationI,
 }
 
 void SRIndexer::indexWithTrainedParams(arma::fmat& features){
+    index(features);
+}
+
+void SRIndexer::index(arma::fmat& features){
+
     features = features.t();
+
+    arma::fmat trainSplit;
+    vector<arma::fmat> in;
+    vector<arma::fmat> out;
+
+    in.push_back(features);
+
+    MatrixTools::getRandomSample(in,trainDataSize,out);
+
+    trainSplit = out.at(0);
+
+    train(trainSplit,trainSplit,trainSplit);
 
     indexData = std::make_shared<fmat>(features);
     //TODO
@@ -111,10 +134,6 @@ void SRIndexer::indexWithTrainedParams(arma::fmat& features){
     indexKSVD = indexk_Ptr( new indexk(*lnMinQuery, ksvd->D));
     indexKSVD->load(indexData, lnMinQuery->options.max_iters);
 
-}
-
-void SRIndexer::index(arma::fmat& features){
-    indexWithTrainedParams(features);
 }
 
 std::pair<vector<float>,vector<float> > SRIndexer::knnSearchId(arma::fmat& query, int n, double search_limit){
