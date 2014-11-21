@@ -95,6 +95,7 @@
 				<Compiler>
 					<Add option="-O2" />
 					<Add option="-std=c++11" />
+					<Add directory="commons" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -115,6 +116,7 @@
 				<Compiler>
 					<Add option="-O2" />
 					<Add option="-std=c++11" />
+					<Add directory="commons" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />

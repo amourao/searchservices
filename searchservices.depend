@@ -107,7 +107,7 @@
 	"../tools/MatrixTools.h"
 	"../../commons/factory/Factory.h"
 
-1416485134 /home/amourao/code/searchservices/analyser/tools/MatrixTools.h
+1416528143 /home/amourao/code/searchservices/analyser/tools/MatrixTools.h
 	<armadillo>
 	<opencv2/core/core.hpp>
 	<opencv2/highgui/highgui.hpp>
@@ -643,7 +643,7 @@
 	<opencv2/highgui/highgui.hpp>
 	<opencv2/imgproc/imgproc.hpp>
 
-1416504478 source:/home/amourao/code/searchservices/analyser/tools/MatrixTools.cpp
+1416528436 source:/home/amourao/code/searchservices/analyser/tools/MatrixTools.cpp
 	"MatrixTools.h"
 
 1400531651 source:/home/amourao/code/searchservices/analyser/tools/MIRFlickrImporter.cpp
@@ -896,10 +896,10 @@
 	"../../FactoryEndpoint.h"
 	"../../IEndpoint.h"
 
-1416507469 source:/home/amourao/code/searchservices/rest/Endpoints/indexer/GenericIndexer.cpp
+1416519060 source:/home/amourao/code/searchservices/rest/Endpoints/indexer/GenericIndexer.cpp
 	"GenericIndexer.h"
 
-1412085076 /home/amourao/code/searchservices/rest/Endpoints/indexer/GenericIndexer.h
+1416518627 /home/amourao/code/searchservices/rest/Endpoints/indexer/GenericIndexer.h
 	<iostream>
 	<sstream>
 	"../../IEndpoint.h"
@@ -911,6 +911,7 @@
 	"../../../analyser/tools/MatrixTools.h"
 	<jsoncpp/json/json.h>
 	<jsoncpp/json/autolink.h>
+	<Poco/StreamCopier.h>
 	"../../../commons/FileDownloader.h"
 	"../../../commons/Timing.h"
 

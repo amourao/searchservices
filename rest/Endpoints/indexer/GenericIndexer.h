@@ -16,9 +16,12 @@
 
 #include <jsoncpp/json/json.h>
 #include <jsoncpp/json/autolink.h>
+#include <Poco/StreamCopier.h>
 
 #include "../../../commons/FileDownloader.h"
 #include "../../../commons/Timing.h"
+
+
 
 
 class GenericIndexer: public IEndpoint
@@ -35,6 +38,9 @@ public:
 
 
     string retrieve(map<string, string> queryStrings);
+
+    string retrieveExtracted(map<string, string> queryStrings, istream& input);
+
 	string create(map<string, string> queryStrings);
 	string addToIndexLive(map<string, string> parameters);
 	string saveIndex(map<string, string> parameters);

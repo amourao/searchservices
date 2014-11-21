@@ -38,6 +38,7 @@ void MatrixTools::vectorToMat(vector<float>&src, cv::Mat& dst){
 	transpose(dst,dst);
 }
 
+
 void MatrixTools::matToVectors(cv::Mat &src, vector<vector<float> >& dst){
 	for(int i = 0; i < src.rows; i++){
 		vector<float> tempRow;

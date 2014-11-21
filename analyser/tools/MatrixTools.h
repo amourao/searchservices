@@ -75,4 +75,6 @@ static void matToKeypoints(cv::Mat& m, std::vector<cv::KeyPoint>& p);
 
 static void getRandomSample(vector<cv::Mat>& mList, int nRows, vector<cv::Mat>& sampleList);
 static void getRandomSample(vector<arma::fmat>& mList, int nRows, vector<arma::fmat>& sampleList);
+
+
 };
