@@ -7661,3 +7661,48 @@
 	"Poco/Net/Net.h"
 	"Poco/Exception.h"
 
+1418404769 source:/home/amourao/code/searchservices/analyser/MainEusipco.cpp
+	<iostream>
+	<string>
+	<sstream>
+	<cstdlib>
+	<opencv2/features2d/features2d.hpp>
+	<opencv2/nonfree/nonfree.hpp>
+	<time.h>
+	<opencv2/core/core.hpp>
+	<opencv2/highgui/highgui.hpp>
+	<opencv2/imgproc/imgproc.hpp>
+	"nTag/SRClassifier.h"
+	"sources/ImageSource.h"
+	"sources/CamSource.h"
+	"sources/SingleImageSource.h"
+	"sources/VideoSource.h"
+	"sources/TextFileSource.h"
+	"sources/TextFileSourceV2.h"
+	"nVector/GaborExtractor.h"
+	"nVector/LBPExtractor.h"
+	"nVector/FeatureExtractor.h"
+	"nVector/NullExtractor.h"
+	"nKeypoint/SURFExtractor.h"
+	"nVector/HistogramExtractor.h"
+	"nVector/SegmentedHistogramExtractor.h"
+	"nVector/LireExtractor.h"
+	"nRoi/FaceDetection.h"
+	"nTag/kNNClassifier.h"
+	"nTag/SVMClassifier.h"
+	"nTag/VWBasicClassifier.h"
+	"tools/TrainTestFeaturesTools.h"
+	"tools/MIRFlickrImporter.h"
+	"tools/tinyImageImporter.h"
+	"tools/FrameFilter.h"
+	"FactoryAnalyser.h"
+	"../indexer/FactoryIndexer.h"
+	"../indexer/IIndexer.h"
+	"../indexer/FlannkNNIndexer.h"
+	"../indexer/MSIDXIndexer.h"
+	"../commons/StringTools.h"
+	"../dataModel/DatabaseConnection.h"
+	"../commons/LoadConfig.h"
+	"../rest/Endpoints/analyser/ExtractFeatures.h"
+	"../rest/RestServer.h"
+
