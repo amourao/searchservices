@@ -112,7 +112,7 @@ These libraries are available at Ariadne under
 
 Before compiling and running export the following libraries:
 
-export LD_LIBRARY_PATH=/localstore/searchservices/myLibs/lib:$LD_LIBRARY_PATH && export LIBRARY_PATH=/localstore/searchservices/myLibs/bin:$LIBRARY_PATH && export C_INCLUDE_PATH=/localstore/searchservices/myLibs/include:$C_INCLUDE_PATH && export CPLUS_INCLUDE_PATH=/localstore/searchservices/myLibs/include:$CPLUS_INCLUDE_PATH && export LD_LIBRARY_PATH=/usr/lib/jvm/java-7-oracle/:$LD_LIBRARY_PATH && export LD_LIBRARY_PATH=/usr/lib/jvm/java-7-oracle/jre/lib/amd64/server/:$LD_LIBRARY_PATH
+`export LD_LIBRARY_PATH=/localstore/searchservices/myLibs/lib:$LD_LIBRARY_PATH && export LIBRARY_PATH=/localstore/searchservices/myLibs/bin:$LIBRARY_PATH && export C_INCLUDE_PATH=/localstore/searchservices/myLibs/include:$C_INCLUDE_PATH && export CPLUS_INCLUDE_PATH=/localstore/searchservices/myLibs/include:$CPLUS_INCLUDE_PATH && export LD_LIBRARY_PATH=/usr/lib/jvm/java-7-oracle/:$LD_LIBRARY_PATH && export LD_LIBRARY_PATH=/usr/lib/jvm/java-7-oracle/jre/lib/amd64/server/:$LD_LIBRARY_PATH`
 
   [here]: https://bitbucket.org/a_mourao/searchservices
   [1]: https://bitbucket.org/a_mourao/federator
