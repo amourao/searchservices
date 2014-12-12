@@ -23,9 +23,9 @@ combinations of techniques painless and allow rapid prototyping and the
 creation of perfect solutions for a wide range of CBMI and
 classification tasks and challenges.
 
-''' Available algorithms '''
+**Available algorithms**
 
-Feature extractors:
+**Feature extractors:**
 
 -   Global image features (nVector/FeatureExtractor.h)
     -   Gabor
@@ -40,13 +40,13 @@ Feature extractors:
     -   SIFT
     -   ORB
 
-Object detectors (nRoi/RoiFeatureExtractor.h):
+**Object detectors** (nRoi/RoiFeatureExtractor.h):
 
 -   Face detection
 -   Person detection
 -   Generic Haar-based object detector
 
-Classifiers (nTag/IClassifier.h):
+**Classifiers** (nTag/IClassifier.h):
 
 -   Sparse approximation
 -   SVM
@@ -59,7 +59,7 @@ The indexers follow the same interchangeability model. Available
 implementations allow balancing speed and accuracy to answer any task
 requirements.
 
-Indexers:
+**Indexers:**
 
 -   Sparse approximation
 -   MSIDX
