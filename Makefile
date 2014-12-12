@@ -5,16 +5,16 @@
 
 WORKDIR = `pwd`
 
-CC = gcc
-CXX = g++
+CC = gcc-4.7
+CXX = g++-4.7
 AR = ar
-LD = g++
+LD = g++-4.7
 WINDRES = windres
 
-INC = -I/home/amourao/myLibs/include/ -I/home/amourao/code/sparsereconstruction/
-CFLAGS = -std=c++11 -Wall -fexceptions -DREAL_FLOAT -DUSE_GIST -DSTANDALONE_GIST -DPOCO_NO_FPENVIRONMENT
+INC = -I/localstore/searchservices/libs/include/ -I/home/amourao/code/sparsereconstruction/
+CFLAGS = -O2 -std=c++11 -Wall -fexceptions -fopenmp -DREAL_FLOAT -DUSE_GIST -DSTANDALONE_GIST -DPOCO_NO_FPENVIRONMENT
 RESINC = 
-LIBDIR = -L/home/amourao/myLibs/lib/ -L/home/amourao/myLibs/include/ -L/home/amourao/code/sparsereconstruction/
+LIBDIR = -L/localstore/searchservices/libs/lib/ -L/localstore/searchservices/libs/include/ -L/home/amourao/code/sparsereconstruction/
 LIB = 
 LDFLAGS = -fopenmp -lhdf5 -lflann -ljsoncpp -lopencv_core -lopencv_imgproc -lopencv_calib3d -lopencv_video -lopencv_photo -lopencv_features2d -lopencv_ml -lopencv_highgui -lopencv_objdetect -lopencv_contrib -lopencv_legacy -lopencv_nonfree -lfftw3f -lfftw3 -lm -lopencv_legacy -lopencv_flann -larmadillo -llapack -lblas -lPocoFoundation -lPocoData -lPocoDataSQLite -lPocoNet -lPocoXML -lPocoJSON -lPocoUtil -lcurl -lpugixml
 
@@ -84,24 +84,24 @@ OBJDIR_DEBUGSERVER = obj/Debug
 DEP_DEBUGSERVER = 
 OUT_DEBUGSERVER = bin/Debug/server
 
-INC_MAINSHOTDETECTIONMULTI = 
+INC_MAINSHOTDETECTIONMULTI = -Icommons
 CFLAGS_MAINSHOTDETECTIONMULTI =  -O2 -std=c++11
 RESINC_MAINSHOTDETECTIONMULTI = 
 RCFLAGS_MAINSHOTDETECTIONMULTI = $(RCFLAGS)
 LIBDIR_MAINSHOTDETECTIONMULTI = 
 LIB_MAINSHOTDETECTIONMULTI = $(LIB)
-LDFLAGS_MAINSHOTDETECTIONMULTI =  -s -static -I/home/amourao/myLibsAlt/include/opencv -I/home/amourao/myLibsAlt/include/ -L-I/home/amourao/myLibsAlt/lib  /home/amourao/myLibsAlt/lib/libopencv_highgui.a /home/amourao/myLibsAlt/share/OpenCV/3rdparty/lib/libIlmImf.a /home/amourao/myLibsAlt/share/OpenCV/3rdparty/lib/liblibpng.a /home/amourao/myLibsAlt/share/OpenCV/3rdparty/lib/liblibjpeg.a /home/amourao/myLibsAlt/lib/libopencv_video.a /home/amourao/myLibsAlt/lib/libopencv_imgproc.a /home/amourao/myLibsAlt/lib/libopencv_core.a /home/amourao/myLibsAlt/lib/multi/libswscale.a /home/amourao/myLibsAlt/lib/multi/libavformat.a /home/amourao/myLibsAlt/lib/multi/libavcodec.a /home/amourao/myLibsAlt/lib/multi/libavutil.a /home/amourao/myLibsAlt/lib/multi/libx264.a /home/amourao/myLibsAlt/lib/multi/libswresample.a /home/amourao/myLibsAlt/share/OpenCV/3rdparty/lib/libzlib.a  -llzma -lrt -lpthread -lm -ldl -lstdc++ -lboost_program_options
+LDFLAGS_MAINSHOTDETECTIONMULTI =  -s -static -I/localstore/searchservices/libsStatic/include/opencv -I/localstore/searchservices/libsStatic/include/ -L-I/localstore/searchservices/libsStatic/lib  /localstore/searchservices/libsStatic/lib/libopencv_highgui.a /localstore/searchservices/libsStatic/share/OpenCV/3rdparty/lib/libIlmImf.a /localstore/searchservices/libsStatic/share/OpenCV/3rdparty/lib/liblibpng.a /localstore/searchservices/libsStatic/share/OpenCV/3rdparty/lib/liblibjpeg.a /localstore/searchservices/libsStatic/lib/libopencv_video.a /localstore/searchservices/libsStatic/lib/libopencv_imgproc.a /localstore/searchservices/libsStatic/lib/libopencv_core.a /localstore/searchservices/libsStatic/lib/multi/libswscale.a /localstore/searchservices/libsStatic/lib/multi/libavformat.a /localstore/searchservices/libsStatic/lib/multi/libavcodec.a /localstore/searchservices/libsStatic/lib/multi/libavutil.a /localstore/searchservices/libsStatic/lib/multi/libx264.a /localstore/searchservices/libsStatic/lib/multi/libswresample.a /localstore/searchservices/libsStatic/share/OpenCV/3rdparty/lib/libzlib.a  -llzma -lrt -lpthread -lm -ldl -lstdc++ -lboost_program_options
 OBJDIR_MAINSHOTDETECTIONMULTI = obj/Release
 DEP_MAINSHOTDETECTIONMULTI = 
 OUT_MAINSHOTDETECTIONMULTI = bin/Release/shotDetectionMulti
 
-INC_MAINSHOTDETECTIONSINGLE = 
+INC_MAINSHOTDETECTIONSINGLE = -Icommons
 CFLAGS_MAINSHOTDETECTIONSINGLE =  -O2 -std=c++11
 RESINC_MAINSHOTDETECTIONSINGLE = 
 RCFLAGS_MAINSHOTDETECTIONSINGLE = $(RCFLAGS)
 LIBDIR_MAINSHOTDETECTIONSINGLE = 
 LIB_MAINSHOTDETECTIONSINGLE = $(LIB)
-LDFLAGS_MAINSHOTDETECTIONSINGLE =  -s -static -I/home/amourao/myLibsAlt/include/opencv -I/home/amourao/myLibsAlt/include/ -L-I/home/amourao/myLibsAlt/lib  /home/amourao/myLibsAlt/lib/libopencv_highgui.a /home/amourao/myLibsAlt/share/OpenCV/3rdparty/lib/libIlmImf.a /home/amourao/myLibsAlt/share/OpenCV/3rdparty/lib/liblibpng.a /home/amourao/myLibsAlt/share/OpenCV/3rdparty/lib/liblibjpeg.a /home/amourao/myLibsAlt/lib/libopencv_video.a /home/amourao/myLibsAlt/lib/libopencv_imgproc.a /home/amourao/myLibsAlt/lib/libopencv_core.a /home/amourao/myLibsAlt/lib/single/libswscale.a /home/amourao/myLibsAlt/lib/single/libavformat.a /home/amourao/myLibsAlt/lib/single/libavcodec.a /home/amourao/myLibsAlt/lib/single/libavutil.a /home/amourao/myLibsAlt/lib/single/libx264.a /home/amourao/myLibsAlt/lib/single/libswresample.a /home/amourao/myLibsAlt/share/OpenCV/3rdparty/lib/libzlib.a  -llzma -lrt -lpthread -lm -ldl -lstdc++ -lboost_program_options
+LDFLAGS_MAINSHOTDETECTIONSINGLE =  -s -static -I/localstore/searchservices/libsStatic/include/opencv -I/localstore/searchservices/libsStatic/include/ -L-I/localstore/searchservices/libsStatic/lib  /localstore/searchservices/libsStatic/lib/libopencv_highgui.a /localstore/searchservices/libsStatic/share/OpenCV/3rdparty/lib/libIlmImf.a /localstore/searchservices/libsStatic/share/OpenCV/3rdparty/lib/liblibpng.a /localstore/searchservices/libsStatic/share/OpenCV/3rdparty/lib/liblibjpeg.a /localstore/searchservices/libsStatic/lib/libopencv_video.a /localstore/searchservices/libsStatic/lib/libopencv_imgproc.a /localstore/searchservices/libsStatic/lib/libopencv_core.a /localstore/searchservices/libsStatic/lib/single/libswscale.a /localstore/searchservices/libsStatic/lib/single/libavformat.a /localstore/searchservices/libsStatic/lib/single/libavcodec.a /localstore/searchservices/libsStatic/lib/single/libavutil.a /localstore/searchservices/libsStatic/lib/single/libx264.a /localstore/searchservices/libsStatic/lib/single/libswresample.a /localstore/searchservices/libsStatic/share/OpenCV/3rdparty/lib/libzlib.a  -llzma -lrt -lpthread -lm -ldl -lstdc++ -lboost_program_options
 OBJDIR_MAINSHOTDETECTIONSINGLE = obj/Release
 DEP_MAINSHOTDETECTIONSINGLE = 
 OUT_MAINSHOTDETECTIONSINGLE = bin/Release/shotDetectionSingle
