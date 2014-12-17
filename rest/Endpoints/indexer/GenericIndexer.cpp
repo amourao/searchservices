@@ -541,6 +541,7 @@ string GenericIndexer::create(map<string, string> parameters){
 	cout << "**************** end GENERIC INDEXER ****************" << endl;
 	stringstream ssJ;
 	ssJ << root;
+	indexerInstances[ss.str()] = indexer;
 	return ssJ.str();
 }
 
