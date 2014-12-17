@@ -526,6 +526,7 @@ string GenericIndexer::create(map<string, string> parameters){
 
 	indexer->setFlabels(labels);
 	indexer->save(ss.str());
+	indexer->loadLabels(ss.str());
 
 	Json::Value root;
 	Json::Value results;
