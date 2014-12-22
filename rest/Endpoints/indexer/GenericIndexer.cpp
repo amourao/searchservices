@@ -14,7 +14,7 @@ GenericIndexer::GenericIndexer(){
 
 }
 
-//http://ariadne:9383/genericIndexer?action=create&trainData=/home/amourao/data/blip/blip_gist883_fixed.bin&analyser=gist883&indexer=linearIndexer&task=blip
+//http://ariadne:9383/genericIndexer?action=create&indexData=/home/amourao/data/blip/blip_gist883_fixed.bin&analyser=gist883&indexer=linearIndexer&task=blip
 //ariadne:9383/genericIndexer?action=retrieve&type=normal&analyser=gist883&indexer=linearIndexer&task=blip&output=json&url=http://andremourao.com/wp-content/uploads/2013/07/cropped-passe_square.png&n=100&labelsIndex=-1&flabelsIndex=0&search_limit=0.1&retrievalOutput=id
 GenericIndexer::~GenericIndexer(){
     /*map<string, IIndexer*>::iterator iter;
@@ -503,30 +503,46 @@ string GenericIndexer::create(map<string, string> parameters){
 
 	FileDownloader fd;
 
-	string filename = parameters["trainData"];
+	string indexDataFilename = parameters["indexData"];
 	string analyserName = parameters["analyser"];
 	string indexerName = parameters["indexer"];
 	string taskName = parameters["task"];
 
-	string file(filename);
-
-	Mat features;
-	Mat labels;
-
-	MatrixTools::readBin(file, features, labels);
-
     stringstream ss;
 
-	ss << taskName << "_" << analyserName << "_" << indexerName;
+    ss << taskName << "_" << analyserName << "_" << indexerName;
 
-	FactoryIndexer * fc = FactoryIndexer::getInstance();
-	IIndexer* indexer = (IIndexer*)fc->createType(indexerName);
+    FactoryIndexer * fc = FactoryIndexer::getInstance();
+    IIndexer* indexer = (IIndexer*)fc->createType(indexerName);
 
-	indexer->index(features);
+    if (parameters.count("trainData") > 0){
 
-	indexer->setFlabels(labels);
-	indexer->save(ss.str());
-	indexer->loadLabels(ss.str());
+        string trainDataFilename = parameters["trainData"];
+
+        Mat featuresTrain,labelsTrain;
+        MatrixTools::readBin(trainDataFilename, featuresTrain, labelsTrain);
+
+        Mat featuresIndex,labelsIndex;
+        MatrixTools::readBin(indexDataFilename, featuresIndex, labelsIndex);
+
+        indexer->train(featuresTrain,featuresTrain,featuresTrain);
+        indexer->indexWithTrainedParams(featuresIndex);
+        indexer->setFlabels(labelsIndex);
+
+	} else {
+
+        Mat features;
+        Mat labels;
+
+        MatrixTools::readBin(indexDataFilename, features, labels);
+
+        indexer->index(features);
+        indexer->setFlabels(labels);
+	}
+
+
+    indexer->save(ss.str());
+    indexer->loadLabels(ss.str());
 
 	Json::Value root;
 	Json::Value results;

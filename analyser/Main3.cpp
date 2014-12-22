@@ -1229,7 +1229,7 @@ int genDictionaryAndIndex(int argc, char *argv[]){
 int main(int argc, char *argv[]){
 	//awesomeIndexTester(argc, argv);
 	//testSphericalHashing(argc, argv);
-	genDictionaryAndIndex(argc, argv);
+	getMatrixSample(argc, argv);
 	/*
 	string name(argv[0]);
 	if (name == "./computeGT"){
