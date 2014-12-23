@@ -102,7 +102,12 @@ void SRIndexer::train(arma::fmat& featuresTrain,arma::fmat& featuresValidationI,
 }
 
 void SRIndexer::indexWithTrainedParams(arma::fmat& features){
-    index(features);
+    features = features.t();
+
+    indexData = std::make_shared<fmat>(features);
+
+    indexKSVD = indexk_Ptr( new indexk(*lnMinQuery, ksvd->D));
+    indexKSVD->load(indexData, lnMinQuery->options.max_iters);
 }
 
 void SRIndexer::index(arma::fmat& features){
