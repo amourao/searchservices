@@ -1147,38 +1147,48 @@ void testSphericalHashing(int argc, char *argv[]){
 
 
 int getMatrixSample(int argc, char *argv[]){
-    string infile(argv[1]);
-    string outfile(argv[2]);
-    string outfileTrain = outfile + "_train";
-    string outfileVal = outfile + "_val";
-    int split1(atoi(argv[3]));
-    int split2(atoi(argv[4]));
 
+    int split1(atoi(argv[1]));
+    int split2(atoi(argv[2]));
+    
+    vector<Mat> inVec,outVec;
+    vector<string> files;
     int total = split1 + split2;
 
-    Mat in;
-    Mat inLab;
+    for(int i = 3; i < argc; i++){
 
-    MatrixTools::readBin(infile,in,inLab);
+        string infile(argv[i]);
 
-    vector<Mat> inVec,outVec;
+        Mat in;
+        Mat inLab;
 
-    inVec.push_back(in);
-    inVec.push_back(inLab);
+        MatrixTools::readBin(infile,in,inLab);
 
+        inVec.push_back(in);
+        inVec.push_back(inLab);
+
+        files.push_back(infile);
+
+    }
     MatrixTools::getRandomSample(inVec,total,outVec);
+    for(int i = 0; i < files.size(); i++){
 
-    Mat data1,data2,lab1,lab2;
+        string infile = files.at(i);
+        string outfileTrain = infile + "_train";
+        string outfileVal = infile + "_val";
 
-    data1 = outVec.at(0).rowRange(0,split1);
-    lab1 = outVec.at(1).rowRange(0,split1);
+        Mat data1,data2,lab1,lab2;
 
-    data2 = outVec.at(0).rowRange(split1,total);
-    lab2 = outVec.at(1).rowRange(split1,total);
+        data1 = outVec.at(i*2).rowRange(0,split1);
+        lab1 = outVec.at(i*2+1).rowRange(0,split1);
 
-    MatrixTools::writeBinV2(outfileTrain,data1,lab1);
-    MatrixTools::writeBinV2(outfileVal,data2,lab2);
+        data2 = outVec.at(i*2).rowRange(split1,total);
+        lab2 = outVec.at(i*2+1).rowRange(split1,total);
 
+        MatrixTools::writeBinV2(outfileTrain,data1,lab1);
+        MatrixTools::writeBinV2(outfileVal,data2,lab2);
+
+    }
     return 0;
 }
 
