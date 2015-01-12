@@ -158,7 +158,7 @@ void ShotDetector::writeFrames(const string filename, const vector<int>& frames,
 		capture.set(CV_CAP_PROP_POS_FRAMES,frameIndex);
 		capture >> frame;
 		stringstream ss;
-		ss << filename << "." << frameIndex << "." << frameC << ".png";
+		ss << filename << "." << frameIndex << ".png";
 		framesPaths.push_back(ss.str());
 		imwrite(ss.str(),frame);
 	}
@@ -180,7 +180,7 @@ void ShotDetector::writeFramesV1(const string filename, const vector<int>& frame
 
 		if (frames.at(frameIndex) == frameC){
 			stringstream ss;
-			ss << filename << "." << frameIndex << "." << frameC << ".png";
+			ss << filename << "." << frameIndex << ".png";
 			framesPaths.push_back(ss.str());
 			imwrite(ss.str(),frame);
 			frameIndex++;
