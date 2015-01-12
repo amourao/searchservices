@@ -3,9 +3,11 @@
 #include "FeatureExtractor.h"
 #include "lbp.h"
 #include "../FactoryAnalyser.h"
+#include "../tools/ImageFilter.h"
+
 
 class LBPExtractor :
-	public FeatureExtractor
+	public FeatureExtractor,ImageFilter
 {
 public:
 	LBPExtractor();
@@ -15,8 +17,10 @@ public:
 	~LBPExtractor();
 
 	void extractFeatures(Mat& src, Mat& dst);
+	void applyFilter(Mat& src, Mat& dst);
 
 	int getFeatureVectorSize();
+
 
 	string getName();
 

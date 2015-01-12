@@ -18,7 +18,7 @@ using namespace cv;
 using namespace std;
 
 
-class GaborExtractor: public  FeatureExtractor
+class GaborExtractor: public  FeatureExtractor,ImageFilter
 {
 public:
 
