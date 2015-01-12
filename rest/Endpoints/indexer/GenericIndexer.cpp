@@ -283,7 +283,8 @@ string GenericIndexer::retrieve(map<string, string> parameters){
 		stringstream ssJ;
 		ssJ << root;
 		result = ssJ.str();
-	} if(outputFormat == "trec"){
+	}
+	if(outputFormat == "trec"){
 		stringstream ssJ;
 
         for (uint j = 0; j < resultLists.size(); j++){
@@ -293,6 +294,16 @@ string GenericIndexer::retrieve(map<string, string> parameters){
             }
         }
 		result = ssJ.str();
+	}
+	if(outputFormat == "simple"){;
+		result.reserve(7000);
+
+        for (uint j = 0; j < resultLists.size(); j++){
+            std::pair< vector<string>, vector<float> > resultList = resultLists.at(j);
+            for (uint i = 0; i < resultList.first.size(); i++){
+                result.append(resultList.first.at(i));
+            }
+        }
 	}
 
     get_timestamp(&totalEnd);
