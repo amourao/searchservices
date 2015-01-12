@@ -113,6 +113,23 @@ void LBPExtractor::extractFeatures(Mat& src, Mat& dst){
 	//waitKey();
 }
 
+void LBPExtractor::applyFilter(Mat& src, Mat& dst){
+	Mat nSrc;
+	if (src.channels() > 1){
+		cv::cvtColor(src, nSrc, COLOR_RGB2GRAY);
+	} else if (src.type() != CV_8U){
+		src.convertTo(nSrc,CV_8U);
+	}
+
+	Mat results;
+
+	lbp::OLBP(nSrc,results);
+
+	normalize(results, results, 0, 255, NORM_MINMAX, CV_8UC1);
+
+	results.copyTo(dst);
+}
+
 int LBPExtractor::getFeatureVectorSize(){
 	if (useCenterRegion)
 		return binCount*((horizontalDivisions+1)*(verticalDivisions+1)+1);
