@@ -95,6 +95,7 @@ private:
 
     int max_iters;
     double eps;
+    double search_limit;
 
     int trainDataSize;
 

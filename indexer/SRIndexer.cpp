@@ -36,6 +36,8 @@ SRIndexer::SRIndexer(string& typeId, map<string,string>& params){
         uword max_iters;
     };
     */
+
+    search_limit = 0;
     if (params.size() > 0){
         dimensions = std::stoi(params["dimensions"]);
         n_iter = std::stoi(params["n_iter"]);
@@ -49,6 +51,9 @@ SRIndexer::SRIndexer(string& typeId, map<string,string>& params){
         trainDataSize = SR_DEFAULT_TRAIN_DATA_SIZE;
         if(params.count("trainDataSize") > 0)
             trainDataSize = std::stoi(params["trainDataSize"]);
+
+        if(params.count("search_limit") > 0)
+            search_limit = std::stod(params["search_limit"]);
 
         type = typeId;
         paramsB = params;
@@ -95,7 +100,7 @@ void SRIndexer::train(arma::fmat& featuresTrain,arma::fmat& featuresValidationI,
     ksvd = ksvdb_Ptr(new ksvdb(optKSVD,*lnMinKSVD,dictionary,featuresTrain));
 
     for (int i = 0; i < n_iter; i++) {
-        std::cout << "Iteration " << i+1 << std::endl;
+        //std::cout << "Iteration " << i+1 << std::endl;
         ksvd->iterate();
     }
 
@@ -141,13 +146,19 @@ void SRIndexer::index(arma::fmat& features){
 
 }
 
-std::pair<vector<float>,vector<float> > SRIndexer::knnSearchId(arma::fmat& query, int n, double search_limit){
+std::pair<vector<float>,vector<float> > SRIndexer::knnSearchId(arma::fmat& query, int n, double search_limit_param){
     query = query.t();
 
 	vector<float> indices;
 	vector<float> dists;
 
-    auto ksvd_res = indexKSVD->find_k_nearest_limit(query, n, search_limit*indexKSVD->size());
+    double current_search_limit;
+    if (search_limit == 0)
+        current_search_limit = search_limit_param;
+    else
+        current_search_limit = search_limit; 
+
+    auto ksvd_res = indexKSVD->find_k_nearest_limit(query, n, current_search_limit*indexKSVD->size());
 
     for (auto& res : ksvd_res) {
         indices.push_back(res.vector_pos);
