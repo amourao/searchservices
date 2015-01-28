@@ -40,17 +40,13 @@ void* GenericIndexer::createType(string& type){
 
 void GenericIndexer::handleRequest(string method, map<string, string> queryStrings, istream& input, HTTPServerResponse& resp)
 {
+    cout << "**************** start GENERIC INDEXER ****************" << endl;
+    timestamp_type start, end, totalStart, totalEnd;
+    get_timestamp(&totalStart);
+    get_timestamp(&start);
 
-    Json::Value root;
-    root["result"] = "error";
-    root["code"] = "7";
-    root["description"] = "Unknown error";
-    stringstream ss;
-    ss << root;
-    string response = ss.str();
-    root = Json::Value();
-
-
+    Json::Value root = Json::Value();
+    string response;
     try {
 
         if(method != "GET" && method != "POST"){
@@ -73,6 +69,9 @@ void GenericIndexer::handleRequest(string method, map<string, string> queryStrin
             if (action == "create"){
                 response = create(queryStrings);
             } else if (action == "retrieve"){
+                get_timestamp(&end);
+                cout << "** setupTime: " << timestamp_diff_in_milliseconds(start, end) << " ms. **" << endl;
+                get_timestamp(&start);
                 response = retrieve(queryStrings);
 
                 if(queryStrings["output"] == "json")
@@ -103,11 +102,18 @@ void GenericIndexer::handleRequest(string method, map<string, string> queryStrin
         response = ss2.str();
     }
 
+    get_timestamp(&end);
+    cout << "** request time: " << timestamp_diff_in_milliseconds(start, end) << " ms. **" << endl;
+    get_timestamp(&start);
+    
     std::ostream& out = resp.send();
     out << response;
     out.flush();
 
-
+    get_timestamp(&totalEnd);
+    cout << "** formating time: " << timestamp_diff_in_milliseconds(start, totalEnd) << " ms. **" << endl;
+    cout << "** total time: " << timestamp_diff_in_milliseconds(totalStart, totalEnd) << " ms. **" << endl;
+    cout << "**************** end GENERIC INDEXER ****************" << endl;
 }
 
 IIndexer* GenericIndexer::getIndexer(string indexerName,string s){
@@ -128,7 +134,6 @@ IIndexer* GenericIndexer::getIndexer(string indexerName,string s){
 }
 
 string GenericIndexer::retrieve(map<string, string> parameters){
-	cout << "**************** start GENERIC INDEXER ****************" << endl;
 	cout << "**************** action retrieve ****************" << endl;
 	timestamp_type start, end, totalStart, totalEnd, tmpStart, tmpEnd;
 	uint setupTime, downloadTime, feTime, retrievalTime, formatingTime;
@@ -284,7 +289,7 @@ string GenericIndexer::retrieve(map<string, string> parameters){
 		ssJ << root;
 		result = ssJ.str();
 	}
-	if(outputFormat == "trec"){
+	else if(outputFormat == "trec"){
 		stringstream ssJ;
 
         for (uint j = 0; j < resultLists.size(); j++){
@@ -295,24 +300,36 @@ string GenericIndexer::retrieve(map<string, string> parameters){
         }
 		result = ssJ.str();
 	}
-	if(outputFormat == "simple"){;
-		result.reserve(7000);
+	else if(outputFormat == "simple"){
+		result.reserve(7500);
+
+        
+        
 
         for (uint j = 0; j < resultLists.size(); j++){
             std::pair< vector<string>, vector<float> > resultList = resultLists.at(j);
             for (uint i = 0; i < resultList.first.size(); i++){
-                result.append(resultList.first.at(i));
+                result.append(resultList.first.at(i) + "\n");
             }
         }
+
+        
+
+        result.append("\n" + to_string(setupTime)+ "\n");
+        result.append(to_string(downloadTime)+ "\n");
+        result.append(to_string(feTime)+ "\n");
+        result.append(to_string(retrievalTime)+ "\n");
+        get_timestamp(&totalEnd);
+        result.append(to_string(timestamp_diff_in_milliseconds(start, totalEnd))+ "\n");
+        result.append(to_string(timestamp_diff_in_milliseconds(totalStart, totalEnd))+ "\n");
 	}
 
     get_timestamp(&totalEnd);
 
 
 
-
-    cout << "**************** total : " << timestamp_diff_in_milliseconds(totalStart, totalEnd) << " ms ****************" << endl;
-    cout << "**************** end GENERIC INDEXER ****************" << endl;
+    cout << "formatingTime : " << timestamp_diff_in_milliseconds(start, totalEnd) << " ms" << endl;
+    cout << "**************** true retrieve time : " << timestamp_diff_in_milliseconds(totalStart, totalEnd) << " ms ****************" << endl;
 	return result;
 
 }
@@ -320,7 +337,6 @@ string GenericIndexer::retrieve(map<string, string> parameters){
 
 
 string GenericIndexer::retrieveExtracted(map<string, string> parameters, istream& input){
-	cout << "**************** start GENERIC INDEXER ****************" << endl;
 	cout << "**************** action retrieve ****************" << endl;
 	timestamp_type start, end, totalStart, totalEnd, tmpStart, tmpEnd;
 	uint setupTime, downloadTime, feTime, retrievalTime, formatingTime;
@@ -499,7 +515,6 @@ string GenericIndexer::retrieveExtracted(map<string, string> parameters, istream
 
 
     cout << "**************** total : " << timestamp_diff_in_milliseconds(totalStart, totalEnd) << " ms ****************" << endl;
-    cout << "**************** end GENERIC INDEXER ****************" << endl;
 	return result;
 	*/
 
@@ -507,7 +522,6 @@ string GenericIndexer::retrieveExtracted(map<string, string> parameters, istream
 
 
 string GenericIndexer::create(map<string, string> parameters){
-    cout << "**************** start GENERIC INDEXER ****************" << endl;
 	cout << "**************** action create ****************" << endl;
 	timestamp_type totalStart, totalEnd;
 	get_timestamp(&totalStart);
@@ -565,7 +579,6 @@ string GenericIndexer::create(map<string, string> parameters){
 
 	get_timestamp(&totalEnd);
     cout << "**************** total : " << timestamp_diff_in_milliseconds(totalStart, totalEnd) << " ms ****************" << endl;
-	cout << "**************** end GENERIC INDEXER ****************" << endl;
 	stringstream ssJ;
 	ssJ << root;
 	indexerInstances[ss.str()] = indexer;
@@ -574,7 +587,6 @@ string GenericIndexer::create(map<string, string> parameters){
 
 string GenericIndexer::addToIndexLive(map<string, string> parameters){
 	FileDownloader fd;
-    cout << "**************** start GENERIC INDEXER ****************" << endl;
 	cout << "**************** action addLive ****************" << endl;
 	timestamp_type start, end, totalStart, totalEnd;
 	get_timestamp(&totalStart);
@@ -629,7 +641,6 @@ string GenericIndexer::addToIndexLive(map<string, string> parameters){
 
     get_timestamp(&totalEnd);
     cout << "**************** total : " << timestamp_diff_in_milliseconds(totalStart, totalEnd) << " ms ****************" << endl;
-	cout << "**************** end GENERIC INDEXER ****************" << endl;
 
 	stringstream ssJ;
 	ssJ << root;
@@ -639,7 +650,6 @@ string GenericIndexer::addToIndexLive(map<string, string> parameters){
 
 string GenericIndexer::saveIndex(map<string, string> parameters){
     FileDownloader fd;
-    cout << "**************** start GENERIC INDEXER ****************" << endl;
     cout << "**************** action saveIndex ****************" << endl;
     timestamp_type start, end, totalStart, totalEnd;
     get_timestamp(&totalStart);
@@ -664,7 +674,6 @@ string GenericIndexer::saveIndex(map<string, string> parameters){
 
     get_timestamp(&totalEnd);
     cout << "**************** total : " << timestamp_diff_in_milliseconds(totalStart, totalEnd) << " ms ****************" << endl;
-    cout << "**************** end GENERIC INDEXER ****************" << endl;
 
     stringstream ssJ;
     ssJ << root;
