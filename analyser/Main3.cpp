@@ -621,8 +621,10 @@ void awesomeIndexTesterAll(int argc, char *argv[]){
 	vector<IEndpoint*> endpoints;
 
     int indexToTest = -1;
+    bool testAll = true;
     if (argc > 2){
         indexToTest = atoi(argv[2]);
+        testAll = false;
     }
 
 	LoadConfig::load(paramFile,parameters,allIndexers,analysers,classifiers,endpoints);
@@ -807,7 +809,7 @@ void awesomeIndexTesterAll(int argc, char *argv[]){
 
     vector<IIndexer*> indexers;
 
-    if (indexToTest != -1){
+    if (!testAll){
         indexers.push_back(allIndexers.at(indexToTest));
     } else {
         indexers = allIndexers;
@@ -815,7 +817,7 @@ void awesomeIndexTesterAll(int argc, char *argv[]){
 
     for(uint i = 0; i < indexers.size(); i++){
 
-        if (indexToTest == -1){
+        if (testAll){
             indexToTest = i;
         }
 
