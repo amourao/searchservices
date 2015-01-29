@@ -147,7 +147,7 @@
 	<fstream>
 	<sstream>
 
-1418384655 /home/amourao/code/searchservices/analyser/nVector/GaborExtractor.h
+1421076381 /home/amourao/code/searchservices/analyser/nVector/GaborExtractor.h
 	<fftw3.h>
 	<opencv2/imgproc/imgproc.hpp>
 	<vector>
@@ -336,10 +336,11 @@
 	<fstream>
 	<sstream>
 
-1418384655 /home/amourao/code/searchservices/analyser/nVector/LBPExtractor.h
+1421076381 /home/amourao/code/searchservices/analyser/nVector/LBPExtractor.h
 	"FeatureExtractor.h"
 	"lbp.h"
 	"../FactoryAnalyser.h"
+	"../tools/ImageFilter.h"
 
 1390951648 /home/amourao/code/searchservices/analyser/nVector/lbp.h
 	<opencv2/core/core.hpp>
@@ -582,7 +583,7 @@
 1390951642 source:/home/amourao/code/searchservices/analyser/nVector/lbp.cpp
 	"lbp.h"
 
-1418384655 source:/home/amourao/code/searchservices/analyser/nVector/LBPExtractor.cpp
+1421076381 source:/home/amourao/code/searchservices/analyser/nVector/LBPExtractor.cpp
 	"LBPExtractor.h"
 
 1418384655 source:/home/amourao/code/searchservices/analyser/nVector/LireExtractor.cpp
@@ -896,7 +897,7 @@
 	"../../FactoryEndpoint.h"
 	"../../IEndpoint.h"
 
-1419259488 source:/home/amourao/code/searchservices/rest/Endpoints/indexer/GenericIndexer.cpp
+1422463373 source:/home/amourao/code/searchservices/rest/Endpoints/indexer/GenericIndexer.cpp
 	"GenericIndexer.h"
 
 1418384655 /home/amourao/code/searchservices/rest/Endpoints/indexer/GenericIndexer.h
@@ -4183,16 +4184,17 @@
 	"../FactoryAnalyser.h"
 	"../tools/MatrixTools.h"
 
-1421068319 source:/home/amourao/code/searchservices/indexer/SRIndexer.cpp
+1422547696 source:/home/amourao/code/searchservices/indexer/SRIndexer.cpp
 	"SRIndexer.h"
 
-1421068319 /home/amourao/code/searchservices/indexer/SRIndexer.h
+1422547482 /home/amourao/code/searchservices/indexer/SRIndexer.h
 	<map>
 	<string>
 	<iostream>
 	<vector>
 	<json/json.h>
 	<ksvd-indexing-experiment/ksvd_index_mp.h>
+	<ksvd-indexing-experiment/result.h>
 	<ksvd/ksvd.h>
 	<utils/utils.h>
 	<l1min/dalm.h>
@@ -4229,7 +4231,7 @@
 	<set>
 	<armadillo>
 
-1416495052 /home/amourao/code/sparsereconstruction//ksvd-indexing-experiment/ksvd_index_mp.h
+1422546838 /home/amourao/code/sparsereconstruction//ksvd-indexing-experiment/ksvd_index_mp.h
 	<algorithm>
 	<cassert>
 	<memory>

@@ -189,8 +189,7 @@ void testIndeces(int argc, char *argv[]){
 	}
 }
 
-
-void awesomeIndexTesterOld(int argc, char *argv[]){
+void awesomeIndexTesterOldAndWrong(int argc, char *argv[]){
 
     IBinImporter* importer;
 
@@ -318,7 +317,7 @@ void awesomeIndexTesterOld(int argc, char *argv[]){
     cout << endl << "nTrain;nValI;nValQ;nTesI;nTesQ;mAcc;k;d" << endl;
     cout << nTrain << ";" << nValI << ";" << nValQ << ";" << nTesI << ";" << nTesQ << ";" << k << ";" << featuresTestI.cols << endl << endl;
 
-    cout << "Name;Name2;TrainTime;IndexingTime;QueryTime;%Correct;avgDeltaDistance" << endl;
+    cout << "Name;Name2;TrainTime;IndexingTime;QueryTime;%Correct;MAP;avgDeltaDistance" << endl;
     for(uint i = 0; i < indexers.size(); i++){
         get_timestamp(&start);
         indexers.at(i)->train(featuresTrain,featuresValidationQ,featuresValidationI);
@@ -383,7 +382,7 @@ void awesomeIndexTesterOld(int argc, char *argv[]){
             }
             avgPrec += precAccum;
         }
-        cout << ";" <<  tmpTime <<  ";" << ((double)commonElements)/(k*nTesQ) << ";" << avgPrec/(k*nTesQ) << ";" << deltaDistance << endl;
+        cout << ";" <<  tmpTime/featuresTestQ.rows <<  ";" << ((double)commonElements)/(k*nTesQ) << ";" << avgPrec/(k*nTesQ) << ";" << deltaDistance << endl;
 
         indexers.at(i)->saveParams(indexers.at(i)->getName());
 
@@ -609,10 +608,8 @@ void computeGT(int argc, char *argv[]){
 	cout << loadGT(outfileNameString,linearResultsAA,simpleName,nTestOffset,nTesI,nTesQ,k) << endl;
 }
 
-
-void awesomeIndexTesterSingle(int argc, char *argv[]){
-
-	bool debug = false;
+void awesomeIndexTesterAll(int argc, char *argv[]){
+    bool debug = false;
     IBinImporter* importer;
 
     string paramFile(argv[1]);
@@ -623,7 +620,10 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
 	vector<IClassifier*> classifiers;
 	vector<IEndpoint*> endpoints;
 
-    int indexToTest = atoi(argv[2]);
+    int indexToTest = -1;
+    if (argc > 2){
+        indexToTest = atoi(argv[2]);
+    }
 
 	LoadConfig::load(paramFile,parameters,allIndexers,analysers,classifiers,endpoints);
 
@@ -647,9 +647,6 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
     if (parameters.count("debug") > 0){
 	    debug = true;
 	}
-
-
-
 
 	int nTrain = atoi(parameters["nTrain"].c_str());
 	int nValI = atoi(parameters["nValI"].c_str());
@@ -810,21 +807,30 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
 
     vector<IIndexer*> indexers;
 
-    indexers.push_back(allIndexers.at(indexToTest));
-
-    if(indexToTest == 0){
-    	cout << simpleFileName << endl;
-    	cout << "nTrain;nValI;nValQ;nTesI;nTesQ;nk;";
-    	for (uint ii = 0; ii < kList.size(); ii++){cout << "k" << ii+1<< ";";}
-    	cout << "d;offset" << endl;
-    	cout << nTrain << ";" << nValI << ";" << nValQ << ";" << nTesI << ";" << nTesQ << ";" << kList.size() << ";";
-    	for (uint ii = 0; ii < kList.size(); ii++){cout << kList.at(ii)<<";";}
-    	cout << featuresTestI.cols << ";" << atoi(parameters["startOffset"].c_str()) << endl;
-		cout << "Index name;Name;Base name;Train time (ms);Index time (ms);";
-    	for (uint ii = 0; ii < kList.size(); ii++){cout << "Query time (ms)@" << kList.at(ii) << ";mAcc@" << kList.at(ii) << ";MAP@" << kList.at(ii) << ";Dist@" << kList.at(ii) << ";";}
-    	cout << endl;
+    if (indexToTest != -1){
+        indexers.push_back(allIndexers.at(indexToTest));
+    } else {
+        indexers = allIndexers;
     }
+
     for(uint i = 0; i < indexers.size(); i++){
+
+        if (indexToTest == -1){
+            indexToTest = i;
+        }
+
+        if(indexToTest == 0){
+            cout << simpleFileName << endl;
+            cout << "nTrain;nValI;nValQ;nTesI;nTesQ;nk;";
+            for (uint ii = 0; ii < kList.size(); ii++){cout << "k" << ii+1<< ";";}
+            cout << "d;offset" << endl;
+            cout << nTrain << ";" << nValI << ";" << nValQ << ";" << nTesI << ";" << nTesQ << ";" << kList.size() << ";";
+            for (uint ii = 0; ii < kList.size(); ii++){cout << kList.at(ii)<<";";}
+            cout << featuresTestI.cols << ";" << atoi(parameters["startOffset"].c_str()) << endl;
+            cout << "Index name;Name;Base name;Train time (ms);Index time (ms);";
+            for (uint ii = 0; ii < kList.size(); ii++){cout << "Query time (ms)@" << kList.at(ii) << ";mAcc@" << kList.at(ii) << ";MAP@" << kList.at(ii) << ";Dist@" << kList.at(ii) << ";";}
+            cout << endl;
+        }
 
     	if (debug) cout << "Training" << endl;
 		get_timestamp(&start);
@@ -848,9 +854,8 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
         //if(indexToTest == 0 || i > 0)
         cout << ";" << timestamp_diff_in_milliseconds(start, end);
 
-
-
 		if (debug) cout << "Querying" << endl;
+
 		for (uint kIndex = 0; kIndex < kList.size(); kIndex++){
 			//int tmp = 0;
         	vector<float> precVsLinearTmp;
@@ -903,7 +908,7 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
 	            }
 	        }
 	        //if(indexToTest == 0 || i > 0)
-	        cout << ";" <<  tmpTime <<  ";" << ((double)accuracyAccum)/((double)k*nTesQ) << ";" << avgPrecAccum/(nTesQ) << ";" << deltaDistance;
+	        cout << ";" <<  tmpTime/nTesQ <<  ";" << ((double)accuracyAccum)/((double)k*nTesQ) << ";" << avgPrecAccum/(nTesQ) << ";" << deltaDistance;
     	}
     	cout << endl;
         stringstream ss2;
@@ -922,8 +927,8 @@ void awesomeIndexTesterSingle(int argc, char *argv[]){
 
 		delete indexers.at(i);
 	}
-}
 
+}
 
 void exportToArmaMat(int argc, char *argv[]){
 
@@ -1194,7 +1199,7 @@ int getMatrixSample(int argc, char *argv[]){
 
     int split1(atoi(argv[1]));
     int split2(atoi(argv[2]));
-    
+
     vector<Mat> inVec,outVec;
     vector<string> files;
     int total = split1 + split2;
@@ -1312,8 +1317,8 @@ int main(int argc, char *argv[]){
 	//awesomeIndexTester(argc, argv);
 	//testSphericalHashing(argc, argv);
 	//getMatrixSample(argc, argv);
-    testReadBin(argc, argv);
-	//awesomeIndexTesterOld(argc, argv);
+    //testReadBin(argc, argv);
+	awesomeIndexTesterAll(argc, argv);
 	/*
 	string name(argv[0]);
 	if (name == "./computeGT"){

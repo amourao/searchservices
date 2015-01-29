@@ -8,6 +8,7 @@
 #include <json/json.h>
 
 #include <ksvd-indexing-experiment/ksvd_index_mp.h>
+#include <ksvd-indexing-experiment/result.h>
 #include <ksvd/ksvd.h>
 #include <utils/utils.h>
 
@@ -30,6 +31,11 @@
 #include "FactoryIndexer.h"
 
 #define SR_DEFAULT_TRAIN_DATA_SIZE 5000
+#define SR_DEFAULT_BUCKET_INSPECTION "default"
+#define SR_DEFAULT_BUCKET_INSPECTION_GREEDY "greedy"
+#define SR_DEFAULT_BUCKET_INSPECTION_RR "rr"
+#define SR_DEFAULT_BUCKET_INSPECTION_WEIGH "weighed"
+#define SR_DEFAULT_BUCKET_INSPECTION_WEIGH_2 "weighed_alt"
 
 using namespace pugi;
 using namespace arma;
@@ -100,6 +106,7 @@ private:
     int trainDataSize;
 
     string index_path;
+    string bucket_inspection_method;
 
     arma::fmat dictionary;
     std::shared_ptr<arma::fmat> indexData;

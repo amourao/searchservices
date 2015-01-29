@@ -48,6 +48,11 @@ SRIndexer::SRIndexer(string& typeId, map<string,string>& params){
         createNewLNReconstructor(params);
         //load(paramsB["index_path"]);
 
+        bucket_inspection_method = SR_DEFAULT_BUCKET_INSPECTION;
+        if(params.count("bucket_inspection") > 0)
+            trainDataSize = std::stoi(params["bucket_inspection"]);
+
+
         trainDataSize = SR_DEFAULT_TRAIN_DATA_SIZE;
         if(params.count("trainDataSize") > 0)
             trainDataSize = std::stoi(params["trainDataSize"]);
@@ -156,11 +161,23 @@ std::pair<vector<float>,vector<float> > SRIndexer::knnSearchId(arma::fmat& query
     if (search_limit == 0)
         current_search_limit = search_limit_param;
     else
-        current_search_limit = search_limit; 
+        current_search_limit = search_limit;
 
-    auto ksvd_res = indexKSVD->find_k_nearest_limit(query, n, current_search_limit*indexKSVD->size());
+    std::vector<forr::Result> ksvd_res;
 
-    for (auto& res : ksvd_res) {
+    if(bucket_inspection_method == SR_DEFAULT_BUCKET_INSPECTION_GREEDY){
+        ksvd_res = indexKSVD->find_k_nearest_limit_greedy(query, n, current_search_limit*indexKSVD->size());
+    } else if(bucket_inspection_method == SR_DEFAULT_BUCKET_INSPECTION_RR){
+        ksvd_res = indexKSVD->find_k_nearest_limit_round_robin(query, n, current_search_limit*indexKSVD->size());
+    } else if(bucket_inspection_method == SR_DEFAULT_BUCKET_INSPECTION_WEIGH){
+        ksvd_res = indexKSVD->find_k_nearest_limit_wcoeff(query, n, current_search_limit*indexKSVD->size());
+    } else if(bucket_inspection_method == SR_DEFAULT_BUCKET_INSPECTION_WEIGH_2){
+        ksvd_res = indexKSVD->find_k_nearest_limit_wcoeff2(query, n, current_search_limit*indexKSVD->size());
+    } else { //use default
+        ksvd_res = indexKSVD->find_k_nearest_limit(query, n, current_search_limit*indexKSVD->size());
+    }
+
+    for (forr::Result& res : ksvd_res) {
         indices.push_back(res.vector_pos);
         dists.push_back(std::pow(res.value,2));
     }
