@@ -797,9 +797,9 @@ void awesomeIndexTesterAll(int argc, char *argv[]){
 
     if (!gtLoaded){
     	cout << "error loading GT: " << outfileNameA << endl;
-    	return;
-    }
-	if (debug) cout << "Loading GT ok" << endl;
+    } else {
+        if (debug) cout << "Loading GT ok" << endl;
+	}
     //featuresValidationI.copyTo(featuresTestI);
     //featuresValidationQ.copyTo(featuresTestQ);
     //nTesI = featuresTestI.rows;
@@ -870,6 +870,8 @@ void awesomeIndexTesterAll(int argc, char *argv[]){
 	            get_timestamp(&end);
 	            tmpTime += timestamp_diff_in_milliseconds(start, end);
 	            rAll.push_back(r);
+	            if (i == 0 && !gtLoaded)
+                    linearResults.push_back(r);
 	        }
 	        if (debug) cout << "Querying ok" << endl;
 	        double deltaDistance = 0;
