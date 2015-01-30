@@ -50,7 +50,7 @@ SRIndexer::SRIndexer(string& typeId, map<string,string>& params){
 
         bucket_inspection_method = SR_DEFAULT_BUCKET_INSPECTION;
         if(params.count("bucket_inspection") > 0)
-            trainDataSize = std::stoi(params["bucket_inspection"]);
+            bucket_inspection_method = params["bucket_inspection"];
 
 
         trainDataSize = SR_DEFAULT_TRAIN_DATA_SIZE;
