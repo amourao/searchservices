@@ -923,6 +923,7 @@ void awesomeIndexTesterAll(int argc, char *argv[]){
                 //if(indexToTest == 0 || i > 0)
                 cout << "_" << ss5.str() << ";" <<  tmpTime/nTesQ <<  ";" << ((double)accuracyAccum)/((double)k*nTesQ) << ";" << avgPrecAccum/(nTesQ) << ";" << deltaDistance;
             }
+            retInd++;
         }
 
     	cout << endl;

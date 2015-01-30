@@ -303,7 +303,7 @@ public:
     }
 
     bool hasNextRetrievalParameters(){
-        return currentRetrievalParameters < (retrievalParameters.size()-1);
+        return currentRetrievalParameters < (retrievalParameters.size());
     }
 
     void nextRetrievalParameters(){
