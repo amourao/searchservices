@@ -859,6 +859,8 @@ void awesomeIndexTesterAll(int argc, char *argv[]){
 		if (debug) cout << "Querying" << endl;
 
         int retInd = 0;
+
+        indexers.at(i)->initRetrievalParameters();
         while (indexers.at(i)->hasNextRetrievalParameters()){
 
             indexers.at(i)->nextRetrievalParameters();
