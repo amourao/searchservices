@@ -291,11 +291,11 @@ public:
         return retrievalParameters;
     }
 
-    void setAllRetreivalParameters(vector<map<string,string>> params){
-        if (params.size() == 0){
-            params.push_back(map<string,string>());
+    void setAllRetreivalParameters(vector<map<string,string>> p){
+        if (p.size() == 0){
+            p.push_back(map<string,string>());
         }
-        retrievalParameters = params;
+        retrievalParameters = p;
     }
 
     map<string,string> getCurrentRetreivalParameters(){
@@ -303,7 +303,7 @@ public:
     }
 
     bool hasNextRetrievalParameters(){
-        return currentRetrievalParameters < (retrievalParameters.size());
+        return (currentRetrievalParameters) < ((int)retrievalParameters.size()-1);
     }
 
     void nextRetrievalParameters(){
@@ -311,7 +311,7 @@ public:
         deployRetrievalParameters();
     }
 
-     void initRetrievalParameters(){
+    void initRetrievalParameters(){
         currentRetrievalParameters = -1;
     }
 
@@ -331,7 +331,7 @@ protected:
     cv::Mat indexToLabels;
 
     vector<map<string,string>> retrievalParameters;
-    int currentRetrievalParameters;
+    int currentRetrievalParameters = 0;
 
 private:
 

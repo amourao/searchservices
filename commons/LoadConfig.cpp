@@ -121,7 +121,6 @@ vector<IIndexer*> LoadConfig::registerIndeces(Json::Value plugins){
         string originalName = p["originalName"].asString();
 
         Json::Value paramsJSON = p["params"];
-        Json::Value paramsRetJSON = p["retrieval_params"];
 
         vector<map<string,string> > allParams;
 
@@ -129,7 +128,8 @@ vector<IIndexer*> LoadConfig::registerIndeces(Json::Value plugins){
 
         vector<map<string,string> > allRetParams;
 
-        if (paramsRetJSON.isObject()){
+        Json::Value paramsRetJSON = p["retrieval_params"];
+        if (!paramsRetJSON.isNull()){
             LoadConfig::generatePermutations(paramsRetJSON,allRetParams);
         }
 

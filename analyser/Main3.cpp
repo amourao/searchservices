@@ -629,8 +629,6 @@ void awesomeIndexTesterAll(int argc, char *argv[]){
 
 	LoadConfig::load(paramFile,parameters,allIndexers,analysers,classifiers,endpoints);
 
-	//cout << allIndexers.size() << endl;
-
     string type(parameters["type"]);
 
     if(type == "tiny"){
@@ -829,7 +827,7 @@ void awesomeIndexTesterAll(int argc, char *argv[]){
             cout << nTrain << ";" << nValI << ";" << nValQ << ";" << nTesI << ";" << nTesQ << ";" << kList.size() << ";";
             for (uint ii = 0; ii < kList.size(); ii++){cout << kList.at(ii)<<";";}
             cout << featuresTestI.cols << ";" << atoi(parameters["startOffset"].c_str()) << endl;
-            cout << "Index name;Name;Base name;Train time (ms);Index time (ms);";
+            cout << "Index name;Name;Base name;Train time (ms);Index time (ms);Retrieval index;";
             for (uint ii = 0; ii < kList.size(); ii++){cout << "Query time (ms)@" << kList.at(ii) << ";mAcc@" << kList.at(ii) << ";MAP@" << kList.at(ii) << ";Dist@" << kList.at(ii) << ";";}
             cout << endl;
         }
@@ -843,9 +841,11 @@ void awesomeIndexTesterAll(int argc, char *argv[]){
 		uint pos = indexers.at(i)->getName().rfind("_");
 		string simpleName = indexers.at(i)->getName().substr(0,pos);
 
+        stringstream ssAll;
+
 		stringstream ss4;
         ss4 << std::setw(5) << std::setfill('0') << indexToTest;
-        cout << ss4.str() << ";" << indexers.at(i)->getName() << ";" << simpleName << ";" << timestamp_diff_in_milliseconds(start, end);
+        ssAll << ss4.str() << ";" << indexers.at(i)->getName() << ";" << simpleName << ";" << timestamp_diff_in_milliseconds(start, end);
 
         if (debug) cout << "Indexing" << endl;
 		get_timestamp(&start);
@@ -854,16 +854,23 @@ void awesomeIndexTesterAll(int argc, char *argv[]){
 		if (debug) cout << "Indexing ok" << endl;
 
         //if(indexToTest == 0 || i > 0)
-        cout << ";" << timestamp_diff_in_milliseconds(start, end);
+        ssAll << ";" << timestamp_diff_in_milliseconds(start, end);
+
+        string training_common = ssAll.str();
 
 		if (debug) cout << "Querying" << endl;
 
         int retInd = 0;
 
         indexers.at(i)->initRetrievalParameters();
+
         while (indexers.at(i)->hasNextRetrievalParameters()){
 
             indexers.at(i)->nextRetrievalParameters();
+
+            stringstream ss5;
+            ss5 << std::setw(5) << std::setfill('0') << retInd;
+            cout << training_common << ";" << ss5.str();
 
             for (uint kIndex = 0; kIndex < kList.size(); kIndex++){
                 //int tmp = 0;
@@ -918,15 +925,14 @@ void awesomeIndexTesterAll(int argc, char *argv[]){
                         avgPrecAccum += precAccum/(double)k;
                     }
                 }
-                stringstream ss5;
-                ss5 << std::setw(5) << std::setfill('0') << retInd;
                 //if(indexToTest == 0 || i > 0)
-                cout << "_" << ss5.str() << ";" <<  tmpTime/nTesQ <<  ";" << ((double)accuracyAccum)/((double)k*nTesQ) << ";" << avgPrecAccum/(nTesQ) << ";" << deltaDistance;
+                cout <<  ";" <<  tmpTime/nTesQ <<  ";" << ((double)accuracyAccum)/((double)k*nTesQ) << ";" << avgPrecAccum/(nTesQ) << ";" << deltaDistance;
             }
             retInd++;
+            cout << endl;
         }
 
-    	cout << endl;
+
         stringstream ss2;
 
         uint pos2a = paramFile.rfind("/");
