@@ -31,6 +31,7 @@
 #include "FactoryIndexer.h"
 
 #define SR_DEFAULT_TRAIN_DATA_SIZE 5000
+#define SR_DEFAULT_SEARCH_LIMIT 0.1
 #define SR_DEFAULT_BUCKET_INSPECTION "default"
 #define SR_DEFAULT_BUCKET_INSPECTION_GREEDY "greedy"
 #define SR_DEFAULT_BUCKET_INSPECTION_RR "rr"
@@ -69,6 +70,8 @@ public:
 	int addToIndexLive(arma::fmat& features);
 
 	string getName();
+
+	void deployRetrievalParameters();
 
 private:
 

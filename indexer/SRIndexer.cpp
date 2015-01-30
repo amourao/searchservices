@@ -49,22 +49,26 @@ SRIndexer::SRIndexer(string& typeId, map<string,string>& params){
         //load(paramsB["index_path"]);
 
         bucket_inspection_method = SR_DEFAULT_BUCKET_INSPECTION;
-        if(params.count("bucket_inspection") > 0)
-            bucket_inspection_method = params["bucket_inspection"];
 
 
         trainDataSize = SR_DEFAULT_TRAIN_DATA_SIZE;
         if(params.count("trainDataSize") > 0)
             trainDataSize = std::stoi(params["trainDataSize"]);
 
-        if(params.count("search_limit") > 0)
-            search_limit = std::stod(params["search_limit"]);
+        search_limit = SR_DEFAULT_SEARCH_LIMIT;
 
         type = typeId;
         paramsB = params;
     }
 }
 
+void SRIndexer::deployRetrievalParameters(){
+    map<string,string> curr = getCurrentRetreivalParameters();
+    if(curr.count("search_limit") > 0)
+        search_limit = std::stod(curr["search_limit"]);
+    if(curr.count("bucket_inspection") > 0)
+        bucket_inspection_method = curr["bucket_inspection"];
+}
 
 void SRIndexer::createNewLNReconstructor(map<string,string>& params){
 
@@ -152,6 +156,7 @@ void SRIndexer::index(arma::fmat& features){
 }
 
 std::pair<vector<float>,vector<float> > SRIndexer::knnSearchId(arma::fmat& query, int n, double search_limit_param){
+
     query = query.t();
 
 	vector<float> indices;
@@ -243,5 +248,6 @@ int SRIndexer::addToIndexLive(arma::fmat& features){
     features = features.t();
     std::shared_ptr<arma::fmat> featuresPtr(new arma::fmat(features));
     indexKSVD->addToIndex(featuresPtr);
-    return -1;
+    return 0;
 }
+

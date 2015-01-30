@@ -287,6 +287,38 @@ public:
 		labelData.close();
 	}
 
+    vector<map<string,string>> getAllRetreivalParameters(){
+        return retrievalParameters;
+    }
+
+    void setAllRetreivalParameters(vector<map<string,string>> params){
+        if (params.size() == 0){
+            params.push_back(map<string,string>());
+        }
+        retrievalParameters = params;
+    }
+
+    map<string,string> getCurrentRetreivalParameters(){
+        return retrievalParameters[currentRetrievalParameters];
+    }
+
+    bool hasNextRetrievalParameters(){
+        return currentRetrievalParameters < (retrievalParameters.size()-1);
+    }
+
+    void nextRetrievalParameters(){
+        currentRetrievalParameters++;
+        deployRetrievalParameters();
+    }
+
+     void initRetrievalParameters(){
+        currentRetrievalParameters = -1;
+    }
+
+    virtual void deployRetrievalParameters(){
+
+    }
+
 	virtual bool save(string basePath) = 0;
 	virtual bool load(string basePath) = 0;
 
@@ -295,7 +327,11 @@ public:
 protected:
 
     map<string,string> paramsB;
+
     cv::Mat indexToLabels;
+
+    vector<map<string,string>> retrievalParameters;
+    int currentRetrievalParameters;
 
 private:
 

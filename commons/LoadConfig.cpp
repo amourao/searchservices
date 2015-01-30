@@ -121,11 +121,17 @@ vector<IIndexer*> LoadConfig::registerIndeces(Json::Value plugins){
         string originalName = p["originalName"].asString();
 
         Json::Value paramsJSON = p["params"];
+        Json::Value paramsRetJSON = p["retrieval_params"];
 
         vector<map<string,string> > allParams;
 
-
         LoadConfig::generatePermutations(paramsJSON,allParams);
+
+        vector<map<string,string> > allRetParams;
+
+        if (paramsRetJSON.isObject()){
+            LoadConfig::generatePermutations(paramsRetJSON,allRetParams);
+        }
 
         for(uint j = 0; j < allParams.size(); j++){
             string newNameId;
@@ -141,6 +147,8 @@ vector<IIndexer*> LoadConfig::registerIndeces(Json::Value plugins){
             IIndexer* originalIndex = (IIndexer*)FactoryIndexer::getInstance()->createType(originalName);
             FactoryIndexer::getInstance()->registerType(newNameId,originalIndex,params);
             IIndexer* readyIndex = (IIndexer*)FactoryIndexer::getInstance()->createType(newNameId);
+
+            readyIndex->setAllRetreivalParameters(allRetParams);
 
             indexers.push_back(readyIndex);
         }

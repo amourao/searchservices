@@ -858,62 +858,71 @@ void awesomeIndexTesterAll(int argc, char *argv[]){
 
 		if (debug) cout << "Querying" << endl;
 
-		for (uint kIndex = 0; kIndex < kList.size(); kIndex++){
-			//int tmp = 0;
-        	vector<float> precVsLinearTmp;
-        	double tmpTime = 0;
-        	std::pair<vector<float>, vector<float> > r;
-        	vector<std::pair<vector<float>, vector<float> > > rAll;
-			int k = atoi(kList.at(kIndex).c_str());
-	        for (int j = 0; j < featuresTestQ.rows; j++){
-	            Mat q = featuresTestQ.row(j);
-	            get_timestamp(&start);
-	            r =  indexers.at(i)->knnSearchId(q,k);
-	            get_timestamp(&end);
-	            tmpTime += timestamp_diff_in_milliseconds(start, end);
-	            rAll.push_back(r);
-	            if (i == 0 && !gtLoaded)
-                    linearResults.push_back(r);
-	        }
-	        if (debug) cout << "Querying ok" << endl;
-	        double deltaDistance = 0;
+        int retInd = 0;
+        while (indexers.at(i)->hasNextRetrievalParameters()){
 
-	        double avgPrecAccum = 0;
-	        double accuracyAccum = 0;
-	        for (uint j = 0; j < rAll.size(); j++){
-	            long relAccum = 0;
-	            double precAccum = 0;
+            indexers.at(i)->nextRetrievalParameters();
 
-	            for (uint m = 0; m < rAll.at(j).first.size(); m++){
-	                deltaDistance += rAll.at(j).second.at(m) - linearResults.at(j).second.at(m);
-	            }
-	            //for each document in rank
-	            for (uint m = 0; m < rAll.at(j).first.size(); m++){
-	            	// Check if document m appears in the linear rank up to k
-	            	int isRelevant = 0;
-	                for (int n = 0; n < k; n++){
-	                    if (rAll.at(j).first.at(m) == linearResults.at(j).first.at(n)){
-	                        relAccum++;
-	                        accuracyAccum++;
-	                        isRelevant = 1;
-	                    }
-	                }
-	                // Measure precision at m
-	                // relAccum contains the number relevant document up to m
-	                double precisionAtM = relAccum/(m+1.0);
-	                if (debug){ cout << precisionAtM << " " << isRelevant << endl;}
-	                if (debug){ cout << relAccum << endl; getchar();}
-	                precAccum += precisionAtM * isRelevant;
-	            }
-	            // Accumulate results for query j
-	            //do not sum if relAccum is zero (special case in MAP formula)
-	            if (relAccum != 0){
-	            	avgPrecAccum += precAccum/(double)k;
-	            }
-	        }
-	        //if(indexToTest == 0 || i > 0)
-	        cout << ";" <<  tmpTime/nTesQ <<  ";" << ((double)accuracyAccum)/((double)k*nTesQ) << ";" << avgPrecAccum/(nTesQ) << ";" << deltaDistance;
-    	}
+            for (uint kIndex = 0; kIndex < kList.size(); kIndex++){
+                //int tmp = 0;
+                vector<float> precVsLinearTmp;
+                double tmpTime = 0;
+                std::pair<vector<float>, vector<float> > r;
+                vector<std::pair<vector<float>, vector<float> > > rAll;
+                int k = atoi(kList.at(kIndex).c_str());
+                for (int j = 0; j < featuresTestQ.rows; j++){
+                    Mat q = featuresTestQ.row(j);
+                    get_timestamp(&start);
+                    r =  indexers.at(i)->knnSearchId(q,k);
+                    get_timestamp(&end);
+                    tmpTime += timestamp_diff_in_milliseconds(start, end);
+                    rAll.push_back(r);
+                    if (i == 0 && !gtLoaded)
+                        linearResults.push_back(r);
+                }
+                if (debug) cout << "Querying ok" << endl;
+                double deltaDistance = 0;
+
+                double avgPrecAccum = 0;
+                double accuracyAccum = 0;
+                for (uint j = 0; j < rAll.size(); j++){
+                    long relAccum = 0;
+                    double precAccum = 0;
+
+                    for (uint m = 0; m < rAll.at(j).first.size(); m++){
+                        deltaDistance += rAll.at(j).second.at(m) - linearResults.at(j).second.at(m);
+                    }
+                    //for each document in rank
+                    for (uint m = 0; m < rAll.at(j).first.size(); m++){
+                        // Check if document m appears in the linear rank up to k
+                        int isRelevant = 0;
+                        for (int n = 0; n < k; n++){
+                            if (rAll.at(j).first.at(m) == linearResults.at(j).first.at(n)){
+                                relAccum++;
+                                accuracyAccum++;
+                                isRelevant = 1;
+                            }
+                        }
+                        // Measure precision at m
+                        // relAccum contains the number relevant document up to m
+                        double precisionAtM = relAccum/(m+1.0);
+                        if (debug){ cout << precisionAtM << " " << isRelevant << endl;}
+                        if (debug){ cout << relAccum << endl; getchar();}
+                        precAccum += precisionAtM * isRelevant;
+                    }
+                    // Accumulate results for query j
+                    //do not sum if relAccum is zero (special case in MAP formula)
+                    if (relAccum != 0){
+                        avgPrecAccum += precAccum/(double)k;
+                    }
+                }
+                stringstream ss5;
+                ss5 << std::setw(5) << std::setfill('0') << retInd;
+                //if(indexToTest == 0 || i > 0)
+                cout << "_" << ss5.str() << ";" <<  tmpTime/nTesQ <<  ";" << ((double)accuracyAccum)/((double)k*nTesQ) << ";" << avgPrecAccum/(nTesQ) << ";" << deltaDistance;
+            }
+        }
+
     	cout << endl;
         stringstream ss2;
 
