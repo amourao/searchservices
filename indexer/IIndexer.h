@@ -319,6 +319,13 @@ public:
 
     }
 
+    virtual vector<long> getStatistics(){
+        return vector<long>();
+    }
+    virtual void resetStatistics(){
+
+    }
+
 	virtual bool save(string basePath) = 0;
 	virtual bool load(string basePath) = 0;
 

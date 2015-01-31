@@ -927,6 +927,12 @@ void awesomeIndexTesterAll(int argc, char *argv[]){
                 }
                 //if(indexToTest == 0 || i > 0)
                 cout <<  ";" <<  tmpTime/nTesQ <<  ";" << ((double)accuracyAccum)/((double)k*nTesQ) << ";" << avgPrecAccum/(nTesQ) << ";" << deltaDistance;
+
+                vector<long> stats = indexers.at(i)->getStatistics();
+                for (long& s: stats){
+                    cout << ";" << s;
+                }
+                indexers.at(i)->resetStatistics();
             }
             retInd++;
             cout << endl;

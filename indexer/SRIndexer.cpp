@@ -182,9 +182,11 @@ std::pair<vector<float>,vector<float> > SRIndexer::knnSearchId(arma::fmat& query
         ksvd_res = indexKSVD->find_k_nearest_limit(query, n, current_search_limit*indexKSVD->size());
     }
 
+    indices.reserve(ksvd_res.size());
+    dists.reserve(ksvd_res.size());
     for (forr::Result& res : ksvd_res) {
         indices.push_back(res.vector_pos);
-        dists.push_back(std::pow(res.value,2));
+        dists.push_back(0);
     }
 
 	return make_pair(indices,dists);
@@ -244,10 +246,31 @@ map<string,string> SRIndexer::jsonToDict(Json::Value root){
     return result;
 }
 
+vector<long> SRIndexer::getStatistics(){
+    vector<long> statistics;
+
+    auto s = indexKSVD->getStatistics();
+
+    statistics.push_back(s.t0);
+    statistics.push_back(s.t1);
+    statistics.push_back(s.t2);
+    statistics.push_back(s.t3);
+    statistics.push_back(s.t4);
+    statistics.push_back(s.t5);
+    statistics.push_back(s.t6);
+
+    return statistics;
+}
+
+void SRIndexer::resetStatistics(){
+    indexKSVD->resetStatistics();
+}
+
 int SRIndexer::addToIndexLive(arma::fmat& features){
     features = features.t();
     std::shared_ptr<arma::fmat> featuresPtr(new arma::fmat(features));
     indexKSVD->addToIndex(featuresPtr);
+
     return 0;
 }
 

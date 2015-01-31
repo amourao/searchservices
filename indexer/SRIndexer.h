@@ -73,6 +73,9 @@ public:
 
 	void deployRetrievalParameters();
 
+	vector<long> getStatistics();
+	void resetStatistics();
+
 private:
 
     typedef l1min::OMPSparseConstrained lnmin;
