@@ -958,6 +958,272 @@ void awesomeIndexTesterAll(int argc, char *argv[]){
 
 }
 
+void getSAIndexStatistics(int argc, char *argv[]){
+    bool debug = false;
+    IBinImporter* importer;
+
+    string paramFile(argv[1]);
+
+	map<string,string> parameters;
+	vector<IIndexer*> allIndexers;
+	vector<IAnalyser*> analysers;
+	vector<IClassifier*> classifiers;
+	vector<IEndpoint*> endpoints;
+
+    int indexToTest = -1;
+    bool testAll = true;
+    if (argc > 2){
+        indexToTest = atoi(argv[2]);
+        testAll = false;
+    }
+
+	LoadConfig::load(paramFile,parameters,allIndexers,analysers,classifiers,endpoints);
+
+    string type(parameters["type"]);
+
+    if(type == "tiny"){
+        importer = new tinyImageImporter();
+    } else if(type == "billion"){
+        importer = new oneBillionImporter();
+    } else if(type == "nsBin"){
+        importer = new MatrixTools();
+    } else {
+        cout << "Unknown parameter value \"type\" = " << type << endl;
+        return;
+    }
+
+    long currentOffset = 0;
+
+    if (parameters.count("debug") > 0){
+	    debug = true;
+	}
+
+	int nTrain = atoi(parameters["nTrain"].c_str());
+	int nValI = atoi(parameters["nValI"].c_str());
+    int nValQ = atoi(parameters["nValQ"].c_str());
+	int nTesI = atoi(parameters["nTesI"].c_str());
+	int nTesQ = atoi(parameters["nTesQ"].c_str());
+
+	vector<string> kList = StringTools::split(parameters["k"],',');
+	int biggestK = atoi(kList.at(0).c_str());
+
+	for(uint i = 1; i < kList.size(); i++){
+		if(atoi(kList.at(i).c_str()) > biggestK)
+			biggestK = atoi(kList.at(i).c_str());
+	}
+	//int mapAt = atoi(parameters["mapAt"].c_str());
+
+	Mat featuresTrain;
+	Mat featuresValidationI;
+	Mat featuresValidationQ;
+	Mat featuresTestI;
+	Mat featuresTestQ;
+
+	string simpleFileName;
+	string outfileNameA;
+	string file;
+
+	vector<std::pair<vector<float>, vector<float> > > linearResults;
+
+	long testOffset;
+   	timestamp_type start, end;
+
+	if (parameters.count("file") > 0){
+
+    	if (parameters.count("splitToTest") > 0){
+			currentOffset = atoi(parameters["splitToTest"].c_str())*(nTrain+nValI+nValQ+nTesI+nTesQ);
+		}
+
+		file = string(parameters["file"]);
+    	//int tmp = 0;
+    	if (debug) cout << "Reading featuresTrain: ";
+	//Mat labels;
+
+	    get_timestamp(&start);
+		importer->readBin(file,nTrain,featuresTrain,currentOffset);
+		get_timestamp(&end);
+		currentOffset += nTrain;
+		if (debug) cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresValidationI ";
+		get_timestamp(&start);
+		importer->readBin(file,nValI,featuresValidationI,currentOffset);
+		get_timestamp(&end);
+		currentOffset += nValI;
+	    if (debug) cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresValidationQ ";
+	    get_timestamp(&start);
+		importer->readBin(file,nValQ,featuresValidationQ,currentOffset);
+		get_timestamp(&end);
+		currentOffset += nValQ;
+		testOffset = currentOffset;
+		if (debug) cout << currentOffset << " ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresTestI ";
+		get_timestamp(&start);
+		importer->readBin(file,nTesI,featuresTestI,currentOffset);
+		get_timestamp(&end);
+
+		currentOffset += nTesI;
+		if (debug) cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresTestQ ";
+		get_timestamp(&start);
+		importer->readBin(file,nTesQ,featuresTestQ,currentOffset);
+		get_timestamp(&end);
+		if (debug) cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
+
+	    simpleFileName = file;
+		uint posC = simpleFileName.rfind("/");
+
+		if (posC != string::npos)
+			simpleFileName = simpleFileName.substr(posC+1);
+
+		if (debug) cout << "Loading GT" << endl;
+
+		stringstream outfileName;
+
+		outfileName << simpleFileName << "_" << testOffset << "_" << nTesI << "_" << nTesQ << "_" << biggestK << ".gt";
+
+		if (debug) cout << outfileName.str() << endl;
+
+		outfileNameA = outfileName.str();
+
+
+	} else if (parameters.count("fileIndex") > 0){
+		file = string(parameters["fileIndex"]);
+
+
+		string fileIndex = string(parameters["fileIndex"]);
+		string fileTrain = string(parameters["fileTrain"]);
+		string fileQuery = string(parameters["fileQuery"]);
+
+    	//int tmp = 0;
+    	if (debug) cout << "Reading featuresTrain: ";
+		//Mat labels;
+
+	    get_timestamp(&start);
+		importer->readBin(fileTrain,nTrain-nValI-nValQ,featuresTrain,currentOffset);
+		get_timestamp(&end);
+		currentOffset += nTrain-nValI-nValQ;
+		if (debug) cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresValidationI ";
+		get_timestamp(&start);
+		importer->readBin(fileTrain,nValI,featuresValidationI,currentOffset);
+		get_timestamp(&end);
+		currentOffset += nValI;
+	    if (debug) cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresValidationQ ";
+	    get_timestamp(&start);
+		importer->readBin(fileTrain,nValQ,featuresValidationQ,currentOffset);
+		get_timestamp(&end);
+		int testIndexOffset = 0;
+		testOffset = 0;
+		if (debug) cout << currentOffset << " ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresTestI ";
+		get_timestamp(&start);
+		importer->readBin(fileIndex,nTesI,featuresTestI,testIndexOffset);
+		get_timestamp(&end);
+		if (debug) cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresTestQ ";
+		int testQueryOffset = 0;
+		get_timestamp(&start);
+		importer->readBin(fileQuery,nTesQ,featuresTestQ,testQueryOffset);
+		get_timestamp(&end);
+		if (debug) cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl;
+
+	    simpleFileName = file;
+		uint posC = simpleFileName.rfind("/");
+
+		if (posC != string::npos)
+			simpleFileName = simpleFileName.substr(posC+1);
+
+		if (debug) cout << "Loading GT" << endl;
+
+		stringstream outfileName;
+
+		outfileName << simpleFileName << "_" << testIndexOffset << "_" << nTesI << "_" << nTesQ << "_" << biggestK << ".gt";
+
+		if (debug) cout << outfileName.str() << endl;
+
+		outfileNameA = outfileName.str();
+
+
+	} else {
+		cout << "error: no files specified" << endl;
+    	return;
+	}
+
+    //featuresValidationI.copyTo(featuresTestI);
+    //featuresValidationQ.copyTo(featuresTestQ);
+    //nTesI = featuresTestI.rows;
+    //nTesQ = featuresTestQ.rows;
+
+    vector<IIndexer*> indexers;
+
+    if (!testAll){
+        indexers.push_back(allIndexers.at(indexToTest));
+    } else {
+        indexers = allIndexers;
+    }
+
+    for(uint i = 0; i < indexers.size(); i++){
+
+        if (testAll){
+            indexToTest = i;
+        }
+
+        if(indexToTest == 0){
+            cout << simpleFileName << endl;
+            cout << "nTrain;nValI;nValQ;nTesI;nTesQ;nk;";
+            for (uint ii = 0; ii < kList.size(); ii++){cout << "k" << ii+1<< ";";}
+            cout << "d;offset" << endl;
+            cout << nTrain << ";" << nValI << ";" << nValQ << ";" << nTesI << ";" << nTesQ << ";" << kList.size() << ";";
+            for (uint ii = 0; ii < kList.size(); ii++){cout << kList.at(ii)<<";";}
+            cout << featuresTestI.cols << ";" << atoi(parameters["startOffset"].c_str()) << endl;
+            cout << "Index name;Name;Base name;Train time (ms);Index time (ms);Retrieval index;";
+            for (uint ii = 0; ii < kList.size(); ii++){cout << "Query time (ms)@" << kList.at(ii) << ";mAcc@" << kList.at(ii) << ";MAP@" << kList.at(ii) << ";Dist@" << kList.at(ii) << ";";}
+            cout << endl;
+        }
+
+    	if (debug) cout << "Training" << endl;
+		get_timestamp(&start);
+        indexers.at(i)->train(featuresTrain,featuresValidationQ,featuresValidationI);
+		get_timestamp(&end);
+		if (debug) cout << "Training ok" << endl;
+
+		uint pos = indexers.at(i)->getName().rfind("_");
+		string simpleName = indexers.at(i)->getName().substr(0,pos);
+
+		stringstream ss4;
+        ss4 << std::setw(5) << std::setfill('0') << indexToTest;
+        cout << ss4.str() << ";" << indexers.at(i)->getName() << ";" << simpleName << ";" << timestamp_diff_in_milliseconds(start, end);
+
+        if (debug) cout << "Indexing" << endl;
+		get_timestamp(&start);
+        indexers.at(i)->indexWithTrainedParams(featuresTestI);
+		get_timestamp(&end);
+		if (debug) cout << "Indexing ok" << endl;
+
+        //if(indexToTest == 0 || i > 0)
+        cout << ";" << timestamp_diff_in_milliseconds(start, end);
+
+        vector<long> stats = indexers.at(i)->getStatistics();
+
+        for (long& s: stats){
+            cout << ";" << s;
+        }
+
+        cout << endl;
+
+        stringstream ss2;
+
+        uint pos2a = paramFile.rfind("/");
+        uint pos2b = paramFile.rfind(".");
+
+        if (pos2a == std::string::npos)
+        	pos2a = -1;
+
+		string simpleParamFileName = paramFile.substr(pos2a+1,pos2b-pos2a-1);
+
+        ss2 << simpleParamFileName << "_" << std::setw(5) << std::setfill('0') << indexToTest << "_" << indexers.at(i)->getName();
+
+		indexers.at(i)->saveParams(ss2.str());
+
+		delete indexers.at(i);
+	}
+
+}
+
 void exportToArmaMat(int argc, char *argv[]){
 
 	bool debug = false;
@@ -1346,7 +1612,7 @@ int main(int argc, char *argv[]){
 	//testSphericalHashing(argc, argv);
 	//getMatrixSample(argc, argv);
     //testReadBin(argc, argv);
-	awesomeIndexTesterAll(argc, argv);
+	getSAIndexStatistics(argc, argv);
 	/*
 	string name(argv[0]);
 	if (name == "./computeGT"){

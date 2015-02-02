@@ -259,6 +259,11 @@ vector<long> SRIndexer::getStatistics(){
     statistics.push_back(s.t5);
     statistics.push_back(s.t6);
 
+    vector<int> stats2 = indexKSVD->get_bucket_ocupation();
+
+    for(int i: stats2)
+        statistics.push_back(i);
+
     return statistics;
 }
 
