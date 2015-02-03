@@ -928,8 +928,8 @@ void awesomeIndexTesterAll(int argc, char *argv[]){
                 //if(indexToTest == 0 || i > 0)
                 cout <<  ";" <<  tmpTime/nTesQ <<  ";" << ((double)accuracyAccum)/((double)k*nTesQ) << ";" << avgPrecAccum/(nTesQ) << ";" << deltaDistance;
 
-                vector<long> stats = indexers.at(i)->getStatistics();
-                for (long& s: stats){
+                vector<double> stats = indexers.at(i)->getStatistics();
+                for (double& s: stats){
                     cout << ";" << s;
                 }
                 indexers.at(i)->resetStatistics();
@@ -1197,9 +1197,9 @@ void getSAIndexStatistics(int argc, char *argv[]){
         //if(indexToTest == 0 || i > 0)
         cout << ";" << timestamp_diff_in_milliseconds(start, end);
 
-        vector<long> stats = indexers.at(i)->getStatistics();
+        vector<double> stats = indexers.at(i)->getStatistics();
 
-        for (long& s: stats){
+        for (double& s: stats){
             cout << ";" << s;
         }
 
@@ -1612,7 +1612,7 @@ int main(int argc, char *argv[]){
 	//testSphericalHashing(argc, argv);
 	//getMatrixSample(argc, argv);
     //testReadBin(argc, argv);
-	getSAIndexStatistics(argc, argv);
+	awesomeIndexTesterAll(argc, argv);
 	/*
 	string name(argv[0]);
 	if (name == "./computeGT"){

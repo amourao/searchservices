@@ -151,7 +151,7 @@ void SRIndexer::index(arma::fmat& features){
     ksvd_options.eps       = eps;
     */
     indexKSVD = indexk_Ptr( new indexk(*lnMinQuery, ksvd->D));
-    indexKSVD->load(indexData, lnMinQuery->options.max_iters);
+    indexKSVD->load(indexData, 10);
 
 }
 
@@ -178,6 +178,8 @@ std::pair<vector<float>,vector<float> > SRIndexer::knnSearchId(arma::fmat& query
         ksvd_res = indexKSVD->find_k_nearest_limit_wcoeff(query, n, current_search_limit*indexKSVD->size());
     } else if(bucket_inspection_method == SR_DEFAULT_BUCKET_INSPECTION_WEIGH_2){
         ksvd_res = indexKSVD->find_k_nearest_limit_wcoeff2(query, n, current_search_limit*indexKSVD->size());
+    } else if(bucket_inspection_method == SR_DEFAULT_BUCKET_INSPECTION_PARTIAL){
+        ksvd_res = indexKSVD->find_k_nearest_limit_partial(query, n, current_search_limit*indexKSVD->size());
     } else { //use default
         ksvd_res = indexKSVD->find_k_nearest_limit(query, n, current_search_limit*indexKSVD->size());
     }
@@ -246,24 +248,39 @@ map<string,string> SRIndexer::jsonToDict(Json::Value root){
     return result;
 }
 
-vector<long> SRIndexer::getStatistics(){
-    vector<long> statistics;
+vector<double> SRIndexer::getStatistics(){
+    vector<double> statistics;
 
+    /*
     auto s = indexKSVD->getStatistics();
 
-    statistics.push_back(s.t0);
-    statistics.push_back(s.t1);
-    statistics.push_back(s.t2);
-    statistics.push_back(s.t3);
-    statistics.push_back(s.t4);
-    statistics.push_back(s.t5);
-    statistics.push_back(s.t6);
+    //statistics.push_back(s.t0);
+    //statistics.push_back(s.t1);
+    //statistics.push_back(s.t2);
+    //statistics.push_back(s.t3);
+    //statistics.push_back(s.t4);
+    //statistics.push_back(s.t5);
+    //statistics.push_back(s.t6);
 
-    vector<int> stats2 = indexKSVD->get_bucket_ocupation();
-
-    for(int i: stats2)
+    for(int i: indexKSVD->get_bucket_ocupation())
         statistics.push_back(i);
 
+    statistics.push_back(-1);
+
+    for(double i: indexKSVD->get_bucket_statistics())
+        statistics.push_back(i);
+
+    statistics.push_back(-1);
+
+    for(double i: indexKSVD->get_reconstruction_statistics_1())
+        statistics.push_back(i);
+
+    statistics.push_back(-1);
+
+    for(double i: indexKSVD->get_reconstruction_statistics_2())
+        statistics.push_back(i);
+
+    */
     return statistics;
 }
 

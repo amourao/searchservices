@@ -319,8 +319,8 @@ public:
 
     }
 
-    virtual vector<long> getStatistics(){
-        return vector<long>();
+    virtual vector<double> getStatistics(){
+        return vector<double>();
     }
     virtual void resetStatistics(){
 

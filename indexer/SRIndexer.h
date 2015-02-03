@@ -35,8 +35,9 @@
 #define SR_DEFAULT_BUCKET_INSPECTION "default"
 #define SR_DEFAULT_BUCKET_INSPECTION_GREEDY "greedy"
 #define SR_DEFAULT_BUCKET_INSPECTION_RR "rr"
-#define SR_DEFAULT_BUCKET_INSPECTION_WEIGH "weighed"
-#define SR_DEFAULT_BUCKET_INSPECTION_WEIGH_2 "weighed_alt"
+#define SR_DEFAULT_BUCKET_INSPECTION_WEIGH "weighted"
+#define SR_DEFAULT_BUCKET_INSPECTION_WEIGH_2 "weighted_alt"
+#define SR_DEFAULT_BUCKET_INSPECTION_PARTIAL "partial"
 
 using namespace pugi;
 using namespace arma;
@@ -73,7 +74,7 @@ public:
 
 	void deployRetrievalParameters();
 
-	vector<long> getStatistics();
+	vector<double> getStatistics();
 	void resetStatistics();
 
 private:
