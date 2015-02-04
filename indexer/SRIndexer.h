@@ -32,6 +32,9 @@
 #define SR_DEFAULT_BUCKET_INSPECTION_WEIGH_2 "weighted_alt"
 #define SR_DEFAULT_BUCKET_INSPECTION_PARTIAL "partial"
 
+#define SR_DEFAULT_RANDU "randu"
+#define SR_DEFAULT_RANDN "randn"
+
 using namespace pugi;
 using namespace arma;
 using namespace l1min;
@@ -111,6 +114,7 @@ private:
 
     string index_path;
     string bucket_inspection_method;
+    string dict_seed_type;
 
     arma::fmat dictionary;
     std::shared_ptr<arma::fmat> indexData;
