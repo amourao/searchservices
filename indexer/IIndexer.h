@@ -167,7 +167,7 @@ public:
 		vector<string> result;
 
 		for(uint i = 0; i < v1.size(); i++){
-			if ((chosenLabels >= 0) && (chosenLabels < allLabels.size()) && allLabels.at(chosenLabels).size() > 0){
+			if ((chosenLabels >= 0) && (((uint)chosenLabels) < allLabels.size()) && allLabels.at(chosenLabels).size() > 0){
 				result.push_back(allLabels.at(chosenLabels)[v1.at(i)]);
 			} else {
 				stringstream ss;
@@ -227,7 +227,7 @@ public:
 	}
 
 	virtual void addLabelLive(int originalIndex, vector<string> labels){
-		for (int i = 0; i < allLabels.size(); i++){
+		for (uint i = 0; i < allLabels.size(); i++){
             cout << i << " " << originalIndex << " " << labels.at(i) << endl;
 			allLabels[i].insert(std::pair<float,string>(originalIndex,labels.at(i)));
 		}
@@ -325,6 +325,14 @@ public:
     virtual void resetStatistics(){
 
     }
+
+    virtual void getMoreStatistics(arma::fmat& query, arma::fmat& nn){
+
+    }
+
+	virtual void printMoreStatistics(){
+
+	}
 
 	virtual bool save(string basePath) = 0;
 	virtual bool load(string basePath) = 0;

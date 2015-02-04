@@ -105,7 +105,7 @@ void GenericIndexer::handleRequest(string method, map<string, string> queryStrin
     get_timestamp(&end);
     cout << "** request time: " << timestamp_diff_in_milliseconds(start, end) << " ms. **" << endl;
     get_timestamp(&start);
-    
+
     std::ostream& out = resp.send();
     out << response;
     out.flush();
@@ -303,8 +303,8 @@ string GenericIndexer::retrieve(map<string, string> parameters){
 	else if(outputFormat == "simple"){
 		result.reserve(7500);
 
-        
-        
+
+
 
         for (uint j = 0; j < resultLists.size(); j++){
             std::pair< vector<string>, vector<float> > resultList = resultLists.at(j);
@@ -313,7 +313,7 @@ string GenericIndexer::retrieve(map<string, string> parameters){
             }
         }
 
-        
+
 
         result.append("\n" + to_string(setupTime)+ "\n");
         result.append(to_string(downloadTime)+ "\n");
@@ -338,8 +338,8 @@ string GenericIndexer::retrieve(map<string, string> parameters){
 
 string GenericIndexer::retrieveExtracted(map<string, string> parameters, istream& input){
 	cout << "**************** action retrieve ****************" << endl;
-	timestamp_type start, end, totalStart, totalEnd, tmpStart, tmpEnd;
-	uint setupTime, downloadTime, feTime, retrievalTime, formatingTime;
+	timestamp_type start, totalStart;
+	//uint setupTime, downloadTime, feTime, retrievalTime, formatingTime;
 	get_timestamp(&totalStart);
 	get_timestamp(&start);
 
@@ -651,7 +651,8 @@ string GenericIndexer::addToIndexLive(map<string, string> parameters){
 string GenericIndexer::saveIndex(map<string, string> parameters){
     FileDownloader fd;
     cout << "**************** action saveIndex ****************" << endl;
-    timestamp_type start, end, totalStart, totalEnd;
+    //timestamp_type start, end;
+    timestamp_type totalStart, totalEnd;
     get_timestamp(&totalStart);
 
     string analyserName = parameters["analyser"];

@@ -394,7 +394,7 @@
 	"../commons/factory/Factory.h"
 	"IIndexer.h"
 
-1422895416 /home/amourao/code/searchservices/indexer/IIndexer.h
+1423011879 /home/amourao/code/searchservices/indexer/IIndexer.h
 	<map>
 	<string>
 	<iostream>
@@ -428,7 +428,7 @@
 	"FactoryIndexer.h"
 	"../commons/Timing.h"
 
-1422895544 source:/home/amourao/code/searchservices/analyser/Main3.cpp
+1423014467 source:/home/amourao/code/searchservices/analyser/Main3.cpp
 	<iostream>
 	<fstream>
 	<string>
@@ -897,7 +897,7 @@
 	"../../FactoryEndpoint.h"
 	"../../IEndpoint.h"
 
-1422463373 source:/home/amourao/code/searchservices/rest/Endpoints/indexer/GenericIndexer.cpp
+1423009278 source:/home/amourao/code/searchservices/rest/Endpoints/indexer/GenericIndexer.cpp
 	"GenericIndexer.h"
 
 1418384655 /home/amourao/code/searchservices/rest/Endpoints/indexer/GenericIndexer.h
@@ -4184,10 +4184,10 @@
 	"../FactoryAnalyser.h"
 	"../tools/MatrixTools.h"
 
-1422919644 source:/home/amourao/code/searchservices/indexer/SRIndexer.cpp
+1423011084 source:/home/amourao/code/searchservices/indexer/SRIndexer.cpp
 	"SRIndexer.h"
 
-1422895403 /home/amourao/code/searchservices/indexer/SRIndexer.h
+1423011720 /home/amourao/code/searchservices/indexer/SRIndexer.h
 	<map>
 	<string>
 	<iostream>
@@ -4197,14 +4197,8 @@
 	<ksvd-indexing-experiment/result.h>
 	<ksvd/ksvd.h>
 	<utils/utils.h>
-	<l1min/dalm.h>
-	<l1min/fista.h>
 	<l1min/omp.h>
-	<l1min/thresholding.h>
-	<l1min/dalm_io.h>
-	<l1min/fista_io.h>
 	<l1min/omp_io.h>
-	<l1min/thresholding_io.h>
 	<opencv2/highgui/highgui.hpp>
 	<opencv2/ml/ml.hpp>
 	<opencv2/flann/flann.hpp>
@@ -4231,18 +4225,19 @@
 	<set>
 	<armadillo>
 
-1422922278 /home/amourao/code/sparsereconstruction//ksvd-indexing-experiment/ksvd_index_mp.h
+1423017853 /home/amourao/code/sparsereconstruction//ksvd-indexing-experiment/ksvd_index_mp.h
 	<algorithm>
 	<cassert>
 	<memory>
 	<unordered_set>
 	<vector>
+	<list>
 	<chrono>
 	<armadillo>
 	"ksvd-indexing-experiment/result.h"
 	"utils/utils.h"
 
-1422895655 /home/amourao/code/sparsereconstruction//ksvd-indexing-experiment/result.h
+1422973843 /home/amourao/code/sparsereconstruction//ksvd-indexing-experiment/result.h
 	<armadillo>
 
 1399907099 /home/amourao/code/sparsereconstruction//utils/utils.h
@@ -4252,7 +4247,7 @@
 	<set>
 	<armadillo>
 
-1414420538 /home/amourao/code/sparsereconstruction//ksvd/ksvd.h
+1423011192 /home/amourao/code/sparsereconstruction//ksvd/ksvd.h
 	<cassert>
 	<iostream>
 	<map>
@@ -4275,17 +4270,17 @@
 	<iostream>
 	<armadillo>
 
-1400693734 /home/amourao/code/sparsereconstruction//l1min/fista.h
+1423009164 /home/amourao/code/sparsereconstruction//l1min/fista.h
 	<armadillo>
 
-1400693707 /home/amourao/code/sparsereconstruction//l1min/omp.h
+1423009160 /home/amourao/code/sparsereconstruction//l1min/omp.h
 	<cassert>
 	<cmath>
 	<iostream>
 	<algorithm>
 	<armadillo>
 
-1400693718 /home/amourao/code/sparsereconstruction//l1min/thresholding.h
+1423009156 /home/amourao/code/sparsereconstruction//l1min/thresholding.h
 	<cassert>
 	<cmath>
 	<iostream>
@@ -7292,7 +7287,7 @@
 	"linear_index.h"
 	"logger.h"
 
-1343256930 /localstore/searchservices/libs/include//opencv2/flann/ground_truth.h
+1423009185 /localstore/searchservices/libs/include//opencv2/flann/ground_truth.h
 	"dist.h"
 	"matrix.h"
 

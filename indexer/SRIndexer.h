@@ -12,15 +12,8 @@
 #include <ksvd/ksvd.h>
 #include <utils/utils.h>
 
-#include <l1min/dalm.h>
-#include <l1min/fista.h>
 #include <l1min/omp.h>
-#include <l1min/thresholding.h>
-
-#include <l1min/dalm_io.h>
-#include <l1min/fista_io.h>
 #include <l1min/omp_io.h>
-#include <l1min/thresholding_io.h>
 
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/ml/ml.hpp>
@@ -76,6 +69,10 @@ public:
 
 	vector<double> getStatistics();
 	void resetStatistics();
+
+	void getMoreStatistics(arma::fmat& query, arma::fmat& nn);
+
+	void printMoreStatistics();
 
 private:
 

@@ -296,3 +296,11 @@ int SRIndexer::addToIndexLive(arma::fmat& features){
     return 0;
 }
 
+void SRIndexer::getMoreStatistics(arma::fmat& query, arma::fmat& nn){
+    indexKSVD->find_stats(query,nn);
+}
+
+void SRIndexer::printMoreStatistics(){
+    indexKSVD->aggregate_and_print_find_stats();
+}
+
