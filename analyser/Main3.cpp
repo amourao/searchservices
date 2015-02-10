@@ -1191,7 +1191,7 @@ void getSAIndexStatistics(int argc, char *argv[]){
 
         if (debug) cout << "Indexing" << endl;
 		get_timestamp(&start);
-        indexers.at(i)->indexWithTrainedParams(featuresTestI);
+        indexers.at(i)->indexWithTrainedParams(featuresValidationI);
 		get_timestamp(&end);
 		if (debug) cout << "Indexing ok" << endl;
 
@@ -1434,21 +1434,21 @@ void getMoreSAIndexStatistics(int argc, char *argv[]){
     if (debug) cout << "Training ok" << endl;
 
     if (debug) cout << "Indexing" << endl;
-    linear->indexWithTrainedParams(featuresTestI);
-    sa->indexWithTrainedParams(featuresTestI);
+    linear->indexWithTrainedParams(featuresValidationI);
+    sa->indexWithTrainedParams(featuresValidationI);
     if (debug) cout << "Indexing ok" << endl;
 
     int k = 50;
 
-    for (int j = 0; j < featuresTestQ.rows; j++){
-        cv::Mat q = featuresTestQ.row(j);
+    for (int j = 0; j < featuresValidationQ.rows; j++){
+        cv::Mat q = featuresValidationQ.row(j);
         get_timestamp(&start);
         std::pair<vector<float>,vector<float> > r = linear->knnSearchId(q,k);
         vector<float> indeces = r.first;
 
         cv::Mat nn;
         for(uint n = 0; n < indeces.size(); n++){
-            nn.push_back(featuresTestI.row(indeces.at(n)));
+            nn.push_back(featuresValidationI.row(indeces.at(n)));
         }
 
         arma::fmat qMat;
@@ -1858,16 +1858,16 @@ int main(int argc, char *argv[]){
 	//testSphericalHashing(argc, argv);
 	//getMatrixSample(argc, argv);
     //testReadBin(argc, argv);
-	getMoreSAIndexStatistics(argc, argv);
-	/*
+	//awesomeIndexTesterAll(argc, argv);
+
 	string name(argv[0]);
-	if (name == "./computeGT"){
-		computeGT(argc, argv);
-	} else if (name == "./exportToArmaMat"){
-		exportToArmaMat(argc, argv);
+	if (name == "./getBucketStats"){
+		getSAIndexStatistics(argc, argv);
+	} else if (name == "./getMoreBucketStats"){
+		getMoreSAIndexStatistics(argc, argv);
 	} else{
-		awesomeIndexTesterSingle(argc, argv);
+		awesomeIndexTesterAll(argc, argv);
 	}
-	*/
+
     return 0;
 }
