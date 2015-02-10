@@ -284,9 +284,9 @@ void awesomeIndexTesterOldAndWrong(int argc, char *argv[]){
         //cv::Mat labels;
 
         get_timestamp(&start);
-        importer->readBin(fileTrain,nTrain-nValI-nValQ,featuresTrain,currentOffset);
+        importer->readBin(fileTrain,nTrain,featuresTrain,currentOffset);
         get_timestamp(&end);
-        currentOffset += nTrain-nValI-nValQ;
+        currentOffset += nTrain;
         get_timestamp(&start);
         importer->readBin(fileTrain,nValI,featuresValidationI,currentOffset);
         get_timestamp(&end);
@@ -747,9 +747,9 @@ void awesomeIndexTesterAll(int argc, char *argv[]){
 		//cv::Mat labels;
 
 	    get_timestamp(&start);
-		importer->readBin(fileTrain,nTrain-nValI-nValQ,featuresTrain,currentOffset);
+		importer->readBin(fileTrain,nTrain,featuresTrain,currentOffset);
 		get_timestamp(&end);
-		currentOffset += nTrain-nValI-nValQ;
+		currentOffset += nTrain;
 		if (debug) cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresValidationI ";
 		get_timestamp(&start);
 		importer->readBin(fileTrain,nValI,featuresValidationI,currentOffset);
@@ -1097,9 +1097,9 @@ void getSAIndexStatistics(int argc, char *argv[]){
 		//cv::Mat labels;
 
 	    get_timestamp(&start);
-		importer->readBin(fileTrain,nTrain-nValI-nValQ,featuresTrain,currentOffset);
+		importer->readBin(fileTrain,nTrain,featuresTrain,currentOffset);
 		get_timestamp(&end);
-		currentOffset += nTrain-nValI-nValQ;
+		currentOffset += nTrain;
 		if (debug) cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresValidationI ";
 		get_timestamp(&start);
 		importer->readBin(fileTrain,nValI,featuresValidationI,currentOffset);
@@ -1364,9 +1364,9 @@ void getMoreSAIndexStatistics(int argc, char *argv[]){
 		//cv::Mat labels;
 
 	    get_timestamp(&start);
-		importer->readBin(fileTrain,nTrain-nValI-nValQ,featuresTrain,currentOffset);
+		importer->readBin(fileTrain,nTrain,featuresTrain,currentOffset);
 		get_timestamp(&end);
-		currentOffset += nTrain-nValI-nValQ;
+		currentOffset += nTrain;
 		if (debug) cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresValidationI ";
 		get_timestamp(&start);
 		importer->readBin(fileTrain,nValI,featuresValidationI,currentOffset);
@@ -1583,9 +1583,9 @@ void exportToArmaMat(int argc, char *argv[]){
 		//Mat labels;
 
 	    get_timestamp(&start);
-		importer->readBin(fileTrain,nTrain-nValI-nValQ,featuresTrain,currentOffset);
+		importer->readBin(fileTrain,nTrain,featuresTrain,currentOffset);
 		get_timestamp(&end);
-		currentOffset += nTrain-nValI-nValQ;
+		currentOffset += nTrain;
 		if (debug) cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresValidationI ";
 		get_timestamp(&start);
 		importer->readBin(fileTrain,nValI,featuresValidationI,currentOffset);
