@@ -107,9 +107,10 @@ void* SRIndexer::createType(string &typeId){
 }
 
 void SRIndexer::train(arma::fmat& featuresTrain,arma::fmat& featuresValidationI,arma::fmat& featuresValidationQ){
-    featuresTrain = featuresTrain.t();
-    featuresValidationI = featuresValidationI.t();
-    featuresValidationQ = featuresValidationQ.t();
+
+    preProcessData(featuresTrain);
+    preProcessData(featuresValidationI);
+    preProcessData(featuresValidationQ);
 
     trainDataSize = featuresTrain.n_cols;
 
@@ -129,7 +130,7 @@ void SRIndexer::train(arma::fmat& featuresTrain,arma::fmat& featuresValidationI,
 }
 
 void SRIndexer::indexWithTrainedParams(arma::fmat& features){
-    features = features.t();
+    preProcessData(features);
 
     indexData = std::make_shared<fmat>(features);
 
@@ -139,7 +140,7 @@ void SRIndexer::indexWithTrainedParams(arma::fmat& features){
 
 void SRIndexer::index(arma::fmat& features){
 
-    features = features.t();
+    preProcessData(features);
 
     arma::fmat trainSplit;
     vector<arma::fmat> in;
@@ -149,7 +150,8 @@ void SRIndexer::index(arma::fmat& features){
 
     MatrixTools::getRandomSample(in,trainDataSize,out);
 
-    trainSplit = out.at(0).t();
+    trainSplit = out.at(0);
+    preProcessData(trainSplit);
 
     train(trainSplit,trainSplit,trainSplit);
 
@@ -209,7 +211,7 @@ std::pair<vector<float>,vector<float> > SRIndexer::knnSearchId(arma::fmat& query
 }
 
 std::pair<vector<float>,vector<float> > SRIndexer::radiusSearchId(arma::fmat& query, double radius, int n, double search_limit){
-    query = query.t();
+    preProcessData(query);
 
 	vector<float> indices (n);
 	vector<float> dists (n);
@@ -303,7 +305,10 @@ void SRIndexer::resetStatistics(){
 }
 
 int SRIndexer::addToIndexLive(arma::fmat& features){
-    features = features.t();
+    preProcessData(features);
+
+
+
     std::shared_ptr<arma::fmat> featuresPtr(new arma::fmat(features));
     indexKSVD->addToIndex(featuresPtr);
 
