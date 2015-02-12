@@ -114,12 +114,14 @@ void SRIndexer::train(arma::fmat& featuresTrain,arma::fmat& featuresValidationI,
 
     trainDataSize = featuresTrain.n_cols;
 
-    if(dict_seed_type == SR_DEFAULT_RANDU)
+    if(dict_seed_type == SR_DEFAULT_RANDU){
         dictionary = arma::randu<arma::fmat>(featuresTrain.n_rows, dimensions);
-    else if(dict_seed_type == SR_DEFAULT_RANDN)
+        utils::normalize_columns(dictionary);
+    } else if(dict_seed_type == SR_DEFAULT_RANDN){
         dictionary = arma::randn<arma::fmat>(featuresTrain.n_rows, dimensions);
+    }
 
-    utils::normalize_columns(dictionary);
+
     ksvd = ksvdb_Ptr(new ksvdb(optKSVD,*lnMinKSVD,dictionary,featuresTrain));
 
     for (int i = 0; i < n_iter; i++) {
@@ -150,8 +152,7 @@ void SRIndexer::index(arma::fmat& features){
 
     MatrixTools::getRandomSample(in,trainDataSize,out);
 
-    trainSplit = out.at(0);
-    preProcessData(trainSplit);
+    trainSplit = out.at(0).t();
 
     train(trainSplit,trainSplit,trainSplit);
 
@@ -173,7 +174,6 @@ void SRIndexer::index(arma::fmat& features){
 std::pair<vector<float>,vector<float> > SRIndexer::knnSearchId(arma::fmat& query, int n, double search_limit_param){
 
     preProcessData(query);
-
 
 	vector<float> indices;
 	vector<float> dists;
@@ -316,6 +316,10 @@ int SRIndexer::addToIndexLive(arma::fmat& features){
 }
 
 void SRIndexer::getMoreStatistics(arma::fmat& query, arma::fmat& nn){
+
+    preProcessData(query);
+    preProcessData(nn);
+
     indexKSVD->find_stats(query,nn);
 }
 

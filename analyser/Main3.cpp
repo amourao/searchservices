@@ -1454,13 +1454,8 @@ void getMoreSAIndexStatistics(int argc, char *argv[]){
         arma::fmat qMat;
 		MatrixTools::matToFMat(q, qMat);
 
-        qMat = qMat.t();
-
         arma::fmat nnMat;
 		MatrixTools::matToFMat(nn, nnMat);
-
-        nnMat = nnMat.t();
-
 
         sa->getMoreStatistics(qMat,nnMat);
 
@@ -1892,7 +1887,7 @@ int main(int argc, char *argv[]){
 	} else if (name == "./getMoreBucketStats"){
 		getMoreSAIndexStatistics(argc, argv);
 	} else{
-		awesomeIndexTesterAll(argc, argv);
+		getMoreSAIndexStatistics(argc, argv);
 	}
 
     return 0;
