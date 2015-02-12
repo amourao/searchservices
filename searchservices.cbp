@@ -11,7 +11,7 @@
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="/home/amourao/Desktop/configCondor7_a2.json" />
+				<Option parameters="/home/amourao/Desktop/0002_BV1_a.json" />
 				<Compiler>
 					<Add option="-O2" />
 					<Add directory="commons" />
@@ -53,7 +53,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="/home/amourao/Desktop/configCondor7_a2.json" />
+				<Option parameters="/home/amourao/Desktop/0002_BV1_a.json" />
 				<Compiler>
 					<Add option="-g" />
 					<Add directory="commons" />

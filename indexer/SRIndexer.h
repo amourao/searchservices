@@ -77,6 +77,10 @@ public:
 
 	void printMoreStatistics();
 
+	void normalizeByCol(arma::fmat& matrix);
+	void preProcessData(arma::fmat& matrix);
+
+
 private:
 
     typedef l1min::OMPSparseConstrained lnmin;
@@ -109,6 +113,7 @@ private:
     int max_iters;
     double eps;
     double search_limit;
+    bool normalizeCols;
 
     int trainDataSize;
 

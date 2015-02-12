@@ -1853,6 +1853,32 @@ int testReadBin(int argc, char *argv[]){
     return 0;
 }
 
+int testNorm(int argc, char *argv[]){
+
+    arma::mat A(4,5);
+    A.randu();
+
+    arma::mat means = arma::mean(A);
+    arma::mat stddevs = arma::stddev(A);
+
+    cout << means << endl;
+    cout << stddevs << endl;
+
+
+    for(int i = 0; i < A.n_cols; i++){
+        A.col(i) = (A.col(i) - means.at(0,i))/stddevs.at(0,i);
+    }
+
+    means = arma::mean(A);
+    stddevs = arma::stddev(A);
+
+    cout << means << endl;
+    cout << stddevs << endl;
+
+    return 0;
+}
+
+
 int main(int argc, char *argv[]){
 	//awesomeIndexTester(argc, argv);
 	//testSphericalHashing(argc, argv);

@@ -52,6 +52,11 @@ SRIndexer::SRIndexer(string& typeId, map<string,string>& params){
         createNewLNReconstructor(params);
         //load(paramsB["index_path"]);
 
+        normalizeCols = false;
+        if(params.count("normalize") > 0)
+            if(params["normalize"] == "cols")
+                normalizeCols = true;
+
         bucket_inspection_method = SR_DEFAULT_BUCKET_INSPECTION;
 
 
@@ -165,7 +170,8 @@ void SRIndexer::index(arma::fmat& features){
 
 std::pair<vector<float>,vector<float> > SRIndexer::knnSearchId(arma::fmat& query, int n, double search_limit_param){
 
-    query = query.t();
+    preProcessData(query);
+
 
 	vector<float> indices;
 	vector<float> dists;
@@ -312,3 +318,19 @@ void SRIndexer::printMoreStatistics(){
     indexKSVD->aggregate_and_print_find_stats();
 }
 
+void SRIndexer::normalizeByCol(arma::fmat& A){
+    arma::fmat means = arma::mean(A);
+    arma::fmat stddevs = arma::stddev(A);
+
+    for(uint i = 0; i < A.n_cols; i++){
+        A.col(i) = (A.col(i) - means.at(0,i))/stddevs.at(0,i);
+    }
+}
+
+void SRIndexer::preProcessData(arma::fmat& A){
+    A = A.t();
+
+    if(normalizeCols){
+        normalizeByCol(A);
+    }
+}
