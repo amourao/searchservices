@@ -57,6 +57,10 @@ SRIndexer::SRIndexer(string& typeId, map<string,string>& params){
             if(params["normalize"] == "cols")
                 normalizeCols = true;
 
+        debug = false;
+        if(params.count("debug") > 0)
+            debug = true;
+
         bucket_inspection_method = SR_DEFAULT_BUCKET_INSPECTION;
 
 
@@ -112,8 +116,6 @@ void SRIndexer::train(arma::fmat& featuresTrain,arma::fmat& featuresValidationI,
     preProcessData(featuresValidationI);
     preProcessData(featuresValidationQ);
 
-    trainDataSize = featuresTrain.n_cols;
-
     if(dict_seed_type == SR_DEFAULT_RANDU){
         dictionary = arma::randu<arma::fmat>(featuresTrain.n_rows, dimensions);
         utils::normalize_columns(dictionary);
@@ -121,14 +123,90 @@ void SRIndexer::train(arma::fmat& featuresTrain,arma::fmat& featuresValidationI,
         dictionary = arma::randn<arma::fmat>(featuresTrain.n_rows, dimensions);
     }
 
+    if(n_iter >= 0){
+        ksvd = ksvdb_Ptr(new ksvdb(optKSVD,*lnMinKSVD,dictionary,featuresTrain));
 
-    ksvd = ksvdb_Ptr(new ksvdb(optKSVD,*lnMinKSVD,dictionary,featuresTrain));
+        for (int i = 0; i < n_iter; i++) {
+            ksvd->iterate();
+        }
 
-    for (int i = 0; i < n_iter; i++) {
-        //std::cout << "Iteration " << i+1 << std::endl;
-        ksvd->iterate();
+    } else {
+        double lastPrecision = 0;
+        double bestPrecision = 0;
+
+        int strikes = 5;
+
+        int currentInteration = 0;
+        int bestInteration = 0;
+
+        arma::fmat bestDictionary;
+
+        ksvdb_Ptr ksvdVal = ksvdb_Ptr(new ksvdb(optKSVD,*lnMinKSVD,dictionary,featuresTrain));
+
+        double precision = validate(ksvdVal,featuresValidationI,featuresValidationQ,50);
+
+        if (debug) std::cout << "Iteration 0 (random) at " << precision << std::endl;
+
+        bestPrecision = precision;
+        bestDictionary = ksvdVal->D;
+        bestInteration = currentInteration;
+        lastPrecision = precision;
+
+        while(strikes >= 0) {
+            ksvdVal->iterate();
+            currentInteration++;
+
+            precision = validate(ksvdVal,featuresValidationI,featuresValidationQ,50);
+
+            if (debug) std::cout << "Iteration " << currentInteration << " at " << precision << std::endl;
+            if(precision > bestPrecision){
+                bestPrecision = precision;
+                bestDictionary = ksvdVal->D;
+                bestInteration = currentInteration;
+            }
+
+            if(precision < lastPrecision){
+                strikes--;
+            }
+
+            lastPrecision = precision;
+
+        }
+        dictionary = bestDictionary;
+        ksvd = ksvdb_Ptr(new ksvdb(optKSVD,*lnMinKSVD,dictionary,featuresTrain));
+        if (debug) std::cout << "Run for " << currentInteration << " iterations." << std::endl;
+        if (debug) std::cout << "Best iteration: " << bestInteration << " at " << bestPrecision << std::endl;
+        n_iter = currentInteration;
     }
 
+}
+
+double SRIndexer::validate(ksvdb_Ptr& dict,arma::fmat& featuresValidationI,arma::fmat& featuresValidationQ, uint n){
+
+    indexk_Ptr indexKSVDVal;
+    indexKSVDVal = indexk_Ptr( new indexk(*lnMinQuery, dict->D));
+
+    std::shared_ptr<arma::fmat> featuresValidationIS = std::make_shared<fmat>(featuresValidationI);
+    indexKSVDVal->load(featuresValidationIS, lnMinQuery->options.max_iters);
+
+    int correct = 0;
+    int total = 0;
+    for(int i = 0; i < featuresValidationQ.n_cols; i++){
+        auto query = featuresValidationQ.col(i);
+        std::vector<forr::Result> ksvd_res = indexKSVDVal->find_k_nearest_limit_greedy(query, n, 1*indexKSVDVal->size());
+        std::vector<forr::Result> ksvd_res_limit = indexKSVDVal->find_k_nearest_limit_greedy_non_null(query, n, 1*indexKSVDVal->size());
+
+        for (forr::Result& res : ksvd_res) {
+            std::vector<forr::Result>::iterator it;
+
+            it = std::find (ksvd_res_limit.begin(), ksvd_res_limit.end(), res);
+            if (it != ksvd_res_limit.end()){
+                correct++;
+            }
+            total++;
+        }
+    }
+    return correct/(double)total;
 }
 
 void SRIndexer::indexWithTrainedParams(arma::fmat& features){
@@ -138,6 +216,8 @@ void SRIndexer::indexWithTrainedParams(arma::fmat& features){
 
     indexKSVD = indexk_Ptr( new indexk(*lnMinQuery, ksvd->D));
     indexKSVD->load(indexData, lnMinQuery->options.max_iters);
+
+
 }
 
 void SRIndexer::index(arma::fmat& features){
@@ -188,6 +268,8 @@ std::pair<vector<float>,vector<float> > SRIndexer::knnSearchId(arma::fmat& query
 
     if(bucket_inspection_method == SR_DEFAULT_BUCKET_INSPECTION_GREEDY){
         ksvd_res = indexKSVD->find_k_nearest_limit_greedy(query, n, current_search_limit*indexKSVD->size());
+    } else if(bucket_inspection_method == SR_DEFAULT_BUCKET_INSPECTION_GREEDY_NONNULL){
+        ksvd_res = indexKSVD->find_k_nearest_limit_greedy_non_null(query, n, current_search_limit*indexKSVD->size());
     } else if(bucket_inspection_method == SR_DEFAULT_BUCKET_INSPECTION_RR){
         ksvd_res = indexKSVD->find_k_nearest_limit_round_robin(query, n, current_search_limit*indexKSVD->size());
     } else if(bucket_inspection_method == SR_DEFAULT_BUCKET_INSPECTION_WEIGH){
@@ -343,3 +425,19 @@ void SRIndexer::preProcessData(arma::fmat& A){
         normalizeByCol(A);
     }
 }
+
+
+string SRIndexer::getIndexingParameters(){
+        std::map<string,string>::iterator iter;
+
+        stringstream labelData;
+
+        std::map<string,string> p = getCurrentRetreivalParameters();
+
+	    for (iter = p.begin(); iter != p.end(); ++iter) {
+	    	labelData << ";" << iter->first << ";" << iter->second;
+	    }
+
+	    labelData << ";n_iter;" << n_iter;
+		return labelData.str();
+	}

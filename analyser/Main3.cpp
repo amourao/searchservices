@@ -890,7 +890,7 @@ void awesomeIndexTesterAll(int argc, char *argv[]){
                     if (i == 0 && !gtLoaded)
                         linearResults.push_back(r);
                 }
-                if (debug) cout << "Querying ok" << endl;
+
                 double deltaDistance = 0;
 
                 double avgPrecAccum = 0;
@@ -916,8 +916,8 @@ void awesomeIndexTesterAll(int argc, char *argv[]){
                         // Measure precision at m
                         // relAccum contains the number relevant document up to m
                         double precisionAtM = relAccum/(m+1.0);
-                        if (debug){ cout << precisionAtM << " " << isRelevant << endl;}
-                        if (debug){ cout << relAccum << endl; getchar();}
+                        //if (debug){ cout << precisionAtM << " " << isRelevant << endl;}
+                        //if (debug){ cout << relAccum << endl; getchar();}
                         precAccum += precisionAtM * isRelevant;
                     }
                     // Accumulate results for query j
@@ -936,8 +936,10 @@ void awesomeIndexTesterAll(int argc, char *argv[]){
                 indexers.at(i)->resetStatistics();
             }
             retInd++;
-            cout << endl;
+            cout << indexers.at(i)->getIndexingParameters() << indexers.at(i)->getRetrievalParameters() << endl;
+
         }
+        if (debug) cout << "Querying ok" << endl;
 
 
         stringstream ss2;
@@ -953,6 +955,24 @@ void awesomeIndexTesterAll(int argc, char *argv[]){
         ss2 << simpleParamFileName << "_" << std::setw(5) << std::setfill('0') << indexToTest << "_" << indexers.at(i)->getName();
 
 		indexers.at(i)->saveParams(ss2.str());
+
+		if (i == 0 && !gtLoaded){
+
+            fstream out(outfileNameA.c_str(),std::fstream::out);
+            out << simpleFileName << endl;
+            out << testOffset << endl;
+            out << nTesI << endl;
+            out << nTesQ << endl;
+
+            for (int j = 0; j < linearResults.size(); j++){
+                for (uint l = 0; l < linearResults.at(j).first.size(); l++){
+                    out << linearResults.at(j).first.at(l) << "," << linearResults.at(j).second.at(l) << ";";
+                }
+                out << endl;
+            }
+            out.close();
+
+        }
 
 		delete indexers.at(i);
 	}

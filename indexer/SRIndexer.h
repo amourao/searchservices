@@ -27,6 +27,7 @@
 #define SR_DEFAULT_SEARCH_LIMIT 0.1
 #define SR_DEFAULT_BUCKET_INSPECTION "default"
 #define SR_DEFAULT_BUCKET_INSPECTION_GREEDY "greedy"
+#define SR_DEFAULT_BUCKET_INSPECTION_GREEDY_NONNULL "greedy_nonnull"
 #define SR_DEFAULT_BUCKET_INSPECTION_RR "rr"
 #define SR_DEFAULT_BUCKET_INSPECTION_WEIGH "weighted"
 #define SR_DEFAULT_BUCKET_INSPECTION_WEIGH_2 "weighted_alt"
@@ -80,8 +81,12 @@ public:
 	void normalizeByCol(arma::fmat& matrix);
 	void preProcessData(arma::fmat& matrix);
 
+	string getIndexingParameters();
+
 
 private:
+
+
 
     typedef l1min::OMPSparseConstrained lnmin;
     typedef l1min::OMPBatchSparseConstrained lnminK;
@@ -95,6 +100,7 @@ private:
     typedef std::shared_ptr<indexk> indexk_Ptr;
 
 
+    double validate(ksvdb_Ptr& dict,arma::fmat& featuresValidationI,arma::fmat& featuresValidationQ, uint n);
     void createNewLNReconstructor(map<string,string>& params);
 
     map<string,string> jsonToDict(Json::Value root);
@@ -116,6 +122,8 @@ private:
     bool normalizeCols;
 
     int trainDataSize;
+
+    bool debug = false;
 
     string index_path;
     string bucket_inspection_method;

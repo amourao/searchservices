@@ -334,6 +334,31 @@ public:
 
 	}
 
+	virtual string getIndexingParameters(){
+        std::map<string,string>::iterator iter;
+
+        stringstream labelData;
+
+        std::map<string,string> p = getCurrentRetreivalParameters();
+
+	    for (iter = p.begin(); iter != p.end(); ++iter) {
+	    	labelData << ";" << iter->first << ";" << iter->second;
+	    }
+		return labelData.str();
+	}
+
+	virtual string getRetrievalParameters(){
+        std::map<string,string>::iterator iter;
+
+        stringstream labelData;
+
+	    for (iter = paramsB.begin(); iter != paramsB.end(); ++iter) {
+	    	labelData << ";" << iter->first << ";" << iter->second;
+	    }
+		return labelData.str();
+	}
+
+
 	virtual bool save(string basePath) = 0;
 	virtual bool load(string basePath) = 0;
 
