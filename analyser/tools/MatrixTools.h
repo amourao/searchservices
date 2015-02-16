@@ -45,14 +45,14 @@ static void vectorToMat(vector<float>&src, cv::Mat& dst);
 static void vectorsToMat(vector<vector<float> >&src, cv::Mat& dst);
 
 
-//Atention, matrices must be in CV_32F format (single dimensional float matrix)
+//Attention, matrices must be in CV_32F format (single dimensional float matrix)
 static void readBin(string file, cv::Mat& features, cv::Mat& labels);
-//Atention, matrices must be in CV_32F format (single dimensional float matrix)
+//Attention, matrices must be in CV_32F format (single dimensional float matrix)
 static void writeBin(string file, cv::Mat& features, cv::Mat& labels);
 
-//Atention, matrices must be in CV_32F format (single dimensional float matrix)
+//Attention, matrices must be in CV_32F format (single dimensional float matrix)
 static void readBinV1(string file, cv::Mat& features, cv::Mat& labels);
-//Atention, matrices must be in CV_32F format (single dimensional float matrix)
+//Attention, matrices must be in CV_32F format (single dimensional float matrix)
 static void writeBinV1(string file, cv::Mat& features, cv::Mat& labels);
 
 

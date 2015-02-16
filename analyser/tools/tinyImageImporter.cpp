@@ -5,7 +5,9 @@ tinyImageImporter::tinyImageImporter(){}
 tinyImageImporter::~tinyImageImporter(){}
 
 void tinyImageImporter::readBin(std::string filenamep, int numberOfRows, cv::Mat& features, long long offsetInRows) {
-	float *datap = new float[numberOfRows*dimensions];
+
+	features = cv::Mat(numberOfRows,dimensions,CV_32F);
+	float *datap = new float[1*dimensions];
 
 	/* Open file */
     FILE * out = fopen(filenamep.c_str(), "rb" );
@@ -16,10 +18,14 @@ void tinyImageImporter::readBin(std::string filenamep, int numberOfRows, cv::Mat
 		for (int i=0;i<numberOfRows;i++){
 
 			/* do binary read direct into datap */
-			if (fread(&(datap[i*dimensions]),sizeof(float),dimensions,out) == 0){
+			if (fread(&(datap[0]),sizeof(float),dimensions,out) == 0){
                 std::cout << "error: cannot read middle of file" << std::endl;
                 return;
-          }
+            } else {
+                for (int j=0;j<dimensions;j++){
+                    features.at<float>(i,j) = datap[j];
+                }
+            }
       	}
 	    /* Flush buffer and close file */
       	fclose(out);
@@ -29,10 +35,7 @@ void tinyImageImporter::readBin(std::string filenamep, int numberOfRows, cv::Mat
        	/*   mexPrintf("Error opening file: %s\n",filenamep);*/
     }
 
-    features = cv::Mat(numberOfRows,dimensions,CV_32F);
-    for (int i = 0; i < numberOfRows; i++)
-		for (int j = 0; j < dimensions; j++)
-			features.at<float>(i,j) = datap[i*dimensions+j];//cv::Mat(numberOfRows, dimensions, CV_32FC1, &datap);
+    delete[] datap;
 }
 
 void tinyImageImporter::readTags(std::string file, int numberOfRows, cv::Mat& tags) {

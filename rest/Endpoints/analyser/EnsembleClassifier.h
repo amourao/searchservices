@@ -38,13 +38,13 @@ public:
 	EnsembleClassifier();
 	EnsembleClassifier(string type);
 	~EnsembleClassifier();
-	
+
 	void* createType(string &typeId);
-	
+
 	void handleRequest(string method, map<string, string> queryStrings, istream&, HTTPServerResponse &resp);
-	
-	string getFeatures(map<string, string> parameters);	
-	
+
+	string getFeatures(map<string, string> parameters);
+
 	void divideByClass(Mat trainData, Mat trainLabels, double numberOfDivisions, int currentDivision,Mat& newTrainData,Mat& newTrainLabels, Mat& testData, Mat& testLabels);
 	string crossValidateAll(int numberOfDivisions,string extractorName);
 	void readData(string filename, string extractorName);

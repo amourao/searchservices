@@ -101,7 +101,7 @@ float SRClassifier::classify(arma::fmat query, double* error, arma::fmat* recErr
 	arma::fvec scoresRight = res.elem(indexes);
 
 	for (unsigned int j = 0; j < labelsRight.n_rows; j++)
-		correctGuesses.at(labelsRight.row(j))++;
+		correctGuesses.at(labelsRight.at(j))++;
 
 	float minFromReconstruct = FLT_MAX;
 	float detectedLabelFromReconstruct= -1;
@@ -119,10 +119,10 @@ float SRClassifier::classify(arma::fmat query, double* error, arma::fmat* recErr
 
 			for(unsigned int k = 0; k < labelsCute.n_rows; k++){
 
-					float la  = labelsCute.row(k);
+					float la  = labelsCute.at(k);
 
 					if(recErrors != NULL){
-						recErrors->at(k,0) = newRes.row(k);
+						recErrors->at(k,0) = newRes.at(k);
 						recErrors->at(k,1) = k;
 					}
 					if(la != j)

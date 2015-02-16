@@ -5,7 +5,7 @@
 #include <iostream>
 #include <vector>
 
-#include <json/json.h>
+#include <jsoncpp/json/json.h>
 
 #include <ksvd-indexing-experiment/ksvd_index_mp.h>
 #include <ksvd-indexing-experiment/result.h>

@@ -692,6 +692,7 @@ void awesomeIndexTesterAll(int argc, char *argv[]){
 
 	    get_timestamp(&start);
 		importer->readBin(file,nTrain,featuresTrain,currentOffset);
+		cout << featuresTrain.colRange(0,5).rowRange(0,5) << endl;
 		get_timestamp(&end);
 		currentOffset += nTrain;
 		if (debug) cout << "ok " << timestamp_diff_in_milliseconds(start, end) << " ms" << endl << "Reading featuresValidationI ";

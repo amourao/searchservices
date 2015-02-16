@@ -53,7 +53,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="/home/amourao/Desktop/0002_BV1_a.json" />
+				<Option parameters="/home/amourao/Desktop/0002_BV1_a.json 1" />
 				<Compiler>
 					<Add option="-g" />
 					<Add directory="commons" />
