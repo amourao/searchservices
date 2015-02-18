@@ -964,7 +964,7 @@ void awesomeIndexTesterAll(int argc, char *argv[]){
             out << nTesI << endl;
             out << nTesQ << endl;
 
-            for (int j = 0; j < linearResults.size(); j++){
+            for (uint j = 0; j < linearResults.size(); j++){
                 for (uint l = 0; l < linearResults.at(j).first.size(); l++){
                     out << linearResults.at(j).first.at(l) << "," << linearResults.at(j).second.at(l) << ";";
                 }
@@ -1774,7 +1774,7 @@ int getMatrixSample(int argc, char *argv[]){
 
     }
     MatrixTools::getRandomSample(inVec,total,outVec);
-    for(int i = 0; i < files.size(); i++){
+    for(uint i = 0; i < files.size(); i++){
 
         string infile = files.at(i);
         string outfileTrain = infile + "_train";
@@ -1796,9 +1796,6 @@ int getMatrixSample(int argc, char *argv[]){
 }
 
 int genDictionaryAndIndex(int argc, char *argv[]){
-
-    bool debug = false;
-    IBinImporter* importer;
 
     string paramFile(argv[1]);
 
@@ -1879,7 +1876,7 @@ int testNorm(int argc, char *argv[]){
     cout << stddevs << endl;
 
 
-    for(int i = 0; i < A.n_cols; i++){
+    for(uint i = 0; i < A.n_cols; i++){
         A.col(i) = (A.col(i) - means.at(0,i))/stddevs.at(0,i);
     }
 

@@ -117,6 +117,7 @@ private:
     int n_iter;
 
     int max_iters;
+
     double eps;
     double search_limit;
     bool normalizeCols;

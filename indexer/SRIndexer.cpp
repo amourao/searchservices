@@ -176,7 +176,8 @@ void SRIndexer::train(arma::fmat& featuresTrain,arma::fmat& featuresValidationI,
         ksvd = ksvdb_Ptr(new ksvdb(optKSVD,*lnMinKSVD,dictionary,featuresTrain));
         if (debug) std::cout << "Run for " << currentInteration << " iterations." << std::endl;
         if (debug) std::cout << "Best iteration: " << bestInteration << " at " << bestPrecision << std::endl;
-        n_iter = currentInteration;
+        max_iters = currentInteration;
+        n_iter = bestInteration;
     }
 
 }
@@ -191,7 +192,7 @@ double SRIndexer::validate(ksvdb_Ptr& dict,arma::fmat& featuresValidationI,arma:
 
     int correct = 0;
     int total = 0;
-    for(int i = 0; i < featuresValidationQ.n_cols; i++){
+    for(uint i = 0; i < featuresValidationQ.n_cols; i++){
         auto query = featuresValidationQ.col(i);
         std::vector<forr::Result> ksvd_res = indexKSVDVal->find_k_nearest_limit_greedy(query, n, 1*indexKSVDVal->size());
         std::vector<forr::Result> ksvd_res_limit = indexKSVDVal->find_k_nearest_limit_greedy_non_null(query, n, 1*indexKSVDVal->size());
@@ -438,6 +439,6 @@ string SRIndexer::getIndexingParameters(){
 	    	labelData << ";" << iter->first << ";" << iter->second;
 	    }
 
-	    labelData << ";n_iter;" << n_iter;
+	    labelData << ";best_iter;" << n_iter << ";all_iter;" << max_iters;
 		return labelData.str();
 	}
