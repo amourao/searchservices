@@ -10,12 +10,12 @@
 
 #include "IBinImporter.h"
 
-class oneBillionImporter: public IBinImporter {
+class oneBillionImporterB: public IBinImporter {
 
 public:
 	//not random, gets the first "numberOfRows" elements
-	oneBillionImporter();
-    ~oneBillionImporter();
+	oneBillionImporterB();
+    ~oneBillionImporterB();
 
 	void readBin(std::string file, int numberOfRows, cv::Mat& features, long long offsetInRows = 0);
 	void readBin(std::string file, int numberOfRows, arma::fmat& features, long long offsetInRows = 0);

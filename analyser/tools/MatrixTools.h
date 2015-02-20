@@ -30,11 +30,12 @@ MatrixTools();
 ~MatrixTools();
 
 void readBin(std::string file, int numberOfRows, cv::Mat& features, long long offsetInRows = 0);
+void readBin(std::string filenamep, int numberOfRows, arma::fmat& features, long long offsetInRows = 0);
 void readTags(std::string file, int numberOfRows, cv::Mat& tags);
 
 static void fmatToMat(arma::fmat &src, cv::Mat& dst);
 
-static void matToFMat(cv::Mat &src, arma::fmat& dst);
+static void matToFMat(cv::Mat &src, arma::fmat& dst, bool copyData=false);
 
 static void matToVector(cv::Mat &src, vector<float>& dst);
 

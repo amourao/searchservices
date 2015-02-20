@@ -8,6 +8,7 @@ class IBinImporter {
 public:
 
 	virtual void readBin(std::string file, int numberOfRows, cv::Mat& features, long long offsetInRows = 0) = 0;
+	virtual void readBin(std::string file, int numberOfRows, arma::fmat& features, long long offsetInRows = 0) = 0;
 	virtual void readTags(std::string file, int numberOfRows, cv::Mat& tags) = 0;
 
 };

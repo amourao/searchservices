@@ -107,7 +107,7 @@
 	"../tools/MatrixTools.h"
 	"../../commons/factory/Factory.h"
 
-1424055902 /home/amourao/code/searchservices/analyser/tools/MatrixTools.h
+1424377774 /home/amourao/code/searchservices/analyser/tools/MatrixTools.h
 	<armadillo>
 	<opencv2/core/core.hpp>
 	<opencv2/highgui/highgui.hpp>
@@ -377,7 +377,7 @@
 	<stdlib.h>
 	<time.h>
 
-1397645635 /home/amourao/code/searchservices/analyser/tools/tinyImageImporter.h
+1424352588 /home/amourao/code/searchservices/analyser/tools/tinyImageImporter.h
 	<armadillo>
 	<opencv2/core/core.hpp>
 	<opencv2/highgui/highgui.hpp>
@@ -394,7 +394,7 @@
 	"../commons/factory/Factory.h"
 	"IIndexer.h"
 
-1423836330 /home/amourao/code/searchservices/indexer/IIndexer.h
+1424432964 /home/amourao/code/searchservices/indexer/IIndexer.h
 	<map>
 	<string>
 	<iostream>
@@ -428,7 +428,7 @@
 	"FactoryIndexer.h"
 	"../commons/Timing.h"
 
-1424094297 source:/home/amourao/code/searchservices/analyser/Main3.cpp
+1424432697 source:/home/amourao/code/searchservices/analyser/Main3.cpp
 	<iostream>
 	<fstream>
 	<string>
@@ -465,6 +465,7 @@
 	"tools/MIRFlickrImporter.h"
 	"tools/tinyImageImporter.h"
 	"tools/oneBillionImporter.h"
+	"tools/oneBillionImporterB.h"
 	"tools/IBinImporter.h"
 	"FactoryAnalyser.h"
 	"../indexer/FactoryIndexer.h"
@@ -644,7 +645,7 @@
 	<opencv2/highgui/highgui.hpp>
 	<opencv2/imgproc/imgproc.hpp>
 
-1418384655 source:/home/amourao/code/searchservices/analyser/tools/MatrixTools.cpp
+1424377761 source:/home/amourao/code/searchservices/analyser/tools/MatrixTools.cpp
 	"MatrixTools.h"
 
 1418384655 source:/home/amourao/code/searchservices/analyser/tools/MIRFlickrImporter.cpp
@@ -664,7 +665,7 @@
 	"../sources/VideoSource.h"
 	"../nRoi/FaceDetection.h"
 
-1424093429 source:/home/amourao/code/searchservices/analyser/tools/tinyImageImporter.cpp
+1424355897 source:/home/amourao/code/searchservices/analyser/tools/tinyImageImporter.cpp
 	"tinyImageImporter.h"
 
 1397645635 source:/home/amourao/code/searchservices/analyser/tools/TrainTestFeaturesTools.cpp
@@ -884,7 +885,7 @@
 1390951642 source:/home/amourao/code/searchservices/rest/Endpoints/analyser/SearchResult.cpp
 	"SearchResult.h"
 
-1390951642 source:/home/amourao/code/searchservices/rest/Endpoints/codebits/Codebits.cpp
+1424308384 source:/home/amourao/code/searchservices/rest/Endpoints/codebits/Codebits.cpp
 	"Codebits.h"
 
 1390951647 /home/amourao/code/searchservices/rest/Endpoints/codebits/Codebits.h
@@ -921,7 +922,7 @@
 
 1390951647 /home/amourao/code/searchservices/rest/Endpoints/searchDemo/populateSearchDemo.h
 
-1390951642 source:/home/amourao/code/searchservices/rest/Endpoints/TestEndpoint.cpp
+1424308410 source:/home/amourao/code/searchservices/rest/Endpoints/TestEndpoint.cpp
 	"TestEndpoint.h"
 
 1390951647 /home/amourao/code/searchservices/rest/Endpoints/TestEndpoint.h
@@ -3973,10 +3974,10 @@
 1422632483 source:/home/amourao/code/searchservices/commons/LoadConfig.cpp
 	"LoadConfig.h"
 
-1418384655 source:/home/amourao/code/searchservices/analyser/tools/oneBillionImporter.cpp
+1424363691 source:/home/amourao/code/searchservices/analyser/tools/oneBillionImporter.cpp
 	"oneBillionImporter.h"
 
-1397645635 /home/amourao/code/searchservices/analyser/tools/oneBillionImporter.h
+1424352582 /home/amourao/code/searchservices/analyser/tools/oneBillionImporter.h
 	<armadillo>
 	<opencv2/core/core.hpp>
 	<opencv2/highgui/highgui.hpp>
@@ -3986,7 +3987,7 @@
 	<cstdlib>
 	"IBinImporter.h"
 
-1397645635 /home/amourao/code/searchservices/analyser/tools/IBinImporter.h
+1424352530 /home/amourao/code/searchservices/analyser/tools/IBinImporter.h
 	<opencv2/core/core.hpp>
 	<opencv2/highgui/highgui.hpp>
 
@@ -4184,7 +4185,7 @@
 	"../FactoryAnalyser.h"
 	"../tools/MatrixTools.h"
 
-1424267705 source:/home/amourao/code/searchservices/indexer/SRIndexer.cpp
+1424371896 source:/home/amourao/code/searchservices/indexer/SRIndexer.cpp
 	"SRIndexer.h"
 
 1424267537 /home/amourao/code/searchservices/indexer/SRIndexer.h
@@ -4225,7 +4226,7 @@
 	<set>
 	<armadillo>
 
-1423755918 /home/amourao/code/sparsereconstruction//ksvd-indexing-experiment/ksvd_index_mp.h
+1424373726 /home/amourao/code/sparsereconstruction//ksvd-indexing-experiment/ksvd_index_mp.h
 	<algorithm>
 	<cassert>
 	<memory>
@@ -8828,4 +8829,17 @@
 	<climits>
 	"boost/limits.hpp"
 	"boost/config.hpp"
+
+1424363675 source:/home/amourao/code/searchservices/analyser/tools/oneBillionImporterB.cpp
+	"oneBillionImporterB.h"
+
+1424352574 /home/amourao/code/searchservices/analyser/tools/oneBillionImporterB.h
+	<armadillo>
+	<opencv2/core/core.hpp>
+	<opencv2/highgui/highgui.hpp>
+	<opencv2/imgproc/imgproc.hpp>
+	<string>
+	<map>
+	<cstdlib>
+	"IBinImporter.h"
 

@@ -239,7 +239,7 @@ void SRIndexer::index(arma::fmat& features){
 
     indexData = std::make_shared<fmat>(features);
     //TODO
-    /*
+    /*d
     fmat dictionary = randu<fmat>(features.n_rows, dimensions);
     utils::normalize_columns(dictionary);
 
@@ -420,7 +420,7 @@ void SRIndexer::normalizeByCol(arma::fmat& A){
 }
 
 void SRIndexer::preProcessData(arma::fmat& A){
-    A = A.t();
+
 
     if(normalizeCols){
         normalizeByCol(A);

@@ -1,9 +1,9 @@
-#include "oneBillionImporter.h"
+#include "oneBillionImporterB.h"
 
-oneBillionImporter::oneBillionImporter(){}
-oneBillionImporter::~oneBillionImporter(){}
+oneBillionImporterB::oneBillionImporterB(){}
+oneBillionImporterB::~oneBillionImporterB(){}
 
-void oneBillionImporter::readBin(std::string filenamep, int numberOfRows, cv::Mat& features, long long offsetInRows) {
+void oneBillionImporterB::readBin(std::string filenamep, int numberOfRows, cv::Mat& features, long long offsetInRows) {
 
     FILE * out = fopen(filenamep.c_str(), "rb" );
 
@@ -18,13 +18,13 @@ void oneBillionImporter::readBin(std::string filenamep, int numberOfRows, cv::Ma
     features.create(numberOfRows,dimensions,CV_32F);
 
 	/* Open file */
-    long long offset = (offsetInRows*(dimensions+1/*dim at start of each fv*/))*sizeof(float);
+    long long offset = (offsetInRows*(dimensions*1+1*4));
     fseek(out,offset,SEEK_SET);
     if( out != NULL ){
 		for (int i=0;i<numberOfRows;i++){
 
         int currDimensions = 0;
-  			if (fread(&currDimensions,sizeof(int),1,out) == 0){
+  			if (fread(&currDimensions,4,1,out) == 0){
                 std::cout << "error: cannot read middle of file" << std::endl;
                 return;
             }
@@ -41,8 +41,8 @@ void oneBillionImporter::readBin(std::string filenamep, int numberOfRows, cv::Ma
       }
 
         for (int g = 0; g < dimensions; g++){
-          float aa = 0;
-          if (fread(&aa,sizeof(float),1,out) == 0){
+          uint aa = 0;
+          if (fread((char*)&aa,1,1,out) == 0){
                 std::cout << "error: cannot read middle of file" << std::endl;
                 return;
           }
@@ -64,12 +64,14 @@ void oneBillionImporter::readBin(std::string filenamep, int numberOfRows, cv::Ma
     }
 }
 
-void oneBillionImporter::readTags(std::string file, int numberOfRows, cv::Mat& tags) {
+void oneBillionImporterB::readTags(std::string file, int numberOfRows, cv::Mat& tags) {
 
 }
 
-void oneBillionImporter::readBin(std::string filenamep, int numberOfRows, arma::fmat& features, long long offsetInRows) {
-        FILE * out = fopen(filenamep.c_str(), "rb" );
+void oneBillionImporterB::readBin(std::string filenamep, int numberOfRows, arma::fmat& features, long long offsetInRows) {
+
+
+    FILE * out = fopen(filenamep.c_str(), "rb" );
 
     int dimensions;
 
@@ -82,13 +84,13 @@ void oneBillionImporter::readBin(std::string filenamep, int numberOfRows, arma::
     features.set_size(dimensions,numberOfRows);
 
 	/* Open file */
-    long long offset = (offsetInRows*(dimensions+1/*dim at start of each fv*/))*sizeof(float);
+    long long offset = (offsetInRows*(dimensions*1+1*4));
     fseek(out,offset,SEEK_SET);
     if( out != NULL ){
 		for (int i=0;i<numberOfRows;i++){
 
         int currDimensions = 0;
-  			if (fread(&currDimensions,sizeof(int),1,out) == 0){
+  			if (fread(&currDimensions,4,1,out) == 0){
                 std::cout << "error: cannot read middle of file" << std::endl;
                 return;
             }
@@ -105,8 +107,8 @@ void oneBillionImporter::readBin(std::string filenamep, int numberOfRows, arma::
       }
 
         for (int g = 0; g < dimensions; g++){
-          float aa = 0;
-          if (fread(&aa,sizeof(float),1,out) == 0){
+          uint aa = 0;
+          if (fread((char*)&aa,1,1,out) == 0){
                 std::cout << "error: cannot read middle of file" << std::endl;
                 return;
           }
@@ -115,6 +117,7 @@ void oneBillionImporter::readBin(std::string filenamep, int numberOfRows, arma::
                     std::cout << "error: EOF reached" << std::endl;
           return;
       }
+
           features(g,i) = aa;
         }
     }

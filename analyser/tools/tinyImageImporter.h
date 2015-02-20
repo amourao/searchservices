@@ -18,6 +18,8 @@ public:
 	~tinyImageImporter();
 
 	void readBin(std::string file, int numberOfRows, cv::Mat& features, long long offsetInRows = 0);
+	void readBin(std::string file, int numberOfRows, arma::fmat& features, long long offsetInRows = 0);
+
 	void readTags(std::string file, int numberOfRows, cv::Mat& tags);
 
 private:

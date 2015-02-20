@@ -20,12 +20,19 @@ void MatrixTools::fmatToMat(arma::fmat &src, cv::Mat& dst){
 			dst.at<float>(i,j) = src(i,j);
 }
 
-void MatrixTools::matToFMat(cv::Mat &src, arma::fmat& dst){
+void MatrixTools::matToFMat(cv::Mat &src, arma::fmat& dst, bool copyData){
+    if(copyData){
+        dst = arma::fmat((float*)(src.data), src.cols, src.rows, true);
+    } else {
+        dst = arma::fmat((float*)(src.data), src.cols, src.rows, false, true);
+    }
+	/*
 	dst = arma::fmat(src.rows, src.cols);
 	//cout << src.rows << " " << src.cols << endl;
 	for (int i = 0; i < src.rows; i++)
 		for (int j = 0; j < src.cols; j++)
 			dst(i,j) = src.at<float>(i,j);
+    */
 }
 
 void MatrixTools::matToVector(cv::Mat &src, vector<float>& dst){
@@ -228,6 +235,59 @@ void MatrixTools::readBinV2(string file, vector<cv::Mat>& features, cv::Mat& lab
 		}
 		features.push_back(featureMatrix);
 	}
+	ifs.close();
+}
+
+void MatrixTools::readBin(std::string file, int numberOfRows, arma::fmat& features, long long offsetInRows){
+	string f = file;
+
+ 	int signature,binV,nSamples,dimsX,dimsY,dimsZ;
+
+	std::fstream ifs( f.c_str(), std::ios::in | std::ios::binary );
+
+	ifs.read( (char*) &signature, sizeof(signature));
+	if (signature != BIN_SIGNATURE_INT){
+		cerr << "Read error: Wrong signature" << endl;
+		return;
+	}
+
+	ifs.read( (char*) &binV, sizeof(binV));
+
+	if (binV != BIN_VERSION){
+		cerr << "Read error: Wrong version" << endl;
+		return;
+	}
+
+	ifs.read( (char*) &nSamples, sizeof(nSamples));
+	ifs.read( (char*) &dimsX, sizeof(dimsX));
+	ifs.read( (char*) &dimsY, sizeof(dimsY));
+	ifs.read( (char*) &dimsZ, sizeof(dimsZ));
+
+	features.set_size(dimsX,nSamples);
+
+    long long offset = (dimsZ+(dimsX*dimsY))*offsetInRows;
+
+    ifs.seekg(offset, std::ios::beg);
+    ifs.seekp(offset, std::ios::beg);
+
+	for (int s = 0; s < numberOfRows; s++) {
+		float value;
+
+		for (int i = 0; i < dimsZ; i++) {
+			ifs.read( (char*) &value, sizeof(value));
+		}
+
+		for (int x = 0; x < dimsX; x++) {
+			for (int y = 0; y < 1; y++) {
+				ifs.read( (char*) &value, sizeof(value));
+				features(x,s) = value;
+			}
+			for (int y = 1; y < dimsY; y++) {
+				ifs.read( (char*) &value, sizeof(value));
+			}
+		}
+	}
+	ifs.close();
 }
 
 
@@ -281,6 +341,7 @@ void MatrixTools::readBinV3(string file, vector<cv::Mat>& features, cv::Mat& lab
 		}
 		features.push_back(featureMatrix);
 	}
+	ifs.close();
 }
 
 //Atention, matrices must be in CV_32F format (single dimensional float matrix)
@@ -575,3 +636,5 @@ void MatrixTools::getRandomSample(vector<arma::fmat>& mList, int nRows, vector<a
     }
 
 }
+
+

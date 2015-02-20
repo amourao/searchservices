@@ -112,10 +112,13 @@ public:
 	}
 
     virtual void train(cv::Mat& featuresTrain,cv::Mat& featuresValidationI,cv::Mat& featuresValidationQ){
-        arma::fmat vMat1,vMat2,vMat3;
-		MatrixTools::matToFMat(featuresTrain, vMat1);
-		MatrixTools::matToFMat(featuresValidationI, vMat2);
-		MatrixTools::matToFMat(featuresValidationQ, vMat3);
+        //arma::fmat vMat1,vMat2,vMat3;
+        //MatrixTools::matToFMat(featuresTrain, vMat1, false);
+		//MatrixTools::matToFMat(featuresValidationI, vMat2, false);
+		//MatrixTools::matToFMat(featuresValidationQ, vMat3, false);
+        arma::fmat vMat1((float*)(featuresTrain.data), featuresTrain.cols, featuresTrain.rows, false);
+        arma::fmat vMat2((float*)(featuresValidationI.data), featuresValidationI.cols, featuresValidationI.rows, false);
+        arma::fmat vMat3((float*)(featuresValidationQ.data), featuresValidationQ.cols, featuresValidationQ.rows, false);
         train(vMat1,vMat2,vMat3);
     }
 
@@ -128,8 +131,9 @@ public:
     }
 
 	virtual void indexWithTrainedParams(cv::Mat& features){
-        arma::fmat vMat;
-		MatrixTools::matToFMat(features, vMat);
+        //arma::fmat vMat;
+		//MatrixTools::matToFMat(features, vMat);
+		arma::fmat vMat((float*)(features.data), features.cols, features.rows, false);
         indexWithTrainedParams(vMat);
     }
 
@@ -140,8 +144,9 @@ public:
     }
 
 	virtual void index(cv::Mat& features){
-        arma::fmat vMat;
-		MatrixTools::matToFMat(features, vMat);
+        //arma::fmat vMat;
+		//MatrixTools::matToFMat(features, vMat);
+		arma::fmat vMat((float*)(features.data), features.cols, features.rows, false);
         index(vMat);
 	}
 
@@ -158,8 +163,9 @@ public:
 	}
 
 	virtual int addToIndexLive(cv::Mat& features){
-        arma::fmat vMat;
-		MatrixTools::matToFMat(features, vMat);
+        //arma::fmat vMat;
+		//MatrixTools::matToFMat(features, vMat);
+		arma::fmat vMat((float*)(features.data), features.cols, features.rows, false);
         return addToIndexLive(vMat);
 	}
 

@@ -44,6 +44,7 @@
 #include "tools/MIRFlickrImporter.h"
 #include "tools/tinyImageImporter.h"
 #include "tools/oneBillionImporter.h"
+#include "tools/oneBillionImporterB.h"
 #include "tools/IBinImporter.h"
 
 
@@ -209,6 +210,8 @@ void awesomeIndexTesterOldAndWrong(int argc, char *argv[]){
         importer = new tinyImageImporter();
     } else if(type == "billion"){
         importer = new oneBillionImporter();
+    } else if(type == "billionB"){
+        importer = new oneBillionImporterB();
     } else if(type == "nsBin"){
         importer = new MatrixTools();
     } else {
@@ -440,6 +443,7 @@ bool loadGT(string& gtFile,vector<std::pair<vector<float>, vector<float> > >& li
         }
         linearResults.push_back(make_pair(indeces,dists));
     }
+    file.close();
     return true;
 }
 
@@ -465,6 +469,8 @@ void computeGT(int argc, char *argv[]){
         importer = new tinyImageImporter();
     } else if(type == "billion"){
         importer = new oneBillionImporter();
+    } else if(type == "billionB"){
+        importer = new oneBillionImporterB();
     } else if(type == "nsBin"){
         importer = new MatrixTools();
     } else {
@@ -636,6 +642,8 @@ void awesomeIndexTesterAll(int argc, char *argv[]){
         importer = new tinyImageImporter();
     } else if(type == "billion"){
         importer = new oneBillionImporter();
+    } else if(type == "billionB"){
+        importer = new oneBillionImporterB();
     } else if(type == "nsBin"){
         importer = new MatrixTools();
     } else {
@@ -963,6 +971,7 @@ void awesomeIndexTesterAll(int argc, char *argv[]){
             out << testOffset << endl;
             out << nTesI << endl;
             out << nTesQ << endl;
+            out << linearResults.at(0).first.size() << endl;
 
             for (uint j = 0; j < linearResults.size(); j++){
                 for (uint l = 0; l < linearResults.at(j).first.size(); l++){
@@ -1006,6 +1015,8 @@ void getSAIndexStatistics(int argc, char *argv[]){
         importer = new tinyImageImporter();
     } else if(type == "billion"){
         importer = new oneBillionImporter();
+    } else if(type == "billionB"){
+        importer = new oneBillionImporterB();
     } else if(type == "nsBin"){
         importer = new MatrixTools();
     } else {
@@ -1273,6 +1284,8 @@ void getMoreSAIndexStatistics(int argc, char *argv[]){
         importer = new tinyImageImporter();
     } else if(type == "billion"){
         importer = new oneBillionImporter();
+    } else if(type == "billionB"){
+        importer = new oneBillionImporterB();
     } else if(type == "nsBin"){
         importer = new MatrixTools();
     } else {
@@ -1508,6 +1521,8 @@ void exportToArmaMat(int argc, char *argv[]){
         importer = new tinyImageImporter();
     } else if(type == "billion"){
         importer = new oneBillionImporter();
+    } else if(type == "billionB"){
+        importer = new oneBillionImporterB();
     } else if(type == "nsBin"){
         importer = new MatrixTools();
     } else {
@@ -1682,6 +1697,8 @@ void testSphericalHashing(int argc, char *argv[]){
         importer = new tinyImageImporter();
     } else if(type == "billion"){
         importer = new oneBillionImporter();
+    } else if(type == "billionB"){
+        importer = new oneBillionImporterB();
     } else if(type == "nsBin"){
         importer = new MatrixTools();
     } else {
@@ -1850,6 +1867,8 @@ int testReadBin(int argc, char *argv[]){
         importer = new tinyImageImporter();
     } else if(type == "billion"){
         importer = new oneBillionImporter();
+    } else if(type == "billionB"){
+        importer = new oneBillionImporterB();
     } else if(type == "nsBin"){
         importer = new MatrixTools();
     } else {
@@ -1889,6 +1908,59 @@ int testNorm(int argc, char *argv[]){
     return 0;
 }
 
+void printArmaMat(arma::fmat& mat){
+    cout << "[";
+    for(uint i = 0; i < mat.n_rows; i++){
+        for(uint j = 0; j < mat.n_cols; j++){
+            cout << mat(i,j);
+            if(j < mat.n_cols-1)
+                cout << ", ";
+        }
+        if(i < mat.n_rows-1)
+            cout << ";" << endl;
+    }
+    cout << "]" << endl;
+}
+
+int testConvertBin(int argc, char *argv[]){
+
+    string type(argv[1]);
+    string file(argv[2]);
+    string howManyStr(argv[3]);
+    int howMany = std::stoi(howManyStr);
+    //string out(argv[4]);
+
+    IBinImporter* importer;
+
+    if(type == "tiny"){
+        importer = new tinyImageImporter();
+    } else if(type == "billion"){
+        importer = new oneBillionImporter();
+    } else if(type == "billionB"){
+        importer = new oneBillionImporterB();
+    } else if(type == "nsBin"){
+        importer = new MatrixTools();
+    } else {
+        cout << "Unknown parameter value \"type\" = " << type << "\"" << endl;
+        return 1;
+    }
+    cv::Mat featuresTrain;
+    cv::Mat labels;
+    importer->readBin(file,howMany,featuresTrain,0);
+    //std::cout << featuresTrain << std::endl << std::endl;
+
+    arma::fmat dst1((float*)(featuresTrain.data), featuresTrain.cols, featuresTrain.rows, false);
+    //MatrixTools::matToFMat(featuresTrain,dst,false);
+    //arma::fmat dst2;
+    //dst2 = *dst1;
+
+    //arma::fmat dst_t = dst.t();
+    //printArmaMat(dst);
+
+    //MatrixTools::writeBinV2(out,featuresTrain,labels);
+
+    return 0;
+}
 
 int main(int argc, char *argv[]){
 	//awesomeIndexTester(argc, argv);
