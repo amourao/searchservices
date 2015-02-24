@@ -165,7 +165,7 @@ void SRIndexer::train(arma::fmat& featuresTrain,arma::fmat& featuresValidationI,
                 bestInteration = currentInteration;
             }
 
-            if(precision < lastPrecision){
+            if(precision < bestPrecision){
                 strikes--;
             }
 
@@ -226,6 +226,7 @@ void SRIndexer::index(arma::fmat& features){
     preProcessData(features);
 
     arma::fmat trainSplit;
+    arma::fmat emptyMat;
     vector<arma::fmat> in;
     vector<arma::fmat> out;
 
@@ -235,7 +236,7 @@ void SRIndexer::index(arma::fmat& features){
 
     trainSplit = out.at(0).t();
 
-    train(trainSplit,trainSplit,trainSplit);
+    train(trainSplit,emptyMat,emptyMat);
 
     indexData = std::make_shared<fmat>(features);
     //TODO
@@ -303,8 +304,14 @@ std::pair<vector<float>,vector<float> > SRIndexer::radiusSearchId(arma::fmat& qu
 
 bool SRIndexer::save(string basePath){
 
-    saveLabels(basePath);
-    indexKSVD->save(INDEXER_BASE_SAVE_PATH + basePath);
+
+
+    if(indexData != NULL && indexData->n_cols > 0 && indexKSVD!=NULL){
+        saveLabels(basePath);
+        indexKSVD->save(INDEXER_BASE_SAVE_PATH + basePath);
+    } else {
+        dictionary.save(INDEXER_BASE_SAVE_PATH + basePath + "_dict.bin");
+    }
     /*
     Json::Value root;
 
@@ -322,12 +329,20 @@ bool SRIndexer::save(string basePath){
 
 bool SRIndexer::load(string basePath){
 
-    loadLabels(basePath);
-    createNewLNReconstructor(paramsB);
 
-    fmat empty_dictionary;
-    indexKSVD = indexk_Ptr( new indexk(*lnMinQuery, empty_dictionary));
-    indexKSVD->load(INDEXER_BASE_SAVE_PATH + basePath);
+    dictionary.load(INDEXER_BASE_SAVE_PATH + basePath + "_dict.bin");
+
+    if(dictionary.empty())
+        return false;
+
+    arma::fmat emptyMat;
+    ksvd = ksvdb_Ptr(new ksvdb(optKSVD,*lnMinKSVD,dictionary,emptyMat));
+
+    //loadLabels(basePath);
+    //createNewLNReconstructor(paramsB);
+    //fmat empty_dictionary;
+    //indexKSVD = indexk_Ptr( new indexk(*lnMinQuery, empty_dictionary));
+    //indexKSVD->load(INDEXER_BASE_SAVE_PATH + basePath);
 
 	return true;
 }
@@ -392,7 +407,7 @@ int SRIndexer::addToIndexLive(arma::fmat& features){
 
 
 
-    std::shared_ptr<arma::fmat> featuresPtr(new arma::fmat(features));
+    std::shared_ptr<arma::fmat> featuresPtr = std::make_shared<fmat>(features);
     indexKSVD->addToIndex(featuresPtr);
 
     return 0;

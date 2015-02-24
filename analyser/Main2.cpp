@@ -1930,6 +1930,7 @@ int main(int argc, char *argv[])
     //classifySapoAllVideos(argc, argv);
     extractREST(argc, argv);
 	//createBlipKnnVWDict(argc, argv);
+
     return 0;
 }
 
