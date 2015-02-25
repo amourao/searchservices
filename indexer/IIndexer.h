@@ -111,6 +111,12 @@ public:
         return make_pair(idToLabels(rSearch.first),rSearch.second);
 	}
 
+	virtual std::pair<vector<uint>,vector<float> > knnSearchIdLong(arma::fmat& name, int n = 1000, double search_limit = 1){
+        vector<uint> a;
+        vector<float> b;
+        return make_pair(a,b);
+	}
+
     virtual void train(cv::Mat& featuresTrain,cv::Mat& featuresValidationI,cv::Mat& featuresValidationQ){
         //arma::fmat vMat1,vMat2,vMat3;
         //MatrixTools::matToFMat(featuresTrain, vMat1, false);

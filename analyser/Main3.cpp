@@ -1282,13 +1282,13 @@ void awesomeIndexTesterAllV2(int argc, char *argv[]){
                 //int tmp = 0;
                 vector<float> precVsLinearTmp;
                 double tmpTime = 0;
-                std::pair<vector<float>, vector<float> > r;
-                vector<std::pair<vector<float>, vector<float> > > rAll;
+                std::pair<vector<uint>, vector<float> > r;
+                vector<std::pair<vector<uint>, vector<float> > > rAll;
                 int k = atoi(kList.at(kIndex).c_str());
                 for (int j = 0; j < featuresTestQ.n_cols; j++){
                     arma::fmat q = featuresTestQ.col(j);
                     get_timestamp(&start);
-                    r =  indexers.at(i)->knnSearchId(q,k);
+                    r =  indexers.at(i)->knnSearchIdLong(q,k);
                     get_timestamp(&end);
                     tmpTime += timestamp_diff_in_milliseconds(start, end);
                     rAll.push_back(r);
@@ -1299,9 +1299,9 @@ void awesomeIndexTesterAllV2(int argc, char *argv[]){
                     long relAccum = 0;
                     double precAccum = 0;
                     for (uint m = 0; m < rAll.at(j).first.size(); m++){
-                        cout << rAll.at(j).first.at(m) << ";";
+                        cout << (rAll.at(j).first.at(m)) << ";";
                     }
-                     cout << endl;
+                    cout << endl;
                 }
                 //if(indexToTest == 0 || i > 0)
                 vector<double> stats = indexers.at(i)->getStatistics();

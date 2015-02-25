@@ -59,6 +59,8 @@ public:
 	void indexWithTrainedParams(arma::fmat& features);
 	void index(arma::fmat& features);
 
+    std::pair<vector<uint>,vector<float> > knnSearchIdLong(arma::fmat& name, int n, double search_limit);
+
 	std::pair<vector<float>,vector<float> > knnSearchId(arma::fmat& name, int n, double search_limit);
 	std::pair<vector<float>,vector<float> > radiusSearchId(arma::fmat& name, double radius, int n, double search_limit);
 

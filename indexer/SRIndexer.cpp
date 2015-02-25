@@ -253,6 +253,47 @@ void SRIndexer::index(arma::fmat& features){
 
 }
 
+std::pair<vector<uint>,vector<float> > SRIndexer::knnSearchIdLong(arma::fmat& query, int n, double search_limit_param){
+
+    preProcessData(query);
+
+	vector<uint> indices;
+	vector<float> dists;
+
+    double current_search_limit;
+    if (search_limit == 0)
+        current_search_limit = search_limit_param;
+    else
+        current_search_limit = search_limit;
+
+    std::vector<forr::Result> ksvd_res;
+
+    if(bucket_inspection_method == SR_DEFAULT_BUCKET_INSPECTION_GREEDY){
+        ksvd_res = indexKSVD->find_k_nearest_limit_greedy(query, n, current_search_limit*indexKSVD->size());
+    } else if(bucket_inspection_method == SR_DEFAULT_BUCKET_INSPECTION_GREEDY_NONNULL){
+        ksvd_res = indexKSVD->find_k_nearest_limit_greedy_non_null(query, n, current_search_limit*indexKSVD->size());
+    } else if(bucket_inspection_method == SR_DEFAULT_BUCKET_INSPECTION_RR){
+        ksvd_res = indexKSVD->find_k_nearest_limit_round_robin(query, n, current_search_limit*indexKSVD->size());
+    } else if(bucket_inspection_method == SR_DEFAULT_BUCKET_INSPECTION_WEIGH){
+        ksvd_res = indexKSVD->find_k_nearest_limit_wcoeff(query, n, current_search_limit*indexKSVD->size());
+    } else if(bucket_inspection_method == SR_DEFAULT_BUCKET_INSPECTION_WEIGH_2){
+        ksvd_res = indexKSVD->find_k_nearest_limit_wcoeff2(query, n, current_search_limit*indexKSVD->size());
+    } else if(bucket_inspection_method == SR_DEFAULT_BUCKET_INSPECTION_PARTIAL){
+        ksvd_res = indexKSVD->find_k_nearest_limit_partial(query, n, current_search_limit*indexKSVD->size());
+    } else { //use default
+        ksvd_res = indexKSVD->find_k_nearest_limit(query, n, current_search_limit*indexKSVD->size());
+    }
+
+    indices.reserve(ksvd_res.size());
+    dists.reserve(ksvd_res.size());
+    for (forr::Result& res : ksvd_res) {
+        indices.push_back(res.vector_pos);
+        dists.push_back(0);
+    }
+
+	return make_pair(indices,dists);
+}
+
 std::pair<vector<float>,vector<float> > SRIndexer::knnSearchId(arma::fmat& query, int n, double search_limit_param){
 
     preProcessData(query);
