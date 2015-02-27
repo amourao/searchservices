@@ -2300,6 +2300,53 @@ int testConvertBin(int argc, char *argv[]){
     return 0;
 }
 
+int getBucketStatsFromFile(int argc, char *argv[]){
+
+	bool load_okay = true;
+	 ifstream f(argv[1], ifstream::in);
+	 std::string f_type;
+	 f >> f_type;
+
+	 arma::uword sizeofElement = 2*4;
+
+	 if(f_type != "ARMA_FLD_BIN")
+	 {
+	 load_okay = false;
+	 cout << "unsupported field type in " << endl;
+	 }
+	 else
+	 {
+	 arma::uword f_n_rows;
+	 arma::uword f_n_cols;
+
+	 f >> f_n_rows;
+	 f >> f_n_cols;
+
+	 //cout << f_n_rows << " " << f_n_cols << endl;
+
+	 f.get();
+
+	 for(arma::uword i=0; i<f_n_rows; ++i)
+      {
+      	std::string f_header;
+		arma::uword f_n_rows_inner;
+		arma::uword f_n_cols_inner;
+
+		f >> f_header;
+		f >> f_n_rows_inner;
+		f >> f_n_cols_inner;
+
+		f.get();
+
+		cout << f_n_rows_inner << endl;
+
+    	f.ignore(std::streamsize(f_n_rows_inner*f_n_cols_inner*sizeofElement));
+
+      }
+    }
+    f.close();
+}
+
 int main(int argc, char *argv[]){
 	//awesomeIndexTester(argc, argv);
 	//testSphericalHashing(argc, argv);
@@ -2313,7 +2360,7 @@ int main(int argc, char *argv[]){
 	} else if (name == "./getMoreBucketStats"){
 		getMoreSAIndexStatistics(argc, argv);
 	} else{
-		awesomeIndexTesterAllV2(argc, argv);
+		awesomeIndexTesterAll(argc, argv);
 	}
 
     return 0;
