@@ -140,7 +140,6 @@ string ExtractFeatures::getFeatures(map<string, string > parameters){
 
 	string filename = parameters["input"];
 	string analyserName = parameters["analyser"];
-	string taskName = parameters["task"];
 	string outputLocation = parameters["output"];
 
     bool filter = false;
