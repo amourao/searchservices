@@ -11,6 +11,8 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
+#include <db_cxx.h>
+
 #include "nTag/SRClassifier.h"
 
 #include "sources/ImageSource.h"
@@ -1907,6 +1909,232 @@ int classifySapoAllVideos(int argc, char *argv[]){
     return 0;
 }
 
+int extractAndSaveToBerkeleyDB(int argc, char *argv[]){
+
+    map<string,string> parameters;
+
+    string textFile = string(argv[1]);
+    TextFileSourceV2 is(textFile);
+
+    string features = string(argv[2]);
+    string dbBasePath = string(argv[3]);
+
+    string config = string(argv[4]);
+    LoadConfig::load(config,parameters);
+
+    vector<string> featuresArr = StringTools::split(features,',');
+    vector<IAnalyser*> analysers;
+
+    FactoryAnalyser * f = FactoryAnalyser::getInstance();
+
+    for(int i = 0; i < featuresArr.size(); i++){
+        IAnalyser* analyser = (IAnalyser*)f->createType(featuresArr.at(i));
+
+        if(analyser == NULL){
+            cout << featuresArr.at(i) << " not found." << endl;
+            continue;
+        }
+        analysers.push_back(analyser);
+
+
+
+    }
+    Mat src;
+
+    for (int i = 0; i < is.getImageCount(); i++) {
+		if (!(src = is.nextImage()).empty()) { // src contains the image, but the IAnalyser interface needs a path
+
+            string id1, id2, pmcid, imageid, path;
+
+            path = is.getImagePath();
+
+			stringstream liness(is.getImageInfo());
+            getline(liness, id1, ';');
+			getline(liness, id2, ';');
+			getline(liness, pmcid, ';');
+			getline(liness, imageid);
+			imageid.erase(remove(imageid.begin(), imageid.end(), '\r'), imageid.end());
+			imageid.erase(remove(imageid.begin(), imageid.end(), '\n'), imageid.end());
+
+
+            for(int j = 0; j < analysers.size(); j++){
+                    IAnalyser* analyser = analysers.at(j);
+                    FeatureExtractor* fe = (FeatureExtractor*)analyser;
+
+                    string keyString = pmcid + ";" + imageid;
+                    vector<float>* featureVec = (vector<float>*)analyser->getFeatures(path)->getValue();
+
+
+                    string dbPath = dbBasePath + "_" + featuresArr.at(j) + ".db";
+                    Db db(NULL, 0);               // Instantiate the Db object
+                    u_int32_t oFlags = DB_CREATE; // Open flags;
+                    try {
+                        // Open the database
+                        db.open(NULL,               // Transaction pointer
+                                dbPath.c_str(),             // Database file name
+                                NULL,               // Optional logical database name
+                                DB_BTREE,           // Database access method
+                                oFlags,             // Open flags
+                                0);                 // File mode (using defaults)
+                    // DbException is not subclassed from std::exception, so
+                    // need to catch both of these.
+                    } catch(DbException &e) {
+                        // Error handling code goes here
+                    } catch(std::exception &e) {
+                        // Error handling code goes here
+                    }
+
+                    //cout << featureVec->size() << endl;
+                    //for(int k = 0; k < featureVec->size(); k++){
+                    //    cout << featureVec->at(k) << " ";
+                    //}
+                    //cout << endl;
+
+                    Dbt key(&keyString[0], keyString.size());
+                    Dbt data(&featureVec->at(0), sizeof(float)*featureVec->size());
+                    int ret = db.put(NULL, &key, &data, DB_NOOVERWRITE);
+
+                    //if (ret == DB_KEYEXIST)
+                        //cout << "Put failed because key already exists: " << keyString << endl;
+
+                    int descSize = featureVec->size();
+                    string descSizeName = "size";
+
+                    Dbt keyS(&descSizeName[0], descSizeName.size());
+                    Dbt dataS(&descSize, sizeof(int));
+                    ret = db.put(NULL, &keyS, &dataS, DB_NOOVERWRITE);
+                    //if (ret == DB_KEYEXIST)
+                    //    cout << "Put failed because key already exists: " << descSizeName << endl;
+
+
+
+                    try {
+                        // Close the database
+                        db.close(0);
+                        // DbException is not subclassed from std::exception, so
+                        // need to catch both of these.
+                    } catch(DbException &e) {
+                        // Error handling code goes here
+                    } catch(std::exception &e) {
+                        // Error handling code goes here
+                    }
+
+
+
+
+
+            }
+		}
+    }
+}
+
+
+
+int readBerkeleyDB (int argc, char *argv[]){
+
+    string features = string(argv[2]);
+    string dbBasePath = string(argv[3]);
+
+
+    string textFile = string(argv[1]);
+    TextFileSourceV2 is(textFile);
+
+
+    vector<string> featuresArr = StringTools::split(features,',');
+
+    Mat src;
+    for (int i = 0; i < is.getImageCount(); i++) {
+		if (!(src = is.nextImage()).empty()) { // src contains the image, but the IAnalyser interface needs a path
+
+            string id1, id2, pmcid, imageid, path;
+
+            path = is.getImagePath();
+
+			stringstream liness(is.getImageInfo());
+            getline(liness, id1, ';');
+			getline(liness, id2, ';');
+			getline(liness, pmcid, ';');
+			getline(liness, imageid);
+			imageid.erase(remove(imageid.begin(), imageid.end(), '\r'), imageid.end());
+			imageid.erase(remove(imageid.begin(), imageid.end(), '\n'), imageid.end());
+
+
+            for(int i = 0; i < featuresArr.size(); i++){
+                string dbPath = dbBasePath + "_" + featuresArr.at(i) + ".db";
+                Db db(NULL, 0);               // Instantiate the Db object
+                u_int32_t oFlags = DB_CREATE; // Open flags;
+                try {
+                    // Open the database
+                    db.open(NULL,               // Transaction pointer
+                            dbPath.c_str(),             // Database file name
+                            NULL,               // Optional logical database name
+                            DB_BTREE,           // Database access method
+                            oFlags,             // Open flags
+                            0);                 // File mode (using defaults)
+                // DbException is not subclassed from std::exception, so
+                // need to catch both of these.
+                } catch(DbException &e) {
+                    // Error handling code goes here
+                } catch(std::exception &e) {
+                    // Error handling code goes here
+                }
+
+                int size = 0;
+                Dbt keySizeDbt, dataSizeDbt;
+                string keySizeString = "size";
+                keySizeDbt.set_data(&keySizeString[0]);
+                keySizeDbt.set_size(keySizeString.size());
+
+                dataSizeDbt.set_data(&size);
+                dataSizeDbt.set_ulen(sizeof(int));
+                dataSizeDbt.set_flags(DB_DBT_USERMEM);
+
+                int ret = db.get(NULL, &keySizeDbt, &dataSizeDbt, 0);
+
+                cout << size << endl;
+
+                float* data = new float[size];
+
+                Dbt keyDbt, dataDbt;
+                string keyString = pmcid + ";" + imageid;
+                keyDbt.set_data(&keyString[0]);
+                keyDbt.set_size(keyString.size());
+
+                dataDbt.set_data(&data[0]);
+                dataDbt.set_ulen(sizeof(float)*size);
+                dataDbt.set_flags(DB_DBT_USERMEM);
+
+                db.get(NULL, &keyDbt, &dataDbt, 0);
+
+
+                for(int j = 0; j < size; j++){
+                    cout << data[j] << " ";
+                }
+                cout << endl;
+
+
+                try {
+                    // Close the database
+                    db.close(0);
+                    // DbException is not subclassed from std::exception, so
+                    // need to catch both of these.
+                } catch(DbException &e) {
+                    // Error handling code goes here
+                } catch(std::exception &e) {
+                    // Error handling code goes here
+                }
+
+
+
+            }
+		}
+    }
+
+
+
+
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -1928,8 +2156,11 @@ int main(int argc, char *argv[])
 
     //FrameFilter::maine(argc, argv);
     //classifySapoAllVideos(argc, argv);
-    extractREST(argc, argv);
+    //extractREST(argc, argv);
 	//createBlipKnnVWDict(argc, argv);
+
+    extractAndSaveToBerkeleyDB(argc, argv);
+	//readBerkeleyDB(argc, argv);
 
     return 0;
 }

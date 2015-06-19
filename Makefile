@@ -16,7 +16,7 @@ CFLAGS = -O2 -std=c++11 -Wall -fexceptions -fopenmp -DREAL_FLOAT -DUSE_GIST -DST
 RESINC = 
 LIBDIR = -L/localstore/searchservices/libs/lib/ -L/localstore/searchservices/libs/include/ -L/home/amourao/code/sparsereconstruction/
 LIB = 
-LDFLAGS = -fopenmp -lhdf5 -lflann -ljsoncpp -lopencv_core -lopencv_imgproc -lopencv_calib3d -lopencv_video -lopencv_photo -lopencv_features2d -lopencv_ml -lopencv_highgui -lopencv_objdetect -lopencv_contrib -lopencv_legacy -lopencv_nonfree -lfftw3f -lfftw3 -lm -lopencv_legacy -lopencv_flann -larmadillo -llapack -lblas -lPocoFoundation -lPocoData -lPocoDataSQLite -lPocoNet -lPocoXML -lPocoJSON -lPocoUtil -lcurl -lpugixml
+LDFLAGS = -fopenmp -lhdf5 -lflann -ljsoncpp -lopencv_core -lopencv_imgproc -lopencv_calib3d -lopencv_video -lopencv_photo -lopencv_features2d -lopencv_ml -lopencv_highgui -lopencv_objdetect -lopencv_contrib -lopencv_legacy -lopencv_nonfree -lfftw3f -lfftw3 -lm -lopencv_legacy -lopencv_flann -larmadillo -llapack -lblas -lPocoFoundation -lPocoData -lPocoDataSQLite -lPocoNet -lPocoXML -lPocoJSON -lPocoUtil -lcurl -lpugixml -ldb -ldb_cxx
 
 INC_RELEASEMAININD = $(INC) -Icommons
 CFLAGS_RELEASEMAININD = $(CFLAGS) -O2

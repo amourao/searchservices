@@ -282,7 +282,7 @@
 	<string>
 	<map>
 
-1411266651 source:/home/amourao/code/searchservices/analyser/Main2.cpp
+1434730140 source:/home/amourao/code/searchservices/analyser/Main2.cpp
 	<iostream>
 	<string>
 	<sstream>
@@ -293,6 +293,7 @@
 	<opencv2/core/core.hpp>
 	<opencv2/highgui/highgui.hpp>
 	<opencv2/imgproc/imgproc.hpp>
+	<db_cxx.h>
 	"nTag/SRClassifier.h"
 	"sources/ImageSource.h"
 	"sources/CamSource.h"
@@ -428,7 +429,7 @@
 	"FactoryIndexer.h"
 	"../commons/Timing.h"
 
-1424977903 source:/home/amourao/code/searchservices/analyser/Main3.cpp
+1426851195 source:/home/amourao/code/searchservices/analyser/Main3.cpp
 	<iostream>
 	<fstream>
 	<string>
@@ -568,7 +569,7 @@
 
 1391563053 /home/amourao/code/searchservices/analyser/nVector/standalone_image.h
 
-1418384655 source:/home/amourao/code/searchservices/analyser/nVector/GISTExtractor.cpp
+1431021259 source:/home/amourao/code/searchservices/analyser/nVector/GISTExtractor.cpp
 	"GISTExtractor.h"
 
 1418384655 /home/amourao/code/searchservices/analyser/nVector/GISTExtractor.h
@@ -813,7 +814,7 @@
 	<Poco/Net/HTTPServerResponse.h>
 	"../commons/factory/Factory.h"
 
-1418384655 source:/home/amourao/code/searchservices/rest/Endpoints/analyser/ExtractFeatures.cpp
+1434546088 source:/home/amourao/code/searchservices/rest/Endpoints/analyser/ExtractFeatures.cpp
 	"ExtractFeatures.h"
 
 1418384655 /home/amourao/code/searchservices/rest/Endpoints/analyser/ExtractFeatures.h

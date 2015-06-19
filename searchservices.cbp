@@ -25,7 +25,7 @@
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="0.7 0.3 4 80 /home/amourao/code/shotdetection/bin/minecraft_cedd.bin /home/amourao/code/shotdetection/bin/blip_cedd.bin" />
+				<Option parameters="a.txt gist883,lbp885 a default.json" />
 				<Compiler>
 					<Add option="-O2" />
 					<Add directory="commons" />
@@ -64,7 +64,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="0.7 0.3 4 80 /home/amourao/code/shotdetection/bin/minecraft_cedd.bin /home/amourao/code/shotdetection/bin/blip_cedd.bin" />
+				<Option parameters="a.txt gist883,lbp885 a default.json" />
 				<Compiler>
 					<Add option="-g" />
 					<Add directory="commons" />
@@ -162,7 +162,7 @@
 			<Add directory="/home/amourao/code/sparsereconstruction/" />
 		</Compiler>
 		<Linker>
-			<Add option="-fopenmp -lhdf5 -lflann -ljsoncpp -lopencv_core -lopencv_imgproc -lopencv_calib3d -lopencv_video -lopencv_photo -lopencv_features2d -lopencv_ml -lopencv_highgui -lopencv_objdetect -lopencv_contrib -lopencv_legacy -lopencv_nonfree -lfftw3f -lfftw3 -lm -lopencv_legacy -lopencv_flann -larmadillo -llapack -lblas -lPocoFoundation -lPocoData -lPocoDataSQLite -lPocoNet -lPocoXML -lPocoJSON -lPocoUtil -lcurl -lpugixml" />
+			<Add option="-fopenmp -lhdf5 -lflann -ljsoncpp -lopencv_core -lopencv_imgproc -lopencv_calib3d -lopencv_video -lopencv_photo -lopencv_features2d -lopencv_ml -lopencv_highgui -lopencv_objdetect -lopencv_contrib -lopencv_legacy -lopencv_nonfree -lfftw3f -lfftw3 -lm -lopencv_legacy -lopencv_flann -larmadillo -llapack -lblas -lPocoFoundation -lPocoData -lPocoDataSQLite -lPocoNet -lPocoXML -lPocoJSON -lPocoUtil -lcurl -lpugixml -ldb -ldb_cxx" />
 			<Add directory="/localstore/searchservices/libs/lib/" />
 			<Add directory="/localstore/searchservices/libs/include/" />
 			<Add directory="/home/amourao/code/sparsereconstruction/" />
