@@ -280,6 +280,8 @@ std::pair<vector<uint>,vector<float> > SRIndexer::knnSearchIdLong(arma::fmat& qu
         ksvd_res = indexKSVD->find_k_nearest_limit_wcoeff2(query, n, current_search_limit*indexKSVD->size());
     } else if(bucket_inspection_method == SR_DEFAULT_BUCKET_INSPECTION_PARTIAL){
         ksvd_res = indexKSVD->find_k_nearest_limit_partial(query, n, current_search_limit*indexKSVD->size());
+    } else if(bucket_inspection_method == SR_DEFAULT_BUCKET_INSPECTION_TF){
+        ksvd_res = indexKSVD->find_k_nearest_limit_tf(query, n, current_search_limit*indexKSVD->size());
     } else { //use default
         ksvd_res = indexKSVD->find_k_nearest_limit(query, n, current_search_limit*indexKSVD->size());
     }

@@ -17,38 +17,38 @@ using namespace std;
 class TrainTestFeaturesTools
 {
 public:
-	
+
 	TrainTestFeaturesTools(cv::Mat data, cv::Mat labels, vector<IClassifier*> classifiers);
 	TrainTestFeaturesTools(cv::Mat data, cv::Mat labels, cv::Mat dataTest, cv::Mat labelsTest, vector<IClassifier*> classifiers);
 	~TrainTestFeaturesTools();
-	
-	Mat getTrainingData();
-	Mat getTestData();
-	
-	Mat getTrainingLabels();
-	Mat getTestLabels();
+
+	cv::Mat getTrainingData();
+	cv::Mat getTestData();
+
+	cv::Mat getTrainingLabels();
+	cv::Mat getTestLabels();
 
 	string crossValidateAll(int numberOfDivisions);
 	string testAll();
-	
+
 	string crossValidate(string name,int numberOfDivisions);
 	string test(string name);
-	
+
 	void splitDataForTest(double ratio);
-	
+
 private:
 
-	void test(Mat trainData, Mat trainLabels, Mat testData, Mat testLabels, IClassifier* classifier, vector<int>& correctGuesses, vector<int>& falsePositives, Mat& confusionMatrix);
-	string resultsToString(vector<int>& correctGuesses, vector<int>& falsePositives, Mat& confusionMatrix);
-	void divideByClass(Mat trainData, Mat trainLabels, double numberOfDivisions, int currentDivision,Mat& newTrainData,Mat& newTrainLabels, Mat& testData, Mat& testLabels);
-	
+	void test(cv::Mat trainData, cv::Mat trainLabels, cv::Mat testData, cv::Mat testLabels, IClassifier* classifier, vector<int>& correctGuesses, vector<int>& falsePositives, cv::Mat& confusionMatrix);
+	string resultsToString(vector<int>& correctGuesses, vector<int>& falsePositives, cv::Mat& confusionMatrix);
+	void divideByClass(cv::Mat trainData, cv::Mat trainLabels, double numberOfDivisions, int currentDivision, cv::Mat& newTrainData, cv::Mat& newTrainLabels, cv::Mat& testData, cv::Mat& testLabels);
+
 	IClassifier* getClassifier(string name);
 
 	cv::Mat data;
 	cv::Mat labels;
-	
+
 	cv::Mat dataTest;
 	cv::Mat labelsTest;
-	
+
 	vector<IClassifier*> classifiers;
 };

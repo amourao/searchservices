@@ -702,6 +702,8 @@
 			<Option target="ReleaseEusipco" />
 			<Option target="DebugEusipco" />
 		</Unit>
+		<Unit filename="analyser/nVector/SRExtractor.cpp" />
+		<Unit filename="analyser/nVector/SRExtractor.h" />
 		<Unit filename="analyser/nVector/SegmentedHistogramExtractor.cpp">
 			<Option target="ReleaseMainInd" />
 			<Option target="ReleaseMainAna" />
@@ -1352,6 +1354,8 @@
 			<Option target="ReleaseEusipco" />
 			<Option target="DebugEusipco" />
 		</Unit>
+		<Unit filename="indexer/DistributedIndexWrapperServer.cpp" />
+		<Unit filename="indexer/DistributedIndexWrapperServer.h" />
 		<Unit filename="indexer/FactoryIndexer.cpp">
 			<Option target="ReleaseMainInd" />
 			<Option target="ReleaseMainAna" />

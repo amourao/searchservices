@@ -31,6 +31,9 @@
 #include "nVector/SegmentedHistogramExtractor.h"
 #include "nVector/LireExtractor.h"
 
+#include "nVector/GISTExtractor.h"
+#include "nVector/SRExtractor.h"
+
 
 #include "nRoi/FaceDetection.h"
 
@@ -294,7 +297,7 @@ void extractAllFeaturesCK(int argc, char *argv[]) {
 		lbpV2ALL.push_back(lbpV2);
 		lbpV3ALL.push_back(lbpV3);
 
-		Mat labels(1,2,CV_32F);
+		cv::Mat labels(1,2,CV_32F);
 		labels.at<float>(0,0) = idI;
 		labels.at<float>(0,1) = idC;
 
@@ -374,8 +377,8 @@ int testAllClassifiersBin(int argc, char *argv[]) {
 
 		string file(argv[1]);
 
-		Mat features;
-		Mat labels;
+		cv::Mat features;
+		cv::Mat labels;
 
 		MatrixTools::readBin(file, features, labels);
 
@@ -388,11 +391,11 @@ int testAllClassifiersBin(int argc, char *argv[]) {
 		string fileTest(argv[2]);
 
 
-		Mat features;
-		Mat labels;
+		cv::Mat features;
+		cv::Mat labels;
 
-		Mat testFeatures;
-		Mat testLabels;
+		cv::Mat testFeatures;
+		cv::Mat testLabels;
 
 		MatrixTools::readBin(file, features, labels);
 		MatrixTools::readBin(fileTest, testFeatures, testLabels);
@@ -409,8 +412,8 @@ void testLoadSaveIClassifier(int argc, char *argv[]){
 
 	string file(argv[1]);
 
-	Mat features;
-	Mat labels;
+	cv::Mat features;
+	cv::Mat labels;
 
 	MatrixTools::readBin(file, features, labels);
 
@@ -432,15 +435,15 @@ void testLoadSaveIClassifier(int argc, char *argv[]){
 void testLoadSaveIIndexer(int argc, char *argv[]){
 	string file(argv[1]);
 
-	Mat features;
-	Mat labels;
+	cv::Mat features;
+	cv::Mat labels;
 
 	MatrixTools::readBin(file, features, labels);
 	IIndexer* vw = new FlannkNNIndexer();
 
 	vw->index(features);
 	vw->save("medicalImage_CEDD_kNN");
-	Mat q = features.row(0);
+	cv::Mat q = features.row(0);
 
 	std::pair<vector<float>,vector<float> > r = vw->knnSearchId(q,10);
 	for(uint i = 0; i < r.first.size(); i++){
@@ -466,7 +469,7 @@ int faceDetectionParameterChallenge(int argc, char *argv[]){
 
 	FaceDetection fd(FACE_DETECTION_CASCADE_PATH + "haarcascade_frontalface_alt_tree.xml",FACE_DETECTION_CASCADE_PATH + "haarcascade_eye_tree_eyeglasses.xml",0.5,1, cv::Size(20,20),cv::Size(1000,1000),true);
 
-	Mat src;
+	cv::Mat src;
 
 	int u = 0;
 	int step = 100;
@@ -481,7 +484,7 @@ int faceDetectionParameterChallenge(int argc, char *argv[]){
 	//int anglesLen = 2;
 	while (!(src = is.nextImage()).empty()) {
 
-		vector<Mat> faceImages;
+		vector<cv::Mat> faceImages;
 		vector<cv::Point> locations;
 		vector<Rect> faceRois;
 		fd.detectFaces(src, faceImages, locations, faceRois);
@@ -506,7 +509,7 @@ int faceDetectionParameterChallenge(int argc, char *argv[]){
 
 			fd.detectFaces(rotatedImage, faceImages, locations, faceRois);
 		}*/
-		Mat newSrc;
+		cv::Mat newSrc;
 
 		src.copyTo(newSrc);
 		facesDetected += faceRois.size();
@@ -559,7 +562,7 @@ void testMSIDXIndexer(int argc, char *argv[]){
 	//int w = atoi(argv[3]);
 	int k = atoi(argv[4]);
 
-	Mat features;
+	cv::Mat features;
 	//Mat labels;
 
 	tinyImageImporter ti;
@@ -593,7 +596,7 @@ void testMSIDXIndexer(int argc, char *argv[]){
 
 	lsh->save("L");
 	lsh->load("L");
-	Mat q = features.row(0);
+	cv::Mat q = features.row(0);
 
 	std::pair< vector<float> , vector<float> > r = linear->knnSearchId(q,k);
 	for(uint i = 0; i < r.first.size(); i++){
@@ -627,11 +630,11 @@ int merger(int argc, char *argv[]){
 	ss1 << "../" << a;
 	string c = ss1.str();
 
-	Mat t1;
-	Mat t2;
+	cv::Mat t1;
+	cv::Mat t2;
 
-	Mat l1;
-	Mat l2;
+	cv::Mat l1;
+	cv::Mat l2;
 
 	MatrixTools::readBin(a,t1,l1);
 	MatrixTools::readBin(b,t2,l2);
@@ -651,7 +654,7 @@ void createMedCatClassifier(int argc, char *argv[]) {
     string trainData = string(argv[1]);
 	TextFileSourceV2 is(trainData);
 
-	Mat src;
+	cv::Mat src;
 
     string aa = "cedd";
     map<string,string> params;
@@ -667,7 +670,7 @@ void createMedCatClassifier(int argc, char *argv[]) {
     int j = 0;
     string lastCateg = "";
 
-    Mat features, labels;
+    cv::Mat features, labels;
 
     while (j < is.getImageCount()) {
         src = is.nextImage();
@@ -683,8 +686,8 @@ void createMedCatClassifier(int argc, char *argv[]) {
         if (j % 100 == 0)
             cout << j << " " << is.getImageCount() << endl;
 
-        Mat f1, f2, comb;
-        Mat label(1,1,CV_32F);
+        cv::Mat f1, f2, comb;
+        cv::Mat label(1,1,CV_32F);
 
         ceddExtractor.extractFeatures(src, f1);
         fcthExtractor.extractFeatures(src, f2);
@@ -824,7 +827,7 @@ void extractAllFeaturesCKv2(int argc, char *argv[]) {
 		gaborV2ALL.push_back(gaborV2);
 		gaborV3ALL.push_back(gaborV3);
 
-		Mat labels(1,2,CV_32F);
+		cv::Mat labels(1,2,CV_32F);
 		labels.at<float>(0,0) = idI;
 		labels.at<float>(0,1) = idC;
 
@@ -878,7 +881,7 @@ void classifyAllImages(int argc, char *argv[]) {
     string trainData = string(argv[1]);
 	TextFileSourceV2 is(trainData);
 
-	Mat src;
+	cv::Mat src;
 
     string aa = "cedd";
     map<string,string> params;
@@ -894,7 +897,7 @@ void classifyAllImages(int argc, char *argv[]) {
     int j = 0;
     string lastCateg = "";
 
-    Mat features, labels;
+    cv::Mat features, labels;
 
     while (j < is.getImageCount()) {
         src = is.nextImage();
@@ -908,8 +911,8 @@ void classifyAllImages(int argc, char *argv[]) {
         if (j % 100 == 0)
             cout << j << " " << is.getImageCount() << endl;
 
-        Mat f1, f2, comb;
-        Mat label(1,1,CV_32F);
+        cv::Mat f1, f2, comb;
+        cv::Mat label(1,1,CV_32F);
 
         ceddExtractor.extractFeatures(src, f1);
         fcthExtractor.extractFeatures(src, f2);
@@ -960,7 +963,7 @@ void classifyAllImagesCondor(int argc, char *argv[]) {
 
     is.skipTo(startAt);
 
-	Mat src;
+	cv::Mat src;
 
     string aa = "cedd";
     map<string,string> params;
@@ -976,7 +979,7 @@ void classifyAllImagesCondor(int argc, char *argv[]) {
     //int j = 0;
     string lastCateg = "";
 
-    Mat features, labels;
+    cv::Mat features, labels;
 
     for (int j = 0; j < imagesToProcess; j++) {
         try{
@@ -987,8 +990,8 @@ void classifyAllImagesCondor(int argc, char *argv[]) {
         if (!src.empty()){
         string iri = StringTools::split(is.getCurrentImageInfoField(0),'.')[0];
 
-        Mat f1, f2, comb;
-        Mat label(1,1,CV_32F);
+        cv::Mat f1, f2, comb;
+        cv::Mat label(1,1,CV_32F);
 
         ceddExtractor.extractFeatures(src, f1);
         fcthExtractor.extractFeatures(src, f2);
@@ -1058,10 +1061,10 @@ void classifyAllBlipImagesCondor(int argc, char *argv[]) {
 
     is.skipTo(startAt);
 
-	Mat src;
+	cv::Mat src;
 
 
-	Mat vocabulary, labelsAll;
+	cv::Mat vocabulary, labelsAll;
 	string outV = "/localstore/amourao/code/vocabulary.bin";
 	MatrixTools::readBinV2(outV,vocabulary,labelsAll);
 	BOWImgDescriptorExtractor bowMatcher(DescriptorExtractor::create("SIFT"),DescriptorMatcher::create("BruteForce"));
@@ -1104,7 +1107,7 @@ void classifyAllBlipImagesCondor(int argc, char *argv[]) {
 
 
 
-            	Mat labels(1,2,CV_32F);
+            	cv::Mat labels(1,2,CV_32F);
 
                 labels.at<float>(0,0) = totalImages + startAt;
                 labels.at<float>(0,1) = totalImages;
@@ -1112,7 +1115,7 @@ void classifyAllBlipImagesCondor(int argc, char *argv[]) {
 
                 totalImages++;
                 for(uint i = 0; i < fExtractors.size(); i++){
-                    Mat features;
+                    cv::Mat features;
                     fExtractors.at(i)->extractFeatures(src,features);
                 	stringstream ss;
 			        ss << "blip_" << fExtractors.at(i)->getName() << "_";
@@ -1124,7 +1127,7 @@ void classifyAllBlipImagesCondor(int argc, char *argv[]) {
 
 
                 for(uint i = 0; i < kExtractors.size(); i++){
-                    Mat features;
+                    cv::Mat features;
                     vector<KeyPoint> keypoints;
                     kExtractors.at(i)->extractFeatures(src,keypoints,features);
 
@@ -1135,7 +1138,7 @@ void classifyAllBlipImagesCondor(int argc, char *argv[]) {
         			//MatrixTools::writeBinV3(filename,features,keypoints,labels,true);
         			features.release();
         			//if (kExtractors.at(i)->getName() == "SIFTExtractor"){
-        				Mat imgDescriptor;
+        				cv::Mat imgDescriptor;
         				bowMatcher.compute(src, keypoints, imgDescriptor);
         				stringstream ss2;
         				ss2 << "blip_" << kExtractors.at(i)->getName() << "_bow_";
@@ -1206,19 +1209,19 @@ int testBinFormat(int argc, char *argv[]){
     DescriptorExtractor* extractor = new SiftDescriptorExtractor();
 
     vector<KeyPoint> keypoints;
-    Mat descriptors;
+    cv::Mat descriptors;
 
-    Mat originalGrayImage = imread(parameters["filename"]);
+    cv::Mat originalGrayImage = imread(parameters["filename"]);
 
     detector->detect(originalGrayImage, keypoints);
     extractor->compute(originalGrayImage, keypoints, descriptors);
 
-    Mat label(1,2,CV_32F);
+    cv::Mat label(1,2,CV_32F);
 
     label.at<float>(0,0) = descriptors.cols;
     label.at<float>(0,1) = descriptors.cols;
 
-    vector<Mat> descriptorsMat;
+    vector<cv::Mat> descriptorsMat;
     descriptorsMat.push_back(descriptors);
 
     vector<vector<KeyPoint> > keypointsVec;
@@ -1231,8 +1234,8 @@ int testBinFormat(int argc, char *argv[]){
 
     cout << descriptorsMat.at(0).row(0).colRange(0,2) << " " << descriptorsMat.at(0).rows << " " << label.cols << " " << label.rows << " " << keypointsVec.at(0).at(0).pt.x << " " << keypointsVec.at(0).at(1).pt.y << endl;
 
-    vector<Mat> descriptorsMat2;
-    Mat label2;
+    vector<cv::Mat> descriptorsMat2;
+    cv::Mat label2;
     MatrixTools::readBinV2(s,descriptorsMat2,label2);
 
     cout << descriptorsMat2.at(0).row(0).colRange(0,2) << " " << descriptorsMat2.at(0).rows << " " << label2.cols << " " << label2.rows << endl;
@@ -1280,7 +1283,7 @@ int createBlipKnnVWDict(int argc, char *argv[]){
 	Mat vocabulary = bowTrainer.cluster();*/
 	cout << "read vocabulary" << endl;
 
-	Mat vocabulary, labelsAll;
+	cv::Mat vocabulary, labelsAll;
 	string outV = "/localstore/amourao/blip/vocabulary.bin";
 	MatrixTools::readBinV2(outV,vocabulary,labelsAll);
 
@@ -1294,15 +1297,15 @@ int createBlipKnnVWDict(int argc, char *argv[]){
 	BOWImgDescriptorExtractor bowMatcher(DescriptorExtractor::create("SIFT"),DescriptorMatcher::create("BruteForce"));
 	bowMatcher.setVocabulary(vocabulary);
 
-	Mat imgDescriptor;
+	cv::Mat imgDescriptor;
 	vector<KeyPoint> keypoints2;
-	Mat image = imread("/home/amourao/code/searchservices/bush.jpg");
+	cv::Mat image = imread("/home/amourao/code/searchservices/bush.jpg");
 	detector->detect(image, keypoints2);
 
 	cout << "extracting demo image" << endl;
 	bowMatcher.compute(image, keypoints2, imgDescriptor);
 
-	Mat tempLabels;
+	cv::Mat tempLabels;
 
 
 	string outD = "/localstore/amourao/blip/descriptor.bin";
@@ -1358,25 +1361,25 @@ int classifySapo(int argc, char *argv[]){
     string negatives = argv[6];
     vector<string> negativeExamples = StringTools::split(negatives,',');
 
-    Mat featuresNegTrain;
-    Mat featuresNegTrainL;
-    Mat featuresNegTest;
-    Mat featuresNegTestL;
+    cv::Mat featuresNegTrain;
+    cv::Mat featuresNegTrainL;
+    cv::Mat featuresNegTest;
+    cv::Mat featuresNegTestL;
 
     //get positive examples
     //number of examples is strictly based on the ratios provided as parameters
 
-    Mat featuresPos, labelsPos;
+    cv::Mat featuresPos, labelsPos;
     MatrixTools::readBin(positiveExamples,featuresPos,labelsPos);
 
     int posCountTrain = featuresPos.rows*splitTrainPos;
     int posCountTest = featuresPos.rows*splitTestPos;
 
-    Mat featurePosTrain = featuresPos.rowRange(0,posCountTrain);
-    Mat featuresPosTest = featuresPos.rowRange(posCountTrain,posCountTrain+posCountTest);
+    cv::Mat featurePosTrain = featuresPos.rowRange(0,posCountTrain);
+    cv::Mat featuresPosTest = featuresPos.rowRange(posCountTrain,posCountTrain+posCountTest);
 
-    Mat featurePosTrainL = Mat(posCountTrain,1, CV_32F, 1.0);
-    Mat featuresPosTestL = Mat(posCountTest,1, CV_32F, 1.0);
+    cv::Mat featurePosTrainL = cv::Mat(posCountTrain,1, CV_32F, 1.0);
+    cv::Mat featuresPosTestL = cv::Mat(posCountTest,1, CV_32F, 1.0);
 
     //get negative examples
     //number of examples is counted as a porportion of positive examples
@@ -1392,7 +1395,7 @@ int classifySapo(int argc, char *argv[]){
     int negCountTestExpectedPerClass = negCountTestExpected/negativeExamples.size();
 
     for(string negExample: negativeExamples){
-        Mat featuresS, labelsS;
+        cv::Mat featuresS, labelsS;
         MatrixTools::readBin(negExample,featuresS,labelsS);
 
         int currSplitTrain = negCountTrainExpectedPerClass;
@@ -1404,11 +1407,11 @@ int classifySapo(int argc, char *argv[]){
             currSplitTest = featuresS.rows - currSplitTrain;
         }
 
-        Mat featuresNegTrainC = featuresS.rowRange(0,currSplitTrain);
-        Mat featuresNegTestC = featuresS.rowRange(currSplitTrain,currSplitTrain+currSplitTest);
+        cv::Mat featuresNegTrainC = featuresS.rowRange(0,currSplitTrain);
+        cv::Mat featuresNegTestC = featuresS.rowRange(currSplitTrain,currSplitTrain+currSplitTest);
 
-        Mat featuresNegTrainLC = Mat(currSplitTrain,1, CV_32F, 0.0);
-        Mat featuresNegTestLC = Mat(currSplitTest,1, CV_32F, 0.0);
+        cv::Mat featuresNegTrainLC = cv::Mat(currSplitTrain,1, CV_32F, 0.0);
+        cv::Mat featuresNegTestLC = cv::Mat(currSplitTest,1, CV_32F, 0.0);
 
         featuresNegTrain.push_back(featuresNegTrainC);
         featuresNegTrainL.push_back(featuresNegTrainLC);
@@ -1423,10 +1426,10 @@ int classifySapo(int argc, char *argv[]){
 
 
 
-    Mat train;
-    Mat trainL;
-    Mat test;
-    Mat testL;
+    cv::Mat train;
+    cv::Mat trainL;
+    cv::Mat test;
+    cv::Mat testL;
 
     vconcat(featurePosTrain, featuresNegTrain, train);
     vconcat(featurePosTrainL, featuresNegTrainL, trainL);
@@ -1446,7 +1449,7 @@ int classifySapo(int argc, char *argv[]){
     int correctNeg = 0;
     int wrongNeg = 0;
     for(int i = 0; i < test.rows; i++){
-        Mat features = test.row(i);
+        cv::Mat features = test.row(i);
 
         float label = testL.at<float>(i,0);
 
@@ -1472,18 +1475,18 @@ int classifySapo(int argc, char *argv[]){
 }
 
 
-int extractOnlyMiddleFrames(Mat& featurePosTrain, Mat& featurePosTrainL, Mat& featurePosTrainLOriginal){
-        Mat tmpfeaturePosTrain;
-        Mat tmpfeaturePosTrainL;
-        Mat tmpfeaturePosTrainLOriginal;
+int extractOnlyMiddleFrames(cv::Mat& featurePosTrain, cv::Mat& featurePosTrainL, cv::Mat& featurePosTrainLOriginal){
+        cv::Mat tmpfeaturePosTrain;
+        cv::Mat tmpfeaturePosTrainL;
+        cv::Mat tmpfeaturePosTrainLOriginal;
 
         featurePosTrain.copyTo(tmpfeaturePosTrain);
         featurePosTrainL.copyTo(tmpfeaturePosTrainL);
         featurePosTrainLOriginal.copyTo(tmpfeaturePosTrainLOriginal);
 
-        featurePosTrain = Mat();
-        featurePosTrainL = Mat();
-        featurePosTrainLOriginal = Mat();
+        featurePosTrain = cv::Mat();
+        featurePosTrainL = cv::Mat();
+        featurePosTrainLOriginal = cv::Mat();
 
         bool isMiddleFrame = false;
         float lastVideoId = -1;
@@ -1520,17 +1523,17 @@ int classifySapoAllVideos(int argc, char *argv[]){
 
     vector<string> negativeExamples = StringTools::split(negatives,',');
 
-    Mat featuresNegTrain;
-    Mat featuresNegTrainL;
-    Mat featuresNegTrainLOriginal;
-    Mat featuresNegTest;
-    Mat featuresNegTestL;
-    Mat featuresNegTestLOriginal;
+    cv::Mat featuresNegTrain;
+    cv::Mat featuresNegTrainL;
+    cv::Mat featuresNegTrainLOriginal;
+    cv::Mat featuresNegTest;
+    cv::Mat featuresNegTestL;
+    cv::Mat featuresNegTestLOriginal;
 
     //get positive examples
     //number of examples is strictly based on the ratios provided as parameters
 
-    Mat featuresPos, labelsPos;
+    cv::Mat featuresPos, labelsPos;
     MatrixTools::readBin(positiveExamples,featuresPos,labelsPos);
 
     int posCountTrain = featuresPos.rows*splitTrainPos;
@@ -1552,13 +1555,13 @@ int classifySapoAllVideos(int argc, char *argv[]){
 
     posCountTest = lastTestValue-posCountTrain;
 
-    Mat featurePosTrain = featuresPos.rowRange(0,posCountTrain);
-    Mat featurePosTrainLOriginal = labelsPos.rowRange(0,posCountTrain);
-    Mat featuresPosTestLOriginal = labelsPos.rowRange(posCountTrain,lastTestValue);
-    Mat featuresPosTest = featuresPos.rowRange(posCountTrain,lastTestValue);
+    cv::Mat featurePosTrain = featuresPos.rowRange(0,posCountTrain);
+    cv::Mat featurePosTrainLOriginal = labelsPos.rowRange(0,posCountTrain);
+    cv::Mat featuresPosTestLOriginal = labelsPos.rowRange(posCountTrain,lastTestValue);
+    cv::Mat featuresPosTest = featuresPos.rowRange(posCountTrain,lastTestValue);
 
-    Mat featurePosTrainL= Mat::ones(posCountTrain,1, CV_32F);
-    Mat featuresPosTestL= Mat::ones(featuresPosTest.rows,1, CV_32F);
+    cv::Mat featurePosTrainL= cv::Mat::ones(posCountTrain,1, CV_32F);
+    cv::Mat featuresPosTestL= cv::Mat::ones(featuresPosTest.rows,1, CV_32F);
 
 
     //option to select only frames from the middle of the scene
@@ -1588,7 +1591,7 @@ int classifySapoAllVideos(int argc, char *argv[]){
     int negCountTestExpectedPerClass = negCountTestExpected/negativeExamples.size();
 
     for(string negExample: negativeExamples){
-        Mat featuresS, labelsS;
+        cv::Mat featuresS, labelsS;
         MatrixTools::readBin(negExample,featuresS,labelsS);
 
         if(labelsS.cols == 8){
@@ -1619,15 +1622,15 @@ int classifySapoAllVideos(int argc, char *argv[]){
             ;
         lastTestValue = min(lastTestValue,labelsS.rows);
 
-        Mat featuresNegTrainC = featuresS.rowRange(0,currSplitTrain);
-        Mat featuresNegTrainLCOriginal = labelsS.rowRange(0,currSplitTrain);
-        Mat featuresNegTestC = featuresS.rowRange(currSplitTrain,lastTestValue);
-        Mat featuresNegTestLCOriginal = labelsS.rowRange(currSplitTrain,lastTestValue);
+        cv::Mat featuresNegTrainC = featuresS.rowRange(0,currSplitTrain);
+        cv::Mat featuresNegTrainLCOriginal = labelsS.rowRange(0,currSplitTrain);
+        cv::Mat featuresNegTestC = featuresS.rowRange(currSplitTrain,lastTestValue);
+        cv::Mat featuresNegTestLCOriginal = labelsS.rowRange(currSplitTrain,lastTestValue);
 
         currSplitTest = featuresNegTestC.rows;
 
-        Mat featuresNegTrainLC = Mat::zeros(currSplitTrain,1, CV_32F);
-        Mat featuresNegTestLC = Mat::zeros(currSplitTest,1, CV_32F);
+        cv::Mat featuresNegTrainLC = cv::Mat::zeros(currSplitTrain,1, CV_32F);
+        cv::Mat featuresNegTestLC = cv::Mat::zeros(currSplitTest,1, CV_32F);
 
         featuresNegTrain.push_back(featuresNegTrainC);
         featuresNegTrainL.push_back(featuresNegTrainLC);
@@ -1647,12 +1650,12 @@ int classifySapoAllVideos(int argc, char *argv[]){
         negCountTest = extractOnlyMiddleFrames(featuresNegTest,featuresNegTestL,featuresNegTestLOriginal);
     }
 
-    Mat train;
-    Mat trainL;
-    Mat trainLOriginal;
-    Mat test;
-    Mat testL;
-    Mat testLOriginal;
+    cv::Mat train;
+    cv::Mat trainL;
+    cv::Mat trainLOriginal;
+    cv::Mat test;
+    cv::Mat testL;
+    cv::Mat testLOriginal;
 
     vconcat(featurePosTrain, featuresNegTrain, train);
     vconcat(featurePosTrainL, featuresNegTrainL, trainL);
@@ -1692,11 +1695,11 @@ int classifySapoAllVideos(int argc, char *argv[]){
     vector<int> fpk(ratiosk.size(),0);
     vector<int> fnk(ratiosk.size(),0);
 
-    Mat classifications(test.rows,1,CV_32F);
-    Mat classificationsScore(test.rows,1,CV_32F);
+    cv::Mat classifications(test.rows,1,CV_32F);
+    cv::Mat classificationsScore(test.rows,1,CV_32F);
 
     for(int i = 0; i < test.rows; i++){
-        Mat features = test.row(i);
+        cv::Mat features = test.row(i);
 
         float label = testL.at<float>(i,0);
 
@@ -1939,7 +1942,7 @@ int extractAndSaveToBerkeleyDB(int argc, char *argv[]){
 
 
     }
-    Mat src;
+    cv::Mat src;
 
     for (int i = 0; i < is.getImageCount(); i++) {
 		if (!(src = is.nextImage()).empty()) { // src contains the image, but the IAnalyser interface needs a path
@@ -2042,7 +2045,7 @@ int readBerkeleyDB (int argc, char *argv[]){
 
     vector<string> featuresArr = StringTools::split(features,',');
 
-    Mat src;
+    cv::Mat src;
     for (int i = 0; i < is.getImageCount(); i++) {
 		if (!(src = is.nextImage()).empty()) { // src contains the image, but the IAnalyser interface needs a path
 
@@ -2135,6 +2138,27 @@ int readBerkeleyDB (int argc, char *argv[]){
 
 }
 
+int playground(int argc, char *argv[]){
+
+    cv::Mat dst1, dst2;
+    string filename = "/home/amourao/Downloads/google-earth-view-1102.jpg";
+
+    vector<int> ops;
+    ops.push_back(8);
+    ops.push_back(8);
+    ops.push_back(4);
+    GISTExtractor gist(4,3,ops,320,320);
+
+    cv::Mat src = imread(filename);
+    gist.extractFeatures(src,dst1);
+
+    cout << dst1.rows << " " << dst1.cols << endl;
+
+    SRExtractor sr;
+    sr.extractFeatures(dst1,dst2);
+    cout << dst2 << endl;
+    return 0;
+}
 
 int main(int argc, char *argv[])
 {
@@ -2159,8 +2183,9 @@ int main(int argc, char *argv[])
     //extractREST(argc, argv);
 	//createBlipKnnVWDict(argc, argv);
 
-    extractAndSaveToBerkeleyDB(argc, argv);
+    //extractAndSaveToBerkeleyDB(argc, argv);
 	//readBerkeleyDB(argc, argv);
+	playground(argc,argv);
 
     return 0;
 }

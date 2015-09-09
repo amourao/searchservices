@@ -21,7 +21,7 @@ using namespace std;
 class RoiFeatureExtractor: public IAnalyser
 {
 public:
-	
+
 	virtual ~RoiFeatureExtractor()  {}
 
 	IDataModel* getFeatures(string name){
@@ -32,11 +32,11 @@ public:
 	}
 
 	virtual void extractFeatures(string filename, map<string,region>& features){
-		Mat source = imread(filename);
+		cv::Mat source = imread(filename);
 		extractFeatures(source,features);
 	}
 
-	virtual void extractFeatures(Mat& source, map<string,region>& features) = 0;
+	virtual void extractFeatures(cv::Mat& source, map<string,region>& features) = 0;
 
 	virtual void train(string trainFile) = 0;
 
@@ -45,9 +45,9 @@ public:
 	virtual string crossValidate(string testFile) = 0;
 
 	virtual string getName() = 0;
-	
+
 	virtual void* createType(string &typeId) = 0;
-	
+
 	IDataModel::type getType(){
 		return IDataModel::NROI;
 	}

@@ -278,7 +278,7 @@ public:
 		chosenLabels = i;
 	}
 
-	virtual void setFlabels(Mat& flabels){
+	virtual void setFlabels(cv::Mat& flabels){
 		indexToLabels = flabels;
 	}
 

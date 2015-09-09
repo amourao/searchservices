@@ -14,23 +14,14 @@
 #include "../commons/FileDownloader.h"
 using namespace std;
 
-#ifndef INDEX_DATA_EXTENSION_KNN
-#define INDEX_DATA_EXTENSION_KNN ".xml"
-#endif
-
-
-#ifndef INDEX_FLANN_EXTENSION_KNN
-#define INDEX_FLANN_EXTENSION_KNN ".flann"
-#endif
-
-class FlannkNNIndexer: public IIndexer {
+class DistributedIndexWrapperServer: public IIndexer {
 
 public:
 
-	FlannkNNIndexer();
-	FlannkNNIndexer(string& type);
-	FlannkNNIndexer(string& type, map<string,string>& params);
-	~FlannkNNIndexer();
+	DistributedIndexWrapperServer();
+	DistributedIndexWrapperServer(string& type);
+	DistributedIndexWrapperServer(string& type, map<string,string>& params);
+	~DistributedIndexWrapperServer();
 
 	void* createType(string &typeId);
 	void* createType(string &typeId, map<string,string>& params);
@@ -45,17 +36,11 @@ public:
 	bool save(string basePath);
 	bool load(string basePath);
 
-	int addToIndexLive(cv::Mat& features);
+	int addToIndexLive(Mat& features);
 
 	string getName();
 
 private:
 
 	string type;
-	bool syncedWithDisk;
-	cv::Mat indexData;
-	cv::Mat indexDataUnsaved;
-	flann::Index* flannIndexs;
-	flann::IndexParams* flannParams;
-	cvflann::flann_distance_t flannDistance;
 };

@@ -21,9 +21,6 @@
 #include "../../../commons/FileDownloader.h"
 #include "../../../commons/Timing.h"
 
-
-
-
 class GenericIndexer: public IEndpoint
 {
 

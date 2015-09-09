@@ -43,9 +43,9 @@ public:
     void* createType(string &typeId);
     void* createType(string &typeId, map<string,string>& params);
 
-	void extractFeatures(Mat& source, map<string,region>& features);
+	void extractFeatures(cv::Mat& source, map<string,region>& features);
 
-	void detectFaces(Mat& image, vector<Mat>& faceImages, vector<cv::Point>& locations, vector<Rect>& faceRois);
+	void detectFaces(cv::Mat& image, vector<cv::Mat>& faceImages, vector<cv::Point>& locations, vector<cv::Rect>& faceRois);
 
 	void train(string trainFile);
 
@@ -58,8 +58,8 @@ public:
 private:
 
     string type;
+	bool preProcessFaceImage(cv::Mat& image, cv::Mat& faceImage, cv::Rect& roi);
 
-	bool preProcessFaceImage(Mat& image, Mat& faceImage, cv::Rect& roi);
 
 	bool detectBestEyepair (Point& center, double faceRadius, vector<Eye>& leftEyes, vector<Eye>& rightEyes, Eye& bestLeftEye, Eye& bestRightEye);
 	void rotateEye(cv::Point& center, cv::Point& eye, double angle);

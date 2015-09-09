@@ -218,7 +218,7 @@
 	<iostream>
 	"../FactoryAnalyser.h"
 
-1418384655 /home/amourao/code/searchservices/analyser/nRoi/FaceDetection.h
+1441815335 /home/amourao/code/searchservices/analyser/nRoi/FaceDetection.h
 	<opencv2/objdetect/objdetect.hpp>
 	<opencv2/core/core.hpp>
 	<opencv2/imgproc/imgproc.hpp>
@@ -230,7 +230,7 @@
 	"RoiFeatureExtractor.h"
 	"../FactoryAnalyser.h"
 
-1390951648 /home/amourao/code/searchservices/analyser/nRoi/RoiFeatureExtractor.h
+1441814539 /home/amourao/code/searchservices/analyser/nRoi/RoiFeatureExtractor.h
 	<opencv2/core/core.hpp>
 	<opencv2/highgui/highgui.hpp>
 	<opencv2/imgproc/imgproc.hpp>
@@ -261,7 +261,7 @@
 	"../FactoryClassifier.h"
 	"../../commons/FileDownloader.h"
 
-1390951648 /home/amourao/code/searchservices/analyser/tools/TrainTestFeaturesTools.h
+1441815353 /home/amourao/code/searchservices/analyser/tools/TrainTestFeaturesTools.h
 	<opencv2/core/core.hpp>
 	<opencv2/highgui/highgui.hpp>
 	<string>
@@ -282,7 +282,7 @@
 	<string>
 	<map>
 
-1434730140 source:/home/amourao/code/searchservices/analyser/Main2.cpp
+1441816588 source:/home/amourao/code/searchservices/analyser/Main2.cpp
 	<iostream>
 	<string>
 	<sstream>
@@ -309,6 +309,8 @@
 	"nVector/HistogramExtractor.h"
 	"nVector/SegmentedHistogramExtractor.h"
 	"nVector/LireExtractor.h"
+	"nVector/GISTExtractor.h"
+	"nVector/SRExtractor.h"
 	"nRoi/FaceDetection.h"
 	"nTag/kNNClassifier.h"
 	"nTag/SVMClassifier.h"
@@ -395,7 +397,7 @@
 	"../commons/factory/Factory.h"
 	"IIndexer.h"
 
-1424883466 /home/amourao/code/searchservices/indexer/IIndexer.h
+1441815767 /home/amourao/code/searchservices/indexer/IIndexer.h
 	<map>
 	<string>
 	<iostream>
@@ -405,7 +407,7 @@
 	"../analyser/tools/MatrixTools.h"
 	"../commons/factory/Factory.h"
 
-1418384655 /home/amourao/code/searchservices/indexer/FlannkNNIndexer.h
+1441815772 /home/amourao/code/searchservices/indexer/FlannkNNIndexer.h
 	<map>
 	<string>
 	<iostream>
@@ -417,7 +419,7 @@
 	"FactoryIndexer.h"
 	"../commons/FileDownloader.h"
 
-1418384655 /home/amourao/code/searchservices/indexer/MSIDXIndexer.h
+1441815323 /home/amourao/code/searchservices/indexer/MSIDXIndexer.h
 	<map>
 	<set>
 	<string>
@@ -902,7 +904,7 @@
 1423009278 source:/home/amourao/code/searchservices/rest/Endpoints/indexer/GenericIndexer.cpp
 	"GenericIndexer.h"
 
-1418384655 /home/amourao/code/searchservices/rest/Endpoints/indexer/GenericIndexer.h
+1441797264 /home/amourao/code/searchservices/rest/Endpoints/indexer/GenericIndexer.h
 	<iostream>
 	<sstream>
 	"../../IEndpoint.h"
@@ -4186,10 +4188,10 @@
 	"../FactoryAnalyser.h"
 	"../tools/MatrixTools.h"
 
-1424883506 source:/home/amourao/code/searchservices/indexer/SRIndexer.cpp
+1441291522 source:/home/amourao/code/searchservices/indexer/SRIndexer.cpp
 	"SRIndexer.h"
 
-1424883469 /home/amourao/code/searchservices/indexer/SRIndexer.h
+1441291466 /home/amourao/code/searchservices/indexer/SRIndexer.h
 	<map>
 	<string>
 	<iostream>
@@ -4227,7 +4229,7 @@
 	<set>
 	<armadillo>
 
-1424373726 /home/amourao/code/sparsereconstruction//ksvd-indexing-experiment/ksvd_index_mp.h
+1441297170 /home/amourao/code/sparsereconstruction//ksvd-indexing-experiment/ksvd_index_mp.h
 	<algorithm>
 	<cassert>
 	<memory>
@@ -4399,7 +4401,7 @@
 	<numeric>
 	<fstream>
 
-1418384655 /home/amourao/code/searchservices/analyser/tools/FrameFilter.h
+1441815360 /home/amourao/code/searchservices/analyser/tools/FrameFilter.h
 	<opencv2/core/core.hpp>
 	<opencv2/highgui/highgui.hpp>
 	<opencv2/imgproc/imgproc.hpp>
@@ -8843,4 +8845,35 @@
 	<map>
 	<cstdlib>
 	"IBinImporter.h"
+
+1441797207 source:/home/amourao/code/searchservices/indexer/DistributedIndexWrapperServer.cpp
+	"DistributedIndexWrapperServer.h"
+
+1441809973 /home/amourao/code/searchservices/indexer/DistributedIndexWrapperServer.h
+	<map>
+	<string>
+	<iostream>
+	<vector>
+	<opencv2/highgui/highgui.hpp>
+	<opencv2/ml/ml.hpp>
+	<opencv2/flann/flann.hpp>
+	"IIndexer.h"
+	"FactoryIndexer.h"
+	"../commons/FileDownloader.h"
+
+1441817112 source:/home/amourao/code/searchservices/analyser/nVector/SRExtractor.cpp
+	"SRExtractor.h"
+
+1441816125 /home/amourao/code/searchservices/analyser/nVector/SRExtractor.h
+	<utils/utils.h>
+	<l1min/omp.h>
+	"FeatureExtractor.h"
+	<opencv2/highgui/highgui.hpp>
+	<opencv2/imgproc/imgproc.hpp>
+	<vector>
+	<string>
+	<iostream>
+	<fstream>
+	"../FactoryAnalyser.h"
+	"../tools/MatrixTools.h"
 

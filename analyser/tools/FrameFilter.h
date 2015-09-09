@@ -15,10 +15,10 @@ class FrameFilter
         FrameFilter();
         ~FrameFilter();
 
-        static bool hasEdges(const Mat& frame, double thresholdCanny = 85, double thresholdAvg = 1.5);
-        static bool hasColor(const Mat& frame, double threshold);
+        static bool hasEdges(const cv::Mat& frame, double thresholdCanny = 85, double thresholdAvg = 1.5);
+        static bool hasColor(const cv::Mat& frame, double threshold);
 
-        static bool filter(const Mat& frame);
+        static bool filter(const cv::Mat& frame);
 
         static void CannyThreshold(int, void *);
         static int maine(int argc, char** argv);

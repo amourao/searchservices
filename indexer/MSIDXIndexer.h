@@ -60,9 +60,9 @@ class sortByCardinality {
       vector<pair<int,int> > cardinalities_;
 public:
       sortByCardinality(vector<pair<int,int> >& cardinalities) : cardinalities_(cardinalities) {}
-      bool operator()(const pair<int,Mat>& p1, const pair<int,Mat>& p2) const {
-      		Mat mat1 = p1.second;
-      		Mat mat2 = p2.second;
+      bool operator()(const pair<int,cv::Mat>& p1, const pair<int,cv::Mat>& p2) const {
+      		cv::Mat mat1 = p1.second;
+      		cv::Mat mat2 = p2.second;
       		for (uint i = 0; i < cardinalities_.size(); i++){
       			int colId = cardinalities_.at(i).first;
       			if (mat1.at<float>(0,colId) > mat2.at<float>(0,colId))
