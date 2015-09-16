@@ -1354,11 +1354,38 @@
 			<Option target="ReleaseEusipco" />
 			<Option target="DebugEusipco" />
 		</Unit>
-		<Unit filename="indexer/DistributedIndexWrapperClient.cpp" />
+		<Unit filename="indexer/DistributedIndexWrapperClient.cpp">
+			<Option target="ReleaseMainInd" />
+			<Option target="ReleaseMainAna" />
+			<Option target="ReleaseServer" />
+			<Option target="DebugMainInd" />
+			<Option target="DebugMainAna" />
+			<Option target="DebugServer" />
+			<Option target="ReleaseEusipco" />
+			<Option target="DebugEusipco" />
+		</Unit>
 		<Unit filename="indexer/DistributedIndexWrapperClient.h" />
-		<Unit filename="indexer/DistributedIndexWrapperClientDist.cpp" />
+		<Unit filename="indexer/DistributedIndexWrapperClientDist.cpp">
+			<Option target="ReleaseMainInd" />
+			<Option target="ReleaseMainAna" />
+			<Option target="ReleaseServer" />
+			<Option target="DebugMainInd" />
+			<Option target="DebugMainAna" />
+			<Option target="DebugServer" />
+			<Option target="ReleaseEusipco" />
+			<Option target="DebugEusipco" />
+		</Unit>
 		<Unit filename="indexer/DistributedIndexWrapperClientDist.h" />
-		<Unit filename="indexer/DistributedIndexWrapperServer.cpp" />
+		<Unit filename="indexer/DistributedIndexWrapperServer.cpp">
+			<Option target="ReleaseMainInd" />
+			<Option target="ReleaseMainAna" />
+			<Option target="ReleaseServer" />
+			<Option target="DebugMainInd" />
+			<Option target="DebugMainAna" />
+			<Option target="DebugServer" />
+			<Option target="ReleaseEusipco" />
+			<Option target="DebugEusipco" />
+		</Unit>
 		<Unit filename="indexer/DistributedIndexWrapperServer.h" />
 		<Unit filename="indexer/FactoryIndexer.cpp">
 			<Option target="ReleaseMainInd" />

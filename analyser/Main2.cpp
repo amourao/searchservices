@@ -2181,51 +2181,22 @@ int playground(int argc, char *argv[]){
 
     vector<string> images;
 
-    images.push_back("/home/amourao/Desktop/Madeira para o Mourao/IMG_6628.jpg");
-    images.push_back("/home/amourao/Desktop/Madeira para o Mourao/IMG_6646.jpg");
-    images.push_back("/home/amourao/Desktop/Madeira para o Mourao/IMG_6650.jpg");
-    images.push_back("/home/amourao/Desktop/Madeira para o Mourao/IMG_6656.jpg");
-    images.push_back("/home/amourao/Desktop/Madeira para o Mourao/IMG_6658.jpg");
-    images.push_back("/home/amourao/Desktop/Madeira para o Mourao/IMG_6676.jpg");
-    images.push_back("/home/amourao/Desktop/Madeira para o Mourao/IMG_6682.jpg");
-    images.push_back("/home/amourao/Desktop/Madeira para o Mourao/IMG_6685.jpg");
-    images.push_back("/home/amourao/Desktop/Madeira para o Mourao/IMG_6689.jpg");
-    images.push_back("/home/amourao/Desktop/Madeira para o Mourao/IMG_6693.jpg");
-    images.push_back("/home/amourao/Desktop/Madeira para o Mourao/IMG_6700.jpg");
-    images.push_back("/home/amourao/Desktop/Madeira para o Mourao/IMG_6702.jpg");
+    images.push_back("/home/amourao/tmp/IMG_6628.jpg");
+    images.push_back("/home/amourao/tmp/IMG_6646.jpg");
+    images.push_back("/home/amourao/tmp/IMG_6650.jpg");
+    images.push_back("/home/amourao/tmp/IMG_6656.jpg");
+    images.push_back("/home/amourao/tmp/IMG_6658.jpg");
+    images.push_back("/home/amourao/tmp/IMG_6676.jpg");
+    images.push_back("/home/amourao/tmp/IMG_6682.jpg");
+    images.push_back("/home/amourao/tmp/IMG_6685.jpg");
+    images.push_back("/home/amourao/tmp/IMG_6689.jpg");
+    images.push_back("/home/amourao/tmp/IMG_6693.jpg");
+    images.push_back("/home/amourao/tmp/IMG_6700.jpg");
+    images.push_back("/home/amourao/tmp/IMG_6702.jpg");
 
-
-    string type = "lala";
-    map<string,string> params;
-    params["port"] = "12345";
-    params["bufferSize"] = "1024";
-    params["indexLocation"] = "med_lbp885_linearIndexer";
-    params["baseIndex"] = "linearIndexer";
-
-    DistributedIndexWrapperServer server(type,params);
-
-    params["port"] = "12346";
-    DistributedIndexWrapperServer server2(type,params);
-
-    params["port"] = "12347";
-    DistributedIndexWrapperServer server3(type,params);
-
-    params["port"] = "12348";
-    DistributedIndexWrapperServer server4(type,params);
-
-    params["port"] = "12349";
-    DistributedIndexWrapperServer server5(type,params);
-
-
-    map<string,string> params2;
-    params2["port"] = "12350";
-    params2["extractor"] = "srExtractorOMP";
-    params2["bufferSize"] = "1024";
-    params2["servers"] = "localhost:12346;localhost:12347;localhost:12348;localhost:12349";
-
-    DistributedIndexWrapperClientDist client(type,params2);
-
-    usleep(1000000);
+    string indexerType = "DistributedIndexWrapperClientDistA";
+    FactoryIndexer * fi = FactoryIndexer::getInstance();
+	IIndexer* client = (IIndexer*)fi->createType(indexerType);
 
     for(int i = 0; i < images.size(); i++){
         string filename = images.at(i);
@@ -2233,7 +2204,7 @@ int playground(int argc, char *argv[]){
         cv::Mat src;
         extractor->extractFeatures(o,src);
 
-        std::pair<vector<float>,vector<float> > out = client.knnSearchId(src,10,0.1);
+        std::pair<vector<float>,vector<float> > out = client->knnSearchId(src,10,0.1);
 
         for(int i = 0; i < out.first.size(); i++){
             cout << out.first[i] << "\t" << out.second[i] << endl;
