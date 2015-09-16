@@ -1,6 +1,5 @@
 #pragma once
 
-#include <memory>
 #include <map>
 #include <string>
 #include <iostream>
@@ -21,14 +20,14 @@
 
 using namespace std;
 
-class DistributedIndexWrapperServer: public IIndexer, public Poco::Runnable {
+class DistributedIndexWrapperClient: public IIndexer {
 
 public:
 
-	DistributedIndexWrapperServer();
-	DistributedIndexWrapperServer(string& type);
-	DistributedIndexWrapperServer(string& type, map<string,string>& params);
-	~DistributedIndexWrapperServer();
+	DistributedIndexWrapperClient();
+	DistributedIndexWrapperClient(string& type);
+	DistributedIndexWrapperClient(string& type, map<string,string>& params);
+	~DistributedIndexWrapperClient();
 
 	void* createType(string &typeId);
 	void* createType(string &typeId, map<string,string>& params);
@@ -37,8 +36,8 @@ public:
 	void indexWithTrainedParams(cv::Mat& features);
 	void index(cv::Mat& features);
 
-	std::pair<vector<float>,vector<float> > knnSearchId(cv::Mat& query, int n, double search_limit);
-	std::pair<vector<float>,vector<float> > radiusSearchId(cv::Mat& query, double radius, int n, double search_limit);
+	std::pair<vector<float>,vector<float> > knnSearchId(cv::Mat& name, int n, double search_limit);
+	std::pair<vector<float>,vector<float> > radiusSearchId(cv::Mat& name, double radius, int n, double search_limit);
 
 	bool save(string basePath);
 	bool load(string basePath);
@@ -47,21 +46,15 @@ public:
 
 	string getName();
 
-	void run();
-
 private:
 
-    void processQuery(vector<float>& input, vector<float>& output);
+    void sendMessage(vector<float>& input, vector<float>& output, Poco::Net::SocketAddress& server);
 
 	string type;
-	std::shared_ptr<IIndexer> baseIndex;
 
-    Poco::Net::DatagramSocket _socket;
-	Poco::Thread _thread;
-	Poco::Event  _ready;
-	bool         _stop;
-	int          _bufferSize;
+	int bufferSize;
 
-	char* inBuffer;
+	Poco::Net::SocketAddress client_address;
+	vector<Poco::Net::SocketAddress> servers_address;
 
 };

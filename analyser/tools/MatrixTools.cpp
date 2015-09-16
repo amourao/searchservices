@@ -636,5 +636,14 @@ void MatrixTools::getRandomSample(vector<arma::fmat>& mList, int nRows, vector<a
     }
 
 }
+/*
+void MatrixTools::matToVector(cv::Mat &src, vector<char>& dst){
+	float* array = (float*)src.data;
+	unsigned char * p = reinterpret_cast<unsigned char *>(&array[0]);
 
+	float* ff = reinterpret_cast<float*>(&p[0]);
 
+	dst = vector<char>(array, array + src.cols*src.rows);
+}
+
+*/

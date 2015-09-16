@@ -22,13 +22,12 @@ using namespace std;
 class FeatureExtractor: public IAnalyser
 {
 public:
-	
+
 	virtual ~FeatureExtractor()  {}
 
-	virtual void extractFeatures(Mat& src, Mat& dst) = 0;
 	virtual int getFeatureVectorSize() = 0;
 	virtual string getName() = 0;
-	
+
 	virtual void* createType(string &typeId) = 0;
 
 	virtual void extractFeatures(string filename, vector<float>& features){
@@ -76,7 +75,7 @@ public:
 
 	void extractFeatures(string filename, Mat& dst){
 		Mat src = imread(filename);
-		extractFeatures(src,dst);	
+		extractFeatures(src,dst);
 	}
 
 	void extractFeatures(vector<float>& src, vector<vector<float> >& features){
@@ -87,6 +86,22 @@ public:
 		MatrixTools::matToVectors(dst,features);
 	}
 
-	
+	virtual void extractFeatures(cv::Mat& src, cv::Mat& dst){
+        arma::fmat srcFMat, dstFMat;
+        cv::Mat dstTmp;
+        MatrixTools::matToFMat(src,srcFMat);
+        extractFeatures(srcFMat,dstFMat);
+        MatrixTools::fmatToMat(dstFMat,dstTmp);
+        dstTmp.copyTo(dst);
+    }
+
+    virtual void extractFeatures(arma::fmat& src, arma::fmat& dst){
+        cv::Mat srcFMat, dstFMat;
+        MatrixTools::fmatToMat(src,srcFMat);
+        extractFeatures(srcFMat,dstFMat);
+        MatrixTools::matToFMat(dstFMat,dst);
+    }
+
+
 };
 

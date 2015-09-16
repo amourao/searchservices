@@ -107,7 +107,7 @@
 	"../tools/MatrixTools.h"
 	"../../commons/factory/Factory.h"
 
-1424377774 /home/amourao/code/searchservices/analyser/tools/MatrixTools.h
+1441893122 /home/amourao/code/searchservices/analyser/tools/MatrixTools.h
 	<armadillo>
 	<opencv2/core/core.hpp>
 	<opencv2/highgui/highgui.hpp>
@@ -119,6 +119,7 @@
 	<algorithm>
 	<cstdlib>
 	<ctime>
+	<memory>
 	"IBinImporter.h"
 
 1390951647 /home/amourao/code/searchservices/analyser/sources/ImageSource.h
@@ -165,7 +166,7 @@
 	<opencv2/highgui/highgui.hpp>
 	<opencv2/imgproc/imgproc.hpp>
 
-1418384655 /home/amourao/code/searchservices/analyser/nVector/FeatureExtractor.h
+1442243610 /home/amourao/code/searchservices/analyser/nVector/FeatureExtractor.h
 	<opencv2/core/core.hpp>
 	<opencv2/highgui/highgui.hpp>
 	<opencv2/imgproc/imgproc.hpp>
@@ -282,11 +283,12 @@
 	<string>
 	<map>
 
-1441816588 source:/home/amourao/code/searchservices/analyser/Main2.cpp
+1442420987 source:/home/amourao/code/searchservices/analyser/Main2.cpp
 	<iostream>
 	<string>
 	<sstream>
 	<cstdlib>
+	<memory>
 	<opencv2/features2d/features2d.hpp>
 	<opencv2/nonfree/nonfree.hpp>
 	<time.h>
@@ -324,6 +326,9 @@
 	"../indexer/IIndexer.h"
 	"../indexer/FlannkNNIndexer.h"
 	"../indexer/MSIDXIndexer.h"
+	"../indexer/DistributedIndexWrapperServer.h"
+	"../indexer/DistributedIndexWrapperClient.h"
+	"../indexer/DistributedIndexWrapperClientDist.h"
 	"../commons/StringTools.h"
 	"../dataModel/DatabaseConnection.h"
 	"../commons/LoadConfig.h"
@@ -648,7 +653,7 @@
 	<opencv2/highgui/highgui.hpp>
 	<opencv2/imgproc/imgproc.hpp>
 
-1424377761 source:/home/amourao/code/searchservices/analyser/tools/MatrixTools.cpp
+1441894348 source:/home/amourao/code/searchservices/analyser/tools/MatrixTools.cpp
 	"MatrixTools.h"
 
 1418384655 source:/home/amourao/code/searchservices/analyser/tools/MIRFlickrImporter.cpp
@@ -754,7 +759,7 @@
 1397645635 source:/home/amourao/code/searchservices/indexer/FactoryIndexer.cpp
 	"FactoryIndexer.h"
 
-1418384655 source:/home/amourao/code/searchservices/indexer/FlannkNNIndexer.cpp
+1442412036 source:/home/amourao/code/searchservices/indexer/FlannkNNIndexer.cpp
 	"FlannkNNIndexer.h"
 
 1391563053 source:/home/amourao/code/searchservices/indexer/LSHkNNIndexer.cpp
@@ -8846,10 +8851,11 @@
 	<cstdlib>
 	"IBinImporter.h"
 
-1441797207 source:/home/amourao/code/searchservices/indexer/DistributedIndexWrapperServer.cpp
+1442419970 source:/home/amourao/code/searchservices/indexer/DistributedIndexWrapperServer.cpp
 	"DistributedIndexWrapperServer.h"
 
-1441809973 /home/amourao/code/searchservices/indexer/DistributedIndexWrapperServer.h
+1442412319 /home/amourao/code/searchservices/indexer/DistributedIndexWrapperServer.h
+	<memory>
 	<map>
 	<string>
 	<iostream>
@@ -8860,11 +8866,15 @@
 	"IIndexer.h"
 	"FactoryIndexer.h"
 	"../commons/FileDownloader.h"
+	<Poco/Net/DatagramSocket.h>
+	<Poco/Net/SocketAddress.h>
+	<Poco/Thread.h>
+	<Poco/Event.h>
 
-1441817112 source:/home/amourao/code/searchservices/analyser/nVector/SRExtractor.cpp
+1442243113 source:/home/amourao/code/searchservices/analyser/nVector/SRExtractor.cpp
 	"SRExtractor.h"
 
-1441816125 /home/amourao/code/searchservices/analyser/nVector/SRExtractor.h
+1442241948 /home/amourao/code/searchservices/analyser/nVector/SRExtractor.h
 	<utils/utils.h>
 	<l1min/omp.h>
 	"FeatureExtractor.h"
@@ -8876,4 +8886,48 @@
 	<fstream>
 	"../FactoryAnalyser.h"
 	"../tools/MatrixTools.h"
+
+1442246853 source:/home/amourao/code/searchservices/indexer/DistributedIndexWrapperClient.cpp
+	"DistributedIndexWrapperClient.h"
+
+1441989717 /home/amourao/code/searchservices/indexer/DistributedIndexWrapperClient.h
+	<map>
+	<string>
+	<iostream>
+	<vector>
+	<opencv2/highgui/highgui.hpp>
+	<opencv2/ml/ml.hpp>
+	<opencv2/flann/flann.hpp>
+	"IIndexer.h"
+	"FactoryIndexer.h"
+	"../commons/FileDownloader.h"
+	<Poco/Net/DatagramSocket.h>
+	<Poco/Net/SocketAddress.h>
+	<Poco/Thread.h>
+	<Poco/Event.h>
+
+1418326421 /localstore/searchservices/libs/include//Poco/Net/DatagramSocket.h
+	"Poco/Net/Net.h"
+	"Poco/Net/Socket.h"
+
+1442420200 source:/home/amourao/code/searchservices/indexer/DistributedIndexWrapperClientDist.cpp
+	"DistributedIndexWrapperClientDist.h"
+
+1442409328 /home/amourao/code/searchservices/indexer/DistributedIndexWrapperClientDist.h
+	<map>
+	<string>
+	<iostream>
+	<vector>
+	<opencv2/highgui/highgui.hpp>
+	<opencv2/ml/ml.hpp>
+	<opencv2/flann/flann.hpp>
+	"IIndexer.h"
+	"FactoryIndexer.h"
+	"../commons/FileDownloader.h"
+	"../analyser/nVector/FeatureExtractor.h"
+	"../analyser/FactoryAnalyser.h"
+	<Poco/Net/DatagramSocket.h>
+	<Poco/Net/SocketAddress.h>
+	<Poco/Thread.h>
+	<Poco/Event.h>
 

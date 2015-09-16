@@ -25,7 +25,7 @@
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="a.txt gist883,lbp885 a default.json" />
+				<Option parameters="default.json" />
 				<Compiler>
 					<Add option="-O2" />
 					<Add directory="commons" />
@@ -64,7 +64,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="a.txt gist883,lbp885 a default.json" />
+				<Option parameters="default.json" />
 				<Compiler>
 					<Add option="-g" />
 					<Add directory="commons" />
@@ -1354,6 +1354,10 @@
 			<Option target="ReleaseEusipco" />
 			<Option target="DebugEusipco" />
 		</Unit>
+		<Unit filename="indexer/DistributedIndexWrapperClient.cpp" />
+		<Unit filename="indexer/DistributedIndexWrapperClient.h" />
+		<Unit filename="indexer/DistributedIndexWrapperClientDist.cpp" />
+		<Unit filename="indexer/DistributedIndexWrapperClientDist.h" />
 		<Unit filename="indexer/DistributedIndexWrapperServer.cpp" />
 		<Unit filename="indexer/DistributedIndexWrapperServer.h" />
 		<Unit filename="indexer/FactoryIndexer.cpp">

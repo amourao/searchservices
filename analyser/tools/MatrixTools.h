@@ -11,6 +11,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
+#include <memory>
 
 #include "IBinImporter.h"
 

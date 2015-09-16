@@ -2,6 +2,7 @@
 #include <string>
 #include <sstream>
 #include <cstdlib>
+#include <memory>
 #include <opencv2/features2d/features2d.hpp>
 #include <opencv2/nonfree/nonfree.hpp>
 #include <time.h>
@@ -52,6 +53,9 @@
 #include "../indexer/IIndexer.h"
 #include "../indexer/FlannkNNIndexer.h"
 #include "../indexer/MSIDXIndexer.h"
+#include "../indexer/DistributedIndexWrapperServer.h"
+#include "../indexer/DistributedIndexWrapperClient.h"
+#include "../indexer/DistributedIndexWrapperClientDist.h"
 
 #include "../commons/StringTools.h"
 
@@ -2139,7 +2143,7 @@ int readBerkeleyDB (int argc, char *argv[]){
 }
 
 int playground(int argc, char *argv[]){
-
+    /*
     cv::Mat dst1, dst2;
     string filename = "/home/amourao/Downloads/google-earth-view-1102.jpg";
 
@@ -2157,6 +2161,118 @@ int playground(int argc, char *argv[]){
     SRExtractor sr;
     sr.extractFeatures(dst1,dst2);
     cout << dst2 << endl;
+
+
+    */
+    map<string, string> parameters;
+
+    vector<IIndexer*> indexers;
+	vector<IAnalyser*> analysers;
+	vector<IEndpoint*> endpoints;
+	vector<IClassifier*> classifiers;
+
+    string paramFile(argv[1]);
+	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
+
+
+    string featuresType = "lbp885";
+    FactoryAnalyser * f = FactoryAnalyser::getInstance();
+	FeatureExtractor* extractor = (FeatureExtractor*)f->createType(featuresType);
+
+    vector<string> images;
+
+    images.push_back("/home/amourao/Desktop/Madeira para o Mourao/IMG_6628.jpg");
+    images.push_back("/home/amourao/Desktop/Madeira para o Mourao/IMG_6646.jpg");
+    images.push_back("/home/amourao/Desktop/Madeira para o Mourao/IMG_6650.jpg");
+    images.push_back("/home/amourao/Desktop/Madeira para o Mourao/IMG_6656.jpg");
+    images.push_back("/home/amourao/Desktop/Madeira para o Mourao/IMG_6658.jpg");
+    images.push_back("/home/amourao/Desktop/Madeira para o Mourao/IMG_6676.jpg");
+    images.push_back("/home/amourao/Desktop/Madeira para o Mourao/IMG_6682.jpg");
+    images.push_back("/home/amourao/Desktop/Madeira para o Mourao/IMG_6685.jpg");
+    images.push_back("/home/amourao/Desktop/Madeira para o Mourao/IMG_6689.jpg");
+    images.push_back("/home/amourao/Desktop/Madeira para o Mourao/IMG_6693.jpg");
+    images.push_back("/home/amourao/Desktop/Madeira para o Mourao/IMG_6700.jpg");
+    images.push_back("/home/amourao/Desktop/Madeira para o Mourao/IMG_6702.jpg");
+
+
+    string type = "lala";
+    map<string,string> params;
+    params["port"] = "12345";
+    params["bufferSize"] = "1024";
+    params["indexLocation"] = "med_lbp885_linearIndexer";
+    params["baseIndex"] = "linearIndexer";
+
+    DistributedIndexWrapperServer server(type,params);
+
+    params["port"] = "12346";
+    DistributedIndexWrapperServer server2(type,params);
+
+    params["port"] = "12347";
+    DistributedIndexWrapperServer server3(type,params);
+
+    params["port"] = "12348";
+    DistributedIndexWrapperServer server4(type,params);
+
+    params["port"] = "12349";
+    DistributedIndexWrapperServer server5(type,params);
+
+
+    map<string,string> params2;
+    params2["port"] = "12350";
+    params2["extractor"] = "srExtractorOMP";
+    params2["bufferSize"] = "1024";
+    params2["servers"] = "localhost:12346;localhost:12347;localhost:12348;localhost:12349";
+
+    DistributedIndexWrapperClientDist client(type,params2);
+
+    usleep(1000000);
+
+    for(int i = 0; i < images.size(); i++){
+        string filename = images.at(i);
+        cv::Mat o = imread(filename);
+        cv::Mat src;
+        extractor->extractFeatures(o,src);
+
+        std::pair<vector<float>,vector<float> > out = client.knnSearchId(src,10,0.1);
+
+        for(int i = 0; i < out.first.size(); i++){
+            cout << out.first[i] << "\t" << out.second[i] << endl;
+        }
+    }
+
+    /*
+
+
+    float* arrayData = (float*)src.data;
+
+    float action = 1;
+	float rows = src.rows;
+	float cols = src.cols;
+
+	vector<float> tmp;
+	tmp.push_back(action);
+	tmp.push_back(rows);
+	tmp.push_back(cols);
+	tmp.insert(tmp.end(), &arrayData[0], &arrayData[(int)(rows*cols)]);
+
+    Poco::Net::SocketAddress server_address("localhost", 12345);
+    Poco::Net::SocketAddress client_address("localhost", 12346);
+    Poco::Net::DatagramSocket dgs(client_address);
+
+    cout << dgs.sendTo(&tmp[0], tmp.size()*sizeof(float), server_address) << endl;
+
+    char* buffer = new char[1024];
+
+    int inBuffer = dgs.receiveBytes(buffer,1024);
+    cout << inBuffer << endl;
+
+    float* floatBuffer = reinterpret_cast<float*>(buffer);
+
+    for(int i = 0; i < inBuffer/sizeof(float); i++){
+        cout << floatBuffer[i] << ",";
+	}
+	cout << endl;
+    */
     return 0;
 }
 

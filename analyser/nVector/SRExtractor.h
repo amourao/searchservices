@@ -26,6 +26,7 @@ class SRExtractor :
 {
 public:
 	SRExtractor();
+	SRExtractor(string& type, map<string, string>& params);
 	~SRExtractor();
 
 	void extractFeatures(cv::Mat& src, cv::Mat& dst);
@@ -36,10 +37,12 @@ public:
 	string getName();
 
 	void* createType(string &typeId);
+	void* createType(string& type, map<string, string>& params);
 
 private:
 
     l1min::OMPSparseConstrained* omp;
     arma::fmat dict;
+    string type;
 };
 
