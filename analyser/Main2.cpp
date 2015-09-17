@@ -2175,8 +2175,12 @@ int playground(int argc, char *argv[]){
 	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
 
 
+    cout << paramFile << " " << indexers.size() << " " << analysers.size() << " " << endpoints.size() << " " << classifiers.size() << endl;
+
+
     string featuresType = "lbp885";
     FactoryAnalyser * f = FactoryAnalyser::getInstance();
+    f->listTypes();
 	FeatureExtractor* extractor = (FeatureExtractor*)f->createType(featuresType);
 
     vector<string> images;
@@ -2196,6 +2200,7 @@ int playground(int argc, char *argv[]){
 
     string indexerType = "DistributedIndexWrapperClientDistA";
     FactoryIndexer * fi = FactoryIndexer::getInstance();
+    fi->listTypes();
 	IIndexer* client = (IIndexer*)fi->createType(indexerType);
 
     for(int i = 0; i < images.size(); i++){
