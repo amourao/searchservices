@@ -33,7 +33,16 @@
                 "algorithm": "linear",
                 "distance": "EUCLIDEAN"
             }
-        }
+        },{
+            "newName": "DistributedIndexWrapperClientDistA",
+            "originalName": "DistributedIndexWrapperClientDist",
+            "params": {
+                "port": "12350",
+                "extractor": "srExtractorOMP",
+                "bufferSize": "1024",
+                "servers": "arthur:12345;cobb:12345;mal:12345;saito:12345"
+                }
+            }
     ],
     "analyser": [
         {
@@ -223,6 +232,16 @@
             "originalName": "SIFTBowExtractor",
             "params": {
                 "vocabulary": "/localstore/amourao/iclefmed12/vocabulary.bin"
+            }
+        },{
+            "newName": "srExtractorOMP",
+            "originalName": "srExtractor",
+            "params": {
+                "max_iters": "25",
+                "eps": "0.05",
+                "dimensionality": "16",
+                "dictSize": "1024",
+                "_dictPath": "/localstore/arma.mat"
             }
         }
     ],

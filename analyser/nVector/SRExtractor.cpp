@@ -13,7 +13,7 @@ SRExtractor::SRExtractor(string& _type, map<string, string>& params){
         return;
 
     if(params.count("dictPath") == 0){
-        dict = arma::randu<arma::fmat>(std::stoi(params["dimensionality"]),std::stoi(params["dictSize"]));
+        dict = arma::randu<arma::fmat>(std::stoi(params["max_iters"]),std::stoi(params["dictSize"]));
         utils::normalize_columns(dict);
     } else {
         dict.load(params["dictPath"]);
