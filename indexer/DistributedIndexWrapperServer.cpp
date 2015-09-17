@@ -13,12 +13,13 @@ DistributedIndexWrapperServer::DistributedIndexWrapperServer(string& typeId){
 DistributedIndexWrapperServer::DistributedIndexWrapperServer(string& typeId, map<string,string>& params){
 
     type = typeId;
+    paramsB = params;
 
     if(params.size() == 0){
         return;
     }
 
-	paramsB = params;
+
 
     _socket.bind(Poco::Net::SocketAddress("localhost", std::stoi(params["port"])), false);
 	_thread.start(*this);

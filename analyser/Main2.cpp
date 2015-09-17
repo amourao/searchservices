@@ -2202,6 +2202,7 @@ int playground(int argc, char *argv[]){
         string filename = images.at(i);
         cv::Mat o = imread(filename);
         cv::Mat src;
+        cerr << extractor << " " << o.colRange(0,3).rowRange(0,3) << endl;
         extractor->extractFeatures(o,src);
 
         std::pair<vector<float>,vector<float> > out = client->knnSearchId(src,10,0.1);
