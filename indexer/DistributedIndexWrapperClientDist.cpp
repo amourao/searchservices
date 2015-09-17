@@ -1,6 +1,6 @@
 #include "DistributedIndexWrapperClientDist.h"
 
-static DistributedIndexWrapperClientDist distIndexerWrapperClientFactory;
+static DistributedIndexWrapperClientDist distIndexerWrapperClientFactoryDist;
 
 DistributedIndexWrapperClientDist::DistributedIndexWrapperClientDist(){
 	FactoryIndexer::getInstance()->registerType("DistributedIndexWrapperClientDist",this);

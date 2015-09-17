@@ -13,6 +13,11 @@ DistributedIndexWrapperClient::DistributedIndexWrapperClient(string& typeId){
 DistributedIndexWrapperClient::DistributedIndexWrapperClient(string& typeId, map<string,string>& params){
     type = typeId;
 	paramsB = params;
+
+	if(params.size() == 0){
+        return;
+    }
+
     client_address = Poco::Net::SocketAddress("localhost", std::stoi(params["port"]));
     bufferSize = 512;
 }
