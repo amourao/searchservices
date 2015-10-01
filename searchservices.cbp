@@ -642,6 +642,26 @@
 			<Option target="ReleaseEusipco" />
 			<Option target="DebugEusipco" />
 		</Unit>
+		<Unit filename="analyser/nVector/LLCExtractor.cpp">
+			<Option target="ReleaseMainInd" />
+			<Option target="ReleaseMainAna" />
+			<Option target="ReleaseServer" />
+			<Option target="DebugMainInd" />
+			<Option target="DebugMainAna" />
+			<Option target="DebugServer" />
+			<Option target="ReleaseEusipco" />
+			<Option target="DebugEusipco" />
+		</Unit>
+		<Unit filename="analyser/nVector/LLCExtractor.h">
+			<Option target="ReleaseMainInd" />
+			<Option target="ReleaseMainAna" />
+			<Option target="ReleaseServer" />
+			<Option target="DebugMainInd" />
+			<Option target="DebugMainAna" />
+			<Option target="DebugServer" />
+			<Option target="ReleaseEusipco" />
+			<Option target="DebugEusipco" />
+		</Unit>
 		<Unit filename="analyser/nVector/LireExtractor.cpp">
 			<Option target="ReleaseMainInd" />
 			<Option target="ReleaseMainAna" />

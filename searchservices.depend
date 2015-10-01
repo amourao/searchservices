@@ -166,7 +166,7 @@
 	<opencv2/highgui/highgui.hpp>
 	<opencv2/imgproc/imgproc.hpp>
 
-1442243610 /home/amourao/code/searchservices/analyser/nVector/FeatureExtractor.h
+1443479778 /home/amourao/code/searchservices/analyser/nVector/FeatureExtractor.h
 	<opencv2/core/core.hpp>
 	<opencv2/highgui/highgui.hpp>
 	<opencv2/imgproc/imgproc.hpp>
@@ -283,7 +283,7 @@
 	<string>
 	<map>
 
-1442496775 source:/home/amourao/code/searchservices/analyser/Main2.cpp
+1443548796 source:/home/amourao/code/searchservices/analyser/Main2.cpp
 	<iostream>
 	<string>
 	<sstream>
@@ -313,6 +313,7 @@
 	"nVector/LireExtractor.h"
 	"nVector/GISTExtractor.h"
 	"nVector/SRExtractor.h"
+	"nVector/LLCExtractor.h"
 	"nRoi/FaceDetection.h"
 	"nTag/kNNClassifier.h"
 	"nTag/SVMClassifier.h"
@@ -8871,10 +8872,10 @@
 	<Poco/Thread.h>
 	<Poco/Event.h>
 
-1442488959 source:/home/amourao/code/searchservices/analyser/nVector/SRExtractor.cpp
+1443449452 source:/home/amourao/code/searchservices/analyser/nVector/SRExtractor.cpp
 	"SRExtractor.h"
 
-1442241948 /home/amourao/code/searchservices/analyser/nVector/SRExtractor.h
+1443449453 /home/amourao/code/searchservices/analyser/nVector/SRExtractor.h
 	<utils/utils.h>
 	<l1min/omp.h>
 	"FeatureExtractor.h"
@@ -8887,7 +8888,7 @@
 	"../FactoryAnalyser.h"
 	"../tools/MatrixTools.h"
 
-1442246853 source:/home/amourao/code/searchservices/indexer/DistributedIndexWrapperClient.cpp
+1442498104 source:/home/amourao/code/searchservices/indexer/DistributedIndexWrapperClient.cpp
 	"DistributedIndexWrapperClient.h"
 
 1441989717 /home/amourao/code/searchservices/indexer/DistributedIndexWrapperClient.h
@@ -8910,7 +8911,7 @@
 	"Poco/Net/Net.h"
 	"Poco/Net/Socket.h"
 
-1442495196 source:/home/amourao/code/searchservices/indexer/DistributedIndexWrapperClientDist.cpp
+1442500165 source:/home/amourao/code/searchservices/indexer/DistributedIndexWrapperClientDist.cpp
 	"DistributedIndexWrapperClientDist.h"
 
 1442409328 /home/amourao/code/searchservices/indexer/DistributedIndexWrapperClientDist.h
@@ -8930,4 +8931,20 @@
 	<Poco/Net/SocketAddress.h>
 	<Poco/Thread.h>
 	<Poco/Event.h>
+
+1443548917 source:/home/amourao/code/searchservices/analyser/nVector/LLCExtractor.cpp
+	"LLCExtractor.h"
+
+1443538869 /home/amourao/code/searchservices/analyser/nVector/LLCExtractor.h
+	<utils/utils.h>
+	<l1min/omp.h>
+	"FeatureExtractor.h"
+	<opencv2/highgui/highgui.hpp>
+	<opencv2/imgproc/imgproc.hpp>
+	<vector>
+	<string>
+	<iostream>
+	<fstream>
+	"../FactoryAnalyser.h"
+	"../tools/MatrixTools.h"
 

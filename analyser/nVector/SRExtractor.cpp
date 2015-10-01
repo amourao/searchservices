@@ -41,15 +41,6 @@ SRExtractor::~SRExtractor(){
     delete omp;
 }
 
-void SRExtractor::extractFeatures(cv::Mat& src, cv::Mat& dst){
-	arma::fmat srcFMat, dstFMat;
-	cv::Mat dstTmp;
-	MatrixTools::matToFMat(src,srcFMat);
-	extractFeatures(srcFMat,dstFMat);
-	MatrixTools::fmatToMat(dstFMat,dstTmp);
-	dstTmp.copyTo(dst);
-}
-
 void SRExtractor::extractFeatures(arma::fmat& src, arma::fmat& dst){
 	dst = (*omp)(dict,src);
 	dst = trans(dst);
