@@ -59,13 +59,13 @@ public:
 		return vector;
 	}
 
-	void extractFeatures(string filename, vector<vector<float> >& features){
+	virtual void extractFeatures(string filename, vector<vector<float> >& features){
 		Mat dst;
 		extractFeatures(filename,dst);
 		MatrixTools::matToVectors(dst,features);
 	}
 	//Extra functions (not necessary for now)
-	void extractFeatures(vector<float>& src, vector<float>& dst){
+	virtual void extractFeatures(vector<float>& src, vector<float>& dst){
 		Mat srcMat(src,true);
 		srcMat = srcMat.reshape(1,1);
 		Mat dstMat;
@@ -73,12 +73,12 @@ public:
 		MatrixTools::matToVector(dstMat,dst);
 	}
 
-	void extractFeatures(string filename, Mat& dst){
+	virtual void extractFeatures(string filename, Mat& dst){
 		Mat src = imread(filename);
 		extractFeatures(src,dst);
 	}
 
-	void extractFeatures(vector<float>& src, vector<vector<float> >& features){
+	virtual void extractFeatures(vector<float>& src, vector<vector<float> >& features){
 		Mat srcMat(src,true);
 		srcMat = srcMat.reshape(1,1);
 		Mat dst;

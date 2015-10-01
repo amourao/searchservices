@@ -34,6 +34,8 @@
 
 #include "nVector/GISTExtractor.h"
 #include "nVector/SRExtractor.h"
+#include "nVector/LLCExtractor.h"
+
 
 
 #include "nRoi/FaceDetection.h"
@@ -2144,6 +2146,48 @@ int readBerkeleyDB (int argc, char *argv[]){
 
 int playground(int argc, char *argv[]){
     /*
+    map<string,string> params;
+
+	params["dictPath"] = "/home/amourao/code/matlab/CVPR10-LLC/B.bin";
+	params["knn"] = "5";
+	params["beta"] = "0.0001";
+
+    arma::mat A;
+	A.load("/home/amourao/code/matlab/CVPR10-LLC/A.mat",arma::raw_ascii);
+	A.save("/home/amourao/code/matlab/CVPR10-LLC/A.bin");
+
+	arma::mat B;
+	B.load("/home/amourao/code/matlab/CVPR10-LLC/B.mat",arma::raw_ascii);
+	B.save("/home/amourao/code/matlab/CVPR10-LLC/B.bin");
+
+	arma::mat X;
+	X.load("/home/amourao/code/matlab/CVPR10-LLC/X.mat",arma::raw_ascii);
+	X.save("/home/amourao/code/matlab/CVPR10-LLC/X.bin");
+
+	arma::mat R;
+	R.load("/home/amourao/code/matlab/CVPR10-LLC/R.mat",arma::raw_ascii);
+	R.save("/home/amourao/code/matlab/CVPR10-LLC/R.bin");
+
+    string t = "a";
+
+    arma::mat R2;
+    LLCExtractor llc(t,params);
+
+
+    llc.extractFeatures(X,R2);
+
+    cout <<  accu(abs(R)) << endl;
+    cout <<  accu(abs(R*B)) << endl;
+
+    cout <<  accu(abs(R2)) << endl;
+    cout <<  accu(abs(R2*B)) << endl;
+
+    cout <<  accu(abs(R*B-A.t())) << endl;
+    cout <<  accu(abs(R2*B-A.t())) << endl;
+
+    */
+
+    /*
     cv::Mat dst1, dst2;
     string filename = "/home/amourao/Downloads/google-earth-view-1102.jpg";
 
@@ -2164,6 +2208,8 @@ int playground(int argc, char *argv[]){
 
 
     */
+
+
     map<string, string> parameters;
 
     vector<IIndexer*> indexers;
@@ -2201,6 +2247,24 @@ int playground(int argc, char *argv[]){
         string filename = images.at(i);
         cv::Mat o = imread(filename);
         cv::Mat src;
+        extractor->extractFeatures(o,src);
+
+        std::pair<vector<float>,vector<float> > out = client->knnSearchId(src,10,0.1);
+
+        for(int i = 0; i < out.first.size(); i++){
+            cout << out.first[i] << "\t" << out.second[i] << endl;
+        }
+    }
+
+    indexerType = "DistributedIndexWrapperClientDistB";
+    fi = FactoryIndexer::getInstance();
+	client = (IIndexer*)fi->createType(indexerType);
+
+    for(int i = 0; i < images.size(); i++){
+        string filename = images.at(i);
+        cv::Mat o = imread(filename);
+        cv::Mat src;
+        cerr << extractor << " " << o.colRange(0,3).rowRange(0,3) << endl;
         extractor->extractFeatures(o,src);
 
         std::pair<vector<float>,vector<float> > out = client->knnSearchId(src,10,0.1);

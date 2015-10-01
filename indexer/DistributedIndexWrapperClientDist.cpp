@@ -154,8 +154,8 @@ void DistributedIndexWrapperClientDist::sendMessage(vector<float>& input, vector
     int floatBufferSize = 0;
     floatBufferSize = dgs.receiveBytes(buffer,bufferSize);
     cout << "client " << clientAddress.host().toString() << ":" << clientAddress.port()  << " received: " << floatBufferSize << endl;
-    float* floatBuffer = reinterpret_cast<float*>(buffer);
-	output.insert(output.end(), &floatBuffer[0], &floatBuffer[floatBufferSize/sizeof(float)]);
+    //float* floatBuffer = reinterpret_cast<float*>(buffer);
+	output.insert(output.end(), &buffer[0], &buffer[floatBufferSize]);
 }
 
 

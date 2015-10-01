@@ -21,14 +21,15 @@ using namespace arma;
 using namespace l1min;
 
 
-class SRExtractor :
+class LLCExtractor :
 	public FeatureExtractor
 {
 public:
-	SRExtractor();
-	SRExtractor(string& type, map<string, string>& params);
-	~SRExtractor();
+	LLCExtractor();
+	LLCExtractor(string& type, map<string, string>& params);
+	~LLCExtractor();
 
+	void extractFeatures(arma::mat& src, arma::mat& dst);
 	void extractFeatures(arma::fmat& src, arma::fmat& dst);
 
 	int getFeatureVectorSize();
@@ -40,8 +41,9 @@ public:
 
 private:
 
-    l1min::OMPSparseConstrained* omp;
-    arma::fmat dict;
+    int knn;
+    double beta;
+    arma::mat B, Bt, BB, BBt, II;
     string type;
 };
 
