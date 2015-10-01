@@ -2174,13 +2174,8 @@ int playground(int argc, char *argv[]){
     string paramFile(argv[1]);
 	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
 
-
-    cout << paramFile << " " << indexers.size() << " " << analysers.size() << " " << endpoints.size() << " " << classifiers.size() << endl;
-
-
     string featuresType = "lbp885";
     FactoryAnalyser * f = FactoryAnalyser::getInstance();
-    f->listTypes();
 	FeatureExtractor* extractor = (FeatureExtractor*)f->createType(featuresType);
 
     vector<string> images;
@@ -2200,14 +2195,12 @@ int playground(int argc, char *argv[]){
 
     string indexerType = "DistributedIndexWrapperClientDistA";
     FactoryIndexer * fi = FactoryIndexer::getInstance();
-    fi->listTypes();
 	IIndexer* client = (IIndexer*)fi->createType(indexerType);
 
     for(int i = 0; i < images.size(); i++){
         string filename = images.at(i);
         cv::Mat o = imread(filename);
         cv::Mat src;
-        cerr << extractor << " " << o.colRange(0,3).rowRange(0,3) << endl;
         extractor->extractFeatures(o,src);
 
         std::pair<vector<float>,vector<float> > out = client->knnSearchId(src,10,0.1);

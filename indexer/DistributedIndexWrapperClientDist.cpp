@@ -1,6 +1,7 @@
 #include "DistributedIndexWrapperClientDist.h"
 
 static DistributedIndexWrapperClientDist distIndexerWrapperClientFactoryDist;
+static int distIndexerWrapperClientFactoryDistPortCount = 0;
 
 DistributedIndexWrapperClientDist::DistributedIndexWrapperClientDist(){
 	FactoryIndexer::getInstance()->registerType("DistributedIndexWrapperClientDist",this);
@@ -18,7 +19,8 @@ DistributedIndexWrapperClientDist::DistributedIndexWrapperClientDist(string& typ
         return;
     }
 
-    clientAddress = Poco::Net::SocketAddress("localhost", std::stoi(params["port"]));
+    clientAddress = Poco::Net::SocketAddress("0.0.0.0", std::stoi(params["port"])+distIndexerWrapperClientFactoryDistPortCount);
+    distIndexerWrapperClientFactoryDistPortCount++;
     bufferSize = std::stoi(params["bufferSize"]);
     baseFeatureExtractor = std::shared_ptr<FeatureExtractor>((FeatureExtractor*)FactoryAnalyser::getInstance()->createType(params["extractor"]));
 
@@ -86,20 +88,13 @@ std::pair<vector<float>,vector<float> > DistributedIndexWrapperClientDist::knnSe
         sendMessage(input,output,server_address);
 
         int current_i = 2;
+
         int n_new = output[1];
+        cout << output[0] << " " << output[1] << " " << output[2] << endl;
 
         indices.insert(indices.end(), &output[2], &output[2+n_new]);
         dists.insert(dists.end(), &output[2+n_new], &output[2+2*n_new]);
-        /*
-        for(int i = 0; i < n_new; i++){
-            indices.push_back(output[current_i]);
-            current_i++;
-        }
-        for(int i = 0; i < n_new; i++){
-            dists.push_back(output[current_i]);
-            current_i++;
-        }
-        */
+        
     }
 	return make_pair(indices,dists);
 }
@@ -151,16 +146,16 @@ void DistributedIndexWrapperClientDist::sendMessage(vector<float>& input, vector
     //        cout << input[i] << " ";
     //}
     //cout << endl;
-
-    cout << "client " << clientAddress.host().toString() << ":" << clientAddress.port()  << " sent: " << dgs.sendTo(&inbuffer[0], input.size()*sizeof(float), server) << endl;
+    cout << clientAddress.host().toString() << " " << clientAddress.port() << endl;
+    int sent = dgs.sendTo(&inbuffer[0], input.size()*sizeof(float), server);
+    cout << "client " << clientAddress.host().toString() << ":" << clientAddress.port()  << " sent: " << sent << endl;
     char* buffer = new char[bufferSize];
 
     int floatBufferSize = 0;
     floatBufferSize = dgs.receiveBytes(buffer,bufferSize);
     cout << "client " << clientAddress.host().toString() << ":" << clientAddress.port()  << " received: " << floatBufferSize << endl;
-    //float* floatBuffer = reinterpret_cast<float*>(buffer);
-	output.insert(output.end(), &buffer[0], &buffer[floatBufferSize]);
-	output.insert(output.end(), &buffer[0], &buffer[floatBufferSize]);
+    float* floatBuffer = reinterpret_cast<float*>(buffer);
+	output.insert(output.end(), &floatBuffer[0], &floatBuffer[floatBufferSize/sizeof(float)]);
 }
 
 

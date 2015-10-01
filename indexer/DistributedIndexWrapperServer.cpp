@@ -21,7 +21,7 @@ DistributedIndexWrapperServer::DistributedIndexWrapperServer(string& typeId, map
 
 
 
-    _socket.bind(Poco::Net::SocketAddress("localhost", std::stoi(params["port"])), false);
+    _socket.bind(Poco::Net::SocketAddress("0.0.0.0", std::stoi(params["port"])), false);
 	_thread.start(*this);
 	_ready.wait();
 	_stop = false;
@@ -141,7 +141,7 @@ void DistributedIndexWrapperServer::processQuery(vector<float>& input, vector<fl
             //for(int i = 0; i < input.size(); i++){
             //        cout << input.at(i) << " ";
             //}
-            cout << endl;
+            //cout << endl;
 
             std::pair<vector<float>,vector<float> > results = knnSearchId(localQuery,n,limit);
 
