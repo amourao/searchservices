@@ -20,7 +20,7 @@ DistributedIndexWrapperServer::DistributedIndexWrapperServer(string& typeId, map
     }
 
 
-
+    cout << "started " << endl;
     _socket.bind(Poco::Net::SocketAddress("0.0.0.0", std::stoi(params["port"])), false);
 	_thread.start(*this);
 	_ready.wait();
@@ -34,8 +34,9 @@ DistributedIndexWrapperServer::DistributedIndexWrapperServer(string& typeId, map
 
 DistributedIndexWrapperServer::~DistributedIndexWrapperServer(){
 	_stop = true;
-	delete inBuffer;
-	_thread.join();
+	if(_thread.isRunning())
+        _thread.join();
+    delete[] inBuffer;
 }
 
 void* DistributedIndexWrapperServer::createType(string &typeId, map<string,string>& params){

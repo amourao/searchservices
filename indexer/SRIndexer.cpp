@@ -187,7 +187,7 @@ double SRIndexer::validate(ksvdb_Ptr& dict,arma::fmat& featuresValidationI,arma:
     indexk_Ptr indexKSVDVal;
     indexKSVDVal = indexk_Ptr( new indexk(*lnMinQuery, dict->D));
 
-    std::shared_ptr<arma::fmat> featuresValidationIS = std::make_shared<fmat>(featuresValidationI);
+    std::shared_ptr<arma::fmat> featuresValidationIS = std::make_shared<arma::fmat>(featuresValidationI);
     indexKSVDVal->load(featuresValidationIS, lnMinQuery->options.max_iters);
 
     int correct = 0;
@@ -213,7 +213,7 @@ double SRIndexer::validate(ksvdb_Ptr& dict,arma::fmat& featuresValidationI,arma:
 void SRIndexer::indexWithTrainedParams(arma::fmat& features){
     preProcessData(features);
 
-    indexData = std::make_shared<fmat>(features);
+    indexData = std::make_shared<arma::fmat>(features);
 
     indexKSVD = indexk_Ptr( new indexk(*lnMinQuery, ksvd->D));
     indexKSVD->load(indexData, lnMinQuery->options.max_iters);
@@ -238,7 +238,7 @@ void SRIndexer::index(arma::fmat& features){
 
     train(trainSplit,emptyMat,emptyMat);
 
-    indexData = std::make_shared<fmat>(features);
+    indexData = std::make_shared<arma::fmat>(features);
     //TODO
     /*d
     fmat dictionary = randu<fmat>(features.n_rows, dimensions);
@@ -450,7 +450,7 @@ int SRIndexer::addToIndexLive(arma::fmat& features){
 
 
 
-    std::shared_ptr<arma::fmat> featuresPtr = std::make_shared<fmat>(features);
+    std::shared_ptr<arma::fmat> featuresPtr = std::make_shared<arma::fmat>(features);
     indexKSVD->addToIndex(featuresPtr);
 
     return 0;

@@ -17,7 +17,6 @@
 
 
 using namespace std;
-using namespace arma;
 using namespace l1min;
 
 

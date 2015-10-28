@@ -8,6 +8,7 @@
 #include <time.h>
 //#include <math>
 
+
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -15,6 +16,9 @@
 #include <db_cxx.h>
 
 #include "nTag/SRClassifier.h"
+#include "nVector/SRExtractor.h"
+#include "../indexer/SRIndexer.h"
+
 
 #include "sources/ImageSource.h"
 #include "sources/CamSource.h"
@@ -33,7 +37,10 @@
 #include "nVector/LireExtractor.h"
 
 #include "nVector/GISTExtractor.h"
-#include "nVector/SRExtractor.h"
+
+
+
+
 #include "nVector/LLCExtractor.h"
 
 
@@ -47,6 +54,7 @@
 #include "tools/TrainTestFeaturesTools.h"
 #include "tools/MIRFlickrImporter.h"
 #include "tools/tinyImageImporter.h"
+#include "tools/oneBillionImporter.h"
 #include "tools/FrameFilter.h"
 
 #include "FactoryAnalyser.h"
@@ -58,6 +66,8 @@
 #include "../indexer/DistributedIndexWrapperServer.h"
 #include "../indexer/DistributedIndexWrapperClient.h"
 #include "../indexer/DistributedIndexWrapperClientDist.h"
+
+
 
 #include "../commons/StringTools.h"
 
@@ -2207,7 +2217,7 @@ int playground(int argc, char *argv[]){
     cout << dst2 << endl;
 
 
-    */
+
 
 
     map<string, string> parameters;
@@ -2274,7 +2284,7 @@ int playground(int argc, char *argv[]){
         }
     }
 
-    /*
+
 
 
     float* arrayData = (float*)src.data;
@@ -2310,6 +2320,64 @@ int playground(int argc, char *argv[]){
     return 0;
 }
 
+
+
+int trainKSVD(int argc, char *argv[]){
+
+    string type = "a";
+    map<string,string> params;
+
+	params["dimensions"] = "1024";
+
+	params["n_iter"] = "2";
+
+
+	params["eps"] = "1e-7";
+	params["max_iters"] = "2";
+
+	params["eps_ksvd"] = "1e-7";
+	params["max_iters_ksvd"] = "2";
+
+	params["normalize"] = "cols";
+
+    oneBillionImporter importer;
+
+    arma::fmat T,VI,VQ;
+    importer.readBin("/media/Share/data/1-billion-vectors/siftsmall/siftsmall_learn.fvecs",1000,T,0);
+    importer.readBin("/media/Share/data/1-billion-vectors/siftsmall/siftsmall_learn.fvecs",1000,VI,1000);
+    importer.readBin("/media/Share/data/1-billion-vectors/siftsmall/siftsmall_learn.fvecs",100,VQ,1000+100);
+
+    SRIndexer sr(type,params);
+    sr.train(T,VI,VQ);
+    sr.save("testKSVDIndex");
+    std::cout << "trained ok" << endl;
+
+    return 0;
+}
+
+
+int testBucketCapacity(int argc, char *argv[]){
+
+    map<string,string> params;
+
+	params["dictPath"] = "/localstore/amourao/saIndexingSplits/configCondor4_3.json_train.mat-OMP-2-4096_dict.bin";
+	params["knn"] = "5";
+	params["beta"] = "0.0001";
+
+    arma::mat X;
+	X.load("/localstore/amourao/saIndexingSplits/configCondor4_3.json_testI.mat",arma::raw_ascii);
+
+    string t = "a";
+
+    arma::mat R2;
+    LLCExtractor llc(t,params);
+
+
+    llc.extractFeatures(X,R2);
+    return 0;
+}
+
+
 int main(int argc, char *argv[])
 {
 	//testLoadSaveIClassifier(argc, argv);
@@ -2335,7 +2403,7 @@ int main(int argc, char *argv[])
 
     //extractAndSaveToBerkeleyDB(argc, argv);
 	//readBerkeleyDB(argc, argv);
-	playground(argc,argv);
+	trainKSVD(argc,argv);
 
     return 0;
 }

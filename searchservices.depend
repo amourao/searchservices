@@ -69,11 +69,11 @@
 	"tools/MIRFlickrImporter.h"
 	"FactoryAnalyser.h"
 
-1418384655 /home/amourao/code/searchservices/analyser/nTag/SRClassifier.h
-	"dalm.h"
-	"fista.h"
-	"omp.h"
-	"thresholding.h"
+1445605078 /home/amourao/code/searchservices/analyser/nTag/SRClassifier.h
+	<l1min/dalm.h>
+	<l1min/fista.h>
+	<l1min/omp.h>
+	<l1min/thresholding.h>
 	"IClassifier.h"
 	<opencv2/highgui/highgui.hpp>
 	"../FactoryClassifier.h"
@@ -283,7 +283,7 @@
 	<string>
 	<map>
 
-1443548796 source:/home/amourao/code/searchservices/analyser/Main2.cpp
+1446035933 source:/home/amourao/code/searchservices/analyser/Main2.cpp
 	<iostream>
 	<string>
 	<sstream>
@@ -297,6 +297,8 @@
 	<opencv2/imgproc/imgproc.hpp>
 	<db_cxx.h>
 	"nTag/SRClassifier.h"
+	"nVector/SRExtractor.h"
+	"../indexer/SRIndexer.h"
 	"sources/ImageSource.h"
 	"sources/CamSource.h"
 	"sources/SingleImageSource.h"
@@ -312,7 +314,6 @@
 	"nVector/SegmentedHistogramExtractor.h"
 	"nVector/LireExtractor.h"
 	"nVector/GISTExtractor.h"
-	"nVector/SRExtractor.h"
 	"nVector/LLCExtractor.h"
 	"nRoi/FaceDetection.h"
 	"nTag/kNNClassifier.h"
@@ -321,6 +322,7 @@
 	"tools/TrainTestFeaturesTools.h"
 	"tools/MIRFlickrImporter.h"
 	"tools/tinyImageImporter.h"
+	"tools/oneBillionImporter.h"
 	"tools/FrameFilter.h"
 	"FactoryAnalyser.h"
 	"../indexer/FactoryIndexer.h"
@@ -701,7 +703,7 @@
 	<jsoncpp/json/json.h>
 	<jsoncpp/json/autolink.h>
 
-1418384655 source:/home/amourao/code/searchservices/commons/factory/Factory.cpp
+1443707179 source:/home/amourao/code/searchservices/commons/factory/Factory.cpp
 	"Factory.h"
 
 1418384655 source:/home/amourao/code/searchservices/commons/FileDownloader.cpp
@@ -4194,19 +4196,17 @@
 	"../FactoryAnalyser.h"
 	"../tools/MatrixTools.h"
 
-1441291522 source:/home/amourao/code/searchservices/indexer/SRIndexer.cpp
+1446034155 source:/home/amourao/code/searchservices/indexer/SRIndexer.cpp
 	"SRIndexer.h"
 
-1441291466 /home/amourao/code/searchservices/indexer/SRIndexer.h
+1445609445 /home/amourao/code/searchservices/indexer/SRIndexer.h
 	<map>
 	<string>
 	<iostream>
 	<vector>
 	<jsoncpp/json/json.h>
 	<ksvd-indexing-experiment/ksvd_index_mp.h>
-	<ksvd-indexing-experiment/result.h>
 	<ksvd/ksvd.h>
-	<utils/utils.h>
 	<l1min/omp.h>
 	<l1min/omp_io.h>
 	<opencv2/highgui/highgui.hpp>
@@ -4257,7 +4257,7 @@
 	<set>
 	<armadillo>
 
-1423011192 /home/amourao/code/sparsereconstruction//ksvd/ksvd.h
+1446034034 /home/amourao/code/sparsereconstruction//ksvd/ksvd.h
 	<cassert>
 	<iostream>
 	<map>
@@ -4306,7 +4306,7 @@
 	<pugixml.hpp>
 	"l1min/fista.h"
 
-1400670739 /home/amourao/code/sparsereconstruction//l1min/omp_io.h
+1445612490 /home/amourao/code/sparsereconstruction//l1min/omp_io.h
 	<pugixml.hpp>
 	"l1min/omp.h"
 
@@ -8852,10 +8852,10 @@
 	<cstdlib>
 	"IBinImporter.h"
 
-1442495188 source:/home/amourao/code/searchservices/indexer/DistributedIndexWrapperServer.cpp
+1446041481 source:/home/amourao/code/searchservices/indexer/DistributedIndexWrapperServer.cpp
 	"DistributedIndexWrapperServer.h"
 
-1442412319 /home/amourao/code/searchservices/indexer/DistributedIndexWrapperServer.h
+1446041433 /home/amourao/code/searchservices/indexer/DistributedIndexWrapperServer.h
 	<memory>
 	<map>
 	<string>
@@ -8875,7 +8875,7 @@
 1443449452 source:/home/amourao/code/searchservices/analyser/nVector/SRExtractor.cpp
 	"SRExtractor.h"
 
-1443449453 /home/amourao/code/searchservices/analyser/nVector/SRExtractor.h
+1445606300 /home/amourao/code/searchservices/analyser/nVector/SRExtractor.h
 	<utils/utils.h>
 	<l1min/omp.h>
 	"FeatureExtractor.h"
@@ -8888,7 +8888,7 @@
 	"../FactoryAnalyser.h"
 	"../tools/MatrixTools.h"
 
-1442498104 source:/home/amourao/code/searchservices/indexer/DistributedIndexWrapperClient.cpp
+1446034405 source:/home/amourao/code/searchservices/indexer/DistributedIndexWrapperClient.cpp
 	"DistributedIndexWrapperClient.h"
 
 1441989717 /home/amourao/code/searchservices/indexer/DistributedIndexWrapperClient.h
@@ -8911,7 +8911,7 @@
 	"Poco/Net/Net.h"
 	"Poco/Net/Socket.h"
 
-1442500165 source:/home/amourao/code/searchservices/indexer/DistributedIndexWrapperClientDist.cpp
+1446034402 source:/home/amourao/code/searchservices/indexer/DistributedIndexWrapperClientDist.cpp
 	"DistributedIndexWrapperClientDist.h"
 
 1442409328 /home/amourao/code/searchservices/indexer/DistributedIndexWrapperClientDist.h
@@ -8932,10 +8932,10 @@
 	<Poco/Thread.h>
 	<Poco/Event.h>
 
-1443548917 source:/home/amourao/code/searchservices/analyser/nVector/LLCExtractor.cpp
+1444058144 source:/home/amourao/code/searchservices/analyser/nVector/LLCExtractor.cpp
 	"LLCExtractor.h"
 
-1443538869 /home/amourao/code/searchservices/analyser/nVector/LLCExtractor.h
+1445606294 /home/amourao/code/searchservices/analyser/nVector/LLCExtractor.h
 	<utils/utils.h>
 	<l1min/omp.h>
 	"FeatureExtractor.h"
