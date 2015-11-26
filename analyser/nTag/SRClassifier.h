@@ -1,8 +1,8 @@
 #pragma once
-#include "dalm.h"
-#include "fista.h"
-#include "omp.h"
-#include "thresholding.h"
+#include <l1min/dalm.h>
+#include <l1min/fista.h>
+#include <l1min/omp.h>
+#include <l1min/thresholding.h>
 #include "IClassifier.h"
 #include <opencv2/highgui/highgui.hpp>
 #include "../FactoryClassifier.h"

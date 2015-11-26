@@ -94,7 +94,7 @@ std::pair<vector<float>,vector<float> > DistributedIndexWrapperClientDist::knnSe
 
         indices.insert(indices.end(), &output[2], &output[2+n_new]);
         dists.insert(dists.end(), &output[2+n_new], &output[2+2*n_new]);
-        
+
     }
 	return make_pair(indices,dists);
 }

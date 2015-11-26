@@ -8,6 +8,7 @@
 #include <time.h>
 //#include <math>
 
+
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -15,6 +16,9 @@
 #include <db_cxx.h>
 
 #include "nTag/SRClassifier.h"
+#include "nVector/SRExtractor.h"
+#include "../indexer/SRIndexer.h"
+
 
 #include "sources/ImageSource.h"
 #include "sources/CamSource.h"
@@ -33,7 +37,10 @@
 #include "nVector/LireExtractor.h"
 
 #include "nVector/GISTExtractor.h"
-#include "nVector/SRExtractor.h"
+
+
+
+
 #include "nVector/LLCExtractor.h"
 
 
@@ -47,6 +54,7 @@
 #include "tools/TrainTestFeaturesTools.h"
 #include "tools/MIRFlickrImporter.h"
 #include "tools/tinyImageImporter.h"
+#include "tools/oneBillionImporter.h"
 #include "tools/FrameFilter.h"
 
 #include "FactoryAnalyser.h"
@@ -59,6 +67,8 @@
 #include "../indexer/DistributedIndexWrapperClient.h"
 #include "../indexer/DistributedIndexWrapperClientDist.h"
 
+
+
 #include "../commons/StringTools.h"
 
 #include "../dataModel/DatabaseConnection.h"
@@ -68,6 +78,8 @@
 #include "../rest/Endpoints/analyser/ExtractFeatures.h"
 #include "../rest/RestServer.h"
 
+
+#include <ksvd/clustering.h>
 
 using namespace std;
 
@@ -2207,7 +2219,7 @@ int playground(int argc, char *argv[]){
     cout << dst2 << endl;
 
 
-    */
+
 
 
     map<string, string> parameters;
@@ -2274,7 +2286,7 @@ int playground(int argc, char *argv[]){
         }
     }
 
-    /*
+
 
 
     float* arrayData = (float*)src.data;
@@ -2310,8 +2322,135 @@ int playground(int argc, char *argv[]){
     return 0;
 }
 
+
+
+int trainKSVD(int argc, char *argv[]){
+
+    string type = "a";
+    map<string,string> params;
+
+	params["dimensions"] = "1024";
+    params["iters"] = "25";
+
+	params["eps"] = "1e-7";
+	params["max_iters"] = "10";
+	params["eps_ksvd"] = "1e-7";
+	params["max_iters_ksvd"] = "10";
+
+	params["normalize"] = "cols";
+
+    arma::fmat T,VI,VQ;
+    T.load("/localstore/amourao/saIndexingSplits/configCondor4_1_k.json_train.mat");
+    VI.load("/localstore/amourao/saIndexingSplits/configCondor4_1_k.json_valI.mat");
+    VQ.load("/localstore/amourao/saIndexingSplits/configCondor4_1_k.json_valQ.mat");
+
+    arma::fmat means = arma::mean(T);
+    arma::fmat stddevs = arma::stddev(T);
+
+    for(uint i = 0; i < T.n_cols; i++){
+        if(stddevs.at(0,i) == 0)
+            T.col(i) = (T.col(i) - means.at(0,i));
+        else
+            T.col(i) = (T.col(i) - means.at(0,i))/stddevs.at(0,i);
+    }
+
+    //oneBillionImporter importer;
+    //importer.readBin("/localstore/amourao/saIndexingSplits/configCondor4_1_k.json_train.mat",1000,T,0);
+    //importer.readBin("/media/Share/data/1-billion-vectors/siftsmall/siftsmall_learn.fvecs",1000,VI,1000);
+    //importer.readBin("/media/Share/data/1-billion-vectors/siftsmall/siftsmall_learn.fvecs",100,VQ,1000+100);
+    /*
+    SRIndexer sr(type,params);
+    sr.train(T,VI,VQ);
+    sr.save("configCondor4_1_k");
+
+    std::cout << "trained KSVD ok" << endl;
+    */
+
+    arma::fmat kmeans = sparse::kmeans(T, 1024, 25);
+    kmeans.save("/home/amourao/code/searchservices/indexer/data/configCondor4_1_k_dict_kmeans.mat");
+
+
+    return 0;
+}
+
+
+int testBucketCapacity(int argc, char *argv[]){
+
+    string paramFile(argv[1]);
+
+	map<string,string> parameters;
+	vector<IIndexer*> indexers;
+	vector<IAnalyser*> analysers;
+	vector<IClassifier*> classifiers;
+	vector<IEndpoint*> endpoints;
+
+	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
+
+    arma::fmat T,D;
+    D.load(parameters[argv[2]]);
+    T.load(parameters[argv[3]]);
+
+    cout << "D cols: " << D.n_cols << "\tD rows: " << D.n_rows << endl;
+
+    int max_iters = 10;
+    double eps = 1e-7;
+
+    int max = std::numeric_limits<double>::min();
+    int min = std::numeric_limits<double>::max();
+    int total = 0;
+
+    arma::uvec nonZeroCount = zeros<uvec>(D.n_cols);
+    arma::fvec nonZeroSum = zeros<fvec>(D.n_cols);
+
+    SRExtractor sr(D,max_iters,eps);
+    for(uint i = 0; i < T.n_cols; i++){
+        arma::fmat src = T.col(i);
+        arma::fmat dst;
+        sr.extractFeatures(src,dst);
+
+        int count = 0;
+        for(uint j = 0; j < dst.n_cols; j++){
+            if(dst(0,j) > 0){
+                count++;
+                nonZeroCount.at(j)++;
+                nonZeroSum.at(j)+= dst(0,j);
+            }
+        }
+        if(count < min)
+            min = count;
+        if(count > max)
+            max = count;
+
+        total+= count;
+
+
+    }
+    for(uint j = 0; j < nonZeroCount.n_rows; j++){
+            cout << nonZeroCount(j) << " \t";
+    }
+    cout << endl;
+
+    for(uint j = 0; j < nonZeroSum.n_rows; j++){
+            cout << nonZeroSum(j) << " \t";
+    }
+    cout << endl;
+
+    cout << endl << min << " " << max << " " << total/(int)nonZeroCount.n_rows << endl;
+
+    return 0;
+}
+
+int testArmaWritePython(int argc, char *argv[]){
+    arma::fmat T;
+    T.load("/home/amourao/Desktop/a.mat");
+    T.save("/home/amourao/Desktop/b.mat");
+    cout << T << endl;
+    return 0;
+}
+
 int main(int argc, char *argv[])
 {
+    srand (time(NULL));
 	//testLoadSaveIClassifier(argc, argv);
 	//testLoadSaveIIndexer(argc, argv);
 	//faceDetectionParameterChallenge(argc, argv);
@@ -2335,7 +2474,8 @@ int main(int argc, char *argv[])
 
     //extractAndSaveToBerkeleyDB(argc, argv);
 	//readBerkeleyDB(argc, argv);
-	playground(argc,argv);
+	testBucketCapacity(argc,argv);
+	//testArmaWritePython(argc,argv);
 
     return 0;
 }

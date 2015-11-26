@@ -65,7 +65,6 @@ void LLCExtractor::extractFeatures(arma::mat& X, arma::mat& dst){
 
     arma::mat D = repmat(XX, 1, nbase) - 2*X*Bt+repmat(BBt,nframe,1);
 
-
     arma::umat IDX = zeros<umat>(knn,nframe);
 
     for (int i = 0; i < nframe; i++){
@@ -84,7 +83,7 @@ void LLCExtractor::extractFeatures(arma::mat& X, arma::mat& dst){
         arma::mat C = z*z.t();                                  // local covariance
         C = C + II*beta*trace(C);                               // regularlization (K>D)
         arma::mat w = solve(C,ones<mat>(knn,1));
-        w = w/(accu(w));                                   // enforce sum(w)=1
+        w = w/(accu(w));                                        // enforce sum(w)=1
         arma::mat coe = dst.row(i);
         coe.cols(idx) = w.t();
         dst.row(i) = coe;

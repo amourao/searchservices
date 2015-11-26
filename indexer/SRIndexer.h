@@ -8,9 +8,8 @@
 #include <jsoncpp/json/json.h>
 
 #include <ksvd-indexing-experiment/ksvd_index_mp.h>
-#include <ksvd-indexing-experiment/result.h>
+
 #include <ksvd/ksvd.h>
-#include <utils/utils.h>
 
 #include <l1min/omp.h>
 #include <l1min/omp_io.h>
@@ -38,9 +37,6 @@
 #define SR_DEFAULT_RANDN "randn"
 
 using namespace pugi;
-using namespace arma;
-using namespace l1min;
-using namespace sparse;
 
 using namespace std;
 
@@ -96,10 +92,10 @@ private:
     typedef std::shared_ptr<lnmin> lnmin_Ptr;
     typedef std::shared_ptr<lnminK> lnminK_Ptr;
 
-    typedef sparse::KSVDBatch<OMPBatchSparseConstrained, float> ksvdb;
+    typedef sparse::KSVDBatch<l1min::OMPBatchSparseConstrained, float> ksvdb;
     typedef std::shared_ptr<ksvdb> ksvdb_Ptr;
 
-    typedef forr::KSVDIndex<OMPSparseConstrained, fvec> indexk;
+    typedef forr::KSVDIndex<l1min::OMPSparseConstrained, arma::fvec> indexk;
     typedef std::shared_ptr<indexk> indexk_Ptr;
 
 
@@ -134,6 +130,7 @@ private:
     string dict_seed_type;
 
     arma::fmat dictionary;
+    arma::fmat dictionary_seed;
     std::shared_ptr<arma::fmat> indexData;
 	string type;
 };

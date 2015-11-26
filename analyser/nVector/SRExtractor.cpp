@@ -26,6 +26,17 @@ SRExtractor::SRExtractor(string& _type, map<string, string>& params){
 	omp = new l1min::OMPSparseConstrained(opt);
 }
 
+SRExtractor::SRExtractor(arma::fmat& dictionary, int max_iters, double eps){
+	type = "SR";
+
+    dict = dictionary;
+
+    l1min::OMPSparseConstrained::option_type opt;
+    opt.max_iters = max_iters;
+	opt.eps = eps;
+	omp = new l1min::OMPSparseConstrained(opt);
+}
+
 void* SRExtractor::createType(string& type){
 	if (type == "SRExtractor")
 		return new SRExtractor();
