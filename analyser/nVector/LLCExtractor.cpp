@@ -56,7 +56,8 @@ void LLCExtractor::extractFeatures(arma::fmat& X, arma::fmat& dst){
 
 void LLCExtractor::extractFeatures(arma::mat& X, arma::mat& dst){
 
-
+    X = X.t();
+    
     int nframe = X.n_rows;
     int nbase = B.n_rows;
 
