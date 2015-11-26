@@ -4,13 +4,13 @@
 	<Project>
 		<Option title="searchservices" />
 		<Option pch_mode="2" />
-		<Option compiler="gcc" />
+		<Option compiler="gnu_gcc_compiler_49" />
 		<Build>
 			<Target title="ReleaseMainInd">
 				<Option output="bin/Release/runIndexer" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
-				<Option compiler="gcc" />
+				<Option compiler="gnu_gcc_compiler_49" />
 				<Option parameters="billionB /home/amourao/Desktop/queries.bvecs 10" />
 				<Compiler>
 					<Add option="-O2" />
@@ -24,7 +24,7 @@
 				<Option output="bin/Release/runAnalyser" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
-				<Option compiler="gcc" />
+				<Option compiler="gnu_gcc_compiler_49" />
 				<Option parameters="defaultAriadne2.json" />
 				<Compiler>
 					<Add option="-O2" />
@@ -38,7 +38,7 @@
 				<Option output="bin/Release/server" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
-				<Option compiler="gcc" />
+				<Option compiler="gnu_gcc_compiler_49" />
 				<Option parameters="default.json" />
 				<Compiler>
 					<Add option="-O2" />
@@ -52,7 +52,7 @@
 				<Option output="bin/Debug/runIndexer" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
-				<Option compiler="gcc" />
+				<Option compiler="gnu_gcc_compiler_49" />
 				<Option parameters="billionB /home/amourao/Desktop/queries.bvecs 10" />
 				<Compiler>
 					<Add option="-g" />
@@ -63,7 +63,7 @@
 				<Option output="bin/Debug/runAnalyser" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
-				<Option compiler="gcc" />
+				<Option compiler="gnu_gcc_compiler_49" />
 				<Option parameters="defaultAriadne2.json" />
 				<Compiler>
 					<Add option="-g" />
@@ -74,7 +74,7 @@
 				<Option output="bin/Debug/server" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
-				<Option compiler="gcc" />
+				<Option compiler="gnu_gcc_compiler_49" />
 				<Option parameters="default.json" />
 				<Compiler>
 					<Add option="-g" />
@@ -85,7 +85,7 @@
 				<Option output="bin/Release/shotDetectionMulti" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
-				<Option compiler="gcc" />
+				<Option compiler="gnu_gcc_compiler_49" />
 				<Option parameters="~/code/searchservices/config.json" />
 				<Option projectCompilerOptionsRelation="1" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -106,7 +106,7 @@
 				<Option output="bin/Release/shotDetectionSingle" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
-				<Option compiler="gcc" />
+				<Option compiler="gnu_gcc_compiler_49" />
 				<Option parameters="/home/amourao/code/shotdetection/demoVideos/2rWTjNUCvY2qIu4Kv9O4.mp4" />
 				<Option projectCompilerOptionsRelation="1" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -127,7 +127,7 @@
 				<Option output="bin/Release/runEusipco" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
-				<Option compiler="gcc" />
+				<Option compiler="gnu_gcc_compiler_49" />
 				<Option parameters="~/code/searchservices/default.json" />
 				<Compiler>
 					<Add option="-O2" />
@@ -141,7 +141,7 @@
 				<Option output="bin/Debug/runEusipco" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
-				<Option compiler="gcc" />
+				<Option compiler="gnu_gcc_compiler_49" />
 				<Option parameters="~/code/searchservices/default.json" />
 				<Compiler>
 					<Add option="-g" />

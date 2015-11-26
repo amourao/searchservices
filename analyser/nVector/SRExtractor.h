@@ -25,6 +25,7 @@ class SRExtractor :
 public:
 	SRExtractor();
 	SRExtractor(string& type, map<string, string>& params);
+	SRExtractor(arma::fmat& dictionary, int max_iters, double eps);
 	~SRExtractor();
 
 	void extractFeatures(arma::fmat& src, arma::fmat& dst);

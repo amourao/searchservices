@@ -149,6 +149,21 @@
                 "dThetaOnSigma": "1.5"
             }
         },{
+            "newName": "gaborGlobal4x4",
+            "originalName": "gaborExtractor",
+            "params": {
+                "imageW": "640",
+                "imageH": "480",
+                "nScales": "4",
+                "nOrientations": "6",
+
+                "minWaveLength": "3",
+                "mult": "2",
+                "sigmaOnf": "0.65",
+                "dThetaOnSigma": "1.5",
+                "rectangles": "0,0,160,120;160,120,160,120;320,240,160,120;480,360,160,120"
+            }
+        },{
             "newName": "gist883",
             "originalName": "gistExtractor",
             "params": {
@@ -201,6 +216,15 @@
                 "binCount": "8",
                 "horizontalDivisions": "2",
                 "verticalDivisions": "2",
+                "useCenterRegion": "false" 
+            }
+        },{
+            "newName": "hsvSegHistogramExtractor16",
+            "originalName": "hsvSegHistogramExtractor",
+            "params": {
+                "binCount": "16",
+                "horizontalDivisions": "3",
+                "verticalDivisions": "3",
                 "useCenterRegion": "false" 
             }
         },{

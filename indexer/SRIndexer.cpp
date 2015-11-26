@@ -40,14 +40,13 @@ SRIndexer::SRIndexer(string& typeId, map<string,string>& params){
     search_limit = 0;
     if (params.size() > 0){
         dimensions = std::stoi(params["dimensions"]);
-        n_iter = std::stoi(params["n_iter"]);
+        n_iter = std::stoi(params["iters"]);
 
         dict_seed_type = SR_DEFAULT_RANDU;
         if(params.count("dict_seed_type") > 0)
             dict_seed_type = params["dict_seed_type"];
 
-        max_iters = std::stoi(params["max_iters_ksvd"]);
-        eps = std::stod(params["eps_ksvd"]);
+        max_iters = n_iter;
         //index_path = paramsB["index_path"];
         createNewLNReconstructor(params);
         //load(paramsB["index_path"]);
@@ -119,8 +118,10 @@ void SRIndexer::train(arma::fmat& featuresTrain,arma::fmat& featuresValidationI,
     if(dict_seed_type == SR_DEFAULT_RANDU){
         dictionary = arma::randu<arma::fmat>(featuresTrain.n_rows, dimensions);
         utils::normalize_columns(dictionary);
+        dictionary_seed = dictionary;
     } else if(dict_seed_type == SR_DEFAULT_RANDN){
         dictionary = arma::randn<arma::fmat>(featuresTrain.n_rows, dimensions);
+        dictionary_seed = dictionary;
     }
 
     if(n_iter >= 0){
@@ -354,6 +355,7 @@ bool SRIndexer::save(string basePath){
         indexKSVD->save(INDEXER_BASE_SAVE_PATH + basePath);
     } else {
         dictionary.save(INDEXER_BASE_SAVE_PATH + basePath + "_dict.bin");
+        dictionary_seed.save(INDEXER_BASE_SAVE_PATH + basePath + "_dict_seed.bin");
     }
     /*
     Json::Value root;

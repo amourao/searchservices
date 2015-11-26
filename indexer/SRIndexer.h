@@ -130,6 +130,7 @@ private:
     string dict_seed_type;
 
     arma::fmat dictionary;
+    arma::fmat dictionary_seed;
     std::shared_ptr<arma::fmat> indexData;
 	string type;
 };

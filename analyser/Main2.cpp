@@ -79,6 +79,8 @@
 #include "../rest/RestServer.h"
 
 
+#include <ksvd/clustering.h>
+
 using namespace std;
 
 
@@ -2328,29 +2330,45 @@ int trainKSVD(int argc, char *argv[]){
     map<string,string> params;
 
 	params["dimensions"] = "1024";
-
-	params["n_iter"] = "2";
-
+    params["iters"] = "25";
 
 	params["eps"] = "1e-7";
-	params["max_iters"] = "2";
-
+	params["max_iters"] = "10";
 	params["eps_ksvd"] = "1e-7";
-	params["max_iters_ksvd"] = "2";
+	params["max_iters_ksvd"] = "10";
 
 	params["normalize"] = "cols";
 
-    oneBillionImporter importer;
-
     arma::fmat T,VI,VQ;
-    importer.readBin("/media/Share/data/1-billion-vectors/siftsmall/siftsmall_learn.fvecs",1000,T,0);
-    importer.readBin("/media/Share/data/1-billion-vectors/siftsmall/siftsmall_learn.fvecs",1000,VI,1000);
-    importer.readBin("/media/Share/data/1-billion-vectors/siftsmall/siftsmall_learn.fvecs",100,VQ,1000+100);
+    T.load("/localstore/amourao/saIndexingSplits/configCondor4_1_k.json_train.mat");
+    VI.load("/localstore/amourao/saIndexingSplits/configCondor4_1_k.json_valI.mat");
+    VQ.load("/localstore/amourao/saIndexingSplits/configCondor4_1_k.json_valQ.mat");
 
+    arma::fmat means = arma::mean(T);
+    arma::fmat stddevs = arma::stddev(T);
+
+    for(uint i = 0; i < T.n_cols; i++){
+        if(stddevs.at(0,i) == 0)
+            T.col(i) = (T.col(i) - means.at(0,i));
+        else
+            T.col(i) = (T.col(i) - means.at(0,i))/stddevs.at(0,i);
+    }
+
+    //oneBillionImporter importer;
+    //importer.readBin("/localstore/amourao/saIndexingSplits/configCondor4_1_k.json_train.mat",1000,T,0);
+    //importer.readBin("/media/Share/data/1-billion-vectors/siftsmall/siftsmall_learn.fvecs",1000,VI,1000);
+    //importer.readBin("/media/Share/data/1-billion-vectors/siftsmall/siftsmall_learn.fvecs",100,VQ,1000+100);
+    /*
     SRIndexer sr(type,params);
     sr.train(T,VI,VQ);
-    sr.save("testKSVDIndex");
-    std::cout << "trained ok" << endl;
+    sr.save("configCondor4_1_k");
+
+    std::cout << "trained KSVD ok" << endl;
+    */
+
+    arma::fmat kmeans = sparse::kmeans(T, 1024, 25);
+    kmeans.save("/home/amourao/code/searchservices/indexer/data/configCondor4_1_k_dict_kmeans.mat");
+
 
     return 0;
 }
@@ -2358,28 +2376,81 @@ int trainKSVD(int argc, char *argv[]){
 
 int testBucketCapacity(int argc, char *argv[]){
 
-    map<string,string> params;
+    string paramFile(argv[1]);
 
-	params["dictPath"] = "/localstore/amourao/saIndexingSplits/configCondor4_3.json_train.mat-OMP-2-4096_dict.bin";
-	params["knn"] = "5";
-	params["beta"] = "0.0001";
+	map<string,string> parameters;
+	vector<IIndexer*> indexers;
+	vector<IAnalyser*> analysers;
+	vector<IClassifier*> classifiers;
+	vector<IEndpoint*> endpoints;
 
-    arma::mat X;
-	X.load("/localstore/amourao/saIndexingSplits/configCondor4_3.json_testI.mat",arma::raw_ascii);
+	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
 
-    string t = "a";
+    arma::fmat T,D;
+    D.load(parameters[argv[2]]);
+    T.load(parameters[argv[3]]);
 
-    arma::mat R2;
-    LLCExtractor llc(t,params);
+    cout << "D cols: " << D.n_cols << "\tD rows: " << D.n_rows << endl;
+
+    int max_iters = 10;
+    double eps = 1e-7;
+
+    int max = std::numeric_limits<double>::min();
+    int min = std::numeric_limits<double>::max();
+    int total = 0;
+
+    arma::uvec nonZeroCount = zeros<uvec>(D.n_cols);
+    arma::fvec nonZeroSum = zeros<fvec>(D.n_cols);
+
+    SRExtractor sr(D,max_iters,eps);
+    for(uint i = 0; i < T.n_cols; i++){
+        arma::fmat src = T.col(i);
+        arma::fmat dst;
+        sr.extractFeatures(src,dst);
+
+        int count = 0;
+        for(uint j = 0; j < dst.n_cols; j++){
+            if(dst(0,j) > 0){
+                count++;
+                nonZeroCount.at(j)++;
+                nonZeroSum.at(j)+= dst(0,j);
+            }
+        }
+        if(count < min)
+            min = count;
+        if(count > max)
+            max = count;
+
+        total+= count;
 
 
-    llc.extractFeatures(X,R2);
+    }
+    for(uint j = 0; j < nonZeroCount.n_rows; j++){
+            cout << nonZeroCount(j) << " \t";
+    }
+    cout << endl;
+
+    for(uint j = 0; j < nonZeroSum.n_rows; j++){
+            cout << nonZeroSum(j) << " \t";
+    }
+    cout << endl;
+
+    cout << endl << min << " " << max << " " << total/(int)nonZeroCount.n_rows << endl;
+
     return 0;
 }
 
+int testArmaWritePython(int argc, char *argv[]){
+    arma::fmat T;
+    T.load("/home/amourao/Desktop/a.mat");
+    T.save("/home/amourao/Desktop/b.mat");
+    cout << T << endl;
+    return 0;
+}
 
 int main(int argc, char *argv[])
 {
+    srand (time(NULL));
 	//testLoadSaveIClassifier(argc, argv);
 	//testLoadSaveIIndexer(argc, argv);
 	//faceDetectionParameterChallenge(argc, argv);
@@ -2403,7 +2474,8 @@ int main(int argc, char *argv[])
 
     //extractAndSaveToBerkeleyDB(argc, argv);
 	//readBerkeleyDB(argc, argv);
-	trainKSVD(argc,argv);
+	testBucketCapacity(argc,argv);
+	//testArmaWritePython(argc,argv);
 
     return 0;
 }
