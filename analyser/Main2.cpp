@@ -2326,10 +2326,22 @@ int playground(int argc, char *argv[]){
 
 int trainKSVD(int argc, char *argv[]){
 
+    string paramFile(argv[1]);
+
+	map<string,string> parameters;
+	vector<IIndexer*> indexers;
+	vector<IAnalyser*> analysers;
+	vector<IClassifier*> classifiers;
+	vector<IEndpoint*> endpoints;
+
+	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
+
+
+    int dimensionality = std::stoi(parameters["dimensionality"]);
     string type = "a";
     map<string,string> params;
 
-	params["dimensions"] = "1024";
+	params["dimensions"] = std::to_string(dimensionality);
     params["iters"] = "25";
 
 	params["eps"] = "1e-7";
@@ -2340,9 +2352,9 @@ int trainKSVD(int argc, char *argv[]){
 	params["normalize"] = "cols";
 
     arma::fmat T,VI,VQ;
-    T.load("/localstore/amourao/saIndexingSplits/configCondor4_1_k.json_train.mat");
-    VI.load("/localstore/amourao/saIndexingSplits/configCondor4_1_k.json_valI.mat");
-    VQ.load("/localstore/amourao/saIndexingSplits/configCondor4_1_k.json_valQ.mat");
+    T.load(parameters["T"]);
+    VI.load(parameters["VI"]);
+    VQ.load(parameters["VQ"]);
 
     arma::fmat means = arma::mean(T);
     arma::fmat stddevs = arma::stddev(T);
@@ -2358,17 +2370,15 @@ int trainKSVD(int argc, char *argv[]){
     //importer.readBin("/localstore/amourao/saIndexingSplits/configCondor4_1_k.json_train.mat",1000,T,0);
     //importer.readBin("/media/Share/data/1-billion-vectors/siftsmall/siftsmall_learn.fvecs",1000,VI,1000);
     //importer.readBin("/media/Share/data/1-billion-vectors/siftsmall/siftsmall_learn.fvecs",100,VQ,1000+100);
-    /*
+
+    arma::fmat kmeans = sparse::kmeans(T, dimensionality, 100);
+    kmeans.save(params["kmeansOutput"] /*"/home/amourao/code/searchservices/indexer/data/configCondor4_1_k_dict_kmeans.mat")*/);
+
     SRIndexer sr(type,params);
     sr.train(T,VI,VQ);
-    sr.save("configCondor4_1_k");
+    sr.save(params["srOutput"] /*"configCondor4_1_k"*/);
 
     std::cout << "trained KSVD ok" << endl;
-    */
-
-    arma::fmat kmeans = sparse::kmeans(T, 1024, 25);
-    kmeans.save("/home/amourao/code/searchservices/indexer/data/configCondor4_1_k_dict_kmeans.mat");
-
 
     return 0;
 }
@@ -2479,7 +2489,10 @@ int main(int argc, char *argv[])
 
     //extractAndSaveToBerkeleyDB(argc, argv);
 	//readBerkeleyDB(argc, argv);
-	testBucketCapacity(argc,argv);
+	if(string(argv[0]) == "testBucketCapacity")
+        testBucketCapacity(argc,argv);
+    else if(string(argv[0]) == "trainKSVD")
+        trainKSVD(argc,argv);
 	//testArmaWritePython(argc,argv);
 
     return 0;
