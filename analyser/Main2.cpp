@@ -2489,6 +2489,10 @@ int main(int argc, char *argv[])
 
     //extractAndSaveToBerkeleyDB(argc, argv);
 	//readBerkeleyDB(argc, argv);
+	cout << argv[0] << endl;
+	cout << StringTools::endsWith(string(argv[0]),"testBucketCapacity") << endl;
+	cout << StringTools::endsWith(string(argv[0]),"trainKSVD") << endl;
+
 	if(StringTools::endsWith(string(argv[0]),"testBucketCapacity"))
         testBucketCapacity(argc,argv);
     else if(StringTools::endsWith(string(argv[0]),"trainKSVD"))
