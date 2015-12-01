@@ -2489,9 +2489,9 @@ int main(int argc, char *argv[])
 
     //extractAndSaveToBerkeleyDB(argc, argv);
 	//readBerkeleyDB(argc, argv);
-	if(string(argv[0]) == "testBucketCapacity")
+	if(StringTools::endsWith(string(argv[0]),"testBucketCapacity"))
         testBucketCapacity(argc,argv);
-    else if(string(argv[0]) == "trainKSVD")
+    else if(StringTools::endsWith(string(argv[0]),"trainKSVD"))
         trainKSVD(argc,argv);
 	//testArmaWritePython(argc,argv);
 

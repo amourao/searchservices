@@ -32,3 +32,9 @@ std::vector<std::string> StringTools::split(const std::string &s, char delim) {
     }
     return elems;
 }
+
+
+bool StringTools::endsWith(std::string value, std::string ending) {
+    if (ending.size() > value.size()) return false;
+    return std::equal(ending.rbegin(), ending.rend(), value.rbegin());
+}
