@@ -2386,9 +2386,11 @@ int testBucketCapacity(int argc, char *argv[]){
 
 	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
 
-    arma::fmat T,D;
+    arma::fmat T,D, Dt;
     D.load(parameters[argv[2]]);
     T.load(parameters[argv[3]]);
+
+    Dt = D.t();
 
     cout << "D cols: " << D.n_cols << "\tD rows: " << D.n_rows << endl;
 
@@ -2401,6 +2403,7 @@ int testBucketCapacity(int argc, char *argv[]){
 
     arma::uvec nonZeroCount = zeros<uvec>(D.n_cols);
     arma::fvec nonZeroSum = zeros<fvec>(D.n_cols);
+    double totalRecError = 0;
 
     SRExtractor sr(D,max_iters,eps);
     for(uint i = 0; i < T.n_cols; i++){
@@ -2423,6 +2426,8 @@ int testBucketCapacity(int argc, char *argv[]){
 
         total+= count;
 
+        totalRecError+= arma::accu(arma::abs(src-(dst*Dt).t()));
+
 
     }
     for(uint j = 0; j < nonZeroCount.n_rows; j++){
@@ -2435,7 +2440,7 @@ int testBucketCapacity(int argc, char *argv[]){
     }
     cout << endl;
 
-    cout << endl << min << " " << max << " " << total/(int)nonZeroCount.n_rows << endl;
+    cout << min << endl << max << endl << total/(int)nonZeroCount.n_rows << endl << totalRecError/T.n_cols << endl;
 
     return 0;
 }
