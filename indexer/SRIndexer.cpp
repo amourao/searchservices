@@ -346,6 +346,17 @@ std::pair<vector<float>,vector<float> > SRIndexer::radiusSearchId(arma::fmat& qu
 	return make_pair(indices,dists);
 }
 
+
+bool SRIndexer::altSave(string basePath, string altBase){
+    if(indexData != NULL && indexData->n_cols > 0 && indexKSVD!=NULL){
+        indexKSVD->save(basePath);
+    } else {
+        dictionary.save(altBase + basePath + "_dict.bin");
+        dictionary_seed.save(altBase + basePath + "_dict_seed.bin");
+    }
+	return true;
+}
+
 bool SRIndexer::save(string basePath){
 
 

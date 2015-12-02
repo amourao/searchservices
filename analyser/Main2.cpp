@@ -2376,7 +2376,7 @@ int trainKSVD(int argc, char *argv[]){
 
     SRIndexer sr(type,params);
     sr.train(T,VI,VQ);
-    sr.save(params["srOutput"] /*"configCondor4_1_k"*/);
+    sr.altSave(params["srOutput"],"");
 
     std::cout << "trained KSVD ok" << endl;
 
@@ -2489,14 +2489,14 @@ int main(int argc, char *argv[])
 
     //extractAndSaveToBerkeleyDB(argc, argv);
 	//readBerkeleyDB(argc, argv);
-	cout << argv[0] << endl;
-	cout << StringTools::endsWith(string(argv[0]),"testBucketCapacity") << endl;
-	cout << StringTools::endsWith(string(argv[0]),"trainKSVD") << endl;
+	cout << argv[1] << endl;
+	cout << StringTools::endsWith(string(argv[1]),"testBucketCapacity") << endl;
+	cout << StringTools::endsWith(string(argv[1]),"trainKSVD") << endl;
 
-	if(StringTools::endsWith(string(argv[0]),"testBucketCapacity"))
-        testBucketCapacity(argc,argv);
-    else if(StringTools::endsWith(string(argv[0]),"trainKSVD"))
-        trainKSVD(argc,argv);
+	if(StringTools::endsWith(string(argv[1]),"testBucketCapacity"))
+        testBucketCapacity(argc-1,&argv[1]);
+    else if(StringTools::endsWith(string(argv[1]),"trainKSVD"))
+        trainKSVD(argc-1,&argv[1]);
 	//testArmaWritePython(argc,argv);
 
     return 0;

@@ -64,6 +64,8 @@ public:
 	bool save(string basePath);
 	bool load(string basePath);
 
+	bool altSave(string basePath, string altBase);
+
 	int addToIndexLive(arma::fmat& features);
 
 	string getName();
