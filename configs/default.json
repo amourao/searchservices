@@ -1,0 +1,186 @@
+{"parameters": {
+    "port" : "9383"
+    },
+ "endpoints": {
+    "indexer": [
+        {
+            "newName": "linearIndexer",
+            "originalName": "flannkNNIndexer",
+            "params": {
+                "algorithm": "linear",
+                "distance": "EUCLIDEAN"
+            }
+        },{
+            "newName": "srIndexerStd",
+            "originalName": "srIndexer",
+            "params": {
+                "n_iter": "25",
+                "search_limit": "1",
+                 "dimensions": "1024",
+
+                "max_iters": "10",
+                "eps": "1e-7",
+
+                "max_iters_ksvd": "10",
+                "eps_ksvd": "1e-7"
+            }
+        }
+    ],
+    "analyser": [
+        {
+            "newName": "faceDetectorWithEyes",
+            "originalName": "faceDetection",
+
+            "params": {
+                "cascadePath": "haarcascade_frontalface_default.xml",
+                "nestedCascadePath": "haarcascade_eye.xml",
+                "scaleChangeFactor": "4",
+                "eyeScaleChangeFactor": "1",
+                "minSizeW": "20",
+                "minSizeH": "20",
+                "maxSizeW": "50",
+                "maxSizeH": "50",
+                "preProcess": "true"
+            }
+        },{
+            "newName": "faceDetectorNoEyes",
+            "originalName": "faceDetection",
+            "params": {
+                "cascadePath": "haarcascade_frontalface_default.xml",
+                "nestedCascadePath": "haarcascade_eye.xml",
+                "scaleChangeFactor": "4",
+                "eyeScaleChangeFactor": "1",
+                "minSizeW": "20",
+                "minSizeH": "20",
+                "maxSizeW": "100",
+                "maxSizeH": "100",
+                "preProcess": "false"
+            }
+        },{
+            "newName": "surf1000",
+            "originalName": "surf",
+            "params": {
+                "hessianThreshold": "1000",
+                "nOctaves": "4",
+                "nOctaveLayers": "2",
+                "extended": "true",
+                "upright": "false"
+            }
+        },{
+            "newName": "sift0",
+            "originalName": "sift",
+            "params": {
+                "nFeatures": "0",
+                "nOctaveLayers": "4",
+                "contrastThreshold": "0.04",
+                "edgeThreshold": "10",
+                "sigma": "1.6"
+            }
+        },{
+            "newName": "gaborFace",
+            "originalName": "gaborExtractor",
+            "params": {
+                "imageW": "92",
+                "imageH": "112",
+                "nScales": "4",
+                "nOrientations": "6",
+
+                "minWaveLength": "3",
+                "mult": "2",
+                "sigmaOnf": "0.65",
+                "dThetaOnSigma": "1.5",
+                "rectangles": "0,0,46,64;46,64,46,48;46,0,46,64;0,64,46,48;0,10,92,30;20,65,52,30"
+
+            }
+        },{
+            "newName": "gaborGlobal",
+            "originalName": "gaborExtractor",
+            "params": {
+                "imageW": "640",
+                "imageH": "480",
+                "nScales": "4",
+                "nOrientations": "6",
+
+                "minWaveLength": "3",
+                "mult": "2",
+                "sigmaOnf": "0.65",
+                "dThetaOnSigma": "1.5"
+            }
+        },{
+            "newName": "gist883",
+            "originalName": "gistExtractor",
+            "params": {
+                "imageW": "320",
+                "imageH": "240",
+                "nScales": "3",
+                "nBlocks": "4",
+                "ops": "8;8;4"
+            }
+        },{
+            "newName": "hsvHistogram8",
+            "originalName": "hsvHistogramExtractor",
+            "params": {
+                "binCount": "8"
+            }
+        },{
+            "newName": "hsvHistogram16",
+            "originalName": "hsvHistogramExtractor",
+            "params": {
+                "binCount": "16"
+            }
+        },{
+            "newName": "lbp885",
+            "originalName": "lbpExtractor",
+            "params": {
+                "binCount": "16"
+            }
+        },{
+            "newName": "cedd",
+            "originalName": "lireExtractor",
+            "params": {
+                "algorithm": "cedd",
+                "host": "http://localhost:9587/extractor"
+            }
+        },{
+            "newName": "fcth",
+            "originalName": "lireExtractor",
+            "params": {
+                "algorithm": "fcth",
+                "host": "http://localhost:9587/extractor"
+            }
+        },{
+            "newName": "hsvHistogram16",
+            "originalName": "hsvHistogramExtractor",
+            "params": {
+                "binCount": "16"
+            }
+        },{
+            "newName": "hsv2x2_8",
+            "originalName": "hsvSegHistogramExtractor",
+            "params": {
+                "binCount": "8",
+                "horizontalDivisions": "2",
+                "verticalDivisions": "2",
+                "useCenterRegion": "false" 
+            }
+        },{
+            "newName": "cedd_fcth",
+            "originalName": "CombinedExtractor",
+            "params": {
+                "algorithms": "cedd,fcth"
+            }
+        },{
+            "newName": "srExtractorOMP",
+            "originalName": "srExtractor",
+            "params": {
+                "max_iters": "25",
+                "eps": "0.05",
+                "dimensionality": "16",
+                "dictSize": "1024",
+                "_dictPath": "/localstore/arma.mat"
+            }
+        }
+    ],
+    "classifier": [
+    ]
+} }

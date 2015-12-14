@@ -1,0 +1,31 @@
+{"parameters": {
+    "port" : "9383"
+
+    },
+ "endpoints": {
+    "analyser": [
+        {
+            "newName": "srExtractorOMP",
+            "originalName": "srExtractor",
+            "params": {
+                "max_iters": "25",
+                "eps": "0.05",
+                "dimensionality": "16",
+                "dictSize": "1024",
+                "_dictPath": "/localstore/arma.mat"
+            }
+        },{
+            "newName": "llcExtractorRand",
+            "originalName": "LLCExtractor",
+            "params": {
+                "knn": "5",
+                "beta": "0.0001",
+                "dimensionality": "16",
+                "dictSize": "1024",
+                "_dictPath": "/localstore/arma.mat"
+            }
+        }
+    ],
+    "classifier": [],
+    "indexer": []
+} }

@@ -1,0 +1,59 @@
+{"parameters": {
+    "port" : "9383"
+
+    },
+ "endpoints": {
+    "indexer": [
+        {
+            "newName": "DistributedIndexWrapperClientDistA",
+            "originalName": "DistributedIndexWrapperClientDist",
+            "params": {
+                "port": "12350",
+                "extractor": "srExtractorOMP",
+                "bufferSize": "1024",
+                "servers": "192.168.1.10:12345;192.168.1.20:12345;192.168.1.30:12345;192.168.1.40:12345"
+                }
+            },
+        {
+            "newName": "DistributedIndexWrapperClientDistB",
+            "originalName": "DistributedIndexWrapperClientDist",
+            "params": {
+                "port": "12360",
+                "extractor": "llcExtractorRand",
+                "bufferSize": "1024",
+                "servers": "192.168.1.10:12345;192.168.1.20:12345;192.168.1.30:12345;192.168.1.40:12345"
+                }
+            }
+    ],
+    "analyser": [
+        {
+            "newName": "lbp885",
+            "originalName": "lbpExtractor",
+            "params": {
+                "binCount": "16"
+            }
+        },{
+            "newName": "srExtractorOMP",
+            "originalName": "srExtractor",
+            "params": {
+                "max_iters": "25",
+                "eps": "0.05",
+                "dimensionality": "16",
+                "dictSize": "1024",
+                "_dictPath": "/localstore/arma.mat"
+            }
+        },{
+            "newName": "llcExtractorRand",
+            "originalName": "LLCExtractor",
+            "params": {
+                "knn": "5",
+                "beta": "0.0001",
+                "dimensionality": "16",
+                "dictSize": "1024",
+                "_dictPath": "/localstore/arma.mat"
+            }
+        }
+    ],
+    "classifier": [
+    ]
+} }
