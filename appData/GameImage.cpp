@@ -1,6 +1,6 @@
 #include "GameImage.h"
 
-const string SQLFILE = "slb.db";
+const string SQLFILE = "dbs/default.db";
 
 GameImage::GameImage(string url,int gameId,int roundId,int userId,
 		int timeId, int roundAudience, 	int roundExpressionId, int ksvm, float score,

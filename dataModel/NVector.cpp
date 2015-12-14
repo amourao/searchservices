@@ -1,7 +1,7 @@
 #include "NVector.h"
 #include <iostream>
 
-const string SQLFILE = "slb.db";
+const string SQLFILE = "dbs/default.db";
 
 NVector::NVector(string url, string SQLTable, vector<float> value) : IDataModel(url)
 {

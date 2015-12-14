@@ -25,14 +25,14 @@ typedef struct {
 class IDataModel {
 
 public:
-	
+
 	enum type {
 		NVECTOR,
 		NKEYPOINT,
 		NTAG,
 		NROI
 	};
-	
+
 	IDataModel(string url) {this->url = url; mediaId = -1; SQLite::Connector::registerConnector();}
 	IDataModel() {mediaId = -1; SQLite::Connector::registerConnector();}
 	string getUrl(){
@@ -61,7 +61,7 @@ protected:
 		{
 		if(mediaId != -1)
 			return mediaId;
-			Session ses("SQLite", "slb.db");
+			Session ses("SQLite", "dbs/default.db");
 			ses << "BEGIN", Keywords::now;
 			ses << "SELECT EXISTS(SELECT id FROM media WHERE uri=:url AND partOf IS NULL)",Keywords::use(url), Keywords::into(mediaId), Keywords::now;
 			if(mediaId == 0)

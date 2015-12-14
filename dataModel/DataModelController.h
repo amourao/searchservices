@@ -9,7 +9,7 @@
 #include <vector>
 #include <map>
 
-#define SQLFILE "slb.db"
+#define SQLFILE "dbs/default.db"
 
 using namespace std;
 using namespace Poco::Data;
@@ -25,4 +25,4 @@ class DataModelController {
         void createTables();
 };
 
-        
+

@@ -1,7 +1,7 @@
 #include "NRoi.h"
 #include <iostream>
 
-const string SQLFILE = "slb.db";
+const string SQLFILE = "dbs/default.db";
 
 NRoi::NRoi(string url,  map<string,region> value) : IDataModel(url)
 {

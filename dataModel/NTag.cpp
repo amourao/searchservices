@@ -1,7 +1,7 @@
 #include "NTag.h"
 #include <iostream>
 
-const string SQLFILE = "slb.db";
+const string SQLFILE = "dbs/default.db";
 
 NTag::NTag(string url, map<string,float> value) : IDataModel(url)
 {
@@ -50,7 +50,7 @@ bool NTag::loadSQL(int mediaId)
 //int main()
 //{
 //	SQLite::Connector::registerConnector();
-//		Session ses("SQLite", "slb.db");
+//		Session ses("SQLite", "dbs/default.db");
 //		ses << "DROP TABLE IF EXISTS media", Keywords::now;
 //		ses << "DROP TABLE IF EXISTS word", Keywords::now;
 //		ses << "DROP TABLE IF EXISTS keypoints", Keywords::now;

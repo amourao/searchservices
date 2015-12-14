@@ -1,7 +1,7 @@
 #include "NKeypoint.h"
 #include <iostream>
 
-const string SQLFILE = "slb.db";
+const string SQLFILE = "dbs/default.db";
 
 NKeypoint::NKeypoint(string url, string SQLTable, vector<pair<vector<float>,vector<float> > > value) : IDataModel(url)
 {
