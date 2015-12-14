@@ -17,6 +17,7 @@
 
 #include "nTag/SRClassifier.h"
 #include "nVector/SRExtractor.h"
+#include "nVector/ANdOMPExtractor.h"
 #include "../indexer/SRIndexer.h"
 
 
@@ -2463,6 +2464,39 @@ int testArmaWritePython(int argc, char *argv[]){
     return 0;
 }
 
+int testANdMP(int argc, char *argv[]){
+    string paramFile(argv[1]);
+
+	map<string,string> parameters;
+	vector<IIndexer*> indexers;
+	vector<IAnalyser*> analysers;
+	vector<IClassifier*> classifiers;
+	vector<IEndpoint*> endpoints;
+
+	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
+
+    arma::fmat T,D, Dt;
+    D.load(parameters[argv[2]]);
+    T.load(parameters[argv[3]]);
+
+    Dt = D.t();
+
+    int max_iters = 10;
+    double eps = 1e-7;
+
+    SRExtractor sr(D,max_iters,eps);
+    ANdOMPExtractor andMP(D,max_iters,eps);
+
+    arma::fmat src = T.col(0);
+    arma::fmat dst1,dst2;
+    sr.extractFeatures(src,dst1);
+    andMP.extractFeatures(src,dst2);
+
+    cout << arma::accu(arma::abs(dst1-dst2)) << endl;
+
+    return 0;
+}
+
 int main(int argc, char *argv[])
 {
     srand (time(NULL));
@@ -2490,14 +2524,13 @@ int main(int argc, char *argv[])
     //extractAndSaveToBerkeleyDB(argc, argv);
 	//readBerkeleyDB(argc, argv);
 	cout << argv[1] << endl;
-	cout << StringTools::endsWith(string(argv[1]),"testBucketCapacity") << endl;
-	cout << StringTools::endsWith(string(argv[1]),"trainKSVD") << endl;
 
 	if(StringTools::endsWith(string(argv[1]),"testBucketCapacity"))
         testBucketCapacity(argc-1,&argv[1]);
     else if(StringTools::endsWith(string(argv[1]),"trainKSVD"))
         trainKSVD(argc-1,&argv[1]);
-	//testArmaWritePython(argc,argv);
+    else if(StringTools::endsWith(string(argv[1]),"testANdMP"))
+        testANdMP(argc-1,&argv[1]);
 
     return 0;
 }

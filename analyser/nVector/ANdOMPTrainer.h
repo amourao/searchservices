@@ -1,0 +1,66 @@
+#pragma once
+
+
+#include <utils/utils.h>
+
+#include <l1min/omp.h>
+
+#include "FeatureExtractor.h"
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <vector>
+#include <string>
+#include <iostream>
+#include <fstream>
+#include "../FactoryAnalyser.h"
+#include "../tools/MatrixTools.h"
+
+#include <cassert>
+#include <cmath>
+#include <iostream>
+#include <algorithm>
+
+#include <armadillo>
+
+#include "ANdOMPExtractor.h"
+
+using namespace std;
+
+
+class ANdOMPTrainer :
+	public FeatureExtractor
+{
+public:
+	ANdOMPTrainer();
+	ANdOMPTrainer(string& type, map<string, string>& params);
+	ANdOMPTrainer(arma::fmat& dictionary, arma::fmat& train, arma::fmat& validation, ANdOMPExtractor fe, int n_iters, double eps);
+	~ANdOMPTrainer();
+
+	void iterate();
+
+	int getFeatureVectorSize();
+
+	string getName();
+
+
+	void* createType(string &typeId);
+	void* createType(string& type, map<string, string>& params);
+
+	arma::fmat V;
+	arma::fmat X;
+
+	arma::fmat D_seed;
+    arma::fmat D;
+
+    arma::fmat G;
+    arma::fmat Gamma;
+
+    arma::Row<long> distribution;
+    string type;
+
+    uint n_iters;
+    double eps;
+
+    ANdOMPExtractor fe;
+};
+
