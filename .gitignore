@@ -32,6 +32,7 @@ analyser/data/
 indexer/data/
 rest/Endpoints/data/
 tmpData/
+condor/
 rest/Endpoints/peopleRecogEngine/
 dbs/
 .cproject
