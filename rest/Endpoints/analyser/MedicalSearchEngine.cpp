@@ -12,7 +12,7 @@ MedicalSearchEngine::MedicalSearchEngine(string type){
 	//createKnnIndex();
 	//extractorName = "SEG_LBP_HIST";
 	if (type == "/medicalSearch"){
-		importIclefData("./rest/database.txt");
+		importIclefData("./rest/Endpoints/data/database.txt");
 		readTrainingData("./analyser/data/dataFCTHFull.bin");
 		createKnnIndex();
 		extractorName = "fcth";
