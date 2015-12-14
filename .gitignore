@@ -29,5 +29,9 @@ ck+*/
 detectedEmotionCK*/
 avgFaces*/
 analyser/data/
+indexer/data/
+rest/Endpoints/data/
 tmpData/
+rest/Endpoints/peopleRecogEngine/
+dbs/
 .cproject
