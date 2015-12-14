@@ -512,6 +512,10 @@
 			<Option target="ReleaseEusipco" />
 			<Option target="DebugEusipco" />
 		</Unit>
+		<Unit filename="analyser/nVector/ANdOMPExtractor.cpp" />
+		<Unit filename="analyser/nVector/ANdOMPExtractor.h" />
+		<Unit filename="analyser/nVector/ANdOMPTrainer.cpp" />
+		<Unit filename="analyser/nVector/ANdOMPTrainer.h" />
 		<Unit filename="analyser/nVector/CombinedExtractor.cpp">
 			<Option target="ReleaseMainInd" />
 			<Option target="ReleaseMainAna" />

@@ -22,7 +22,7 @@
 	"../commons/factory/Factory.h"
 	"../dataModel/IDataModel.h"
 
-1397645612 /home/amourao/code/searchservices/dataModel/IDataModel.h
+1449851940 /home/amourao/code/searchservices/dataModel/IDataModel.h
 	<iostream>
 	<fstream>
 	<string>
@@ -283,7 +283,7 @@
 	<string>
 	<map>
 
-1449057266 source:/home/amourao/code/searchservices/analyser/Main2.cpp
+1449229461 source:/home/amourao/code/searchservices/analyser/Main2.cpp
 	<iostream>
 	<string>
 	<sstream>
@@ -298,6 +298,7 @@
 	<db_cxx.h>
 	"nTag/SRClassifier.h"
 	"nVector/SRExtractor.h"
+	"nVector/ANdOMPExtractor.h"
 	"../indexer/SRIndexer.h"
 	"sources/ImageSource.h"
 	"sources/CamSource.h"
@@ -683,7 +684,7 @@
 1397645635 source:/home/amourao/code/searchservices/analyser/tools/TrainTestFeaturesTools.cpp
 	"TrainTestFeaturesTools.h"
 
-1418384655 source:/home/amourao/code/searchservices/appData/GameImage.cpp
+1449851927 source:/home/amourao/code/searchservices/appData/GameImage.cpp
 	"GameImage.h"
 
 1390951647 /home/amourao/code/searchservices/appData/GameImage.h
@@ -730,7 +731,7 @@
 1390951642 source:/home/amourao/code/searchservices/dataModel/DataModelController.cpp
 	"DataModelController.h"
 
-1390951648 /home/amourao/code/searchservices/dataModel/DataModelController.h
+1449851935 /home/amourao/code/searchservices/dataModel/DataModelController.h
 	"IDataModel.h"
 	"Poco/Data/SQLChannel.h"
 	"Poco/Data/SessionFactory.h"
@@ -741,22 +742,22 @@
 	<vector>
 	<map>
 
-1418384655 source:/home/amourao/code/searchservices/dataModel/NKeypoint.cpp
+1449851945 source:/home/amourao/code/searchservices/dataModel/NKeypoint.cpp
 	"NKeypoint.h"
 	<iostream>
 
-1390951642 source:/home/amourao/code/searchservices/dataModel/NRoi.cpp
+1449851951 source:/home/amourao/code/searchservices/dataModel/NRoi.cpp
 	"NRoi.h"
 	<iostream>
 
-1418384655 source:/home/amourao/code/searchservices/dataModel/NTag.cpp
+1449851965 source:/home/amourao/code/searchservices/dataModel/NTag.cpp
 	"NTag.h"
 	<iostream>
 
 1390951648 /home/amourao/code/searchservices/dataModel/NTag.h
 	"IDataModel.h"
 
-1390951642 source:/home/amourao/code/searchservices/dataModel/NVector.cpp
+1449851970 source:/home/amourao/code/searchservices/dataModel/NVector.cpp
 	"NVector.h"
 	<iostream>
 
@@ -876,7 +877,7 @@
 	<opencv2/highgui/highgui.hpp>
 	"../../../commons/FileDownloader.h"
 
-1418384655 source:/home/amourao/code/searchservices/rest/Endpoints/analyser/MedicalSearchEngine.cpp
+1449852177 source:/home/amourao/code/searchservices/rest/Endpoints/analyser/MedicalSearchEngine.cpp
 	"MedicalSearchEngine.h"
 
 1390951647 /home/amourao/code/searchservices/rest/Endpoints/analyser/MedicalSearchEngine.h
@@ -8953,4 +8954,47 @@
 	<limits>
 	<cmath>
 	<armadillo>
+
+1449773819 source:/home/amourao/code/searchservices/analyser/nVector/ANdOMPExtractor.cpp
+	"ANdOMPExtractor.h"
+
+1449773844 /home/amourao/code/searchservices/analyser/nVector/ANdOMPExtractor.h
+	<utils/utils.h>
+	<l1min/omp.h>
+	"FeatureExtractor.h"
+	<opencv2/highgui/highgui.hpp>
+	<opencv2/imgproc/imgproc.hpp>
+	<vector>
+	<string>
+	<iostream>
+	<fstream>
+	"../FactoryAnalyser.h"
+	"../tools/MatrixTools.h"
+	<cassert>
+	<cmath>
+	<iostream>
+	<algorithm>
+	<armadillo>
+
+1449774911 source:/home/amourao/code/searchservices/analyser/nVector/ANdOMPTrainer.cpp
+	"ANdOMPTrainer.h"
+
+1449774978 /home/amourao/code/searchservices/analyser/nVector/ANdOMPTrainer.h
+	<utils/utils.h>
+	<l1min/omp.h>
+	"FeatureExtractor.h"
+	<opencv2/highgui/highgui.hpp>
+	<opencv2/imgproc/imgproc.hpp>
+	<vector>
+	<string>
+	<iostream>
+	<fstream>
+	"../FactoryAnalyser.h"
+	"../tools/MatrixTools.h"
+	<cassert>
+	<cmath>
+	<iostream>
+	<algorithm>
+	<armadillo>
+	"ANdOMPExtractor.h"
 
