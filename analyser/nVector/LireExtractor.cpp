@@ -91,15 +91,15 @@ void LireExtractor::extractFeaturesMulti(string filename, vector<vector<float> >
 
 	    Json::Value root;   // will contains the root value after parsing.
 	    Json::Reader reader;
-	    bool parsingSuccessful = reader.parse( is, root, false );
+	    /*bool parsingSuccessful = */reader.parse( is, root, false );
 
 	    Json::Value featuresJson = root["featureVector"];
 
 	    features.reserve(featuresJson.size());
-	    for(int i = 0; i < featuresJson.size(); i++){
+	    for(uint i = 0; i < featuresJson.size(); i++){
 	    	vector<float> featuresOne;
 	    	featuresOne.reserve(getFeatureVectorSize());
-	    	for(int j = 0; j < featuresJson[i].size(); j++){
+	    	for(uint j = 0; j < featuresJson[i].size(); j++){
 	    		featuresOne.push_back(featuresJson[i][j].asDouble());
 	    	}
 	    	features.push_back(featuresOne);

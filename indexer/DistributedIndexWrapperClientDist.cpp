@@ -26,7 +26,7 @@ DistributedIndexWrapperClientDist::DistributedIndexWrapperClientDist(string& typ
 
     string serversString = params["servers"];
     vector<string> servers = StringTools::split(serversString,';');
-    for (int i = 0; i < servers.size(); i++){
+    for (uint i = 0; i < servers.size(); i++){
         serverAddresses.push_back(Poco::Net::SocketAddress(servers.at(i)));
     }
 
@@ -71,7 +71,7 @@ std::pair<vector<float>,vector<float> > DistributedIndexWrapperClientDist::knnSe
 
 
 
-    for(int i = 0; i < servers.size(); i++){
+    for(uint i = 0; i < servers.size(); i++){
         Poco::Net::SocketAddress server_address = servers.at(i);
 
         vector<float> input, output;
@@ -87,7 +87,7 @@ std::pair<vector<float>,vector<float> > DistributedIndexWrapperClientDist::knnSe
 
         sendMessage(input,output,server_address);
 
-        int current_i = 2;
+        //int current_i = 2;
 
         int n_new = output[1];
         cout << output[0] << " " << output[1] << " " << output[2] << endl;
@@ -120,7 +120,7 @@ string DistributedIndexWrapperClientDist::getName(){
 int DistributedIndexWrapperClientDist::addToIndexLive(Mat& features){
     vector<Poco::Net::SocketAddress> servers = getRelevantServers(features);
 
-    for(int i = 0; i < servers.size(); i++){
+    for(uint i = 0; i < servers.size(); i++){
         Poco::Net::SocketAddress server_address = servers.at(i);
 
         vector<float> input, output;
@@ -168,7 +168,7 @@ vector<Poco::Net::SocketAddress> DistributedIndexWrapperClientDist::getRelevantS
 
     int repSize = sparseRep.cols;
     int bucketsPerServer = repSize/(float)serverAddresses.size();
-    for(int i = 0; i < serverAddresses.size()-1; i++){
+    for(uint i = 0; i < serverAddresses.size()-1; i++){
         int count = countNonZero(sparseRep.colRange(i*bucketsPerServer,(i+1)*bucketsPerServer));
         if(count > 0){
             results.push_back(serverAddresses.at(i));
@@ -182,7 +182,7 @@ vector<Poco::Net::SocketAddress> DistributedIndexWrapperClientDist::getRelevantS
     }
 
     cout << "relevant servers ";
-    for(int i = 0; i < results.size(); i++){
+    for(uint i = 0; i < results.size(); i++){
         cout << resultsIndex.at(i) << " ";
     }
     cout << endl;

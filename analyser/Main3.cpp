@@ -240,7 +240,7 @@ void awesomeIndexTesterOldAndWrong(int argc, char *argv[]){
     cout << "Reading featuresTrain: ";
     //cv::Mat labels;
     int currentOffset = 0;
-    long testOffset;
+    //long testOffset;
 
     if (parameters.count("file") > 0){
 
@@ -264,7 +264,7 @@ void awesomeIndexTesterOldAndWrong(int argc, char *argv[]){
         importer->readBin(file,nValQ,featuresValidationQ,currentOffset);
         get_timestamp(&end);
         currentOffset += nValQ;
-        testOffset = currentOffset;
+        //testOffset = currentOffset;
         get_timestamp(&start);
         importer->readBin(file,nTesI,featuresTestI,currentOffset);
         get_timestamp(&end);
@@ -298,7 +298,7 @@ void awesomeIndexTesterOldAndWrong(int argc, char *argv[]){
         importer->readBin(fileTrain,nValQ,featuresValidationQ,currentOffset);
         get_timestamp(&end);
         int testIndexOffset = 0;
-        testOffset = 0;
+        //testOffset = 0;
         get_timestamp(&start);
         importer->readBin(fileIndex,nTesI,featuresTestI,testIndexOffset);
         get_timestamp(&end);
@@ -1285,7 +1285,7 @@ void awesomeIndexTesterAllV2(int argc, char *argv[]){
                 std::pair<vector<uint>, vector<float> > r;
                 vector<std::pair<vector<uint>, vector<float> > > rAll;
                 int k = atoi(kList.at(kIndex).c_str());
-                for (int j = 0; j < featuresTestQ.n_cols; j++){
+                for (uint j = 0; j < featuresTestQ.n_cols; j++){
                     arma::fmat q = featuresTestQ.col(j);
                     get_timestamp(&start);
                     r =  indexers.at(i)->knnSearchIdLong(q,k);
@@ -1296,8 +1296,6 @@ void awesomeIndexTesterAllV2(int argc, char *argv[]){
 
                 cout <<  ";" <<  tmpTime/nTesQ  << endl;
                 for (uint j = 0; j < rAll.size(); j++){
-                    long relAccum = 0;
-                    double precAccum = 0;
                     for (uint m = 0; m < rAll.at(j).first.size(); m++){
                         cout << (rAll.at(j).first.at(m)) << ";";
                     }
@@ -2302,7 +2300,6 @@ int testConvertBin(int argc, char *argv[]){
 
 int getBucketStatsFromFile(int argc, char *argv[]){
 
-	bool load_okay = true;
 	 ifstream f(argv[1], ifstream::in);
 	 std::string f_type;
 	 f >> f_type;
@@ -2311,7 +2308,7 @@ int getBucketStatsFromFile(int argc, char *argv[]){
 
 	 if(f_type != "ARMA_FLD_BIN")
 	 {
-	 load_okay = false;
+	 //load_okay = false;
 	 cout << "unsupported field type in " << endl;
 	 }
 	 else
@@ -2345,6 +2342,7 @@ int getBucketStatsFromFile(int argc, char *argv[]){
       }
     }
     f.close();
+    return 0;
 }
 
 int main(int argc, char *argv[]){

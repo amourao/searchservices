@@ -7,8 +7,8 @@
     int const max_lowThreshold = 100;
     int ratio = 3;
     int kernel_size = 3;
-    char * window_name = "Edge Map";
-    char * window_name_2 = "Original Image";
+    string window_name = "Edge Map";
+    string window_name_2 = "Original Image";
 
 FrameFilter::FrameFilter(){
     //ctor
@@ -34,11 +34,11 @@ bool FrameFilter::hasEdges(const Mat& frame, double thresholdCanny, double thres
 }
 
 bool FrameFilter::hasColor(const Mat& frame, double threshold){
-
+    return true;
 }
 
 bool FrameFilter::filter(const Mat& frame){
-
+    return true;
 }
 
 void FrameFilter::CannyThreshold(int, void *)

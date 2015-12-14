@@ -68,7 +68,7 @@ std::pair<vector<float>,vector<float> > DistributedIndexWrapperClient::knnSearch
 
     sendMessage(input,output,server_address);
 
-    int current_i = 2;
+    //int current_i = 2;
     int n_new = output[1];
 
     vector<float> indices;

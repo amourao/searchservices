@@ -1949,7 +1949,7 @@ int extractAndSaveToBerkeleyDB(int argc, char *argv[]){
 
     FactoryAnalyser * f = FactoryAnalyser::getInstance();
 
-    for(int i = 0; i < featuresArr.size(); i++){
+    for(uint i = 0; i < featuresArr.size(); i++){
         IAnalyser* analyser = (IAnalyser*)f->createType(featuresArr.at(i));
 
         if(analyser == NULL){
@@ -1979,9 +1979,8 @@ int extractAndSaveToBerkeleyDB(int argc, char *argv[]){
 			imageid.erase(remove(imageid.begin(), imageid.end(), '\n'), imageid.end());
 
 
-            for(int j = 0; j < analysers.size(); j++){
+            for(uint j = 0; j < analysers.size(); j++){
                     IAnalyser* analyser = analysers.at(j);
-                    FeatureExtractor* fe = (FeatureExtractor*)analyser;
 
                     string keyString = pmcid + ";" + imageid;
                     vector<float>* featureVec = (vector<float>*)analyser->getFeatures(path)->getValue();
@@ -2014,8 +2013,8 @@ int extractAndSaveToBerkeleyDB(int argc, char *argv[]){
 
                     Dbt key(&keyString[0], keyString.size());
                     Dbt data(&featureVec->at(0), sizeof(float)*featureVec->size());
-                    int ret = db.put(NULL, &key, &data, DB_NOOVERWRITE);
 
+                    //int ret = db.put(NULL, &key, &data, DB_NOOVERWRITE);
                     //if (ret == DB_KEYEXIST)
                         //cout << "Put failed because key already exists: " << keyString << endl;
 
@@ -2048,6 +2047,8 @@ int extractAndSaveToBerkeleyDB(int argc, char *argv[]){
             }
 		}
     }
+
+    return 0;
 }
 
 
@@ -2081,7 +2082,7 @@ int readBerkeleyDB (int argc, char *argv[]){
 			imageid.erase(remove(imageid.begin(), imageid.end(), '\n'), imageid.end());
 
 
-            for(int i = 0; i < featuresArr.size(); i++){
+            for(uint i = 0; i < featuresArr.size(); i++){
                 string dbPath = dbBasePath + "_" + featuresArr.at(i) + ".db";
                 Db db(NULL, 0);               // Instantiate the Db object
                 u_int32_t oFlags = DB_CREATE; // Open flags;
@@ -2111,7 +2112,7 @@ int readBerkeleyDB (int argc, char *argv[]){
                 dataSizeDbt.set_ulen(sizeof(int));
                 dataSizeDbt.set_flags(DB_DBT_USERMEM);
 
-                int ret = db.get(NULL, &keySizeDbt, &dataSizeDbt, 0);
+                //int ret = db.get(NULL, &keySizeDbt, &dataSizeDbt, 0);
 
                 cout << size << endl;
 
@@ -2154,7 +2155,7 @@ int readBerkeleyDB (int argc, char *argv[]){
 
 
 
-
+    return 0;
 }
 
 int playground(int argc, char *argv[]){
@@ -2408,8 +2409,8 @@ int testBucketCapacity(int argc, char *argv[]){
     int max_iters = 10;
     double eps = 1e-7;
 
-    int max = std::numeric_limits<double>::min();
-    int min = std::numeric_limits<double>::max();
+    int max = std::numeric_limits<int>::min();
+    int min = std::numeric_limits<int>::max();
     int total = 0;
 
     arma::uvec nonZeroCount = zeros<uvec>(D.n_cols);

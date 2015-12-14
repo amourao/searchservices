@@ -61,7 +61,7 @@ int FileDownloader::getFile(std::string url, std::string location){
 std::vector<std::string> FileDownloader::getFiles(std::string url){
     std::vector<std::string> results;
     std::vector<std::string> x = StringTools::split(url, ';');
-    for (int i = 0; i < x.size(); i++)
+    for (uint i = 0; i < x.size(); i++)
         results.push_back(getFile(x[i]));
     return results;
 }

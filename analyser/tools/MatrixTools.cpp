@@ -601,7 +601,7 @@ void MatrixTools::getRandomSample(vector<cv::Mat>& mList, int nRows, vector<cv::
 
     std::random_shuffle ( myvector.begin(), myvector.end() );
 
-    for (int j=0; j<mList.size(); j++){
+    for (uint j=0; j<mList.size(); j++){
         Mat sample;
         m =mList.at(j);
         for (int i=0; i<nRows; i++){
@@ -621,11 +621,11 @@ void MatrixTools::getRandomSample(vector<arma::fmat>& mList, int nRows, vector<a
     std::vector<int> myvector;
     std::srand ( unsigned ( std::time(0) ) );
 
-    for (int i=0; i<m.n_cols; i++) myvector.push_back(i);
+    for (uint i=0; i<m.n_cols; i++) myvector.push_back(i);
 
     std::random_shuffle ( myvector.begin(), myvector.end() );
 
-    for (int j=0; j<mList.size(); j++){
+    for (uint j=0; j<mList.size(); j++){
         arma::fmat sample;
         m = mList.at(j);
         for (int i=0; i<nRows; i++){
