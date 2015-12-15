@@ -33,7 +33,7 @@ class ANdOMPTrainer :
 public:
 	ANdOMPTrainer();
 	ANdOMPTrainer(string& type, map<string, string>& params);
-	ANdOMPTrainer(arma::fmat& dictionary, arma::fmat& train, arma::fmat& validation, ANdOMPExtractor fe, int n_iters, double eps);
+	ANdOMPTrainer(ANdOMPExtractor _fe, int _n_iters, double _eps, uint _dimensions);
 	~ANdOMPTrainer();
 
 	void iterate();
@@ -41,6 +41,8 @@ public:
 	int getFeatureVectorSize();
 
 	string getName();
+
+	void train(arma::fmat& dictionary, arma::fmat& train, arma::fmat& validationI, arma::fmat& validationQ);
 
 
 	void* createType(string &typeId);
@@ -59,6 +61,7 @@ public:
     string type;
 
     uint n_iters;
+    uint dimensions;
     double eps;
 
     ANdOMPExtractor fe;

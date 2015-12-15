@@ -10,14 +10,9 @@ ANdOMPTrainer::ANdOMPTrainer(string& _type, map<string, string>& params){
 	type = _type;
 }
 
-ANdOMPTrainer::ANdOMPTrainer(arma::fmat& dictionary, arma::fmat& train, arma::fmat& validation, ANdOMPExtractor _fe, int _n_iters, double _eps){
-    D = dictionary;
-    D_seed = dictionary;
-    V = validation;
-    X = train;
+ANdOMPTrainer::ANdOMPTrainer(ANdOMPExtractor _fe, int _n_iters, double _eps, uint _dimensions){
 
-    Gamma = arma::fmat(D.n_cols, X.n_cols);
-
+    dimensions = _dimensions;
     n_iters = _n_iters;
 	fe = _fe;
 	eps = _eps;
@@ -38,6 +33,20 @@ ANdOMPTrainer::~ANdOMPTrainer(){
 
 }
 
+void ANdOMPTrainer::train(arma::fmat& dictionary, arma::fmat& train, arma::fmat& validationI, arma::fmat& validationQ){
+    D = dictionary;
+    D_seed = dictionary;
+
+    V = validationI;
+    X = train;
+
+    Gamma = arma::fmat(D.n_cols, X.n_cols);
+
+    for(uint i = 0; i < n_iters; i++){
+        iterate();
+    }
+}
+
 void ANdOMPTrainer::iterate(){
     G = trans(D) * D;
 
@@ -45,7 +54,7 @@ void ANdOMPTrainer::iterate(){
         arma::fmat a,b;
         a = X.col(i);
         fe.extractFeatures(a,b);
-        Gamma.col(i) = b;
+        Gamma.col(i) = b.t();
     }
 
     // std::cerr << norm(X - D * Gamma , "fro") << "\n";

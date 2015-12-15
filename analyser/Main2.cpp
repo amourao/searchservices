@@ -18,6 +18,8 @@
 #include "nTag/SRClassifier.h"
 #include "nVector/SRExtractor.h"
 #include "nVector/ANdOMPExtractor.h"
+#include "nVector/ANdOMPTrainer.h"
+
 #include "../indexer/SRIndexer.h"
 
 
@@ -2023,7 +2025,7 @@ int extractAndSaveToBerkeleyDB(int argc, char *argv[]){
 
                     Dbt keyS(&descSizeName[0], descSizeName.size());
                     Dbt dataS(&descSize, sizeof(int));
-                    ret = db.put(NULL, &keyS, &dataS, DB_NOOVERWRITE);
+                    //ret = db.put(NULL, &keyS, &dataS, DB_NOOVERWRITE);
                     //if (ret == DB_KEYEXIST)
                     //    cout << "Put failed because key already exists: " << descSizeName << endl;
 
@@ -2498,6 +2500,70 @@ int testANdMP(int argc, char *argv[]){
     return 0;
 }
 
+int testANdMP2(int argc, char *argv[]){
+
+    string paramFile(argv[1]);
+
+	map<string,string> parameters;
+	vector<IIndexer*> indexers;
+	vector<IAnalyser*> analysers;
+	vector<IClassifier*> classifiers;
+	vector<IEndpoint*> endpoints;
+
+	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
+
+
+    int dimensionality = std::stoi(parameters["dimensionality"]);
+    string type = "a";
+    map<string,string> params;
+
+	params["dimensions"] = std::to_string(dimensionality);
+	params["dimensionality"] = std::to_string(dimensionality);
+    params["iters"] = "25";
+
+	params["eps"] = "1e-7";
+	params["max_iters"] = "10";
+	params["eps_ksvd"] = "1e-7";
+	params["max_iters_ksvd"] = "10";
+
+	params["normalize"] = "cols";
+
+    arma::fmat T,VI,VQ;
+    T.load(parameters["T"]);
+    VI.load(parameters["VI"]);
+    VQ.load(parameters["VQ"]);
+
+    arma::fmat means = arma::mean(T);
+    arma::fmat stddevs = arma::stddev(T);
+
+    for(uint i = 0; i < T.n_cols; i++){
+        if(stddevs.at(0,i) == 0)
+            T.col(i) = (T.col(i) - means.at(0,i));
+        else
+            T.col(i) = (T.col(i) - means.at(0,i))/stddevs.at(0,i);
+    }
+
+    params["dictSize"] = std::to_string(T.n_cols);
+
+    SRIndexer sr(type,params);
+    sr.train(T,VI,VQ);
+
+    ANdOMPExtractor andEx(type,params);
+
+    andEx.changeDictionary(sr.dictionary_seed);
+
+    ANdOMPTrainer andTr(andEx,stoi(params["iters"]),stod(params["eps_ksvd"]),dimensionality);
+
+    andTr.train(sr.dictionary_seed,T,VI,VQ);
+
+    cout << arma::accu(arma::abs(andTr.D-sr.dictionary)) << endl;
+
+    std::cout << "trained KSVD ok" << endl;
+
+
+    return 0;
+}
+
 int main(int argc, char *argv[])
 {
     srand (time(NULL));
@@ -2524,7 +2590,8 @@ int main(int argc, char *argv[])
 
     //extractAndSaveToBerkeleyDB(argc, argv);
 	//readBerkeleyDB(argc, argv);
-	cout << argv[1] << endl;
+	for(int i = 0; i < argc; i++)
+        cout << argv[i] << endl;
 
 	if(StringTools::endsWith(string(argv[1]),"testBucketCapacity"))
         testBucketCapacity(argc-1,&argv[1]);
@@ -2532,6 +2599,8 @@ int main(int argc, char *argv[])
         trainKSVD(argc-1,&argv[1]);
     else if(StringTools::endsWith(string(argv[1]),"testANdMP"))
         testANdMP(argc-1,&argv[1]);
+    else if(StringTools::endsWith(string(argv[1]),"testANdMP2"))
+        testANdMP2(argc-1,&argv[1]);
 
     return 0;
 }

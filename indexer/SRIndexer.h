@@ -84,6 +84,8 @@ public:
 
 	string getIndexingParameters();
 
+    arma::fmat dictionary;
+    arma::fmat dictionary_seed;
 
 private:
 
@@ -131,8 +133,7 @@ private:
     string bucket_inspection_method;
     string dict_seed_type;
 
-    arma::fmat dictionary;
-    arma::fmat dictionary_seed;
+
     std::shared_ptr<arma::fmat> indexData;
 	string type;
 };

@@ -283,7 +283,7 @@
 	<string>
 	<map>
 
-1449229461 source:/home/amourao/code/searchservices/analyser/Main2.cpp
+1450191984 source:/home/amourao/code/searchservices/analyser/Main2.cpp
 	<iostream>
 	<string>
 	<sstream>
@@ -299,6 +299,7 @@
 	"nTag/SRClassifier.h"
 	"nVector/SRExtractor.h"
 	"nVector/ANdOMPExtractor.h"
+	"nVector/ANdOMPTrainer.h"
 	"../indexer/SRIndexer.h"
 	"sources/ImageSource.h"
 	"sources/CamSource.h"
@@ -4201,7 +4202,7 @@
 1449057130 source:/home/amourao/code/searchservices/indexer/SRIndexer.cpp
 	"SRIndexer.h"
 
-1449057138 /home/amourao/code/searchservices/indexer/SRIndexer.h
+1450114995 /home/amourao/code/searchservices/indexer/SRIndexer.h
 	<map>
 	<string>
 	<iostream>
@@ -8877,7 +8878,7 @@
 1446135715 source:/home/amourao/code/searchservices/analyser/nVector/SRExtractor.cpp
 	"SRExtractor.h"
 
-1446135727 /home/amourao/code/searchservices/analyser/nVector/SRExtractor.h
+1450114977 /home/amourao/code/searchservices/analyser/nVector/SRExtractor.h
 	<utils/utils.h>
 	<l1min/omp.h>
 	"FeatureExtractor.h"
@@ -8950,7 +8951,7 @@
 	"../FactoryAnalyser.h"
 	"../tools/MatrixTools.h"
 
-1446134470 /home/amourao/code/sparsereconstruction//ksvd/clustering.h
+1450106469 /home/amourao/code/sparsereconstruction//ksvd/clustering.h
 	<limits>
 	<cmath>
 	<armadillo>
@@ -8976,10 +8977,10 @@
 	<algorithm>
 	<armadillo>
 
-1449774911 source:/home/amourao/code/searchservices/analyser/nVector/ANdOMPTrainer.cpp
+1450191901 source:/home/amourao/code/searchservices/analyser/nVector/ANdOMPTrainer.cpp
 	"ANdOMPTrainer.h"
 
-1449774978 /home/amourao/code/searchservices/analyser/nVector/ANdOMPTrainer.h
+1450114822 /home/amourao/code/searchservices/analyser/nVector/ANdOMPTrainer.h
 	<utils/utils.h>
 	<l1min/omp.h>
 	"FeatureExtractor.h"
