@@ -2556,6 +2556,29 @@ int testANdMP2(int argc, char *argv[]){
 
     andTr.train(sr.dictionary_seed,T,VI,VQ);
 
+    arma::fmat doo = sr.dictionary_seed;
+    arma::fmat doo2 = andTr.D;
+
+    for(int x = 0; x < doo.n_cols; x++)
+        for(int y = 0; y < doo.n_rows; y++)
+            cout << doo.at(x,y) << "\t";
+    cout << endl;
+
+    doo = sr.dictionary;
+
+    for(int x = 0; x < doo.n_cols; x++)
+        for(int y = 0; y < doo.n_rows; y++)
+            cout << doo.at(x,y) << "\t";
+    cout << endl;
+    for(int x = 0; x < doo2.n_cols; x++)
+        for(int y = 0; y < doo2.n_rows; y++)
+            cout << doo2.at(x,y) << "\t";
+    cout << endl;
+    for(int x = 0; x < doo2.n_cols; x++)
+        for(int y = 0; y < doo2.n_rows; y++)
+            cout << doo2.at(x,y)-doo.at(x,y) << "\t";
+    cout << endl;
+
     cout << arma::accu(arma::abs(andTr.D-sr.dictionary)) << endl;
 
     std::cout << "trained KSVD ok" << endl;

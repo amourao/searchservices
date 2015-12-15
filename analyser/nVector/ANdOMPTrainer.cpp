@@ -49,7 +49,7 @@ void ANdOMPTrainer::train(arma::fmat& dictionary, arma::fmat& train, arma::fmat&
 
 void ANdOMPTrainer::iterate(){
     G = trans(D) * D;
-
+    fe.changeDictionary(D);
     for (arma::uword i = 0; i < X.n_cols; ++i) {
         arma::fmat a,b;
         a = X.col(i);
