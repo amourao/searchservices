@@ -83,6 +83,8 @@
 
 
 #include <ksvd/clustering.h>
+#include <utils/utils.h>
+
 
 using namespace std;
 
@@ -2552,10 +2554,11 @@ int testANdMP2(int argc, char *argv[]){
 
     andEx.changeDictionary(sr.dictionary_seed);
 
-    ANdOMPTrainer andTr(andEx,stoi(params["iters"]),stod(params["eps_ksvd"]),dimensionality);
+    ANdOMPTrainer andTr(andEx,stoi(params["iters"]),stod(params["eps_ksvd"]),dimensionality,false);
 
     andTr.train(sr.dictionary_seed,T,VI,VQ);
 
+    /*
     arma::fmat doo = sr.dictionary_seed;
     arma::fmat doo2 = andTr.D;
 
@@ -2578,14 +2581,159 @@ int testANdMP2(int argc, char *argv[]){
         for(int y = 0; y < doo2.n_rows; y++)
             cout << doo2.at(x,y)-doo.at(x,y) << "\t";
     cout << endl;
-
-    cout << arma::accu(arma::abs(andTr.D-sr.dictionary)) << endl;
+    */cout << arma::accu(arma::abs(andTr.D-sr.dictionary)) << endl;
 
     std::cout << "trained KSVD ok" << endl;
 
 
     return 0;
 }
+
+void testBuckets(ANdOMPExtractor fe, arma::fmat T){
+
+    arma::fmat Dt = fe.D.t();
+    int max = std::numeric_limits<int>::min();
+    int min = std::numeric_limits<int>::max();
+    int total = 0;
+
+    arma::uvec nonZeroCount = zeros<uvec>(fe.getFeatureVectorSize());
+    arma::fvec nonZeroSum = zeros<fvec>(fe.getFeatureVectorSize());
+    double totalRecError = 0;
+
+    for(uint i = 0; i < T.n_cols; i++){
+        arma::fmat src = T.col(i);
+        arma::fmat dst;
+        fe.extractFeatures(src,dst);
+
+        int count = 0;
+        for(uint j = 0; j < dst.n_cols; j++){
+            if(dst(0,j) > 0){
+                count++;
+                nonZeroCount.at(j)++;
+                nonZeroSum.at(j)+= dst(0,j);
+            }
+        }
+        if(count < min)
+            min = count;
+        if(count > max)
+            max = count;
+
+        total+= count;
+
+        totalRecError+= arma::accu(arma::abs(src-(dst*Dt).t()));
+
+
+    }
+
+
+    for(uint j = 0; j < nonZeroCount.n_rows; j++){
+            cout << nonZeroCount(j) << " \t";
+    }
+    cout << endl;
+
+    for(uint j = 0; j < nonZeroSum.n_rows; j++){
+            cout << nonZeroSum(j) << " \t";
+    }
+    cout << endl;
+
+    cout << min << endl << max << endl << total/(int)nonZeroCount.n_rows << endl << totalRecError/T.n_cols << endl;
+
+}
+
+int testANdMPWithBias(int argc, char *argv[]){
+
+    string paramFile(argv[1]);
+    string bias(argv[2]);
+
+    bool withBias = bias == "-bias";
+
+	map<string,string> parameters;
+	vector<IIndexer*> indexers;
+	vector<IAnalyser*> analysers;
+	vector<IClassifier*> classifiers;
+	vector<IEndpoint*> endpoints;
+
+	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
+
+
+    int dimensionality = std::stoi(parameters["dimensionality"]);
+    string type = "a";
+    map<string,string> params;
+
+	params["dimensions"] = std::to_string(dimensionality);
+	params["dimensionality"] = std::to_string(dimensionality);
+    params["iters"] = "25";
+
+	params["eps"] = "1e-7";
+	params["max_iters"] = "10";
+	params["eps_ksvd"] = "1e-7";
+	params["max_iters_ksvd"] = "10";
+
+	params["normalize"] = "cols";
+	params["dictPath"] = parameters["dictPath"];
+
+    arma::fmat T,VI,VQ;
+    T.load(parameters["T"]);
+    VI.load(parameters["VI"]);
+    VQ.load(parameters["VQ"]);
+
+    arma::fmat means = arma::mean(T);
+    arma::fmat stddevs = arma::stddev(T);
+
+    for(uint i = 0; i < T.n_cols; i++){
+        if(stddevs.at(0,i) == 0)
+            T.col(i) = (T.col(i) - means.at(0,i));
+        else
+            T.col(i) = (T.col(i) - means.at(0,i))/stddevs.at(0,i);
+    }
+
+    params["dictSize"] = std::to_string(T.n_cols);
+
+
+    ANdOMPExtractor andEx(type,params);
+
+    arma::fmat dictionary_seed = andEx.D;
+    ANdOMPTrainer andTr(andEx,stoi(params["iters"]),stod(params["eps_ksvd"]),dimensionality,withBias);
+    andTr.train(dictionary_seed,T,VI,VQ);
+    andTr.D.save("andTr_D" + bias + ".bin");
+
+
+    andEx.changeDictionary(andTr.D);
+    testBuckets(andEx,T);
+
+
+    /*
+    arma::fmat doo = sr.dictionary_seed;
+    arma::fmat doo2 = andTr.D;
+
+    for(int x = 0; x < doo.n_cols; x++)
+        for(int y = 0; y < doo.n_rows; y++)
+            cout << doo.at(x,y) << "\t";
+    cout << endl;
+
+    doo = sr.dictionary;
+
+    for(int x = 0; x < doo.n_cols; x++)
+        for(int y = 0; y < doo.n_rows; y++)
+            cout << doo.at(x,y) << "\t";
+    cout << endl;
+    for(int x = 0; x < doo2.n_cols; x++)
+        for(int y = 0; y < doo2.n_rows; y++)
+            cout << doo2.at(x,y) << "\t";
+    cout << endl;
+    for(int x = 0; x < doo2.n_cols; x++)
+        for(int y = 0; y < doo2.n_rows; y++)
+            cout << doo2.at(x,y)-doo.at(x,y) << "\t";
+    cout << endl;
+    */
+
+
+    std::cout << "trained KSVD ok" << endl;
+
+
+    return 0;
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -2624,6 +2772,9 @@ int main(int argc, char *argv[])
         testANdMP(argc-1,&argv[1]);
     else if(StringTools::endsWith(string(argv[1]),"testANdMP2"))
         testANdMP2(argc-1,&argv[1]);
+    else if(StringTools::endsWith(string(argv[1]),"testANdMPWithBias"))
+        testANdMPWithBias(argc-1,&argv[1]);
+
 
     return 0;
 }

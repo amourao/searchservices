@@ -34,8 +34,8 @@ public:
 	ANdOMPExtractor(arma::fmat& dictionary, int max_iters, double eps);
 	~ANdOMPExtractor();
 
+	void extractFeaturesAlt(arma::fmat& src, arma::fmat& dst);
 	void extractFeatures(arma::fmat& src, arma::fmat& dst);
-	void extractFeatures(arma::fmat& src, arma::fmat& dst, arma::fmat& G);
 
 	int getFeatureVectorSize();
 
@@ -46,9 +46,10 @@ public:
 
 	void changeDictionary(arma::fmat new_dictionary);
 
+    arma::fmat D;
 private:
 
-    arma::fmat D;
+
     arma::Row<long> distribution;
     string type;
 

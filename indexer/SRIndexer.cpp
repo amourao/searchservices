@@ -118,12 +118,12 @@ void SRIndexer::train(arma::fmat& featuresTrain,arma::fmat& featuresValidationI,
     if(dict_seed_type == SR_DEFAULT_RANDU){
         dictionary = arma::randu<arma::fmat>(featuresTrain.n_rows, dimensions);
         utils::normalize_columns(dictionary);
-        dictionary_seed = dictionary;
+        dictionary_seed = arma::fmat(dictionary);
     } else if(dict_seed_type == SR_DEFAULT_RANDN){
         dictionary = arma::randn<arma::fmat>(featuresTrain.n_rows, dimensions);
-        dictionary_seed = dictionary;
+        dictionary_seed = arma::fmat(dictionary);
     }
-
+    cout << "niter SR: " << n_iter << endl;
     if(n_iter >= 0){
         ksvd = ksvdb_Ptr(new ksvdb(optKSVD,*lnMinKSVD,dictionary,featuresTrain));
 

@@ -1,10 +1,8 @@
 {
 	"parameters": {
-    	"T2": "/localstore/amourao/saIndexingSplits/configCondor4_1_k.json_train.mat",
-        "VI": "/localstore/amourao/saIndexingSplits/configCondor4_1_k.json_valI.mat",
-    	"T3": "/localstore/amourao/saIndexingSplits/configCondor4_1_k.json_valI.mat",
-        "T": "/localstore/amourao/saIndexingSplits/configCondor4_1_k.json_valI.mat",
-        "VQ": "/localstore/amourao/saIndexingSplits/configCondor4_1_k.json_valQ.mat",
+    	"VQ": "/localstore/amourao/saIndexingSplits/configCondor4_1_k.json_train.mat",
+    	"VI": "/localstore/amourao/saIndexingSplits/configCondor4_1_k.json_valI.mat",
+    	"T": "/localstore/amourao/saIndexingSplits/configCondor4_1_k.json_valQ.mat",
     	"D1": "/home/amourao/code/searchservices/indexer/data/configCondor4_1_k_dict_seed.bin",
     	"D2": "/home/amourao/code/searchservices/indexer/data/configCondor4_1_k_dict_ksvd.bin",
     	"D3": "/home/amourao/code/searchservices/indexer/data/configCondor4_1_k_dict_kmeans.bin",
@@ -13,8 +11,7 @@
     	"DSPAMS2_2": "/home/amourao/Desktop/D2_2.mat",
     	"DSPAMS3": "/home/amourao/Desktop/D3.mat",
     	"DSPAMS4": "/home/amourao/Desktop/D4.mat",
-        "dictPath": "/home/amourao/code/searchservices/workingDir/seed.bin",
-	"dimensionality": "1024"
+	    "dimensionality": "1024"
     },
 
  	"endpoints": {

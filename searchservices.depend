@@ -283,7 +283,7 @@
 	<string>
 	<map>
 
-1450191984 source:/home/amourao/code/searchservices/analyser/Main2.cpp
+1450291874 source:/home/amourao/code/searchservices/analyser/Main2.cpp
 	<iostream>
 	<string>
 	<sstream>
@@ -340,6 +340,7 @@
 	"../rest/Endpoints/analyser/ExtractFeatures.h"
 	"../rest/RestServer.h"
 	<ksvd/clustering.h>
+	<utils/utils.h>
 
 1418384655 /home/amourao/code/searchservices/analyser/sources/TextFileSourceV2.h
 	"ImageSource.h"
@@ -442,7 +443,7 @@
 	"FactoryIndexer.h"
 	"../commons/Timing.h"
 
-1426851195 source:/home/amourao/code/searchservices/analyser/Main3.cpp
+1450107003 source:/home/amourao/code/searchservices/analyser/Main3.cpp
 	<iostream>
 	<fstream>
 	<string>
@@ -4199,7 +4200,7 @@
 	"../FactoryAnalyser.h"
 	"../tools/MatrixTools.h"
 
-1449057130 source:/home/amourao/code/searchservices/indexer/SRIndexer.cpp
+1450279062 source:/home/amourao/code/searchservices/indexer/SRIndexer.cpp
 	"SRIndexer.h"
 
 1450114995 /home/amourao/code/searchservices/indexer/SRIndexer.h
@@ -8956,10 +8957,10 @@
 	<cmath>
 	<armadillo>
 
-1449773819 source:/home/amourao/code/searchservices/analyser/nVector/ANdOMPExtractor.cpp
+1450280759 source:/home/amourao/code/searchservices/analyser/nVector/ANdOMPExtractor.cpp
 	"ANdOMPExtractor.h"
 
-1449773844 /home/amourao/code/searchservices/analyser/nVector/ANdOMPExtractor.h
+1450284925 /home/amourao/code/searchservices/analyser/nVector/ANdOMPExtractor.h
 	<utils/utils.h>
 	<l1min/omp.h>
 	"FeatureExtractor.h"
@@ -8977,10 +8978,10 @@
 	<algorithm>
 	<armadillo>
 
-1450192766 source:/home/amourao/code/searchservices/analyser/nVector/ANdOMPTrainer.cpp
+1450286141 source:/home/amourao/code/searchservices/analyser/nVector/ANdOMPTrainer.cpp
 	"ANdOMPTrainer.h"
 
-1450114822 /home/amourao/code/searchservices/analyser/nVector/ANdOMPTrainer.h
+1450283731 /home/amourao/code/searchservices/analyser/nVector/ANdOMPTrainer.h
 	<utils/utils.h>
 	<l1min/omp.h>
 	"FeatureExtractor.h"

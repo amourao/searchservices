@@ -10,12 +10,16 @@ ANdOMPTrainer::ANdOMPTrainer(string& _type, map<string, string>& params){
 	type = _type;
 }
 
-ANdOMPTrainer::ANdOMPTrainer(ANdOMPExtractor _fe, int _n_iters, double _eps, uint _dimensions){
+ANdOMPTrainer::ANdOMPTrainer(ANdOMPExtractor _fe, int _n_iters, double _eps, uint _dimensions, bool _withBias){
 
     dimensions = _dimensions;
     n_iters = _n_iters;
 	fe = _fe;
 	eps = _eps;
+	withBias = _withBias;
+
+
+
 }
 
 void* ANdOMPTrainer::createType(string& type){
@@ -42,19 +46,41 @@ void ANdOMPTrainer::train(arma::fmat& dictionary, arma::fmat& train, arma::fmat&
 
     Gamma = arma::fmat(D.n_cols, X.n_cols);
 
+    cout << "niter ANd: " << n_iters << endl;
+
+    countAppearing = arma::zeros<arma::vec>(D.n_cols);
+    sumAppearing   = arma::zeros<arma::vec>(D.n_cols);
+
+    lastCountAppearing = arma::ones<arma::vec>(D.n_cols);
+    lastSumAppearing   = arma::ones<arma::vec>(D.n_cols);
+
     for(uint i = 0; i < n_iters; i++){
         iterate();
     }
 }
 
 void ANdOMPTrainer::iterate(){
-    G = trans(D) * D;
+
+    countAppearing = arma::zeros<arma::vec>(D.n_cols);
+    sumAppearing   = arma::zeros<arma::vec>(D.n_cols);
+
     fe.changeDictionary(D);
     for (arma::uword i = 0; i < X.n_cols; ++i) {
         arma::fmat a,b;
         a = X.col(i);
         fe.extractFeatures(a,b);
-        Gamma.col(i) = b.t();
+
+        if(withBias){
+            arma::fmat tmp = arma::conv_to<arma::fmat>::from(b.t() % (1.0/(lastCountAppearing+0.01  )));
+            Gamma.col(i) = tmp;
+        }
+        else
+            Gamma.col(i) = b.t();
+
+        arma::fmat c = b;
+        c.elem( find(c > 0) ).ones();
+        countAppearing +=  arma::conv_to<arma::mat>::from(c.t());
+        sumAppearing += arma::conv_to<arma::mat>::from(b.t());
     }
 
     // std::cerr << norm(X - D * Gamma , "fro") << "\n";
@@ -82,6 +108,9 @@ void ANdOMPTrainer::iterate(){
            Gamma(J, I_current) = trans(g);
         }
     }
+
+    lastCountAppearing = countAppearing;
+    lastSumAppearing = sumAppearing;
 }
 
 int ANdOMPTrainer::getFeatureVectorSize(){

@@ -33,7 +33,7 @@ class ANdOMPTrainer :
 public:
 	ANdOMPTrainer();
 	ANdOMPTrainer(string& type, map<string, string>& params);
-	ANdOMPTrainer(ANdOMPExtractor _fe, int _n_iters, double _eps, uint _dimensions);
+	ANdOMPTrainer(ANdOMPExtractor _fe, int _n_iters, double _eps, uint _dimensions, bool withBias);
 	~ANdOMPTrainer();
 
 	void iterate();
@@ -57,12 +57,18 @@ public:
     arma::fmat G;
     arma::fmat Gamma;
 
-    arma::Row<long> distribution;
+    arma::Col<double> countAppearing;
+    arma::Col<double> sumAppearing;
+
+    arma::Col<double> lastCountAppearing;
+    arma::Col<double> lastSumAppearing;
+
     string type;
 
     uint n_iters;
     uint dimensions;
     double eps;
+    bool withBias;
 
     ANdOMPExtractor fe;
 };

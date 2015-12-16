@@ -36,3 +36,4 @@ condor/
 rest/Endpoints/peopleRecogEngine/
 dbs/
 .cproject
+workingDir/
