@@ -33,6 +33,7 @@ class ANdOMPTrainer :
 public:
 	ANdOMPTrainer();
 	ANdOMPTrainer(string& type, map<string, string>& params);
+	ANdOMPTrainer(ANdOMPExtractor _fe, int _n_iters, double _eps, uint _dimensions);
 	ANdOMPTrainer(ANdOMPExtractor _fe, int _n_iters, double _eps, uint _dimensions, double _expon, double _regFactor, double _weight, bool _withBias);
 	~ANdOMPTrainer();
 
