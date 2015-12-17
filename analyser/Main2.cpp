@@ -2705,8 +2705,7 @@ int testANdMPWithBias(int argc, char *argv[]){
     ANdOMPTrainer andTr(andEx,stoi(params["iters"]),stod(params["eps_ksvd"]),dimensionality, expon, regFactor, weight,withBias);
     //ANdOMPExtractor _fe, int _n_iters, double _eps, uint _dimensions, double _expon, double _regFactor, double _weight, bool _withBias
     andTr.train(dictionary_seed,T,VI,VQ);
-    andTr.D.save("andTr_D" + bias + ".bin");
-
+    andTr.D.save("workingDir/andTr_D_" + bias + "_" + std::to_string(expon) + "_" + std::to_string(regFactor) + "_" + std::to_string(weight) + ".bin");
 
     andEx.changeDictionary(andTr.D);
     testBuckets(andEx,T);
