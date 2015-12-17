@@ -2554,7 +2554,7 @@ int testANdMP2(int argc, char *argv[]){
 
     andEx.changeDictionary(sr.dictionary_seed);
 
-    ANdOMPTrainer andTr(andEx,stoi(params["iters"]),stod(params["eps_ksvd"]),dimensionality,false);
+    ANdOMPTrainer andTr(andEx,stoi(params["iters"]),stod(params["eps_ksvd"]),dimensionality);
 
     andTr.train(sr.dictionary_seed,T,VI,VQ);
 
@@ -2644,8 +2644,17 @@ int testANdMPWithBias(int argc, char *argv[]){
 
     string paramFile(argv[1]);
     string bias(argv[2]);
+    double expon, regFactor, weight;
 
     bool withBias = bias == "-bias";
+
+    if (withBias){
+        expon = stod(string(argv[3]));
+        regFactor = stod(string(argv[4]));
+        weight = stod(string(argv[5]));
+    }
+
+
 
 	map<string,string> parameters;
 	vector<IIndexer*> indexers;
@@ -2693,7 +2702,8 @@ int testANdMPWithBias(int argc, char *argv[]){
     ANdOMPExtractor andEx(type,params);
 
     arma::fmat dictionary_seed = andEx.D;
-    ANdOMPTrainer andTr(andEx,stoi(params["iters"]),stod(params["eps_ksvd"]),dimensionality,withBias);
+    ANdOMPTrainer andTr(andEx,stoi(params["iters"]),stod(params["eps_ksvd"]),dimensionality, expon, regFactor, weight,withBias);
+    //ANdOMPExtractor _fe, int _n_iters, double _eps, uint _dimensions, double _expon, double _regFactor, double _weight, bool _withBias
     andTr.train(dictionary_seed,T,VI,VQ);
     andTr.D.save("andTr_D" + bias + ".bin");
 
@@ -2729,6 +2739,93 @@ int testANdMPWithBias(int argc, char *argv[]){
 
 
     std::cout << "trained KSVD ok" << endl;
+
+
+    return 0;
+}
+
+
+
+int validateANdMPWithBias(int argc, char *argv[]){
+
+    string paramFile(argv[1]);
+
+	map<string,string> parameters;
+	vector<IIndexer*> indexers;
+	vector<IAnalyser*> analysers;
+	vector<IClassifier*> classifiers;
+	vector<IEndpoint*> endpoints;
+
+	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
+
+
+    int dimensionality = std::stoi(parameters["dimensionality"]);
+    string type = "a";
+    map<string,string> params;
+
+	params["dimensions"] = std::to_string(dimensionality);
+	params["dimensionality"] = std::to_string(dimensionality);
+    params["iters"] = "25";
+
+	params["eps"] = "1e-7";
+	params["max_iters"] = "10";
+	params["eps_ksvd"] = "1e-7";
+	params["max_iters_ksvd"] = "10";
+
+	params["normalize"] = "cols";
+	params["dictPath"] = parameters["dictPath"];
+
+    arma::fmat VI,VQ, D;
+    VI.load(parameters["VI"]);
+    VQ.load(parameters["VQ"]);
+    D.load(parameters["D"]);
+
+    arma::fmat means = arma::mean(VQ);
+    arma::fmat stddevs = arma::stddev(VQ);
+
+    for(uint i = 0; i < VQ.n_cols; i++){
+        if(stddevs.at(0,i) == 0)
+            VQ.col(i) = (VQ.col(i) - means.at(0,i));
+        else
+            VQ.col(i) = (VQ.col(i) - means.at(0,i))/stddevs.at(0,i);
+    }
+
+    params["dictSize"] = std::to_string(VQ.n_cols);
+
+
+    ANdOMPExtractor andEx(type,params);
+
+    andEx.changeDictionary(D);
+    testBuckets(andEx,VQ);
+
+
+    /*
+    arma::fmat doo = sr.dictionary_seed;
+    arma::fmat doo2 = andTr.D;
+
+    for(int x = 0; x < doo.n_cols; x++)
+        for(int y = 0; y < doo.n_rows; y++)
+            cout << doo.at(x,y) << "\t";
+    cout << endl;
+
+    doo = sr.dictionary;
+
+    for(int x = 0; x < doo.n_cols; x++)
+        for(int y = 0; y < doo.n_rows; y++)
+            cout << doo.at(x,y) << "\t";
+    cout << endl;
+    for(int x = 0; x < doo2.n_cols; x++)
+        for(int y = 0; y < doo2.n_rows; y++)
+            cout << doo2.at(x,y) << "\t";
+    cout << endl;
+    for(int x = 0; x < doo2.n_cols; x++)
+        for(int y = 0; y < doo2.n_rows; y++)
+            cout << doo2.at(x,y)-doo.at(x,y) << "\t";
+    cout << endl;
+    */
+
+
+    std::cout << "Validating dictionary ok" << endl;
 
 
     return 0;
@@ -2774,6 +2871,8 @@ int main(int argc, char *argv[])
         testANdMP2(argc-1,&argv[1]);
     else if(StringTools::endsWith(string(argv[1]),"testANdMPWithBias"))
         testANdMPWithBias(argc-1,&argv[1]);
+    else if(StringTools::endsWith(string(argv[1]),"validateANdMPWithBias"))
+        validateANdMPWithBias(argc-1,&argv[1]);
 
 
     return 0;

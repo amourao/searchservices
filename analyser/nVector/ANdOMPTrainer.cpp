@@ -10,7 +10,21 @@ ANdOMPTrainer::ANdOMPTrainer(string& _type, map<string, string>& params){
 	type = _type;
 }
 
-ANdOMPTrainer::ANdOMPTrainer(ANdOMPExtractor _fe, int _n_iters, double _eps, uint _dimensions, bool _withBias){
+ANdOMPTrainer::ANdOMPTrainer(ANdOMPExtractor _fe, int _n_iters, double _eps, uint _dimensions){
+
+    dimensions = _dimensions;
+    n_iters = _n_iters;
+	fe = _fe;
+	eps = _eps;
+	withBias = false;
+
+    expon = 0;
+    regFactor = 0;
+    weight = 0;
+
+}
+
+ANdOMPTrainer::ANdOMPTrainer(ANdOMPExtractor _fe, int _n_iters, double _eps, uint _dimensions, double _expon, double _regFactor, double _weight, bool _withBias){
 
     dimensions = _dimensions;
     n_iters = _n_iters;
@@ -18,7 +32,9 @@ ANdOMPTrainer::ANdOMPTrainer(ANdOMPExtractor _fe, int _n_iters, double _eps, uin
 	eps = _eps;
 	withBias = _withBias;
 
-
+    expon = _expon;
+    regFactor = _regFactor;
+    weight = _weight;
 
 }
 
@@ -71,7 +87,8 @@ void ANdOMPTrainer::iterate(){
         fe.extractFeatures(a,b);
 
         if(withBias){
-            arma::fmat tmp = arma::conv_to<arma::fmat>::from(b.t() % (1.0/(lastCountAppearing+0.01  )));
+
+            arma::fmat tmp = arma::conv_to<arma::fmat>::from(b.t() % (1.0/(arma::pow(lastCountAppearing,expon)+regFactor)));
             Gamma.col(i) = tmp;
         }
         else
