@@ -2748,6 +2748,7 @@ int testANdMPWithBias(int argc, char *argv[]){
 int validateANdMPWithBias(int argc, char *argv[]){
 
     string paramFile(argv[1]);
+    string dictio(argv[2]);
 
 	map<string,string> parameters;
 	vector<IIndexer*> indexers;
@@ -2777,7 +2778,7 @@ int validateANdMPWithBias(int argc, char *argv[]){
     arma::fmat VI,VQ, D;
     VI.load(parameters["VI"]);
     VQ.load(parameters["VQ"]);
-    D.load(parameters["D"]);
+    D.load(dictio);
 
     arma::fmat means = arma::mean(VQ);
     arma::fmat stddevs = arma::stddev(VQ);
