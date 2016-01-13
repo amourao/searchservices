@@ -254,11 +254,11 @@ void SRIndexer::index(arma::fmat& features){
 
 }
 
-std::pair<vector<uint>,vector<float> > SRIndexer::knnSearchIdLong(arma::fmat& query, int n, double search_limit_param){
+std::pair<vector<unsigned long int>,vector<float> > SRIndexer::knnSearchIdLong(arma::fmat& query, int n, double search_limit_param){
 
     preProcessData(query);
 
-	vector<uint> indices;
+	vector<unsigned long int> indices;
 	vector<float> dists;
 
     double current_search_limit;

@@ -25,7 +25,7 @@
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gnu_gcc_compiler_49" />
-				<Option parameters="testANdMPWithBias configs/testBucketCapacity.json -bias" />
+				<Option parameters="validateANdMPWithBias configs/testBucketCapacity.json /home/amourao/code/searchservices/indexer/data/configCondor4_1_k_dict_seed.bin" />
 				<Compiler>
 					<Add option="-O2" />
 					<Add directory="commons" />
@@ -1520,6 +1520,22 @@
 			<Option target="DebugServer" />
 			<Option target="ReleaseEusipco" />
 			<Option target="DebugEusipco" />
+		</Unit>
+		<Unit filename="indexer/SRIndexerClient.cpp">
+			<Option target="ReleaseMainInd" />
+			<Option target="ReleaseMainAna" />
+			<Option target="ReleaseServer" />
+			<Option target="DebugMainInd" />
+			<Option target="DebugMainAna" />
+			<Option target="DebugServer" />
+		</Unit>
+		<Unit filename="indexer/SRIndexerClient.h">
+			<Option target="ReleaseMainInd" />
+			<Option target="ReleaseMainAna" />
+			<Option target="ReleaseServer" />
+			<Option target="DebugMainInd" />
+			<Option target="DebugMainAna" />
+			<Option target="DebugServer" />
 		</Unit>
 		<Unit filename="indexer/SphericalHashIndexer.cpp">
 			<Option target="ReleaseMainInd" />

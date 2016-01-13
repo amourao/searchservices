@@ -283,7 +283,7 @@
 	<string>
 	<map>
 
-1450361325 source:/home/amourao/code/searchservices/analyser/Main2.cpp
+1452686024 source:/home/amourao/code/searchservices/analyser/Main2.cpp
 	<iostream>
 	<string>
 	<sstream>
@@ -409,7 +409,7 @@
 	"../commons/factory/Factory.h"
 	"IIndexer.h"
 
-1441815767 /home/amourao/code/searchservices/indexer/IIndexer.h
+1452695763 /home/amourao/code/searchservices/indexer/IIndexer.h
 	<map>
 	<string>
 	<iostream>
@@ -443,7 +443,7 @@
 	"FactoryIndexer.h"
 	"../commons/Timing.h"
 
-1450107003 source:/home/amourao/code/searchservices/analyser/Main3.cpp
+1452694223 source:/home/amourao/code/searchservices/analyser/Main3.cpp
 	<iostream>
 	<fstream>
 	<string>
@@ -4200,10 +4200,10 @@
 	"../FactoryAnalyser.h"
 	"../tools/MatrixTools.h"
 
-1450279062 source:/home/amourao/code/searchservices/indexer/SRIndexer.cpp
+1452688086 source:/home/amourao/code/searchservices/indexer/SRIndexer.cpp
 	"SRIndexer.h"
 
-1450114995 /home/amourao/code/searchservices/indexer/SRIndexer.h
+1452688031 /home/amourao/code/searchservices/indexer/SRIndexer.h
 	<map>
 	<string>
 	<iostream>
@@ -4254,7 +4254,7 @@
 1422973843 /home/amourao/code/sparsereconstruction//ksvd-indexing-experiment/result.h
 	<armadillo>
 
-1399907099 /home/amourao/code/sparsereconstruction//utils/utils.h
+1452689654 /home/amourao/code/sparsereconstruction//utils/utils.h
 	<algorithm>
 	<fstream>
 	<iterator>
@@ -8856,10 +8856,10 @@
 	<cstdlib>
 	"IBinImporter.h"
 
-1446041726 source:/home/amourao/code/searchservices/indexer/DistributedIndexWrapperServer.cpp
+1452695847 source:/home/amourao/code/searchservices/indexer/DistributedIndexWrapperServer.cpp
 	"DistributedIndexWrapperServer.h"
 
-1446041433 /home/amourao/code/searchservices/indexer/DistributedIndexWrapperServer.h
+1452695515 /home/amourao/code/searchservices/indexer/DistributedIndexWrapperServer.h
 	<memory>
 	<map>
 	<string>
@@ -8957,7 +8957,7 @@
 	<cmath>
 	<armadillo>
 
-1450292077 source:/home/amourao/code/searchservices/analyser/nVector/ANdOMPExtractor.cpp
+1451928716 source:/home/amourao/code/searchservices/analyser/nVector/ANdOMPExtractor.cpp
 	"ANdOMPExtractor.h"
 
 1450284925 /home/amourao/code/searchservices/analyser/nVector/ANdOMPExtractor.h
@@ -8999,4 +8999,19 @@
 	<algorithm>
 	<armadillo>
 	"ANdOMPExtractor.h"
+
+1452694150 source:/home/amourao/code/searchservices/indexer/SRIndexerClient.cpp
+	"SRIndexerClient.h"
+
+1452694220 /home/amourao/code/searchservices/indexer/SRIndexerClient.h
+	<map>
+	<string>
+	<iostream>
+	<vector>
+	<opencv2/highgui/highgui.hpp>
+	<opencv2/ml/ml.hpp>
+	<opencv2/flann/flann.hpp>
+	"IIndexer.h"
+	"FactoryIndexer.h"
+	"../commons/FileDownloader.h"
 

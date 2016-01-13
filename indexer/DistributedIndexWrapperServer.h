@@ -36,14 +36,23 @@ public:
     void train(cv::Mat& featuresTrain,cv::Mat& featuresValidationI,cv::Mat& featuresValidationQ);
 	void indexWithTrainedParams(cv::Mat& features);
 	void index(cv::Mat& features);
+	int addToIndexLive(cv::Mat& features);
 
 	std::pair<vector<float>,vector<float> > knnSearchId(cv::Mat& query, int n, double search_limit);
+	std::pair<vector<unsigned long>,vector<float> > knnSearchIdLong(cv::Mat& query, int n, double search_limit);
 	std::pair<vector<float>,vector<float> > radiusSearchId(cv::Mat& query, double radius, int n, double search_limit);
+
+	void train(arma::fmat& featuresTrain,arma::fmat& featuresValidationI,arma::fmat& featuresValidationQ);
+	void indexWithTrainedParams(arma::fmat& features);
+	void index(arma::fmat& features);
+	int addToIndexLive(arma::fmat& features);
+
+	std::pair<vector<float>,vector<float> > knnSearchId(arma::fmat& query, int n, double search_limit);
+	std::pair<vector<unsigned long>,vector<float> > knnSearchIdLong(arma::fmat& query, int n, double search_limit);
+	std::pair<vector<float>,vector<float> > radiusSearchId(arma::fmat& query, double radius, int n, double search_limit);
 
 	bool save(string basePath);
 	bool load(string basePath);
-
-	int addToIndexLive(cv::Mat& features);
 
 	string getName();
 

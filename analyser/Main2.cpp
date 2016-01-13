@@ -2668,15 +2668,16 @@ int testANdMPWithBias(int argc, char *argv[]){
     int dimensionality = std::stoi(parameters["dimensionality"]);
     string type = "a";
     map<string,string> params;
+    params = parameters;
 
 	params["dimensions"] = std::to_string(dimensionality);
 	params["dimensionality"] = std::to_string(dimensionality);
     params["iters"] = "25";
 
-	params["eps"] = "1e-7";
-	params["max_iters"] = "10";
-	params["eps_ksvd"] = "1e-7";
-	params["max_iters_ksvd"] = "10";
+	//params["eps"] = "1e-7";
+	//params["max_iters"] = "10";
+	//params["eps_ksvd"] = "1e-7";
+	//params["max_iters_ksvd"] = "10";
 
 	params["normalize"] = "cols";
 	params["dictPath"] = parameters["dictPath"];
@@ -2762,15 +2763,16 @@ int validateANdMPWithBias(int argc, char *argv[]){
     int dimensionality = std::stoi(parameters["dimensionality"]);
     string type = "a";
     map<string,string> params;
+    params = parameters;
 
 	params["dimensions"] = std::to_string(dimensionality);
 	params["dimensionality"] = std::to_string(dimensionality);
     params["iters"] = "25";
 
-	params["eps"] = "1e-7";
-	params["max_iters"] = "10";
-	params["eps_ksvd"] = "1e-7";
-	params["max_iters_ksvd"] = "10";
+	//params["eps"] = "1e-7";
+	//params["max_iters"] = "10";
+	//params["eps_ksvd"] = "1e-7";
+	//params["max_iters_ksvd"] = "10";
 
 	params["normalize"] = "cols";
 	params["dictPath"] = parameters["dictPath"];

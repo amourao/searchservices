@@ -63,21 +63,47 @@ void DistributedIndexWrapperServer::index(cv::Mat& features){
     baseIndex->index(features);
 }
 
-std::pair<vector<float>,vector<float> > DistributedIndexWrapperServer::knnSearchId(cv::Mat& query, int n, double search_limit){
-	/*
-	vector<float> indices (n);
-	vector<float> dists (n);
+int DistributedIndexWrapperServer::addToIndexLive(Mat& features){
+    return baseIndex->addToIndexLive(features);
+}
 
-	for(int i = 0; i < n; i++){
-        indices[i] = n-i;
-        dists[i] = i + 0.005f;
-	}
-    return make_pair(indices,dists);
-    */
+std::pair<vector<float>,vector<float> > DistributedIndexWrapperServer::knnSearchId(cv::Mat& query, int n, double search_limit){
 	return baseIndex->knnSearchId(query, n, search_limit);
 }
 
+std::pair<vector<unsigned long>,vector<float> > DistributedIndexWrapperServer::knnSearchIdLong(cv::Mat& query, int n, double search_limit){
+	return baseIndex->knnSearchIdLong(query, n, search_limit);
+}
+
 std::pair<vector<float>,vector<float> > DistributedIndexWrapperServer::radiusSearchId(cv::Mat& query, double radius, int n, double search_limit){
+	return baseIndex->radiusSearchId(query, radius, n, search_limit);
+}
+
+void DistributedIndexWrapperServer::train(arma::fmat& featuresTrain,arma::fmat& featuresValidationI,arma::fmat& featuresValidationQ){
+    baseIndex->train(featuresTrain,featuresValidationI,featuresValidationQ);
+}
+
+void DistributedIndexWrapperServer::indexWithTrainedParams(arma::fmat& features){
+    baseIndex->indexWithTrainedParams(features);
+}
+
+void DistributedIndexWrapperServer::index(arma::fmat& features){
+    baseIndex->index(features);
+}
+
+int DistributedIndexWrapperServer::addToIndexLive(arma::fmat& features){
+    return baseIndex->addToIndexLive(features);
+}
+
+std::pair<vector<float>,vector<float> > DistributedIndexWrapperServer::knnSearchId(arma::fmat& query, int n, double search_limit){
+	return baseIndex->knnSearchId(query, n, search_limit);
+}
+
+std::pair<vector<unsigned long>,vector<float> > DistributedIndexWrapperServer::knnSearchIdLong(arma::fmat& query, int n, double search_limit){
+	return baseIndex->knnSearchIdLong(query, n, search_limit);
+}
+
+std::pair<vector<float>,vector<float> > DistributedIndexWrapperServer::radiusSearchId(arma::fmat& query, double radius, int n, double search_limit){
 	return baseIndex->radiusSearchId(query, radius, n, search_limit);
 }
 
@@ -93,9 +119,7 @@ string DistributedIndexWrapperServer::getName(){
 	return type;
 }
 
-int DistributedIndexWrapperServer::addToIndexLive(Mat& features){
-    return baseIndex->addToIndexLive(features);
-}
+
 
 void DistributedIndexWrapperServer::run(){
     _ready.set();

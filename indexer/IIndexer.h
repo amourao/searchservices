@@ -111,8 +111,14 @@ public:
         return make_pair(idToLabels(rSearch.first),rSearch.second);
 	}
 
-	virtual std::pair<vector<uint>,vector<float> > knnSearchIdLong(arma::fmat& name, int n = 1000, double search_limit = 1){
-        vector<uint> a;
+	virtual std::pair<vector<unsigned long int>,vector<float> > knnSearchIdLong(arma::fmat& name, int n = 1000, double search_limit = 1){
+        vector<unsigned long int> a;
+        vector<float> b;
+        return make_pair(a,b);
+	}
+
+	virtual std::pair<vector<unsigned long int>,vector<float> > knnSearchIdLong(cv::Mat& name, int n = 1000, double search_limit = 1){
+        vector<unsigned long int> a;
         vector<float> b;
         return make_pair(a,b);
 	}

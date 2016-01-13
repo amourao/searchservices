@@ -1282,8 +1282,8 @@ void awesomeIndexTesterAllV2(int argc, char *argv[]){
                 //int tmp = 0;
                 vector<float> precVsLinearTmp;
                 double tmpTime = 0;
-                std::pair<vector<uint>, vector<float> > r;
-                vector<std::pair<vector<uint>, vector<float> > > rAll;
+                std::pair<vector<unsigned long>, vector<float> > r;
+                vector<std::pair<vector<unsigned long>, vector<float> > > rAll;
                 int k = atoi(kList.at(kIndex).c_str());
                 for (uint j = 0; j < featuresTestQ.n_cols; j++){
                     arma::fmat q = featuresTestQ.col(j);
