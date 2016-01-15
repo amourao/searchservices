@@ -1,0 +1,24 @@
+{"parameters": {
+    "port": "12350",
+    "extractor": "OMP",
+    "bufferSize": "1024",
+    "servers": "localhost:12345;localhost:12346;localhost:12347;localhost:12348",
+    "data": "/localstore/amourao/saIndexingSplits/configCondor4_1_k.json_valQ.mat",
+    "divisions": "4"
+
+    },
+ "endpoints": {
+    "indexer": [],
+    "analyser": [
+        {
+            "newName": "OMP",
+            "originalName": "ANdOMPExtractor",
+            "params": {
+                "max_iters": "10",
+                "eps": "0.05",
+                "dictPath": "/home/amourao/code/searchservices/workingDir/seed.bin"
+            }
+        }
+    ],
+    "classifier": []
+} }

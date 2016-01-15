@@ -1,0 +1,10 @@
+{"parameters": {
+    "port": "12346",
+    "bufferSize": "1024",
+
+    },
+ "endpoints": {
+    "indexer": [],
+    "analyser": [],
+    "classifier": []
+} }
