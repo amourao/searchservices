@@ -1,11 +1,11 @@
 {"parameters": {
     "port": "12350",
     "extractor": "OMP",
-    "bufferSize": "1024",
-    "servers": "localhost:12345;localhost:12346;localhost:12347;localhost:12348",
-    "data": "/localstore/amourao/saIndexingSplits/configCondor4_1_k.json_valQ.mat",
-    "divisions": "4"
-
+    "bufferSize": "66666",
+    "servers1": "localhost:12345;localhost:12346;localhost:12347;localhost:12348",
+    "servers": "localhost:12345;localhost:12346",
+    "data": "/localstore/amourao/saIndexingSplits/configCondor4_1_k.json_valQ.mat"
+    
     },
  "endpoints": {
     "indexer": [],

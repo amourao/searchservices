@@ -1,6 +1,6 @@
 {"parameters": {
     "port": "12345",
-    "bufferSize": "1024",
+    "bufferSize": "1024"
 
     },
  "endpoints": {

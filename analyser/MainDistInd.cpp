@@ -115,6 +115,37 @@ int srMaster(int argc, char *argv[]){
 
 	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
 
+    map<string,string> params;
+    params["bufferSize"] = "66666";
+    params["port"] = "12345";
+
+    params["bucketOffset"] = "0";
+    params["bucketCount"] = "512";
+
+    string name = "name";
+    SRProcessor srp(name,params);
+    srp.load("tmp");
+
+    name = "name2";
+    params["bucketOffset"] = "512";
+    params["port"] = "12346";
+    SRProcessor srp2(name,params);
+    srp2.load("tmp");
+
+    arma::fmat dataToIndex;
+    dataToIndex.load(parameters["data"]);
+
+    SRMaster srm(name,parameters);
+    arma::fmat query = dataToIndex.col(0);
+    std::pair<vector<unsigned long>,vector<float> > r = srm.knnSearchIdLong(query,10,1);
+
+    cout << "********** RESULTS **********" << endl;
+    for(int i = 0; i < r.first.size(); i++){
+        cout << r.first[i] << " " << r.second[i] << endl;
+    }
+    cout << "*****************************" << endl;
+
+
     return 0;
 }
 
@@ -180,9 +211,11 @@ int dataPreProcessor(int argc, char *argv[]){
 
         }
     }
-    std::ofstream outfile ("new.bin",std::ofstream::binary);
+    std::ofstream outfile ("tmp_coeffs.bin",std::ofstream::binary);
     outfile.write (&dataToSave[0],curr);
     outfile.close();
+
+    dataToIndex.save("tmp_features.bin");
 
     curr = 0;
     uint nBuckets = *reinterpret_cast<uint*>(&dataToSave[curr]);

@@ -16,11 +16,15 @@ SRProcessor::SRProcessor(string& typeId, map<string,string>& params){
     }
 
     cout << "started " << endl;
+
+    bucketOffset = std::stoi(params["bucketOffset"]);
+	bucketCount = std::stoi(params["bucketCount"]);
+    _bufferSize = std::stoi(params["bufferSize"]);
+
     _socket.bind(Poco::Net::SocketAddress("0.0.0.0", std::stoi(params["port"])), false);
 	_thread.start(*this);
 	_ready.wait();
 	_stop = false;
-	_bufferSize = std::stoi(params["bufferSize"]);
 
 }
 
@@ -56,16 +60,16 @@ QueryStructRsp SRProcessor::index(QueryStructReq queryS){
 
 QueryStructRsp SRProcessor::knnSearchIdLong(QueryStructReq queryS){
 
-    arma::fmat query(&queryS.query[0],1,queryS.query.size(),false);
+    arma::fmat query(&queryS.query[0],queryS.query.size(),1,false);
     vector<int> buckets = queryS.buckets;
 
     int n = queryS.parameters[0];
     double search_limit = queryS.parameters[1];
 
-    uint estimatedCandidateSize = indexData[0].size()*indexData.size()/3*search_limit;
+    uint estimatedCandidateSize = 50;
+
 
     QueryStructRsp result;
-
 
     vector<unsigned long> indices;
     vector<float> dists;
@@ -76,12 +80,14 @@ QueryStructRsp SRProcessor::knnSearchIdLong(QueryStructReq queryS){
     map<unsigned long, float> computedDists;
 
     for(uint b = 0; b < buckets.size(); b++){
-        uint bucket = buckets[b]-bucketOffset;
-        if (bucket < indexData.size()){ //is one of this node buckets
-            uint on = indexData[b].size()*search_limit;
-            vector<Coefficient> candidates(indexData[b].begin(),indexData[b].begin()+on);
+        int bucket = buckets[b]-bucketOffset;
+        if (bucket >= 0 && bucket < indexData.size()){ //is one of this node buckets
+            //cout << type << " " << bucket << " " << bucketOffset << endl;
+            uint on = indexData[bucket].size()*search_limit;
+
+            vector<Coefficient> candidates(indexData[bucket].begin(),indexData[bucket].begin()+on);
             for(uint i = 0; i < candidates.size(); i++){
-                if (computedDists.find(candidates[i].original_id) != computedDists.end()){
+                if (computedDists.find(candidates[i].original_id) == computedDists.end()){
                     float dist = norm(data.col(candidates[i].vector_pos) - query, 2);
                     long index = candidates[i].original_id;
 
@@ -103,6 +109,7 @@ QueryStructRsp SRProcessor::knnSearchIdLong(QueryStructReq queryS){
     result.operation = 1;
     result.parameters.push_back(n);
     result.parameters.push_back(newN);
+    result.totalByteSize = result.computeTotalByteSize();
 
     return result;
 }
@@ -115,7 +122,7 @@ void SRProcessor::run(){
     _ready.set();
 	Poco::Timespan span(250000);
 
-	cout << "started server at " << _socket.address().host().toString() << ":" << _socket.address().port() << endl;
+	cout << "started Processor at " << _socket.address().host().toString() << ":" << _socket.address().port() << endl;
 
 	while (!_stop){
 		if (_socket.poll(span, Poco::Net::Socket::SELECT_READ)){
@@ -125,8 +132,13 @@ void SRProcessor::run(){
                 inBuffer = new char[_bufferSize];
 				Poco::Net::SocketAddress sender;
 				int n =  _socket.receiveFrom(inBuffer, _bufferSize, sender);
-				cout << "server " << _socket.address().host().toString() << ":" << _socket.address().port()  << "  received: " <<  n << " from " << sender.host().toString() << ":" << sender.port() << endl;
+				cout << "Processor " << _socket.address().host().toString() << ":" << _socket.address().port()  << "  received: " <<  n << " from " << sender.host().toString() << ":" << sender.port() << endl;
                 //_socket.sendTo(inputVector, outputVector);
+
+                //std::ofstream outfile ("proc.bin",std::ofstream::binary);
+                //outfile.write (&inBuffer[0],n);
+                //outfile.close();
+
                 vector<QueryStructRsp> responses = processQueries(inBuffer);
 
                 char numOps = (char)responses.size();
@@ -144,7 +156,7 @@ void SRProcessor::run(){
                     curByte+=responses[i].totalByteSize;
                 }
 
-                cout << "server " << _socket.address().host().toString() << ":" << _socket.address().port()  << " sent: " << _socket.sendTo(&outbuffer[0], totalSize, sender)  << endl;
+                cout << "Processor " << _socket.address().host().toString() << ":" << _socket.address().port()  << " sent: " << _socket.sendTo(&outbuffer[0], totalSize, sender)  << endl;
 
 			} catch (Poco::Exception& exc){
 				std::cerr << "UDPEchoServer: " << exc.displayText() << std::endl;
@@ -166,10 +178,8 @@ vector<QueryStructRsp> SRProcessor::processQueries(char* input){
 
         QueryStructReq query;
         query.toQueryStructReq(newInput);
-
-        char op = query.operation;
         accumBytes += query.totalByteSize;
-
+        char op = query.operation;
         QueryStructRsp resultTmp;
         if (op == 1){
             resultTmp = knnSearchIdLong(query);
@@ -179,7 +189,7 @@ vector<QueryStructRsp> SRProcessor::processQueries(char* input){
         } else if (op == 3){
             resultTmp = index(query);
             rebuild();
-        }else {
+        } else {
             resultTmp.operation = query.operation;
             resultTmp.parameters.push_back(-1);
         }
@@ -209,10 +219,135 @@ char* SRProcessor::processResponses(vector<QueryStructRsp>& responses){
 
 
 bool SRProcessor::save(string basePath){
+    uint numBuckets = indexData.size();
+    uint totalSize = sizeof(uint)+sizeof(uint)*numBuckets ;
+    uint sizeOfCoeff = sizeof(unsigned long)*2 + sizeof(float);
+    uint curr = 0;
+    for(long i = 0; i < indexData.size(); i++){
+        totalSize+=sizeOfCoeff*indexData[i].size();
+    }
+
+    char* dataToSave = new char[totalSize];
+    memcpy(&dataToSave[curr],&numBuckets,sizeof(uint));
+    curr += sizeof(uint);
+
+    for(uint i = 0; i < indexData.size(); i++){
+        uint bSize = indexData[i].size();
+        memcpy(&dataToSave[curr],&bSize,sizeof(uint));
+        curr += sizeof(uint);
+
+        for(uint j = 0; j < indexData[i].size(); j++){
+            Coefficient c = indexData[i][j];
+            //cout << c.vector_pos << endl;
+            memcpy(&dataToSave[curr],&c.vector_pos,sizeof(unsigned long));
+            curr += sizeof(unsigned long);
+
+            memcpy(&dataToSave[curr],&c.original_id,sizeof(unsigned long));
+            curr += sizeof(unsigned long);
+
+            memcpy(&dataToSave[curr],&c.value,sizeof(float));
+            curr += sizeof(float);
+
+        }
+    }
+    std::ofstream outfile (basePath + "_coeffs.bin",std::ofstream::binary);
+    outfile.write (&dataToSave[0],curr);
+    outfile.close();
+
+    delete[] dataToSave;
+
+    data.save(basePath + "_features.bin");
+}
+
+bool SRProcessor::loadAll(string basePath){
+
+    std::ifstream file(basePath + "_coeffs.bin", std::ios::binary | std::ios::ate);
+    std::streamsize size = file.tellg();
+    file.seekg(0, std::ios::beg);
+
+    char* buffer = new char[size];
+
+    if (!file.read(buffer, size)){
+        return false;
+    }
+
+    uint curr = 0;
+    uint nBuckets = *reinterpret_cast<uint*>(&buffer[curr]);
+    curr += sizeof(uint);
+
+    indexData = std::vector<std::vector<Coefficient>>(nBuckets);
+
+    for(long i = 0; i < nBuckets; i++){
+        uint co = *reinterpret_cast<uint*>(&buffer[curr]);
+        curr += sizeof(uint);
+
+        for(uint j = 0; j < co; j++){
+            unsigned long vector_pos = *reinterpret_cast<unsigned long*>(&buffer[curr]);
+            curr += sizeof(unsigned long);
+
+            unsigned long original_id = *reinterpret_cast<unsigned long*>(&buffer[curr]);
+            curr += sizeof(unsigned long);
+
+            unsigned long value = *reinterpret_cast<float*>(&buffer[curr]);
+            curr += sizeof(float);
+
+            indexData[i].push_back(Coefficient(vector_pos,original_id,value));
+        }
+    }
+
+    delete[] buffer;
+
+    data.load(basePath + "_features.bin");
+
     return true;
 }
 
 bool SRProcessor::load(string basePath){
+
+    std::ifstream file(basePath + "_coeffs.bin", std::ios::binary | std::ios::ate);
+    std::streamsize size = file.tellg();
+    file.seekg(0, std::ios::beg);
+
+    char* buffer = new char[size];
+
+    if (!file.read(buffer, size)){
+        return false;
+    }
+
+    uint curr = 0;
+    uint nBuckets = *reinterpret_cast<uint*>(&buffer[curr]);
+    curr += sizeof(uint);
+
+    //bucketOffset = std::stoi(params["bucketOffset"]);
+	//bucketCount = std::stoi(params["bucketCount"]);
+
+    indexData = std::vector<std::vector<Coefficient>>(bucketCount);
+
+    for(long i = 0; i < bucketOffset; i++){
+        uint co = *reinterpret_cast<uint*>(&buffer[curr]);
+        curr += sizeof(uint) + (sizeof(unsigned long)*2+sizeof(float))*co;
+    }
+    for(long i = 0; i < bucketCount; i++){
+        uint co = *reinterpret_cast<uint*>(&buffer[curr]);
+        curr += sizeof(uint);
+
+        for(uint j = 0; j < co; j++){
+            unsigned long vector_pos = *reinterpret_cast<unsigned long*>(&buffer[curr]);
+            curr += sizeof(unsigned long);
+
+            unsigned long original_id = *reinterpret_cast<unsigned long*>(&buffer[curr]);
+            curr += sizeof(unsigned long);
+
+            unsigned long value = *reinterpret_cast<float*>(&buffer[curr]);
+            curr += sizeof(float);
+
+            indexData[i].push_back(Coefficient(vector_pos,original_id,value));
+        }
+    }
+
+    delete[] buffer;
+
+    data.load(basePath + "_features.bin");
 
     return true;
 }

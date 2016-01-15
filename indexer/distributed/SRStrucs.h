@@ -29,8 +29,8 @@ struct QueryStructReq {
     std::vector<float> query;
     std::vector<int> buckets;
     std::vector<float> coeffs;
-    std::vector<float> parameters;
     std::vector<unsigned long> indexes;
+    std::vector<float> parameters;
 
     char operation;
     uint totalByteSize;
@@ -67,16 +67,19 @@ struct QueryStructReq {
         outBuffer[sizeof(uint)] = operation; //operation type (query)
 
         memcpy(&outBuffer[sizeof(uint)+1],&qBufferLen,sizeof(uint));
-        memcpy(&outBuffer[sizeof(uint)+1+qBufferLen+sizeof(uint)],&bBufferLen,sizeof(uint));
-        memcpy(&outBuffer[sizeof(uint)+1+qBufferLen+bBufferLen+sizeof(uint)*2],&cBufferLen,sizeof(uint));
-        memcpy(&outBuffer[sizeof(uint)+1+qBufferLen+bBufferLen+cBufferLen+sizeof(uint)*3],&iBufferLen,sizeof(uint));
-        memcpy(&outBuffer[sizeof(uint)+1+qBufferLen+bBufferLen+cBufferLen+iBufferLen+sizeof(uint)*4],&pBufferLen,sizeof(uint));
-
         memcpy(&outBuffer[sizeof(uint)+1+sizeof(uint)],qBuffer,qBufferLen);
+
+        memcpy(&outBuffer[sizeof(uint)+1+qBufferLen+sizeof(uint)],&bBufferLen,sizeof(uint));
         memcpy(&outBuffer[sizeof(uint)+1+qBufferLen+sizeof(uint)*2],bBuffer,bBufferLen);
+
+        memcpy(&outBuffer[sizeof(uint)+1+qBufferLen+bBufferLen+sizeof(uint)*2],&cBufferLen,sizeof(uint));
         memcpy(&outBuffer[sizeof(uint)+1+qBufferLen+bBufferLen+sizeof(uint)*3],cBuffer,cBufferLen);
-        memcpy(&outBuffer[sizeof(uint)+1+qBufferLen+bBufferLen+pBufferLen+sizeof(uint)*4],iBuffer,iBufferLen);
-        memcpy(&outBuffer[sizeof(uint)+1+qBufferLen+bBufferLen+pBufferLen+iBufferLen+sizeof(uint)*5],pBuffer,pBufferLen);
+
+        memcpy(&outBuffer[sizeof(uint)+1+qBufferLen+bBufferLen+cBufferLen+sizeof(uint)*3],&iBufferLen,sizeof(uint));
+        memcpy(&outBuffer[sizeof(uint)+1+qBufferLen+bBufferLen+cBufferLen+sizeof(uint)*4],iBuffer,iBufferLen);
+
+        memcpy(&outBuffer[sizeof(uint)+1+qBufferLen+bBufferLen+cBufferLen+iBufferLen+sizeof(uint)*4],&pBufferLen,sizeof(uint));
+        memcpy(&outBuffer[sizeof(uint)+1+qBufferLen+bBufferLen+cBufferLen+iBufferLen+sizeof(uint)*5],pBuffer,pBufferLen);
 
         return outBuffer;
     }
@@ -85,6 +88,7 @@ struct QueryStructReq {
         totalByteSize = *reinterpret_cast<uint*>(&c[0]);
 
         operation = c[sizeof(uint)];
+
         uint qBufferLen = *reinterpret_cast<uint*>(&c[sizeof(uint)+1]);
         uint bBufferLen = *reinterpret_cast<uint*>(&c[sizeof(uint)+1+sizeof(uint)+qBufferLen]);
         uint cBufferLen = *reinterpret_cast<uint*>(&c[sizeof(uint)+1+sizeof(uint)+qBufferLen+sizeof(uint)+bBufferLen]);

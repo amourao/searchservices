@@ -5,6 +5,8 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <fstream>
+
 
 #include <Poco/Net/DatagramSocket.h>
 #include <Poco/Net/SocketAddress.h>
@@ -35,6 +37,7 @@ public:
 
 	bool save(string basePath);
 	bool load(string basePath);
+	bool loadAll(string basePath);
 
 private:
 
@@ -50,9 +53,10 @@ private:
 	int          _bufferSize;
 
 	uint bucketOffset = 0;
+	uint bucketCount = 0;
 
 	bool needsRebuild = false;
-	
+
     std::vector<std::vector<Coefficient>> indexData;
     arma::fmat data;
     map<string,string> paramsB;

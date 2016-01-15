@@ -43,12 +43,16 @@ std::pair<vector<unsigned long>,vector<float> > SRMaster::knnSearchIdLong(arma::
     arma::fmat sparseRep;
     baseFeatureExtractor->extractFeatures(query,sparseRep);
 
+    sparseRep= sparseRep.t();
+
     vector<Poco::Net::SocketAddress> servers = getRelevantServers(sparseRep);
 
     float* arrayData = (float*)&query(0);
     q.query.insert(q.query.end(), arrayData, arrayData+query.n_rows);
     q.parameters.push_back(n);
     q.parameters.push_back(search_limit);
+    q.operation = 1;
+
 
     for(uint i = 0; i < sparseRep.n_rows; i++){
         if(sparseRep(i,0) != 0){
@@ -105,6 +109,7 @@ void SRMaster::sendMessage(vector<QueryStructReq>& query, vector<QueryStructRsp>
     char numOps = (char)query.size();
     uint totalSize = 1;
     for (uint i = 0; i < query.size(); i++){
+        query[i].totalByteSize = query[i].computeTotalByteSize();
         totalSize+=query[i].totalByteSize;
     }
     char* inbuffer = new char[totalSize];
@@ -118,16 +123,20 @@ void SRMaster::sendMessage(vector<QueryStructReq>& query, vector<QueryStructRsp>
     }
 
     Poco::Net::DatagramSocket dgs(clientAddress);
-    cout << "client wants to send: " <<  totalSize << endl;
+    cout << "Master wants to send " <<  totalSize << endl;
 
     cout << clientAddress.host().toString() << " " << clientAddress.port() << endl;
     int sent = dgs.sendTo(&inbuffer[0], totalSize, server);
-    cout << "client " << clientAddress.host().toString() << ":" << clientAddress.port()  << " sent: " << sent << endl;
+    cout << "Master " << clientAddress.host().toString() << ":" << clientAddress.port()  << " sent " << sent << " to " << server.host().toString() << ":" << server.port() << endl;
+
+    //std::ofstream outfile ("master.bin",std::ofstream::binary);
+    //outfile.write (&inbuffer[0],totalSize);
+    //outfile.close();
 
     int floatBufferSize = 0;
     char* outputBytes = new char[bufferSize];
     floatBufferSize = dgs.receiveBytes(outputBytes,bufferSize);
-    cout << "client " << clientAddress.host().toString() << ":" << clientAddress.port()  << " received: " << floatBufferSize << endl;
+    cout << "Master " << clientAddress.host().toString() << ":" << clientAddress.port()  << " received " << floatBufferSize << " from " << server.host().toString() << ":" << server.port() << endl;
 
     uint numOpsRsp = (uint)outputBytes[0];
     uint accumBytes = 1;
@@ -152,19 +161,19 @@ vector<Poco::Net::SocketAddress> SRMaster::getRelevantServers(arma::fmat& sparse
     vector<Poco::Net::SocketAddress> results;
     vector<int> resultsIndex;
 
-    int repSize = sparseRep.n_rows;
-    int bucketsPerServer = repSize/(float)serverAddresses.size();
+    uint repSize = sparseRep.n_rows;
+    uint bucketsPerServer = repSize/(float)serverAddresses.size();
     for(uint i = 0; i < serverAddresses.size()-1; i++){
         arma::fmat subset = sparseRep.rows(i*bucketsPerServer,(i+1)*bucketsPerServer);
         arma::uvec b = find(subset > 0);
-        int count = b.n_rows;
+        uint count = b.n_rows;
         if(count > 0){
             results.push_back(serverAddresses.at(i));
             resultsIndex.push_back(i);
         }
     }
     uint i = serverAddresses.size()-1;
-    arma::fmat subset = sparseRep.rows(i*bucketsPerServer,(i+1)*bucketsPerServer);
+    arma::fmat subset = sparseRep.rows(i*bucketsPerServer,min((i+1)*bucketsPerServer,(uint)sparseRep.n_rows-1));
     arma::uvec b = find(subset > 0);
     int count = b.n_rows;
     if(count > 0){
