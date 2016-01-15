@@ -162,13 +162,13 @@ int dataPreProcessor(int argc, char *argv[]){
     curr += sizeof(uint);
 
     for(uint i = 0; i < indexData.size(); i++){
-        uint bSize = indexData[i].size()*sizeOfCoeff;
+        uint bSize = indexData[i].size();
         memcpy(&dataToSave[curr],&bSize,sizeof(uint));
         curr += sizeof(uint);
 
         for(uint j = 0; j < indexData[i].size(); j++){
             Coefficient c = indexData[i][j];
-            cout << c.vector_pos << endl;
+            //cout << c.vector_pos << endl;
             memcpy(&dataToSave[curr],&c.vector_pos,sizeof(unsigned long));
             curr += sizeof(unsigned long);
 
@@ -180,13 +180,49 @@ int dataPreProcessor(int argc, char *argv[]){
 
         }
     }
-    char * b = &dataToSave[0];
-    uint test = *reinterpret_cast<uint*>(&b[sizeof(uint)]);
-    cout << test << endl;
-
     std::ofstream outfile ("new.bin",std::ofstream::binary);
     outfile.write (&dataToSave[0],curr);
     outfile.close();
+
+    curr = 0;
+    uint nBuckets = *reinterpret_cast<uint*>(&dataToSave[curr]);
+    curr += sizeof(uint);
+
+    std::vector<std::vector<Coefficient>> indexData2(nBuckets);
+
+
+    for(long i = 0; i < nBuckets; i++){
+        uint co = *reinterpret_cast<uint*>(&dataToSave[curr]);
+        curr += sizeof(uint);
+
+        for(uint j = 0; j < co; j++){
+            unsigned long vector_pos = *reinterpret_cast<unsigned long*>(&dataToSave[curr]);
+            curr += sizeof(unsigned long);
+
+            unsigned long original_id = *reinterpret_cast<unsigned long*>(&dataToSave[curr]);
+            curr += sizeof(unsigned long);
+
+            unsigned long value = *reinterpret_cast<float*>(&dataToSave[curr]);
+            curr += sizeof(float);
+
+            indexData2[i].push_back(Coefficient(vector_pos,original_id,value));
+        }
+    }
+    /*
+    cout << indexData2.size() << endl;
+    cout << indexData.size() << endl;
+    for(uint i = 0; i < nBuckets; i++){
+        cout << indexData[i].size() << " ";
+        cout << indexData2[i].size() << " ";
+
+        if(indexData[i].size() > 0){
+            cout << " " << indexData[i][0].original_id << " " << indexData2[i][0].original_id;
+        }
+
+        cout << endl;
+    }
+    */
+
     return 0;
 }
 

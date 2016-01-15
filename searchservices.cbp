@@ -153,7 +153,7 @@
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gnu_gcc_compiler_49" />
-				<Option parameters="testDistIndexer" />
+				<Option parameters="dataPreProcessor configs/defaultMaster.json" />
 				<Compiler>
 					<Add option="-O2" />
 					<Add directory="commons" />
