@@ -79,4 +79,29 @@ static void getRandomSample(vector<cv::Mat>& mList, int nRows, vector<cv::Mat>& 
 static void getRandomSample(vector<arma::fmat>& mList, int nRows, vector<arma::fmat>& sampleList);
 
 
+template <typename T, typename Compare>
+static std::vector<std::size_t> sortPermutation(
+    const std::vector<T>& vec,
+    Compare& compare)
+{
+    std::vector<std::size_t> p(vec.size());
+    std::iota(p.begin(), p.end(), 0);
+    std::sort(p.begin(), p.end(),
+        [&](std::size_t i, std::size_t j){ return compare(vec[i], vec[j]); });
+    return p;
+}
+template <typename T>
+static std::vector<T> applyPermutation(
+    const std::vector<T>& vec,
+    const std::vector<std::size_t>& p,
+    uint n
+)
+{
+    n = std::min(n,(uint)p.size());
+    std::vector<T> sorted_vec(n);
+    std::transform(p.begin(), p.begin()+n, sorted_vec.begin(),
+        [&](std::size_t i){ return vec[i]; });
+    return sorted_vec;
+}
+
 };

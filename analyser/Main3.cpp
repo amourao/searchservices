@@ -2352,14 +2352,13 @@ int main(int argc, char *argv[]){
     //testReadBin(argc, argv);
 	//awesomeIndexTesterAll(argc, argv);
 
-	string name(argv[0]);
-	if (name == "./getBucketStats"){
-		getSAIndexStatistics(argc, argv);
-	} else if (name == "./getMoreBucketStats"){
-		getMoreSAIndexStatistics(argc, argv);
-	} else{
-		awesomeIndexTesterAll(argc, argv);
-	}
+	if(StringTools::endsWith(string(argv[1]),"getBucketStats"))
+        getSAIndexStatistics(argc-1,&argv[1]);
+    else if(StringTools::endsWith(string(argv[1]),"getMoreBucketStats"))
+        getMoreSAIndexStatistics(argc-1,&argv[1]);
+    else if(StringTools::endsWith(string(argv[1]),"awesomeIndexTesterAll"))
+        awesomeIndexTesterAll(argc-1,&argv[1]);
+
 
     return 0;
 }
