@@ -107,7 +107,7 @@
 	"../tools/MatrixTools.h"
 	"../../commons/factory/Factory.h"
 
-1452813335 /home/amourao/code/searchservices/analyser/tools/MatrixTools.h
+1452879748 /home/amourao/code/searchservices/analyser/tools/MatrixTools.h
 	<armadillo>
 	<opencv2/core/core.hpp>
 	<opencv2/highgui/highgui.hpp>
@@ -115,6 +115,7 @@
 	<opencv2/features2d/features2d.hpp>
 	<string>
 	<vector>
+	<queue>
 	<fstream>
 	<algorithm>
 	<cstdlib>
@@ -9019,7 +9020,7 @@
 1452873852 /home/amourao/code/searchservices/indexer/distributed/SRStrucs.h
 	<cstring>
 
-1452877503 source:/home/amourao/code/searchservices/analyser/MainDistInd.cpp
+1452877938 source:/home/amourao/code/searchservices/analyser/MainDistInd.cpp
 	<iostream>
 	<fstream>
 	<string>
@@ -9046,12 +9047,13 @@
 1452877215 source:/home/amourao/code/searchservices/indexer/distributed/SRMaster.cpp
 	"SRMaster.h"
 
-1452868712 /home/amourao/code/searchservices/indexer/distributed/SRMaster.h
+1452880055 /home/amourao/code/searchservices/indexer/distributed/SRMaster.h
 	<map>
 	<string>
 	<iostream>
 	<vector>
 	<utility>
+	<unordered_set>
 	<Poco/Net/DatagramSocket.h>
 	<Poco/Net/SocketAddress.h>
 	<Poco/Thread.h>
@@ -9062,7 +9064,7 @@
 	"../../analyser/FactoryAnalyser.h"
 	"../../analyser/tools/MatrixTools.h"
 
-1452877921 source:/home/amourao/code/searchservices/indexer/distributed/SRProcessor.cpp
+1452878044 source:/home/amourao/code/searchservices/indexer/distributed/SRProcessor.cpp
 	"SRProcessor.h"
 
 1452875201 /home/amourao/code/searchservices/indexer/distributed/SRProcessor.h

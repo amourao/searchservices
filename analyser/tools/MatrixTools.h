@@ -7,6 +7,7 @@
 #include <opencv2/features2d/features2d.hpp>
 #include <string>
 #include <vector>
+#include <queue>
 #include <fstream>
 #include <algorithm>
 #include <cstdlib>
@@ -82,21 +83,19 @@ static void getRandomSample(vector<arma::fmat>& mList, int nRows, vector<arma::f
 template <typename T, typename Compare>
 static std::vector<std::size_t> sortPermutation(
     const std::vector<T>& vec,
-    Compare& compare)
-{
+    Compare& compare){
     std::vector<std::size_t> p(vec.size());
     std::iota(p.begin(), p.end(), 0);
     std::sort(p.begin(), p.end(),
         [&](std::size_t i, std::size_t j){ return compare(vec[i], vec[j]); });
     return p;
 }
+
 template <typename T>
 static std::vector<T> applyPermutation(
     const std::vector<T>& vec,
     const std::vector<std::size_t>& p,
-    uint n
-)
-{
+    uint n){
     n = std::min(n,(uint)p.size());
     std::vector<T> sorted_vec(n);
     std::transform(p.begin(), p.begin()+n, sorted_vec.begin(),
@@ -104,4 +103,13 @@ static std::vector<T> applyPermutation(
     return sorted_vec;
 }
 
+/*
+template <typename T, typename Compare>
+static std::vector<T> kWayMerge(
+    const std::vector<T>& vec,
+    Compare& compare){
+
+
+}
+*/
 };

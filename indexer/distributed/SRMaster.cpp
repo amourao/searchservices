@@ -35,6 +35,7 @@ SRMaster::~SRMaster(){
 
 std::pair<vector<unsigned long>,vector<float> > SRMaster::knnSearchIdLong(arma::fmat& query, int n, float search_limit){
 
+    unordered_set<unsigned long> indicesSet;
     vector<unsigned long> indices;
     vector<float> dists;
 
@@ -73,8 +74,14 @@ std::pair<vector<unsigned long>,vector<float> > SRMaster::knnSearchIdLong(arma::
 
         //int current_i = 2;
         for(uint s = 0; s < output.size(); s++){
-            indices.insert(indices.end(), output[s].indexes.begin(), output[s].indexes.end());
-            dists.insert(dists.end(), output[s].dists.begin(), output[s].dists.end());
+            for(uint p = 0; p < output[s].indexes.size(); p++){
+                if (indicesSet.find(output[s].indexes[p]) == indicesSet.end()){
+                    indicesSet.insert(output[s].indexes[p]);
+                    indices.push_back(output[s].indexes[p]);
+                    dists.push_back(output[s].dists[p]);
+                    //dists.insert(dists.end(), output[s].dists.begin(), output[s].dists.end());
+                }
+            }
         }
 
     }
