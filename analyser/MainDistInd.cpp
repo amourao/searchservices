@@ -113,6 +113,42 @@ int testDistIndexer(int argc, char *argv[]){
 
 int srMaster(int argc, char *argv[]){
 
+    string paramFile(argv[1]);
+    map<string,string> parameters;
+	vector<IIndexer*> indexers;
+	vector<IAnalyser*> analysers;
+	vector<IClassifier*> classifiers;
+	vector<IEndpoint*> endpoints;
+
+	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
+
+    map<string,string> params;
+
+    vector<SRProcessor*> ser;
+
+    string name = "srMaster";
+    arma::fmat dataToIndex;
+    dataToIndex.load(parameters["dataQ"]);
+
+    SRMaster srm(name,parameters);
+
+    uint nQueries = std::stoi(parameters["nQueries"]);
+
+    //#pragma omp parallel for schedule(dynamic)
+    for(uint i = 0; i < nQueries; i++){
+        arma::fmat query = dataToIndex.col(i);
+        std::pair<vector<unsigned long>,vector<float> > r = srm.knnSearchIdLong(query,std::stoi(parameters["n"]),std::stod(parameters["limit"]));
+
+        LOG(INFO) << "********** RESULTS **********";
+        LOG(INFO) << "************* " << i << " ************";
+        for(int j = 0; j < r.first.size(); j++){
+            LOG(INFO) << r.first[j] << " " << r.second[j];
+        }
+        LOG(INFO) << "*****************************";
+    }
+
+    return 0;
+
 }
 
 int srTest(int argc, char *argv[]){
@@ -310,6 +346,42 @@ int srProcessor(int argc, char *argv[]){
 
 	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
 
+    uint nServers = std::stoi(parameters["divisions"]);
+    uint nBuckets = std::stoi(parameters["nBuckets"]);
+    uint startPort = std::stoi(parameters["port"])+1;
+    uint nBucketsPerServer = nBuckets / nServers;
+
+    uint accum = std::stoi(parameters["bufferOffset"]);
+
+    map<string,string> params;
+
+    vector<SRProcessor*> ser;
+
+    parameters["servers"] = "";
+    params["bufferSize"] = parameters["bufferSize"];
+    for (uint i = 0; i < nServers; i++){
+
+        params["port"] = std::to_string(startPort++);
+        parameters["servers"] += "localhost:" + params["port"];
+
+        params["bucketOffset"] = std::to_string(accum);
+
+
+        if (i == nServers-1){
+            params["bucketCount"] = std::to_string(nBuckets-accum);
+            accum=nBuckets;
+        } else {
+            params["bucketCount"] = std::to_string(nBucketsPerServer);
+            accum+=nBucketsPerServer;
+
+            parameters["servers"] +=  ";";
+        }
+        string name = "srProcessor_" + std::to_string(i);
+        SRProcessor* srp = new SRProcessor(name,params);
+        srp->load("tmp");
+        ser.push_back(srp);
+    }
+    for(;;){}
     return 0;
 }
 
