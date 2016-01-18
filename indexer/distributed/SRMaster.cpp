@@ -25,7 +25,7 @@ SRMaster::SRMaster(string& typeId, map<string,string>& params){
         serverAddresses.push_back(Poco::Net::SocketAddress(servers.at(i)));
     }
 
-    cout << "started client at " << clientAddress.host().toString() << ":" << clientAddress.port() << endl;
+    LOG(INFO) << "started Master at " << clientAddress.host().toString() << ":" << clientAddress.port();
 
 }
 
@@ -62,6 +62,7 @@ std::pair<vector<unsigned long>,vector<float> > SRMaster::knnSearchIdLong(arma::
         }
     }
 
+    //#pragma omp parallel for schedule(dynamic)
     for(uint i = 0; i < servers.size(); i++){
         Poco::Net::SocketAddress server_address = servers.at(i);
 
@@ -69,10 +70,13 @@ std::pair<vector<unsigned long>,vector<float> > SRMaster::knnSearchIdLong(arma::
         vector<QueryStructRsp> output;
 
         input.push_back(q);
-
-        sendMessage(input,output,server_address);
-
-        //int current_i = 2;
+        //#pragma omp critical
+        {
+            sendMessage(input,output,server_address);
+        }
+        if(output.size() == 0){
+            //LOG(INFO) << "Master " << " failed to receive response from " << server_address.host().toString() << ":" << server_address.port();
+        }
         for(uint s = 0; s < output.size(); s++){
             for(uint p = 0; p < output[s].indexes.size(); p++){
                 if (indicesSet.find(output[s].indexes[p]) == indicesSet.end()){
@@ -130,35 +134,45 @@ void SRMaster::sendMessage(vector<QueryStructReq>& query, vector<QueryStructRsp>
     }
 
     Poco::Net::DatagramSocket dgs(clientAddress);
-    cout << "Master wants to send " <<  totalSize << endl;
+    dgs.setReceiveTimeout(Poco::Timespan(1000*10));
+    //LOG(INFO) << "Master " << clientAddress.host().toString() << ":" << clientAddress.port()  << " wants to send " << totalSize << " to " << server.host().toString() << ":" << server.port();
 
-    cout << clientAddress.host().toString() << " " << clientAddress.port() << endl;
+    //LOG(INFO) << clientAddress.host().toString() << " " << clientAddress.port();
     int sent = dgs.sendTo(&inbuffer[0], totalSize, server);
-    cout << "Master " << clientAddress.host().toString() << ":" << clientAddress.port()  << " sent " << sent << " to " << server.host().toString() << ":" << server.port() << endl;
+    //LOG(INFO) << "Master " << clientAddress.host().toString() << ":" << clientAddress.port()  << " sent " << sent << " to " << server.host().toString() << ":" << server.port();
 
     //std::ofstream outfile ("master.bin",std::ofstream::binary);
     //outfile.write (&inbuffer[0],totalSize);
     //outfile.close();
 
+
+
     int floatBufferSize = 0;
     char* outputBytes = new char[bufferSize];
-    floatBufferSize = dgs.receiveBytes(outputBytes,bufferSize);
-    cout << "Master " << clientAddress.host().toString() << ":" << clientAddress.port()  << " received " << floatBufferSize << " from " << server.host().toString() << ":" << server.port() << endl;
 
-    uint numOpsRsp = (uint)outputBytes[0];
-    uint accumBytes = 1;
+    try {
+        floatBufferSize = dgs.receiveBytes(outputBytes,bufferSize);
+        //LOG(INFO) << "Master " << clientAddress.host().toString() << ":" << clientAddress.port()  << " received " << floatBufferSize << " from " << server.host().toString() << ":" << server.port();
 
-    for (uint i = 0; i < numOps; i++){
-        char* newInput = &outputBytes[accumBytes];
+        uint numOpsRsp = (uint)outputBytes[0];
+        uint accumBytes = 1;
 
-        QueryStructRsp response;
-        response.toQueryStructRsp(newInput);
+        for (uint i = 0; i < query.size(); i++){
+            char* newInput = &outputBytes[accumBytes];
 
-        char op = response.operation;
-        accumBytes += response.totalByteSize;
+            QueryStructRsp response;
+            response.toQueryStructRsp(newInput);
 
-        output.push_back(response);
+            char op = response.operation;
+            accumBytes += response.totalByteSize;
+
+            output.push_back(response);
+        }
+
+    } catch(Poco::TimeoutException t){
+
     }
+    delete[] outputBytes;
     //float* floatBuffer = reinterpret_cast<float*>(buffer);
 	//output.insert(output.end(), &buffer[0], &buffer[floatBufferSize]);
 }
@@ -188,11 +202,11 @@ vector<Poco::Net::SocketAddress> SRMaster::getRelevantServers(arma::fmat& sparse
         resultsIndex.push_back(serverAddresses.size()-1);
     }
 
-    cout << "relevant servers ";
+    string relServers = "Relevant servers: ";
     for(uint i = 0; i < results.size(); i++){
-        cout << resultsIndex.at(i) << " ";
+        relServers += std::to_string(resultsIndex.at(i)) + " ";
     }
-    cout << endl;
+    LOG(INFO) << relServers ;
 
     return results;
 

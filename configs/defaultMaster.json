@@ -2,10 +2,18 @@
     "port": "12350",
     "extractor": "OMP",
     "bufferSize": "66666",
-    "servers1": "localhost:12345;localhost:12346;localhost:12347;localhost:12348",
-    "servers": "localhost:12345;localhost:12346",
-    "data": "/localstore/amourao/saIndexingSplits/configCondor4_1_k.json_valQ.mat"
-    
+
+    "nBuckets": "1024",
+    "bufferOffset": "0",
+    "divisions": "256",
+
+	"limit": "1",
+    "n": "10",
+
+    "data": "/localstore/amourao/saIndexingSplits/configCondor4_3.json_testI.mat",
+
+    "nQueries": "100",
+    "dataQ": "/localstore/amourao/saIndexingSplits/configCondor4_3.json_testQ.mat"
     },
  "endpoints": {
     "indexer": [],

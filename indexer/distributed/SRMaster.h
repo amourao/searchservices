@@ -15,6 +15,8 @@
 
 #include <armadillo>
 
+#include <easylogging++.h>
+
 #include "SRStrucs.h"
 
 

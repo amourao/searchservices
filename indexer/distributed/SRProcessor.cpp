@@ -15,8 +15,6 @@ SRProcessor::SRProcessor(string& typeId, map<string,string>& params){
         return;
     }
 
-    cout << "started " << endl;
-
     bucketOffset = std::stoi(params["bucketOffset"]);
 	bucketCount = std::stoi(params["bucketCount"]);
     _bufferSize = std::stoi(params["bufferSize"]);
@@ -79,6 +77,7 @@ QueryStructRsp SRProcessor::knnSearchIdLong(QueryStructReq queryS){
 
     map<unsigned long, float> computedDists;
 
+    //#pragma omp parallel for schedule(dynamic)
     for(uint b = 0; b < buckets.size(); b++){
         int bucket = buckets[b]-bucketOffset;
         if (bucket >= 0 && bucket < indexData.size()){ //is one of this node buckets
@@ -90,11 +89,13 @@ QueryStructRsp SRProcessor::knnSearchIdLong(QueryStructReq queryS){
                 if (computedDists.find(candidates[i].original_id) == computedDists.end()){
                     float dist = norm(data.col(candidates[i].vector_pos) - query, 2);
                     long index = candidates[i].original_id;
+                    //#pragma omp critical
+                    //{
+                        indices.push_back(index);
+                        dists.push_back(dist);
+                        computedDists[index] = dist;
+                    //}
 
-                    indices.push_back(index);
-                    dists.push_back(dist);
-
-                    computedDists[index] = dist;
                 }
             }
         }
@@ -122,7 +123,7 @@ void SRProcessor::run(){
     _ready.set();
 	Poco::Timespan span(250000);
 
-	cout << "started Processor at " << _socket.address().host().toString() << ":" << _socket.address().port() << endl;
+	LOG(INFO) << "started Processor at " << _socket.address().host().toString() << ":" << _socket.address().port();
 
 	while (!_stop){
 		if (_socket.poll(span, Poco::Net::Socket::SELECT_READ)){
@@ -132,7 +133,7 @@ void SRProcessor::run(){
                 inBuffer = new char[_bufferSize];
 				Poco::Net::SocketAddress sender;
 				int n =  _socket.receiveFrom(inBuffer, _bufferSize, sender);
-				cout << "Processor " << _socket.address().host().toString() << ":" << _socket.address().port()  << "  received: " <<  n << " from " << sender.host().toString() << ":" << sender.port() << endl;
+                LOG(INFO) << "Processor " << _socket.address().host().toString() << ":" << _socket.address().port()  << "  received: " <<  n << " from " << sender.host().toString() << ":" << sender.port();
                 //_socket.sendTo(inputVector, outputVector);
 
                 //std::ofstream outfile ("proc.bin",std::ofstream::binary);
@@ -156,10 +157,10 @@ void SRProcessor::run(){
                     curByte+=responses[i].totalByteSize;
                 }
 
-                cout << "Processor " << _socket.address().host().toString() << ":" << _socket.address().port()  << " sent: " << _socket.sendTo(&outbuffer[0], totalSize, sender)  << endl;
+                LOG(INFO) << "Processor " << _socket.address().host().toString() << ":" << _socket.address().port()  << " sent: " << _socket.sendTo(&outbuffer[0], totalSize, sender) ;
 
 			} catch (Poco::Exception& exc){
-				std::cerr << "UDPEchoServer: " << exc.displayText() << std::endl;
+                CLOG(ERROR,"Processor") << "UDPEchoServer: " << exc.displayText();
 			}
             if(inBuffer != NULL)
                 delete[] inBuffer;

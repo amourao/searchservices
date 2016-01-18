@@ -13,6 +13,8 @@
 #include <Poco/Thread.h>
 #include <Poco/Event.h>
 
+#include <easylogging++.h>
+
 #include "SRStrucs.h"
 #include "../../analyser/tools/MatrixTools.h"
 

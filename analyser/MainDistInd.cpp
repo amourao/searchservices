@@ -10,6 +10,10 @@
 #include <jsoncpp/json/json.h>
 #include <jsoncpp/json/autolink.h>
 
+//#define ELPP_THREAD_SAFE
+
+#include <easylogging++.h>
+
 #include "tools/TrainTestFeaturesTools.h"
 #include "tools/MIRFlickrImporter.h"
 #include "tools/tinyImageImporter.h"
@@ -24,6 +28,8 @@
 #include "../commons/StringTools.h"
 #include "../commons/Timing.h"
 #include "../commons/LoadConfig.h"
+
+INITIALIZE_EASYLOGGINGPP
 
 using namespace std;
 
@@ -106,6 +112,10 @@ int testDistIndexer(int argc, char *argv[]){
 }
 
 int srMaster(int argc, char *argv[]){
+
+}
+
+int srTest(int argc, char *argv[]){
     string paramFile(argv[1]);
     map<string,string> parameters;
 	vector<IIndexer*> indexers;
@@ -115,35 +125,64 @@ int srMaster(int argc, char *argv[]){
 
 	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
 
+
+
+
+    uint nServers = std::stoi(parameters["divisions"]);
+    uint nBuckets = std::stoi(parameters["nBuckets"]);
+    uint startPort = std::stoi(parameters["port"])+1;
+    uint nBucketsPerServer = nBuckets / nServers;
+
+    uint accum = std::stoi(parameters["bufferOffset"]);
+
     map<string,string> params;
-    params["bufferSize"] = "66666";
-    params["port"] = "12345";
 
-    params["bucketOffset"] = "0";
-    params["bucketCount"] = "512";
+    vector<SRProcessor*> ser;
 
-    string name = "name";
-    SRProcessor srp(name,params);
-    srp.load("tmp");
+    parameters["servers"] = "";
+    params["bufferSize"] = parameters["bufferSize"];
+    for (uint i = 0; i < nServers; i++){
 
-    name = "name2";
-    params["bucketOffset"] = "512";
-    params["port"] = "12346";
-    SRProcessor srp2(name,params);
-    srp2.load("tmp");
+        params["port"] = std::to_string(startPort++);
+        parameters["servers"] += "localhost:" + params["port"];
 
+        params["bucketOffset"] = std::to_string(accum);
+
+
+        if (i == nServers-1){
+            params["bucketCount"] = std::to_string(nBuckets-accum);
+            accum=nBuckets;
+        } else {
+            params["bucketCount"] = std::to_string(nBucketsPerServer);
+            accum+=nBucketsPerServer;
+
+            parameters["servers"] +=  ";";
+        }
+        string name = "srProcessor_" + std::to_string(i);
+        SRProcessor* srp = new SRProcessor(name,params);
+        srp->load("tmp");
+        ser.push_back(srp);
+    }
+    string name = "srMaster";
     arma::fmat dataToIndex;
-    dataToIndex.load(parameters["data"]);
+    dataToIndex.load(parameters["dataQ"]);
 
     SRMaster srm(name,parameters);
-    arma::fmat query = dataToIndex.col(0);
-    std::pair<vector<unsigned long>,vector<float> > r = srm.knnSearchIdLong(query,10,1);
 
-    cout << "********** RESULTS **********" << endl;
-    for(int i = 0; i < r.first.size(); i++){
-        cout << r.first[i] << " " << r.second[i] << endl;
+    uint nQueries = std::stoi(parameters["nQueries"]);
+
+    //#pragma omp parallel for schedule(dynamic)
+    for(uint i = 0; i < nQueries; i++){
+        arma::fmat query = dataToIndex.col(i);
+        std::pair<vector<unsigned long>,vector<float> > r = srm.knnSearchIdLong(query,std::stoi(parameters["n"]),std::stod(parameters["limit"]));
+
+        LOG(INFO) << "********** RESULTS **********";
+        LOG(INFO) << "************* " << i << " ************";
+        for(int j = 0; j < r.first.size(); j++){
+            LOG(INFO) << r.first[j] << " " << r.second[j];
+        }
+        LOG(INFO) << "*****************************";
     }
-    cout << "*****************************" << endl;
 
 
     return 0;
@@ -165,14 +204,15 @@ int dataPreProcessor(int argc, char *argv[]){
     arma::fmat dataToIndex;
     dataToIndex.load(parameters["data"]);
 
-    uint divisions = std::stoi(parameters["divisions"]);
-
     std::vector<std::vector<Coefficient>> indexData(1024);
 
     uint sizeOfCoeff = sizeof(unsigned long)*2 + sizeof(float);
     uint numBuckets = 1024;
+    uint divisions = std::stoi(parameters["divisions"]);
 
     uint totalSize = sizeof(uint)+sizeof(uint)*numBuckets;
+
+
     for(long i = 0; i < dataToIndex.n_cols; i++){
         arma::fmat features = dataToIndex.col(i);
         arma::fmat sparseRep;
@@ -211,12 +251,12 @@ int dataPreProcessor(int argc, char *argv[]){
 
         }
     }
-    std::ofstream outfile ("tmp_coeffs.bin",std::ofstream::binary);
+    std::ofstream outfile ("tmpB_coeffs.bin",std::ofstream::binary);
     outfile.write (&dataToSave[0],curr);
     outfile.close();
 
-    dataToIndex.save("tmp_features.bin");
-
+    dataToIndex.save("tmpB_features.bin");
+    /*
     curr = 0;
     uint nBuckets = *reinterpret_cast<uint*>(&dataToSave[curr]);
     curr += sizeof(uint);
@@ -241,6 +281,7 @@ int dataPreProcessor(int argc, char *argv[]){
             indexData2[i].push_back(Coefficient(vector_pos,original_id,value));
         }
     }
+    */
     /*
     cout << indexData2.size() << endl;
     cout << indexData.size() << endl;
@@ -272,8 +313,10 @@ int srProcessor(int argc, char *argv[]){
     return 0;
 }
 
-
 int main(int argc, char *argv[]){
+    //el::Helpers::setCrashHandler(myCrashHandler);
+    //el::Loggers::addFlag( el::LoggingFlag::DisableApplicationAbortOnFatalLog );
+    el::Loggers::addFlag( el::LoggingFlag::ColoredTerminalOutput );
 
     if(StringTools::endsWith(string(argv[1]),"testDistIndexer"))
         testDistIndexer(argc-1,&argv[1]);
@@ -281,6 +324,8 @@ int main(int argc, char *argv[]){
         srMaster(argc-1,&argv[1]);
     else if(StringTools::endsWith(string(argv[1]),"srProcessor"))
         srProcessor(argc-1,&argv[1]);
+    else if(StringTools::endsWith(string(argv[1]),"srTest"))
+        srTest(argc-1,&argv[1]);
     else if(StringTools::endsWith(string(argv[1]),"dataPreProcessor"))
         dataPreProcessor(argc-1,&argv[1]);
 
