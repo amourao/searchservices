@@ -905,8 +905,30 @@
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
 		</Unit>
-		<Unit filename="analyser/nVector/SRExtractor.cpp" />
-		<Unit filename="analyser/nVector/SRExtractor.h" />
+		<Unit filename="analyser/nVector/SRExtractor.cpp">
+			<Option target="ReleaseMainInd" />
+			<Option target="ReleaseMainAna" />
+			<Option target="ReleaseServer" />
+			<Option target="DebugMainInd" />
+			<Option target="DebugMainAna" />
+			<Option target="DebugServer" />
+			<Option target="ReleaseEusipco" />
+			<Option target="DebugEusipco" />
+			<Option target="ReleaseDistIndexing" />
+			<Option target="DebugDistIndexing" />
+		</Unit>
+		<Unit filename="analyser/nVector/SRExtractor.h">
+			<Option target="ReleaseMainInd" />
+			<Option target="ReleaseMainAna" />
+			<Option target="ReleaseServer" />
+			<Option target="DebugMainInd" />
+			<Option target="DebugMainAna" />
+			<Option target="DebugServer" />
+			<Option target="ReleaseEusipco" />
+			<Option target="DebugEusipco" />
+			<Option target="ReleaseDistIndexing" />
+			<Option target="DebugDistIndexing" />
+		</Unit>
 		<Unit filename="analyser/nVector/SegmentedHistogramExtractor.cpp">
 			<Option target="ReleaseMainInd" />
 			<Option target="ReleaseMainAna" />
