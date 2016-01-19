@@ -48,20 +48,6 @@
 					<Add option="-s" />
 				</Linker>
 			</Target>
-			<Target title="ReleaseEusipco">
-				<Option output="bin/Release/runEusipco" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj/Release/" />
-				<Option type="1" />
-				<Option compiler="gnu_gcc_compiler_49" />
-				<Option parameters="~/code/searchservices/default.json" />
-				<Compiler>
-					<Add option="-O2" />
-					<Add directory="commons" />
-				</Compiler>
-				<Linker>
-					<Add option="-s" />
-				</Linker>
-			</Target>
 			<Target title="ReleaseDistIndexing">
 				<Option output="bin/Release/distIndexer" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
@@ -109,23 +95,37 @@
 					<Add directory="commons" />
 				</Compiler>
 			</Target>
-			<Target title="DebugEusipco">
-				<Option output="bin/Debug/runEusipco" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj/Debug/" />
-				<Option type="1" />
-				<Option compiler="gnu_gcc_compiler_49" />
-				<Option parameters="~/code/searchservices/default.json" />
-				<Compiler>
-					<Add option="-g" />
-					<Add directory="commons" />
-				</Compiler>
-			</Target>
 			<Target title="DebugDistIndexing">
 				<Option output="bin/Debug/distIndexer" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gnu_gcc_compiler_49" />
 				<Option parameters="srMaster configs/defaultMaster.json" />
+				<Compiler>
+					<Add option="-g" />
+					<Add directory="commons" />
+				</Compiler>
+			</Target>
+			<Target title="ReleaseEusipco">
+				<Option output="bin/Release/runEusipco" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gnu_gcc_compiler_49" />
+				<Option parameters="~/code/searchservices/default.json" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add directory="commons" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+			<Target title="DebugEusipco">
+				<Option output="bin/Debug/runEusipco" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gnu_gcc_compiler_49" />
+				<Option parameters="~/code/searchservices/default.json" />
 				<Compiler>
 					<Add option="-g" />
 					<Add directory="commons" />
