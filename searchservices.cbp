@@ -139,7 +139,6 @@
 				<Option parameters="~/code/searchservices/config.json" />
 				<Option projectCompilerOptionsRelation="1" />
 				<Option projectLinkerOptionsRelation="1" />
-				<Option projectIncludeDirsRelation="1" />
 				<Option projectResourceIncludeDirsRelation="1" />
 				<Option projectLibDirsRelation="1" />
 				<Compiler>
@@ -160,7 +159,6 @@
 				<Option parameters="/home/amourao/code/shotdetection/demoVideos/2rWTjNUCvY2qIu4Kv9O4.mp4" />
 				<Option projectCompilerOptionsRelation="1" />
 				<Option projectLinkerOptionsRelation="1" />
-				<Option projectIncludeDirsRelation="1" />
 				<Option projectResourceIncludeDirsRelation="1" />
 				<Option projectLibDirsRelation="1" />
 				<Compiler>
@@ -607,10 +605,54 @@
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
 		</Unit>
-		<Unit filename="analyser/nVector/ANdOMPExtractor.cpp" />
-		<Unit filename="analyser/nVector/ANdOMPExtractor.h" />
-		<Unit filename="analyser/nVector/ANdOMPTrainer.cpp" />
-		<Unit filename="analyser/nVector/ANdOMPTrainer.h" />
+		<Unit filename="analyser/nVector/ANdOMPExtractor.cpp">
+			<Option target="ReleaseMainInd" />
+			<Option target="ReleaseMainAna" />
+			<Option target="ReleaseServer" />
+			<Option target="DebugMainInd" />
+			<Option target="DebugMainAna" />
+			<Option target="DebugServer" />
+			<Option target="ReleaseEusipco" />
+			<Option target="DebugEusipco" />
+			<Option target="ReleaseDistIndexing" />
+			<Option target="DebugDistIndexing" />
+		</Unit>
+		<Unit filename="analyser/nVector/ANdOMPExtractor.h">
+			<Option target="ReleaseMainInd" />
+			<Option target="ReleaseMainAna" />
+			<Option target="ReleaseServer" />
+			<Option target="DebugMainInd" />
+			<Option target="DebugMainAna" />
+			<Option target="DebugServer" />
+			<Option target="ReleaseEusipco" />
+			<Option target="DebugEusipco" />
+			<Option target="ReleaseDistIndexing" />
+			<Option target="DebugDistIndexing" />
+		</Unit>
+		<Unit filename="analyser/nVector/ANdOMPTrainer.cpp">
+			<Option target="ReleaseMainInd" />
+			<Option target="ReleaseMainAna" />
+			<Option target="ReleaseServer" />
+			<Option target="DebugMainInd" />
+			<Option target="DebugMainAna" />
+			<Option target="DebugServer" />
+			<Option target="ReleaseEusipco" />
+			<Option target="DebugEusipco" />
+			<Option target="ReleaseDistIndexing" />
+			<Option target="DebugDistIndexing" />
+		</Unit>
+		<Unit filename="analyser/nVector/ANdOMPTrainer.h">
+			<Option target="ReleaseMainInd" />
+			<Option target="ReleaseMainAna" />
+			<Option target="ReleaseServer" />
+			<Option target="DebugMainInd" />
+			<Option target="DebugMainAna" />
+			<Option target="DebugServer" />
+			<Option target="ReleaseEusipco" />
+			<Option target="DebugEusipco" />
+			<Option target="ReleaseDistIndexing" />
+			<Option target="DebugDistIndexing" />
+		</Unit>
 		<Unit filename="analyser/nVector/CombinedExtractor.cpp">
 			<Option target="ReleaseMainInd" />
 			<Option target="ReleaseMainAna" />
@@ -1647,8 +1689,7 @@
 			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
 		<Unit filename="indexer/DistributedIndexWrapperClient.h">
-			<Option target="MainShotDetectionMulti" />
-			<Option target="MainShotDetectionSingle" />
+			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
 		<Unit filename="indexer/DistributedIndexWrapperClientDist.cpp">
 			<Option target="ReleaseMainInd" />
@@ -1662,7 +1703,18 @@
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
 		</Unit>
-		<Unit filename="indexer/DistributedIndexWrapperClientDist.h" />
+		<Unit filename="indexer/DistributedIndexWrapperClientDist.h">
+			<Option target="ReleaseMainInd" />
+			<Option target="ReleaseMainAna" />
+			<Option target="ReleaseServer" />
+			<Option target="DebugMainInd" />
+			<Option target="DebugMainAna" />
+			<Option target="DebugServer" />
+			<Option target="ReleaseEusipco" />
+			<Option target="DebugEusipco" />
+			<Option target="ReleaseDistIndexing" />
+			<Option target="DebugDistIndexing" />
+		</Unit>
 		<Unit filename="indexer/DistributedIndexWrapperServer.cpp">
 			<Option target="ReleaseMainInd" />
 			<Option target="ReleaseMainAna" />
@@ -1675,7 +1727,18 @@
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
 		</Unit>
-		<Unit filename="indexer/DistributedIndexWrapperServer.h" />
+		<Unit filename="indexer/DistributedIndexWrapperServer.h">
+			<Option target="ReleaseMainInd" />
+			<Option target="ReleaseMainAna" />
+			<Option target="ReleaseServer" />
+			<Option target="DebugMainInd" />
+			<Option target="DebugMainAna" />
+			<Option target="DebugServer" />
+			<Option target="ReleaseEusipco" />
+			<Option target="DebugEusipco" />
+			<Option target="ReleaseDistIndexing" />
+			<Option target="DebugDistIndexing" />
+		</Unit>
 		<Unit filename="indexer/FactoryIndexer.cpp">
 			<Option target="ReleaseMainInd" />
 			<Option target="ReleaseMainAna" />
