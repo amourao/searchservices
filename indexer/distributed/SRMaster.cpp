@@ -44,7 +44,7 @@ std::pair<vector<unsigned long>,vector<float> > SRMaster::knnSearchIdLong(arma::
     arma::fmat sparseRep;
     baseFeatureExtractor->extractFeatures(query,sparseRep);
 
-    sparseRep= sparseRep.t();
+    sparseRep = sparseRep.t();
 
     vector<Poco::Net::SocketAddress> servers = getRelevantServers(sparseRep);
 
@@ -144,8 +144,6 @@ void SRMaster::sendMessage(vector<QueryStructReq>& query, vector<QueryStructRsp>
     //std::ofstream outfile ("master.bin",std::ofstream::binary);
     //outfile.write (&inbuffer[0],totalSize);
     //outfile.close();
-
-
 
     int floatBufferSize = 0;
     char* outputBytes = new char[bufferSize];

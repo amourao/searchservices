@@ -123,7 +123,7 @@ void SRProcessor::run(){
     _ready.set();
 	Poco::Timespan span(250000);
 
-	cout << "started Processor at " << _socket.address().host().toString() << ":" << _socket.address().port();
+	cout << "started Processor at " << _socket.address().host().toString() << ":" << _socket.address().port() << endl;
 
 	while (!_stop){
 		if (_socket.poll(span, Poco::Net::Socket::SELECT_READ)){
@@ -327,7 +327,10 @@ bool SRProcessor::load(string basePath){
     for(long i = 0; i < bucketOffset; i++){
         uint co = *reinterpret_cast<uint*>(&buffer[curr]);
         curr += sizeof(uint) + (sizeof(unsigned long)*2+sizeof(float))*co;
+        //cout << co << " ";
     }
+
+    //cout << endl << nBuckets << " " << bucketOffset << " " << bucketCount << " " << curr << endl;
     for(long i = 0; i < bucketCount; i++){
         uint co = *reinterpret_cast<uint*>(&buffer[curr]);
         curr += sizeof(uint);
@@ -339,7 +342,7 @@ bool SRProcessor::load(string basePath){
             unsigned long original_id = *reinterpret_cast<unsigned long*>(&buffer[curr]);
             curr += sizeof(unsigned long);
 
-            unsigned long value = *reinterpret_cast<float*>(&buffer[curr]);
+            float value = *reinterpret_cast<float*>(&buffer[curr]);
             curr += sizeof(float);
 
             indexData[i].push_back(Coefficient(vector_pos,original_id,value));

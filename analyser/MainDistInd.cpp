@@ -142,7 +142,7 @@ int srMaster(int argc, char *argv[]){
         cout << "********** RESULTS **********" << endl;
         cout << "************* " << i << " ************" << endl;
         for(int j = 0; j < r.first.size(); j++){
-            cout << r.first[j] << " " << r.second[j];
+            cout << r.first[j] << " " << r.second[j] << endl;
         }
         cout << "*****************************" << endl;
     }
@@ -346,10 +346,10 @@ int srProcessor(int argc, char *argv[]){
 
 	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
 
-    uint nServers = std::stoi(parameters["divisions"]);
-    uint nBuckets = std::stoi(parameters["totalBuckets"]);
+    uint divisions = std::stoi(parameters["divisions"]);
+    uint nBuckets = std::stoi(parameters["bucketCount"]);
     uint startPort = std::stoi(parameters["port"]);
-    uint nBucketsPerServer = std::stoi(parameters["bucketCount"]);
+    uint nBucketsPerServer = nBuckets/divisions;
 
     uint accum = std::stoi(parameters["bucketOffset"]);
 
@@ -360,7 +360,7 @@ int srProcessor(int argc, char *argv[]){
     vector<SRProcessor*> ser;
 
     params["bufferSize"] = parameters["bufferSize"];
-    for (uint i = 0; i < nServers; i++){
+    for (uint i = 0; i < divisions; i++){
 
         params["port"] = std::to_string(startPort++);
         params["bucketOffset"] = std::to_string(accum);

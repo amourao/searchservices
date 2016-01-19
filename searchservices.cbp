@@ -100,7 +100,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gnu_gcc_compiler_49" />
-				<Option parameters="srMaster configs/defaultMaster.json" />
+				<Option parameters="srProcessor configs/defaultProcessor_saito_1.json" />
 				<Compiler>
 					<Add option="-g" />
 					<Add directory="commons" />
