@@ -12,7 +12,7 @@
 
 //#define ELPP_THREAD_SAFE
 
-#include <easylogging++.h>
+//#include <easylogging++.h>
 
 #include "tools/TrainTestFeaturesTools.h"
 #include "tools/MIRFlickrImporter.h"
@@ -29,7 +29,7 @@
 #include "../commons/Timing.h"
 #include "../commons/LoadConfig.h"
 
-INITIALIZE_EASYLOGGINGPP
+//INITIALIZE_EASYLOGGINGPP
 
 using namespace std;
 
@@ -212,12 +212,12 @@ int srTest(int argc, char *argv[]){
         arma::fmat query = dataToIndex.col(i);
         std::pair<vector<unsigned long>,vector<float> > r = srm.knnSearchIdLong(query,std::stoi(parameters["n"]),std::stod(parameters["limit"]));
 
-        LOG(INFO) << "********** RESULTS **********";
-        LOG(INFO) << "************* " << i << " ************";
+        cout << "********** RESULTS **********" << endl;
+        cout << "************* " << i << " ************" << endl;
         for(int j = 0; j < r.first.size(); j++){
-            LOG(INFO) << r.first[j] << " " << r.second[j];
+            cout << r.first[j] << " " << r.second[j];
         }
-        LOG(INFO) << "*****************************";
+        cout << "*****************************" << endl;
     }
 
 

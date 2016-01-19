@@ -25,7 +25,7 @@ SRMaster::SRMaster(string& typeId, map<string,string>& params){
         serverAddresses.push_back(Poco::Net::SocketAddress(servers.at(i)));
     }
 
-    LOG(INFO) << "started Master at " << clientAddress.host().toString() << ":" << clientAddress.port();
+    cout << "started Master at " << clientAddress.host().toString() << ":" << clientAddress.port() << endl;
 
 }
 
@@ -75,7 +75,7 @@ std::pair<vector<unsigned long>,vector<float> > SRMaster::knnSearchIdLong(arma::
             sendMessage(input,output,server_address);
         }
         if(output.size() == 0){
-            //LOG(INFO) << "Master " << " failed to receive response from " << server_address.host().toString() << ":" << server_address.port();
+            cout << "Master " << " failed to receive response from " << server_address.host().toString() << ":" << server_address.port() << endl;
         }
         for(uint s = 0; s < output.size(); s++){
             for(uint p = 0; p < output[s].indexes.size(); p++){
@@ -135,11 +135,11 @@ void SRMaster::sendMessage(vector<QueryStructReq>& query, vector<QueryStructRsp>
 
     Poco::Net::DatagramSocket dgs(clientAddress);
     dgs.setReceiveTimeout(Poco::Timespan(1000*10));
-    //LOG(INFO) << "Master " << clientAddress.host().toString() << ":" << clientAddress.port()  << " wants to send " << totalSize << " to " << server.host().toString() << ":" << server.port();
+    cout << "Master " << clientAddress.host().toString() << ":" << clientAddress.port()  << " wants to send " << totalSize << " to " << server.host().toString() << ":" << server.port() << endl;
 
-    //LOG(INFO) << clientAddress.host().toString() << " " << clientAddress.port();
+    cout << clientAddress.host().toString() << " " << clientAddress.port() << endl;
     int sent = dgs.sendTo(&inbuffer[0], totalSize, server);
-    //LOG(INFO) << "Master " << clientAddress.host().toString() << ":" << clientAddress.port()  << " sent " << sent << " to " << server.host().toString() << ":" << server.port();
+    cout << "Master " << clientAddress.host().toString() << ":" << clientAddress.port()  << " sent " << sent << " to " << server.host().toString() << ":" << server.port() << endl;
 
     //std::ofstream outfile ("master.bin",std::ofstream::binary);
     //outfile.write (&inbuffer[0],totalSize);
@@ -152,7 +152,7 @@ void SRMaster::sendMessage(vector<QueryStructReq>& query, vector<QueryStructRsp>
 
     try {
         floatBufferSize = dgs.receiveBytes(outputBytes,bufferSize);
-        //LOG(INFO) << "Master " << clientAddress.host().toString() << ":" << clientAddress.port()  << " received " << floatBufferSize << " from " << server.host().toString() << ":" << server.port();
+        cout << "Master " << clientAddress.host().toString() << ":" << clientAddress.port()  << " received " << floatBufferSize << " from " << server.host().toString() << ":" << server.port() << endl;
 
         uint numOpsRsp = (uint)outputBytes[0];
         uint accumBytes = 1;
@@ -206,7 +206,7 @@ vector<Poco::Net::SocketAddress> SRMaster::getRelevantServers(arma::fmat& sparse
     for(uint i = 0; i < results.size(); i++){
         relServers += std::to_string(resultsIndex.at(i)) + " ";
     }
-    LOG(INFO) << relServers ;
+    cout << relServers << endl;
 
     return results;
 

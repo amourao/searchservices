@@ -123,7 +123,7 @@ void SRProcessor::run(){
     _ready.set();
 	Poco::Timespan span(250000);
 
-	LOG(INFO) << "started Processor at " << _socket.address().host().toString() << ":" << _socket.address().port();
+	cout << "started Processor at " << _socket.address().host().toString() << ":" << _socket.address().port();
 
 	while (!_stop){
 		if (_socket.poll(span, Poco::Net::Socket::SELECT_READ)){
@@ -133,7 +133,7 @@ void SRProcessor::run(){
                 inBuffer = new char[_bufferSize];
 				Poco::Net::SocketAddress sender;
 				int n =  _socket.receiveFrom(inBuffer, _bufferSize, sender);
-                LOG(INFO) << "Processor " << _socket.address().host().toString() << ":" << _socket.address().port()  << "  received: " <<  n << " from " << sender.host().toString() << ":" << sender.port();
+                cout << "Processor " << _socket.address().host().toString() << ":" << _socket.address().port()  << "  received: " <<  n << " from " << sender.host().toString() << ":" << sender.port() << endl;
                 //_socket.sendTo(inputVector, outputVector);
 
                 //std::ofstream outfile ("proc.bin",std::ofstream::binary);
@@ -157,7 +157,7 @@ void SRProcessor::run(){
                     curByte+=responses[i].totalByteSize;
                 }
 
-                LOG(INFO) << "Processor " << _socket.address().host().toString() << ":" << _socket.address().port()  << " sent: " << _socket.sendTo(&outbuffer[0], totalSize, sender) ;
+                cout << "Processor " << _socket.address().host().toString() << ":" << _socket.address().port()  << " sent: " << _socket.sendTo(&outbuffer[0], totalSize, sender) << endl;
 
 			} catch (Poco::Exception& exc){
                 CLOG(ERROR,"Processor") << "UDPEchoServer: " << exc.displayText();
