@@ -160,7 +160,7 @@ void SRProcessor::run(){
                 cout << "Processor " << _socket.address().host().toString() << ":" << _socket.address().port()  << " sent: " << _socket.sendTo(&outbuffer[0], totalSize, sender) << endl;
 
 			} catch (Poco::Exception& exc){
-                CLOG(ERROR,"Processor") << "UDPEchoServer: " << exc.displayText();
+                cerr << "UDPEchoServer: " << exc.displayText() << endl;
 			}
             if(inBuffer != NULL)
                 delete[] inBuffer;

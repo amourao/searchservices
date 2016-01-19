@@ -139,12 +139,12 @@ int srMaster(int argc, char *argv[]){
         arma::fmat query = dataToIndex.col(i);
         std::pair<vector<unsigned long>,vector<float> > r = srm.knnSearchIdLong(query,std::stoi(parameters["n"]),std::stod(parameters["limit"]));
 
-        LOG(INFO) << "********** RESULTS **********";
-        LOG(INFO) << "************* " << i << " ************";
+        cout << "********** RESULTS **********" << endl;
+        cout << "************* " << i << " ************" << endl;
         for(int j = 0; j < r.first.size(); j++){
-            LOG(INFO) << r.first[j] << " " << r.second[j];
+            cout << r.first[j] << " " << r.second[j];
         }
-        LOG(INFO) << "*****************************";
+        cout << "*****************************" << endl;
     }
 
     return 0;
@@ -385,7 +385,7 @@ int srProcessor(int argc, char *argv[]){
 int main(int argc, char *argv[]){
     //el::Helpers::setCrashHandler(myCrashHandler);
     //el::Loggers::addFlag( el::LoggingFlag::DisableApplicationAbortOnFatalLog );
-    el::Loggers::addFlag( el::LoggingFlag::ColoredTerminalOutput );
+    //el::Loggers::addFlag( el::LoggingFlag::ColoredTerminalOutput );
 
     if(StringTools::endsWith(string(argv[1]),"testDistIndexer"))
         testDistIndexer(argc-1,&argv[1]);
