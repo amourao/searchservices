@@ -347,38 +347,29 @@ int srProcessor(int argc, char *argv[]){
 	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
 
     uint nServers = std::stoi(parameters["divisions"]);
-    uint nBuckets = std::stoi(parameters["nBuckets"]);
-    uint startPort = std::stoi(parameters["port"])+1;
-    uint nBucketsPerServer = nBuckets / nServers;
+    uint nBuckets = std::stoi(parameters["totalBuckets"]);
+    uint startPort = std::stoi(parameters["port"]);
+    uint nBucketsPerServer = std::stoi(parameters["bucketCount"]);
 
-    uint accum = std::stoi(parameters["bufferOffset"]);
+    uint accum = std::stoi(parameters["bucketOffset"]);
+
+    string path = parameters["path"];
 
     map<string,string> params;
 
     vector<SRProcessor*> ser;
 
-    parameters["servers"] = "";
     params["bufferSize"] = parameters["bufferSize"];
     for (uint i = 0; i < nServers; i++){
 
         params["port"] = std::to_string(startPort++);
-        parameters["servers"] += "localhost:" + params["port"];
-
         params["bucketOffset"] = std::to_string(accum);
+        params["bucketCount"] = std::to_string(nBucketsPerServer);
+        accum+=nBucketsPerServer;
 
-
-        if (i == nServers-1){
-            params["bucketCount"] = std::to_string(nBuckets-accum);
-            accum=nBuckets;
-        } else {
-            params["bucketCount"] = std::to_string(nBucketsPerServer);
-            accum+=nBucketsPerServer;
-
-            parameters["servers"] +=  ";";
-        }
         string name = "srProcessor_" + std::to_string(i);
         SRProcessor* srp = new SRProcessor(name,params);
-        srp->load("tmp");
+        srp->load(path);
         ser.push_back(srp);
     }
     for(;;){}
