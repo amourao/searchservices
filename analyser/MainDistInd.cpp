@@ -374,7 +374,10 @@ int srProcessor(int argc, char *argv[]){
     }
 
     //for(;;){}
-    pthread_exit(NULL);
+    //pthread_exit(NULL);
+    for (uint i = 0; i < ser.size(); i++){
+        ser.at(i)->_thread.join();
+    }
 
     return 0;
 }
