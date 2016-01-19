@@ -67,7 +67,6 @@
 #include "../indexer/FlannkNNIndexer.h"
 #include "../indexer/MSIDXIndexer.h"
 #include "../indexer/DistributedIndexWrapperServer.h"
-#include "../indexer/DistributedIndexWrapperClient.h"
 #include "../indexer/DistributedIndexWrapperClientDist.h"
 
 
