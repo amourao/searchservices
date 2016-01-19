@@ -372,7 +372,10 @@ int srProcessor(int argc, char *argv[]){
         srp->load(path);
         ser.push_back(srp);
     }
-    for(;;){}
+
+    //for(;;){}
+    pthread_exit(NULL);
+
     return 0;
 }
 

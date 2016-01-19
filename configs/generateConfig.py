@@ -5,8 +5,8 @@ portServer=12350
 nServers=2
 portProcessors=12360
 nBuckets=1024
-processors1=['arthur','cobb','mal','saito']
-processors=['localhost']
+
+
 processorsPerServer=2
 divisionsPerProcessor=2
 nQueries=100
@@ -16,15 +16,68 @@ limit=0.1
 n=10
 path='tmp'
 
+runPath2 = '/localstore/amourao/dictionaryLearning/'
+binPath2 = './distIndexer'
+processors2=['arthur','cobb','mal','saito']
+
+
+processors=['localhost']
+binPath = './bin/Release/distIndexer'
+runPath = '~/code/searchservices/'
 
 data="/localstore/amourao/saIndexingSplits/configCondor4_3.json_testI.mat",    
 dataQ="/localstore/amourao/saIndexingSplits/configCondor4_3.json_testQ.mat"
 
 servers=''
+
+port = portProcessors
 for processor in processors:
-	for port in range(portProcessors,portProcessors+processorsPerServer):
-		servers += processor + ':' + str(port) + ';'
+	if processor != 'localhost':
+		port = portProcessors
+	for e in range(processorsPerServer):
+		for d in range(divisions):
+			servers += processor + ':' + str(port) + ';'
+			port+=1
+
 servers=servers[:-1]
+
+f_sh = open('runAll.sh', 'w')
+
+offset = 0
+nBucketsPerServer = nBuckets/len(processors)/processorsPerServer
+
+for processor in processors:
+	i=0
+	port = portProcessors
+	for i in range(processorsPerServer):
+		f = open('defaultProcessor_' + processor + "_" + str(i) + '.json', 'w')
+		sys.stdout = f
+		
+		print '{"parameters": {'
+		print '\t"bufferSize": "65536",'
+		print '\t"totalBuckets": "'+str(nBuckets)+'",'
+		print '\t"bucketCount": "'+str(nBucketsPerServer)+'",'
+		print '\t"bucketOffset": "'+str(offset)+'",'
+		print '\t"path": "'+path+'",'
+		offset+=nBucketsPerServer
+		print '\t"port": "'+str(port)+'",'
+		port+=divisions
+		print '\t"divisions": "'+str(divisionsPerProcessor)+'"'
+		print '},'
+		print '\t"endpoints": {'
+		print '\t\t"indexer": [],'
+		print '\t\t"analyser": [],'
+		print '\t\t"classifier": []'
+		print '\t}'
+		print '}'
+		f.close()
+		sys.stdout = f_sh
+		command = 'cd ' + runPath + ' && ' + binPath + ' srProcessor configs/defaultProcessor_' + processor + "_" + str(i) + '.json > logProcessor_' + str(i) + '.txt 2>&1&'
+		i+=1
+		if processor == 'localhost':
+			print command
+		else:
+			print 'ssh ' + processor + ' "' + command + '"'
 
 
 for i in range(nServers):
@@ -59,30 +112,7 @@ for i in range(nServers):
 	print '\t\t"classifier": []'
 	print '\t}'
 	print '}'
-
-offset = 0
-nBucketsPerServer = nBuckets/len(processors)/processorsPerServer
-
-for processor in processors:
-	i=0
-	for port in range(portProcessors,portProcessors+processorsPerServer):
-		f = open('defaultProcessor_' + processor + "_" + str(i) + '.json', 'w')
-		sys.stdout = f
-		i+=1
-		print '{"parameters": {'
-		print '\t"bufferSize": "65536",'
-		print '\t"totalBuckets": "'+str(nBuckets)+'",'
-		print '\t"bucketCount": "'+str(nBucketsPerServer)+'",'
-		print '\t"bucketOffset": "'+str(offset)+'",'
-		print '\t"path": "'+path+'",'
-		offset+=nBucketsPerServer
-		print '\t"port": "'+str(port)+'",'
-		print '\t"divisions": "'+str(divisionsPerProcessor)+'"'
-		print '},'
-		print '\t"endpoints": {'
-		print '\t\t"indexer": [],'
-		print '\t\t"analyser": [],'
-		print '\t\t"classifier": []'
-		print '\t}'
-		print '}'
+	f.close()
+	sys.stdout = f_sh
+	print 'cd ' + runPath + ' && ' + binPath + ' srMaster configs/defaultMaster_' + str(i) + '.json > logMaster_' + str(i) + '.txt 2>&1&'
 
