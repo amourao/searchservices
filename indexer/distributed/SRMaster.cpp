@@ -96,6 +96,9 @@ std::pair<vector<unsigned long>,vector<float> > SRMaster::knnSearchIdLong(arma::
             sendMessage(input,output,server_address);
         }
         if(output.size() == 0){
+            #ifdef MEASURE_TIME
+                missedPackages++;
+            #endif
             cout << "Master " << " failed to receive response from " << server_address.host().toString() << ":" << server_address.port() << endl;
         }
         #ifdef MEASURE_TIME
@@ -132,7 +135,6 @@ std::pair<vector<unsigned long>,vector<float> > SRMaster::knnSearchIdLong(arma::
     #ifdef MEASURE_TIME
             totalQueryTime += ELAPSED(totalQueryTimeStart);
             totalSortTime += ELAPSED(totalSortTimeStart);
-            cout << ELAPSED(totalQueryTimeStart) << endl;
     #endif
 	return make_pair(indices,dists);
 }
@@ -183,7 +185,7 @@ void SRMaster::sendMessage(vector<QueryStructReq>& query, vector<QueryStructRsp>
     dgs.setReceiveTimeout(Poco::Timespan(1000*10));
     cout << "Master " << clientAddress.host().toString() << ":" << clientAddress.port()  << " wants to send " << totalSize << " to " << server.host().toString() << ":" << server.port() << endl;
 
-    cout << clientAddress.host().toString() << " " << clientAddress.port() << endl;
+    //cout << clientAddress.host().toString() << " " << clientAddress.port() << endl;
     int sent = dgs.sendTo(&inbuffer[0], totalSize, server);
     cout << "Master " << clientAddress.host().toString() << ":" << clientAddress.port()  << " sent " << sent << " to " << server.host().toString() << ":" << server.port() << endl;
 

@@ -81,10 +81,11 @@ void ANdOMPTrainer::iterate(){
     sumAppearing   = arma::zeros<arma::vec>(D.n_cols);
 
     fe.changeDictionary(D);
+    arma::fmat G = D * arma::trans(D);
     for (arma::uword i = 0; i < X.n_cols; ++i) {
         arma::fmat a,b;
         a = X.col(i);
-        fe.extractFeatures(a,b);
+        fe.extractFeaturesBatchSparseConstrained(a,G,b);
 
         if(withBias){
 

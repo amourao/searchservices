@@ -34,7 +34,7 @@ public:
 	ANdOMPExtractor(arma::fmat& dictionary, int max_iters, double eps);
 	~ANdOMPExtractor();
 
-	void extractFeaturesAlt(arma::fmat& src, arma::fmat& dst);
+	void extractFeaturesBatchSparseConstrained(arma::fmat& src,arma::fmat& G, arma::fmat& dst);
 	void extractFeatures(arma::fmat& src, arma::fmat& dst);
 
 	int getFeatureVectorSize();

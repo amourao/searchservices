@@ -159,6 +159,8 @@ int srMaster(int argc, char *argv[]){
     cout << "\t" << srm.totalCommunicationSendTime/srm.totalNQueries/1000.0 << endl;
     cout << "\t" << srm.totalCommunicationReceiveTime/srm.totalNQueries/1000.0 << endl;
     cout << srm.totalSortTime/srm.totalNQueries/1000.0 << endl << endl;
+    cout << "Missed packages: " << srm.missedPackages << endl << endl;
+
 
     return 0;
 
