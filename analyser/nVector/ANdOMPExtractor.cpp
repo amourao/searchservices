@@ -47,7 +47,7 @@ ANdOMPExtractor::~ANdOMPExtractor(){
 
 }
 
-void ANdOMPExtractor::extractFeaturesAlt(arma::fmat& src, arma::fmat& dst){
+void ANdOMPExtractor::extractFeatures(arma::fmat& src, arma::fmat& dst){
 	// std::cout << "Sparse Constrained" << std::endl;
     arma::Col<float> x = src;
     // Vector with the indexes of the selected atoms. A view is used to simulate the addition of indices.
@@ -149,7 +149,7 @@ void ANdOMPExtractor::extractFeaturesAlt(arma::fmat& src, arma::fmat& dst){
     dst = ipsilon.t();
 }
 
-void ANdOMPExtractor::extractFeatures(arma::fmat& src, arma::fmat& dst){
+void ANdOMPExtractor::extractFeaturesAlt(arma::fmat& src, arma::fmat& dst){
     arma::fmat G = trans(D) * D;
 	// std::cout << "Sparse Constrained" << std::endl;
     arma::Col<float> x = src;
