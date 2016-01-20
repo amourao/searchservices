@@ -33,6 +33,7 @@ public:
 
 	QueryStructRsp index(QueryStructReq queryS);
 	QueryStructRsp knnSearchIdLong(QueryStructReq queryS);
+	QueryStructRsp getStatistics();
 
 	void rebuild();
 	void run();
@@ -43,11 +44,17 @@ public:
 
     Poco::Thread _thread;
 
+    unsigned long totalTime = 0;
+    tp totalTimeStart;
+
     unsigned long totalQueryTime = 0;
     tp totalQueryTimeStart;
 
-	unsigned long totalCommunicationTime = 0;
-	tp totalCommunicationTimeStart;
+	unsigned long totalCommunicationReceiveTime = 0;
+	tp totalCommunicationReceiveTimeStart;
+
+	unsigned long totalCommunicationSendTime = 0;
+	tp totalCommunicationSendTimeStart;
 
 	unsigned long totalBucketTime = 0;
 	tp totalBucketTimeStart;
@@ -55,10 +62,19 @@ public:
 	unsigned long totalSortTime = 0;
 	tp totalSortTimeStart;
 
+    unsigned long totalPreMarshallingTime = 0;
+	tp totalPreMarshallingTimeStart;
+
 	unsigned long totalMarshallingTime = 0;
 	tp totalMarshallingTimeStart;
 
 	unsigned long totalNQueries = 0;
+	unsigned long totalNBucketsReq = 0;
+	unsigned long totalNBucketInsp = 0;
+	unsigned long totalNCandidatesInsp = 0;
+	unsigned long totalNCandidatesInspNonDup = 0;
+    unsigned long missedPackages = 0;
+
 
 private:
 

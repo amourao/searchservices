@@ -161,6 +161,8 @@ int srMaster(int argc, char *argv[]){
     cout << srm.totalSortTime/srm.totalNQueries/1000.0 << endl << endl;
     cout << "Missed packages: " << srm.missedPackages << endl << endl;
 
+    cout << "Processor stats: " << endl;
+    srm.printProcessorsStatistics();
 
     return 0;
 

@@ -269,3 +269,24 @@ vector<Poco::Net::SocketAddress> SRMaster::getRelevantServers(arma::fmat& sparse
     return results;
 
 }
+
+void SRMaster::printProcessorsStatistics(){
+    vector<QueryStructReq> query;
+
+    QueryStructReq q;
+    q.operation = 10;
+
+    query.push_back(q);
+
+    for(uint i = 0; i < serverAddresses.size(); i++){
+        vector<QueryStructRsp> output;
+        Poco::Net::SocketAddress server = serverAddresses.at(i);
+        sendMessage(query, output, server);
+        cout << "Server statistics: " << server.host().toString() << ":" << server.port() << endl;
+        if(output.size() > 0){
+            for(uint j = 0; j < output.at(0).indexes.size(); j++){
+                cout << output.at(0).indexes.at(j) << endl;
+            }
+        }
+    }
+}

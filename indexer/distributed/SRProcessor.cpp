@@ -66,7 +66,6 @@ QueryStructRsp SRProcessor::knnSearchIdLong(QueryStructReq queryS){
 
     uint estimatedCandidateSize = 50;
 
-
     QueryStructRsp result;
 
     vector<unsigned long> indices;
@@ -77,16 +76,37 @@ QueryStructRsp SRProcessor::knnSearchIdLong(QueryStructReq queryS){
 
     map<unsigned long, float> computedDists;
 
+    #ifdef MEASURE_TIME
+        totalBucketTimeStart = NOW();
+    #endif
     //#pragma omp parallel for schedule(dynamic)
     for(uint b = 0; b < buckets.size(); b++){
         int bucket = buckets[b]-bucketOffset;
+        #ifdef MEASURE_TIME
+                totalNBucketsReq++;
+        #endif
         if (bucket >= 0 && bucket < indexData.size()){ //is one of this node buckets
+
+            #ifdef MEASURE_TIME
+                totalNBucketInsp++;
+            #endif
+
             //cout << type << " " << bucket << " " << bucketOffset << endl;
             uint on = indexData[bucket].size()*search_limit;
 
             vector<Coefficient> candidates(indexData[bucket].begin(),indexData[bucket].begin()+on);
             for(uint i = 0; i < candidates.size(); i++){
+
+                #ifdef MEASURE_TIME
+                    totalNCandidatesInsp++;
+                #endif
+
                 if (computedDists.find(candidates[i].original_id) == computedDists.end()){
+
+                    #ifdef MEASURE_TIME
+                        totalNCandidatesInspNonDup++;
+                    #endif
+
                     float dist = norm(data.col(candidates[i].vector_pos) - query, 2);
                     long index = candidates[i].original_id;
                     //#pragma omp critical
@@ -100,6 +120,11 @@ QueryStructRsp SRProcessor::knnSearchIdLong(QueryStructReq queryS){
             }
         }
     }
+
+    #ifdef MEASURE_TIME
+        totalBucketTime += ELAPSED(totalBucketTimeStart);
+        totalSortTimeStart = NOW();
+    #endif
     uint newN = min((uint)n,(uint)dists.size());
 
     auto compare = [](float a, float b){ return a < b; };
@@ -111,6 +136,48 @@ QueryStructRsp SRProcessor::knnSearchIdLong(QueryStructReq queryS){
     result.parameters.push_back(n);
     result.parameters.push_back(newN);
     result.totalByteSize = result.computeTotalByteSize();
+
+    #ifdef MEASURE_TIME
+        totalSortTime += ELAPSED(totalSortTimeStart);
+    #endif
+
+    return result;
+}
+
+QueryStructRsp SRProcessor::getStatistics(){
+    QueryStructRsp result;
+    result.operation = 10;
+
+    result.indexes.push_back(totalTime);
+    result.indexes.push_back(totalQueryTime);
+    result.indexes.push_back(totalCommunicationReceiveTime);
+    result.indexes.push_back(totalCommunicationSendTime);
+    result.indexes.push_back(totalBucketTime);
+    result.indexes.push_back(totalSortTime);
+    result.indexes.push_back(totalPreMarshallingTime);
+    result.indexes.push_back(totalMarshallingTime);
+    result.indexes.push_back(totalNQueries);
+    result.indexes.push_back(totalNBucketsReq);
+    result.indexes.push_back(totalNBucketInsp);
+    result.indexes.push_back(totalNCandidatesInsp);
+    result.indexes.push_back(totalNCandidatesInspNonDup);
+    result.indexes.push_back(missedPackages);
+
+    totalTime = 0;
+    totalQueryTime = 0;
+	totalCommunicationReceiveTime = 0;
+	totalCommunicationSendTime = 0;
+	totalBucketTime = 0;
+	totalSortTime = 0;
+    totalPreMarshallingTime = 0;
+	totalMarshallingTime = 0;
+
+	totalNQueries = 0;
+	totalNBucketsReq = 0;
+	totalNBucketInsp = 0;
+	totalNCandidatesInsp = 0;
+	totalNCandidatesInspNonDup = 0;
+    missedPackages = 0;
 
     return result;
 }
@@ -130,9 +197,19 @@ void SRProcessor::run(){
 
             char* inBuffer = NULL;
 			try	{
+                #ifdef MEASURE_TIME
+                    totalNQueries++;
+                    totalTimeStart = NOW();
+                    totalCommunicationReceiveTimeStart = NOW();
+                #endif
                 inBuffer = new char[_bufferSize];
 				Poco::Net::SocketAddress sender;
+
 				int n =  _socket.receiveFrom(inBuffer, _bufferSize, sender);
+
+				#ifdef MEASURE_TIME
+                    totalCommunicationReceiveTime += ELAPSED(totalCommunicationReceiveTimeStart);
+                #endif
                 cout << "Processor " << _socket.address().host().toString() << ":" << _socket.address().port()  << "  received: " <<  n << " from " << sender.host().toString() << ":" << sender.port() << endl;
                 //_socket.sendTo(inputVector, outputVector);
 
@@ -141,6 +218,11 @@ void SRProcessor::run(){
                 //outfile.close();
 
                 vector<QueryStructRsp> responses = processQueries(inBuffer);
+
+
+                #ifdef MEASURE_TIME
+                    totalPreMarshallingTimeStart = NOW();
+                #endif
 
                 char numOps = (char)responses.size();
                 uint totalSize = 1;
@@ -157,9 +239,22 @@ void SRProcessor::run(){
                     curByte+=responses[i].totalByteSize;
                 }
 
+                #ifdef MEASURE_TIME
+                    totalPreMarshallingTime += ELAPSED(totalPreMarshallingTimeStart);
+                    totalCommunicationSendTimeStart = NOW();
+                #endif
+
                 cout << "Processor " << _socket.address().host().toString() << ":" << _socket.address().port()  << " sent: " << _socket.sendTo(&outbuffer[0], totalSize, sender) << endl;
 
+                #ifdef MEASURE_TIME
+                    totalCommunicationSendTime += ELAPSED(totalCommunicationSendTimeStart);
+                    totalTime += ELAPSED(totalTimeStart);
+                #endif
+
 			} catch (Poco::Exception& exc){
+                #ifdef MEASURE_TIME
+                    missedPackages++;
+                #endif
                 cerr << "UDPEchoServer: " << exc.displayText() << endl;
 			}
             if(inBuffer != NULL)
@@ -175,6 +270,9 @@ vector<QueryStructRsp> SRProcessor::processQueries(char* input){
     vector<QueryStructRsp> result;
 
     for (uint i = 0; i < numOps; i++){
+        #ifdef MEASURE_TIME
+            totalMarshallingTimeStart = NOW();
+        #endif
         char* newInput = &input[accumBytes];
 
         QueryStructReq query;
@@ -182,18 +280,30 @@ vector<QueryStructRsp> SRProcessor::processQueries(char* input){
         accumBytes += query.totalByteSize;
         char op = query.operation;
         QueryStructRsp resultTmp;
+        #ifdef MEASURE_TIME
+            totalMarshallingTime += ELAPSED(totalMarshallingTimeStart);
+        #endif
         if (op == 1){
+            #ifdef MEASURE_TIME
+                totalQueryTimeStart = NOW();
+            #endif
             resultTmp = knnSearchIdLong(query);
+            #ifdef MEASURE_TIME
+                totalQueryTime += ELAPSED(totalQueryTimeStart);
+            #endif
         } else if (op == 2){
             resultTmp = index(query);
             needsRebuild = true;
         } else if (op == 3){
             resultTmp = index(query);
             rebuild();
+        } else if (op == 10){
+            resultTmp = getStatistics();
         } else {
             resultTmp.operation = query.operation;
             resultTmp.parameters.push_back(-1);
         }
+        resultTmp.totalByteSize = resultTmp.computeTotalByteSize();
         result.push_back(resultTmp);
     }
     return result;

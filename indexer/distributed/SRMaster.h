@@ -38,6 +38,7 @@ public:
     void train(arma::fmat& featuresTrain,arma::fmat& featuresValidationI,arma::fmat& featuresValidationQ);
 	void indexWithTrainedParams(arma::fmat& features);
 	void index(arma::fmat& features);
+	void printProcessorsStatistics();
 
     std::pair<vector<unsigned long>,vector<float> > knnSearchIdLong(arma::fmat& query, int n, float search_limit);
 
