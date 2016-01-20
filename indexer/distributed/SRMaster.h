@@ -48,6 +48,13 @@ public:
 
 	string getName();
 
+	uint totalQueryTime;
+	uint totalCommunicationTime;
+	uint totalSRTime;
+	uint totalRelServerTime;
+	uint totalMarshallingTime;
+	uint totalNQueries;
+
 private:
 
 

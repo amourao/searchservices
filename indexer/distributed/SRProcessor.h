@@ -43,6 +43,13 @@ public:
 
     Poco::Thread _thread;
 
+    uint totalQueryTime;
+	uint totalCommunicationTime;
+	uint totalBucketTime;
+	uint totalSortTime;
+	uint totalMarshallingTime;
+	uint totalNQueries;
+
 private:
 
 	vector<QueryStructRsp> processQueries(char* input);
