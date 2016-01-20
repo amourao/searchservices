@@ -43,12 +43,22 @@ public:
 
     Poco::Thread _thread;
 
-    uint totalQueryTime;
-	uint totalCommunicationTime;
-	uint totalBucketTime;
-	uint totalSortTime;
-	uint totalMarshallingTime;
-	uint totalNQueries;
+    unsigned long totalQueryTime = 0;
+    tp totalQueryTimeStart;
+
+	unsigned long totalCommunicationTime = 0;
+	tp totalCommunicationTimeStart;
+
+	unsigned long totalBucketTime = 0;
+	tp totalBucketTimeStart;
+
+	unsigned long totalSortTime = 0;
+	tp totalSortTimeStart;
+
+	unsigned long totalMarshallingTime = 0;
+	tp totalMarshallingTimeStart;
+
+	unsigned long totalNQueries = 0;
 
 private:
 

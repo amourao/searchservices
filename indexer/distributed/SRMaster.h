@@ -48,12 +48,37 @@ public:
 
 	string getName();
 
-	uint totalQueryTime;
-	uint totalCommunicationTime;
-	uint totalSRTime;
-	uint totalRelServerTime;
-	uint totalMarshallingTime;
-	uint totalNQueries;
+	unsigned long totalQueryTime = 0;
+    tp totalQueryTimeStart;
+
+    unsigned long totalAllServerTime = 0;
+	tp totalAllServerTimeStart;
+
+    unsigned long totalSortTime = 0;
+	tp totalSortTimeStart;
+
+	unsigned long totalCommunicationTime = 0;
+	tp totalCommunicationTimeStart;
+
+	unsigned long totalCommunicationSendTime = 0;
+	tp totalCommunicationSendTimeStart;
+
+	unsigned long totalCommunicationReceiveTime = 0;
+	tp totalCommunicationReceiveTimeStart;
+
+	unsigned long totalSRTime = 0;
+	tp totalSRTimeStart;
+
+	unsigned long totalRelServerTime = 0;
+	tp totalRelServerTimeStart;
+
+	unsigned long totalMarshallingTime = 0;
+	tp totalMarshallingTimeStart;
+
+	unsigned long totalPreMarshallingTime = 0;
+	tp totalPreMarshallingTimeStart;
+
+	unsigned long totalNQueries = 0;
 
 private:
 

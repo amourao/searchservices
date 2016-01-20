@@ -1,5 +1,13 @@
 #pragma once
 #include <cstring>
+#include <chrono>
+
+
+#define MEASURE_TIME
+typedef std::chrono::high_resolution_clock::time_point tp;
+inline tp NOW() {return std::chrono::high_resolution_clock::now();}
+inline long ELAPSED(tp start) {return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now()-start).count();}
+inline long TO_LONG(tp start) {return std::chrono::duration_cast<std::chrono::microseconds>(start.time_since_epoch()).count();}
 
 struct Coefficient {
     unsigned long vector_pos;
