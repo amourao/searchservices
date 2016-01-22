@@ -81,6 +81,7 @@ public:
 
 	unsigned long totalNQueries = 0;
 	unsigned long missedPackages = 0;
+	unsigned long totalRequests = 0;
 
 private:
 

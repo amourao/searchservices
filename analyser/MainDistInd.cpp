@@ -155,11 +155,20 @@ int srMaster(int argc, char *argv[]){
 
     cout << srm.totalSRTime/srm.totalNQueries/1000.0 << endl;
     cout << srm.totalPreMarshallingTime/srm.totalNQueries/1000.0 << endl;
+
     cout << srm.totalCommunicationTime/srm.totalNQueries/1000.0 << endl;
-    cout << "\t" << srm.totalCommunicationSendTime/srm.totalNQueries/1000.0 << endl;
-    cout << "\t" << srm.totalCommunicationReceiveTime/srm.totalNQueries/1000.0 << endl;
+
+    cout << "Q\t" << srm.totalCommunicationSendTime/srm.totalNQueries/1000.0 << endl;
+    cout << "Q\t" << srm.totalCommunicationReceiveTime/srm.totalNQueries/1000.0 << endl;
+
+    cout << "R\t\t" << srm.totalCommunicationSendTime/srm.totalRequests/1000.0 << endl;
+    cout << "R\t\t" << srm.totalCommunicationReceiveTime/srm.totalRequests/1000.0 << endl;
+
     cout << srm.totalSortTime/srm.totalNQueries/1000.0 << endl << endl;
+
     cout << "Missed packages: " << srm.missedPackages << endl << endl;
+    cout << "Total requests: " << srm.totalRequests << endl << endl;
+
 
     cout << "Processor stats: " << endl;
     srm.printProcessorsStatistics();

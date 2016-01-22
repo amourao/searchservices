@@ -82,12 +82,15 @@ std::pair<vector<unsigned long>,vector<float> > SRMaster::knnSearchIdLong(arma::
     }
 
     #ifdef MEASURE_TIME
+        totalRequests+=servers.size();
         totalPreMarshallingTime += ELAPSED(totalPreMarshallingTimeStart);
         totalAllServerTimeStart = NOW();
     #endif
 
 
     vector<QueryStructRsp> output;
+
+
 
     #pragma omp parallel for schedule(dynamic)
     for(uint i = 0; i < servers.size(); i++){
@@ -103,9 +106,12 @@ std::pair<vector<unsigned long>,vector<float> > SRMaster::knnSearchIdLong(arma::
             sendMessage(input,outputIn,client_address,server_address);
         }
         if(outputIn.size() == 0){
-            #ifdef MEASURE_TIME
-                missedPackages++;
-            #endif
+            #pragma omp critical
+            {
+                #ifdef MEASURE_TIME
+                    missedPackages++;
+                #endif
+            }
             cout << "Master " << client_address.host().toString() << ":" << client_address.port() << " failed to receive response from " << server_address.host().toString() << ":" << server_address.port() << endl;
         }
 
@@ -117,6 +123,7 @@ std::pair<vector<unsigned long>,vector<float> > SRMaster::knnSearchIdLong(arma::
     }
 
     #ifdef MEASURE_TIME
+        totalAllServerTime += ELAPSED(totalAllServerTimeStart);
         totalPreMarshallingTimeStart = NOW();
     #endif
 
@@ -137,7 +144,6 @@ std::pair<vector<unsigned long>,vector<float> > SRMaster::knnSearchIdLong(arma::
 
 
     #ifdef MEASURE_TIME
-            totalAllServerTime += ELAPSED(totalAllServerTimeStart);
             totalSortTimeStart = NOW();
     #endif
 
@@ -173,7 +179,7 @@ int SRMaster::addToIndexLive(arma::fmat& features){
 void SRMaster::sendMessage(vector<QueryStructReq>& query, vector<QueryStructRsp>& output, Poco::Net::SocketAddress& client, Poco::Net::SocketAddress& server){
 
     #ifdef MEASURE_TIME
-        totalMarshallingTimeStart = NOW();
+        tp _totalMarshallingTimeStart = NOW();
     #endif
     char numOps = (char)query.size();
     uint totalSize = 1;
@@ -191,9 +197,9 @@ void SRMaster::sendMessage(vector<QueryStructReq>& query, vector<QueryStructRsp>
         curByte+=query[i].totalByteSize;
     }
     #ifdef MEASURE_TIME
-        totalMarshallingTime += ELAPSED(totalMarshallingTimeStart);
-        totalCommunicationTimeStart = NOW();
-        totalCommunicationSendTimeStart = NOW();
+        totalMarshallingTime += ELAPSED(_totalMarshallingTimeStart);
+        tp _totalCommunicationTimeStart = NOW();
+        tp _totalCommunicationSendTimeStart = NOW();
     #endif
 
     Poco::Net::DatagramSocket dgs(client);
@@ -205,8 +211,8 @@ void SRMaster::sendMessage(vector<QueryStructReq>& query, vector<QueryStructRsp>
     cout << "Master " << client.host().toString() << ":" << client.port()  << " sent " << sent << " to " << server.host().toString() << ":" << server.port() << endl;
 
     #ifdef MEASURE_TIME
-        totalCommunicationTime += ELAPSED(totalCommunicationTimeStart);
-        totalCommunicationReceiveTimeStart = NOW();
+        totalCommunicationSendTime += ELAPSED(_totalCommunicationSendTimeStart);
+        tp _totalCommunicationReceiveTimeStart = NOW();
     #endif
     //std::ofstream outfile ("master.bin",std::ofstream::binary);
     //outfile.write (&inbuffer[0],totalSize);
@@ -219,9 +225,9 @@ void SRMaster::sendMessage(vector<QueryStructReq>& query, vector<QueryStructRsp>
         floatBufferSize = dgs.receiveBytes(outputBytes,bufferSize);
         cout << "Master " << client.host().toString() << ":" << client.port()  << " received " << floatBufferSize << " from " << server.host().toString() << ":" << server.port() << endl;
         #ifdef MEASURE_TIME
-            totalCommunicationReceiveTime += ELAPSED(totalCommunicationReceiveTimeStart);
-            totalCommunicationTime += ELAPSED(totalCommunicationTimeStart);
-            totalMarshallingTimeStart = NOW();
+            totalCommunicationReceiveTime += ELAPSED(_totalCommunicationReceiveTimeStart);
+            totalCommunicationTime += ELAPSED(_totalCommunicationTimeStart);
+            tp _totalMarshallingTimeStart = NOW();
         #endif
         uint numOpsRsp = (uint)outputBytes[0];
         uint accumBytes = 1;
@@ -239,7 +245,7 @@ void SRMaster::sendMessage(vector<QueryStructReq>& query, vector<QueryStructRsp>
         }
 
         #ifdef MEASURE_TIME
-            totalMarshallingTime += ELAPSED(totalMarshallingTimeStart);
+            totalMarshallingTime += ELAPSED(_totalMarshallingTimeStart);
         #endif
 
     } catch(Poco::TimeoutException t){
