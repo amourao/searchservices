@@ -102,11 +102,11 @@ std::pair<vector<unsigned long>,vector<float> > SRMaster::knnSearchIdLong(arma::
         {
             sendMessage(input,outputIn,client_address,server_address);
         }
-        if(output.size() == 0){
+        if(outputIn.size() == 0){
             #ifdef MEASURE_TIME
                 missedPackages++;
             #endif
-            cout << "Master " << " failed to receive response from " << server_address.host().toString() << ":" << server_address.port() << endl;
+            cout << "Master " << client_address.host().toString() << ":" << client_address.port() << " failed to receive response from " << server_address.host().toString() << ":" << server_address.port() << endl;
         }
 
         #pragma omp critical
