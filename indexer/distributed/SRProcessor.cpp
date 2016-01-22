@@ -92,7 +92,12 @@ QueryStructRsp SRProcessor::knnSearchIdLong(QueryStructReq queryS){
             #endif
 
             //cout << type << " " << bucket << " " << bucketOffset << endl;
-            uint on = indexData[bucket].size()*search_limit;
+            uint on = 0;
+            if(search_limit <= 1)
+                on = indexData[bucket].size()*search_limit;
+            else {
+                on = std::min(indexData[bucket].size(),search_limit);
+            }
 
             vector<Coefficient> candidates(indexData[bucket].begin(),indexData[bucket].begin()+on);
             for(uint i = 0; i < candidates.size(); i++){
