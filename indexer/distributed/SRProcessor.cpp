@@ -79,7 +79,8 @@ QueryStructRsp SRProcessor::knnSearchIdLong(QueryStructReq queryS){
     #ifdef MEASURE_TIME
         totalBucketTimeStart = NOW();
     #endif
-    //#pragma omp parallel for schedule(dynamic)
+
+    #pragma omp parallel for schedule(dynamic)
     for(uint b = 0; b < buckets.size(); b++){
         int bucket = buckets[b]-bucketOffset;
         #ifdef MEASURE_TIME
@@ -96,7 +97,7 @@ QueryStructRsp SRProcessor::knnSearchIdLong(QueryStructReq queryS){
             if(search_limit <= 1)
                 on = indexData[bucket].size()*search_limit;
             else {
-                on = std::min(indexData[bucket].size(),search_limit);
+                on = std::min((uint)indexData[bucket].size(),(uint)search_limit);
             }
 
             vector<Coefficient> candidates(indexData[bucket].begin(),indexData[bucket].begin()+on);
@@ -114,13 +115,12 @@ QueryStructRsp SRProcessor::knnSearchIdLong(QueryStructReq queryS){
 
                     float dist = norm(data.col(candidates[i].vector_pos) - query, 2);
                     long index = candidates[i].original_id;
-                    //#pragma omp critical
-                    //{
+                    #pragma omp critical
+                    {
                         indices.push_back(index);
                         dists.push_back(dist);
                         computedDists[index] = dist;
-                    //}
-
+                    }
                 }
             }
         }

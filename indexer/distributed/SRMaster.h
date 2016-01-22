@@ -84,9 +84,7 @@ public:
 
 private:
 
-
-
-    void sendMessage(vector<QueryStructReq>& query, vector<QueryStructRsp>& output, Poco::Net::SocketAddress& server);
+    void sendMessage(vector<QueryStructReq>& query, vector<QueryStructRsp>& output, Poco::Net::SocketAddress& client, Poco::Net::SocketAddress& server);
 
     vector<Poco::Net::SocketAddress> getRelevantServers(arma::fmat& query);
 
@@ -97,6 +95,7 @@ private:
 	Poco::Net::SocketAddress clientAddress;
 
 	vector<Poco::Net::SocketAddress> serverAddresses;
+	vector<Poco::Net::SocketAddress> clientAddresses;
     std::shared_ptr<FeatureExtractor> baseFeatureExtractor;
 
     map<string,string> paramsB;

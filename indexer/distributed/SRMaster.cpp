@@ -16,6 +16,8 @@ SRMaster::SRMaster(string& typeId, map<string,string>& params){
     }
 
     clientAddress = Poco::Net::SocketAddress("0.0.0.0", std::stoi(params["port"]));
+    uint basePort = std::stoi(params["port"]);
+
     bufferSize = std::stoi(params["bufferSize"]);
     baseFeatureExtractor = std::shared_ptr<FeatureExtractor>((FeatureExtractor*)FactoryAnalyser::getInstance()->createType(params["extractor"]));
 
@@ -23,6 +25,7 @@ SRMaster::SRMaster(string& typeId, map<string,string>& params){
     vector<string> servers = StringTools::split(serversString,';');
     for (uint i = 0; i < servers.size(); i++){
         serverAddresses.push_back(Poco::Net::SocketAddress(servers.at(i)));
+        clientAddresses.push_back(Poco::Net::SocketAddress("0.0.0.0", basePort++));
     }
 
     cout << "started Master at " << clientAddress.host().toString() << ":" << clientAddress.port() << endl;
@@ -83,9 +86,10 @@ std::pair<vector<unsigned long>,vector<float> > SRMaster::knnSearchIdLong(arma::
         totalAllServerTimeStart = NOW();
     #endif
 
-    //#pragma omp parallel for schedule(dynamic)
+    #pragma omp parallel for schedule(dynamic)
     for(uint i = 0; i < servers.size(); i++){
         Poco::Net::SocketAddress server_address = servers.at(i);
+        Poco::Net::SocketAddress client_address = clientAddresses.at(i);
 
         vector<QueryStructReq> input;
         vector<QueryStructRsp> output;
@@ -93,7 +97,7 @@ std::pair<vector<unsigned long>,vector<float> > SRMaster::knnSearchIdLong(arma::
         input.push_back(q);
         //#pragma omp critical
         {
-            sendMessage(input,output,server_address);
+            sendMessage(input,output,client_address,server_address);
         }
         if(output.size() == 0){
             #ifdef MEASURE_TIME
@@ -155,7 +159,7 @@ int SRMaster::addToIndexLive(arma::fmat& features){
     return 0;
 }
 
-void SRMaster::sendMessage(vector<QueryStructReq>& query, vector<QueryStructRsp>& output, Poco::Net::SocketAddress& server){
+void SRMaster::sendMessage(vector<QueryStructReq>& query, vector<QueryStructRsp>& output, Poco::Net::SocketAddress& client, Poco::Net::SocketAddress& server){
 
     #ifdef MEASURE_TIME
         totalMarshallingTimeStart = NOW();
@@ -181,13 +185,13 @@ void SRMaster::sendMessage(vector<QueryStructReq>& query, vector<QueryStructRsp>
         totalCommunicationSendTimeStart = NOW();
     #endif
 
-    Poco::Net::DatagramSocket dgs(clientAddress);
+    Poco::Net::DatagramSocket dgs(client);
     dgs.setReceiveTimeout(Poco::Timespan(1000*10));
-    cout << "Master " << clientAddress.host().toString() << ":" << clientAddress.port()  << " wants to send " << totalSize << " to " << server.host().toString() << ":" << server.port() << endl;
+    cout << "Master " << client.host().toString() << ":" << client.port()  << " wants to send " << totalSize << " to " << server.host().toString() << ":" << server.port() << endl;
 
     //cout << clientAddress.host().toString() << " " << clientAddress.port() << endl;
     int sent = dgs.sendTo(&inbuffer[0], totalSize, server);
-    cout << "Master " << clientAddress.host().toString() << ":" << clientAddress.port()  << " sent " << sent << " to " << server.host().toString() << ":" << server.port() << endl;
+    cout << "Master " << client.host().toString() << ":" << client.port()  << " sent " << sent << " to " << server.host().toString() << ":" << server.port() << endl;
 
     #ifdef MEASURE_TIME
         totalCommunicationTime += ELAPSED(totalCommunicationTimeStart);
@@ -202,7 +206,7 @@ void SRMaster::sendMessage(vector<QueryStructReq>& query, vector<QueryStructRsp>
 
     try {
         floatBufferSize = dgs.receiveBytes(outputBytes,bufferSize);
-        cout << "Master " << clientAddress.host().toString() << ":" << clientAddress.port()  << " received " << floatBufferSize << " from " << server.host().toString() << ":" << server.port() << endl;
+        cout << "Master " << client.host().toString() << ":" << client.port()  << " received " << floatBufferSize << " from " << server.host().toString() << ":" << server.port() << endl;
         #ifdef MEASURE_TIME
             totalCommunicationReceiveTime += ELAPSED(totalCommunicationReceiveTimeStart);
             totalCommunicationTime += ELAPSED(totalCommunicationTimeStart);
@@ -281,7 +285,8 @@ void SRMaster::printProcessorsStatistics(){
     for(uint i = 0; i < serverAddresses.size(); i++){
         vector<QueryStructRsp> output;
         Poco::Net::SocketAddress server = serverAddresses.at(i);
-        sendMessage(query, output, server);
+        Poco::Net::SocketAddress client = clientAddresses.at(i);
+        sendMessage(query, output, client, server);
         cout << "Server statistics: " << server.host().toString() << ":" << server.port() << endl;
         if(output.size() > 0){
             for(uint j = 0; j < output.at(0).indexes.size(); j++){
