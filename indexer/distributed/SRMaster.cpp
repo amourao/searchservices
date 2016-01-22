@@ -86,18 +86,21 @@ std::pair<vector<unsigned long>,vector<float> > SRMaster::knnSearchIdLong(arma::
         totalAllServerTimeStart = NOW();
     #endif
 
+
+    vector<QueryStructRsp> output;
+
     #pragma omp parallel for schedule(dynamic)
     for(uint i = 0; i < servers.size(); i++){
         Poco::Net::SocketAddress server_address = servers.at(i);
         Poco::Net::SocketAddress client_address = clientAddresses.at(i);
 
         vector<QueryStructReq> input;
-        vector<QueryStructRsp> output;
+        vector<QueryStructRsp> outputIn;
 
         input.push_back(q);
         //#pragma omp critical
         {
-            sendMessage(input,output,client_address,server_address);
+            sendMessage(input,outputIn,client_address,server_address);
         }
         if(output.size() == 0){
             #ifdef MEASURE_TIME
@@ -105,25 +108,33 @@ std::pair<vector<unsigned long>,vector<float> > SRMaster::knnSearchIdLong(arma::
             #endif
             cout << "Master " << " failed to receive response from " << server_address.host().toString() << ":" << server_address.port() << endl;
         }
-        #ifdef MEASURE_TIME
-            totalPreMarshallingTimeStart = NOW();
-        #endif
 
-        for(uint s = 0; s < output.size(); s++){
-            for(uint p = 0; p < output[s].indexes.size(); p++){
-                if (indicesSet.find(output[s].indexes[p]) == indicesSet.end()){
-                    indicesSet.insert(output[s].indexes[p]);
-                    indices.push_back(output[s].indexes[p]);
-                    dists.push_back(output[s].dists[p]);
-                    //dists.insert(dists.end(), output[s].dists.begin(), output[s].dists.end());
-                }
-            }
+        #pragma omp critical
+        {
+            output.insert(output.end(),outputIn.begin(),outputIn.end());
         }
-        #ifdef MEASURE_TIME
-            totalPreMarshallingTime += ELAPSED(totalPreMarshallingTimeStart);
-        #endif
 
     }
+
+    #ifdef MEASURE_TIME
+        totalPreMarshallingTimeStart = NOW();
+    #endif
+
+    for(uint s = 0; s < output.size(); s++){
+        for(uint p = 0; p < output[s].indexes.size(); p++){
+            if (indicesSet.find(output[s].indexes[p]) == indicesSet.end()){
+                indicesSet.insert(output[s].indexes[p]);
+                indices.push_back(output[s].indexes[p]);
+                dists.push_back(output[s].dists[p]);
+                //dists.insert(dists.end(), output[s].dists.begin(), output[s].dists.end());
+            }
+        }
+    }
+    #ifdef MEASURE_TIME
+        totalPreMarshallingTime += ELAPSED(totalPreMarshallingTimeStart);
+    #endif
+
+
 
     #ifdef MEASURE_TIME
             totalAllServerTime += ELAPSED(totalAllServerTimeStart);
