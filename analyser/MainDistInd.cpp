@@ -550,6 +550,60 @@ int matSizeTest(int argc, char *argv[]){
     return 0;
 }
 
+
+
+int armaToBin(int argc, char *argv[]){
+
+    string filename(argv[1]);
+    string filenameOut(argv[2]);
+
+    arma::field<arma::vec>  F;
+    F.load(filename);
+
+    /*
+    arma::field<arma::vec> F1(10,2);
+
+    for (arma::uword j = 0; j < 10; ++j)
+    {
+        F1(j,0) = arma::vec(j);
+        F1(j,1) = arma::vec(j);
+        for (arma::uword i = 0; i < j; ++i)
+        {
+            F1(j,0)(i) = (uint)10;
+            F1(j,1)(i) = (float)0.5f;
+        }
+    }
+    F1.save(filename);
+    */
+    cout << F.n_rows << " " << F.n_cols << " " << F.size() << " " << endl;
+
+    FILE* pFile;
+    pFile = fopen(filenameOut.c_str(), "wb");
+
+    uint nBuckets = F.n_rows;
+    fwrite((char*)&nBuckets, 1, 1*sizeof(uint), pFile);
+
+    for (arma::uword j = 0; j < nBuckets; ++j)
+    {
+        uint size = F(j,0).size();
+        fwrite((char*)&size, 1, 1*sizeof(uint), pFile);
+
+        //cout << size << endl;
+        for (arma::uword i = 0; i < F(j,0).size(); ++i)
+        {
+            uint vecpos = F(j,0)[i];
+            float coeff = F(j,1)[i];
+            fwrite((char*)&vecpos, 1, 1*sizeof(uint), pFile);
+            fwrite((char*)&coeff, 1, 1*sizeof(float), pFile);
+            //cout << vecpos << " " << coeff << endl;
+        }
+    }
+    fclose(pFile);
+
+    return 0;
+}
+
+
 int main(int argc, char *argv[]){
     //el::Helpers::setCrashHandler(myCrashHandler);
     //el::Loggers::addFlag( el::LoggingFlag::DisableApplicationAbortOnFatalLog );
@@ -578,6 +632,9 @@ int main(int argc, char *argv[]){
         dataPreProcessor(argc-1,&argv[1]);
     else if(StringTools::endsWith(string(argv[1]),"matSizeTest"))
         matSizeTest(argc-1,&argv[1]);
+    else if(StringTools::endsWith(string(argv[1]),"armaToBin"))
+        armaToBin(argc-1,&argv[1]);
+
 
 
 
