@@ -13,7 +13,7 @@ inline long TO_LONG(tp start) {return std::chrono::duration_cast<std::chrono::mi
 
 
 inline double myNorm(arma::Mat<float> matrix){
-    return arma::norm<arma::Mat<float>>(matrix);
+    return arma::norm(matrix);
 }
 
 template <typename T>
