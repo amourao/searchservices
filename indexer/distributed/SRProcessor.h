@@ -17,6 +17,8 @@
 
 #include "SRStrucs.h"
 #include "../../analyser/tools/MatrixTools.h"
+#include "../../analyser/tools/oneBillionImporterB.h"
+
 
 #include <armadillo>
 
@@ -43,6 +45,7 @@ public:
 	bool load(string basePath);
 	bool loadSingle(string basePath);
 	bool loadAll(string basePath);
+	bool loadBilion(string coeffs, string dataPath);
 
     Poco::Thread _thread;
 

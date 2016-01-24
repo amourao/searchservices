@@ -25,6 +25,9 @@ public:
 	void readTags(std::string file, int numberOfRows, cv::Mat& tags);
 
 	void readBin(std::string filenamep, arma::Mat<uchar>& features, std::vector<uint>& buckets);
+	void readBin(std::string filenamep, arma::Mat<int>& features, std::vector<uint>& buckets);
+	void readBin(std::string filenamep, arma::Mat<float>& features, std::vector<uint>& buckets);
+
 
 
 private:

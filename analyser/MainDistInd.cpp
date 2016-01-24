@@ -446,6 +446,58 @@ int srProcessor(int argc, char *argv[]){
     return 0;
 }
 
+
+
+int srProcessorBillion(int argc, char *argv[]){
+    string paramFile(argv[1]);
+    map<string,string> parameters;
+	vector<IIndexer*> indexers;
+	vector<IAnalyser*> analysers;
+	vector<IClassifier*> classifiers;
+	vector<IEndpoint*> endpoints;
+
+	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
+
+    uint divisions = std::stoi(parameters["divisions"]);
+    uint nBuckets = std::stoi(parameters["bucketCount"]);
+    uint startPort = std::stoi(parameters["port"]);
+    uint nBucketsPerServer = nBuckets/divisions;
+
+    uint accum = std::stoi(parameters["bucketOffset"]);
+
+
+    string path = parameters["pathData"];
+    string coeffs = parameters["pathCoeffs"];
+
+    map<string,string> params;
+
+    vector<SRProcessor<float>*> ser;
+
+    params["bufferSize"] = parameters["bufferSize"];
+    for (uint i = 0; i < divisions; i++){
+
+        params["port"] = std::to_string(startPort++);
+        params["bucketOffset"] = std::to_string(accum);
+        params["bucketCount"] = std::to_string(nBucketsPerServer);
+        accum+=nBucketsPerServer;
+
+        string name = "srProcessor_" + std::to_string(i);
+        SRProcessor<float>* srp = new SRProcessor<float>(name,params);
+        srp->loadBilion(path,coeffs);
+        ser.push_back(srp);
+    }
+
+    //for(;;){}
+    //pthread_exit(NULL);
+    for (uint i = 0; i < ser.size(); i++){
+        ser.at(i)->_thread.join();
+    }
+
+    return 0;
+}
+
+
+
 int matSizeTest(int argc, char *argv[]){
 
     arma::Mat<char> teste(2,2,arma::fill::zeros);
@@ -603,6 +655,16 @@ int armaToBin(int argc, char *argv[]){
     return 0;
 }
 
+int oneBillionToArmaMat(int argc, char *argv[]){
+
+    oneBillionImporterB ob;
+    arma::Mat<uchar> featuresB;
+
+    tp totalSortTimeStart = NOW();
+    ob.readBin("/localstore/1-billion-vectors/queries.bvecs",10000,featuresB,0);
+    cout << ELAPSED(totalSortTimeStart) << endl;
+    return 0;
+}
 
 int main(int argc, char *argv[]){
     //el::Helpers::setCrashHandler(myCrashHandler);
@@ -626,6 +688,8 @@ int main(int argc, char *argv[]){
         srMaster(argc-1,&argv[1]);
     else if(StringTools::endsWith(string(argv[1]),"srProcessor"))
         srProcessor(argc-1,&argv[1]);
+    else if(StringTools::endsWith(string(argv[1]),"srProcessorBillion"))
+        srProcessorBillion(argc-1,&argv[1]);
     else if(StringTools::endsWith(string(argv[1]),"srTest"))
         srTest(argc-1,&argv[1]);
     else if(StringTools::endsWith(string(argv[1]),"dataPreProcessor"))

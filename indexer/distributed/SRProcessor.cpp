@@ -504,6 +504,80 @@ bool SRProcessor<T>::loadSingle(string basePath){
     return true;
 }
 
+
+template <typename T>
+bool SRProcessor<T>::loadBilion(string coeffs, string dataPath){
+
+    lidTogid = vector<uindex>();
+    map<uindex,uindex> lidTogidMap;
+
+    std::ifstream file(coeffs, std::ios::binary | std::ios::ate);
+    std::streamsize size = file.tellg();
+    file.seekg(0, std::ios::beg);
+
+    char* buffer = new char[size];
+
+    if (!file.read(buffer, size)){
+        return false;
+    }
+    file.close();
+
+    uint curr = 0;
+    //uint nBuckets = *reinterpret_cast<uint*>(&buffer[curr]);
+    curr += sizeof(uint);
+
+    //bucketOffset = std::stoi(params["bucketOffset"]);
+	//bucketCount = std::stoi(params["bucketCount"]);
+
+    indexData = std::vector<std::vector<Coefficient>>(bucketCount);
+
+    for(long i = 0; i < bucketOffset; i++){
+        uint co = *reinterpret_cast<uint*>(&buffer[curr]);
+        curr += sizeof(uint) + (sizeof(uindex)+sizeof(float))*co;
+        //cout << co << " ";
+    }
+
+    //cout << endl << nBuckets << " " << bucketOffset << " " << bucketCount << " " << curr << endl;
+    for(long i = 0; i < bucketCount; i++){
+        uint co = *reinterpret_cast<uint*>(&buffer[curr]);
+        curr += sizeof(uint);
+
+        for(uint j = 0; j < co; j++){
+            uindex gid = *reinterpret_cast<uindex*>(&buffer[curr]);
+            curr += sizeof(uindex);
+
+            auto search = lidTogidMap.find(gid);
+            uindex lid = lidTogid.size();
+            if(search != lidTogidMap.end())
+                lid = search->second;
+            else {
+                lidTogidMap[gid] = lid;
+                lidTogid.push_back(gid);
+            }
+
+            float value = *reinterpret_cast<float*>(&buffer[curr]);
+            curr += sizeof(float);
+
+            indexData[i].push_back(Coefficient(lid,value));
+        }
+    }
+
+    delete[] buffer;
+
+    arma::uvec ttt(lidTogid.size());
+
+    for(int i = 0; i < lidTogid.size(); i++){
+        ttt(i) = lidTogid[i];
+    }
+
+    oneBillionImporterB ob;
+    ob.readBin(dataPath,data,lidTogid);
+
+    return true;
+}
+
+
+
 template <typename T>
 bool SRProcessor<T>::load(string basePath){
 
@@ -578,4 +652,4 @@ bool SRProcessor<T>::load(string basePath){
 
 template class SRProcessor<int>;
 template class SRProcessor<float>;
-template class SRProcessor<char>;
+template class SRProcessor<uchar>;
