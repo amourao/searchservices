@@ -268,14 +268,16 @@ int dataPreProcessor(int argc, char *argv[]){
 
     std::vector<std::vector<Coefficient>> indexData(1024);
 
-    uint sizeOfCoeff = sizeof(uindex)*2 + sizeof(float);
+    uint sizeOfCoeff = sizeof(uindex)*1 + sizeof(float);
     uint numBuckets = 1024;
     //uint divisions = std::stoi(parameters["divisions"]);
 
     uint totalSize = sizeof(uint)+sizeof(uint)*numBuckets;
 
+    std::vector<uint> lidToGid(dataToIndex.n_cols);
 
     for(uint i = 0; i < dataToIndex.n_cols; i++){
+        lidToGid[i]=i;
         arma::fmat features = dataToIndex.col(i);
         arma::fmat sparseRep;
 
@@ -285,7 +287,7 @@ int dataPreProcessor(int argc, char *argv[]){
             totalSize+=sizeOfCoeff;
             uint bucket = ind[j];
             //uint machine = bucket/divisions;
-            indexData[bucket].push_back(Coefficient(i,i,sparseRep[bucket]));
+            indexData[bucket].push_back(Coefficient(i,sparseRep[bucket]));
         }
     }
 
@@ -305,9 +307,6 @@ int dataPreProcessor(int argc, char *argv[]){
             memcpy(&dataToSave[curr],&c.vector_pos,sizeof(uindex));
             curr += sizeof(uindex);
 
-            memcpy(&dataToSave[curr],&c.original_id,sizeof(uindex));
-            curr += sizeof(uindex);
-
             memcpy(&dataToSave[curr],&c.value,sizeof(float));
             curr += sizeof(float);
 
@@ -320,7 +319,11 @@ int dataPreProcessor(int argc, char *argv[]){
     outfile.close();
 
     dataToIndex.save(dst + "_features.bin");
-    /*
+
+    std::ofstream outfile2 (dst + "_lidtogid.bin",std::ofstream::binary);
+    outfile2.write ((char*)&lidToGid[0],sizeof(uint)*lidToGid.size());
+    outfile2.close();
+
     curr = 0;
     uint nBuckets = *reinterpret_cast<uint*>(&dataToSave[curr]);
     curr += sizeof(uint);
@@ -336,30 +339,63 @@ int dataPreProcessor(int argc, char *argv[]){
             uindex vector_pos = *reinterpret_cast<uindex*>(&dataToSave[curr]);
             curr += sizeof(uindex);
 
-            uindex original_id = *reinterpret_cast<uindex*>(&dataToSave[curr]);
-            curr += sizeof(uindex);
-
             uindex value = *reinterpret_cast<float*>(&dataToSave[curr]);
             curr += sizeof(float);
 
-            indexData2[i].push_back(Coefficient(vector_pos,original_id,value));
+            indexData2[i].push_back(Coefficient(vector_pos,value));
         }
     }
-    */
-    /*
+
+
+    map<string,string> params;
+    params["bufferSize"] = std::to_string(66666);
+
+    params["port"] = std::to_string(54232);
+    params["bucketOffset"] = std::to_string(0);
+    params["bucketCount"] = std::to_string(512);
+
+    string name = "srProcessor_";
+    SRProcessor<float>* srp = new SRProcessor<float>(name,params);
+    srp->load(dst);
+
     cout << indexData2.size() << endl;
     cout << indexData.size() << endl;
-    for(uint i = 0; i < nBuckets; i++){
+    cout << srp->indexData.size() << endl;
+    cout << srp->data.n_cols << endl;
+    for(uint i = 0; i < 512; i++){
         cout << indexData[i].size() << " ";
         cout << indexData2[i].size() << " ";
+        cout << srp->indexData[i].size() << " ";
 
         if(indexData[i].size() > 0){
-            cout << " " << indexData[i][0].original_id << " " << indexData2[i][0].original_id;
+            cout << " " << indexData[i][0].vector_pos << " " << indexData2[i][0].vector_pos << " " << srp->lidTogid[srp->indexData[i][0].vector_pos]  << " " <<  srp->indexData[i][0].vector_pos;
         }
 
         cout << endl;
     }
-    */
+
+    params["port"] = std::to_string(54233);
+    params["bucketOffset"] = std::to_string(512);
+    params["bucketCount"] = std::to_string(512);
+
+    SRProcessor<float>* srp2 = new SRProcessor<float>(name,params);
+    srp2->load(dst);
+
+    cout << indexData2.size() << endl;
+    cout << indexData.size() << endl;
+    cout << srp2->indexData.size() << endl;
+    cout << srp2->data.n_cols << endl;
+    for(uint i = 512; i < nBuckets; i++){
+        cout << indexData[i].size() << " ";
+        cout << indexData2[i].size() << " ";
+        cout << srp2->indexData[i-512].size() << " ";
+
+        if(indexData[i].size() > 0){
+            cout << " " << indexData[i][0].vector_pos << " " << indexData2[i][0].vector_pos << " " <<  srp2->lidTogid[srp2->indexData[i-512][0].vector_pos]  << " " << srp2->indexData[i-512][0].vector_pos;
+        }
+
+        cout << endl;
+    }
 
     return 0;
 }

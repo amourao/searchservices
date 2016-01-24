@@ -41,6 +41,7 @@ public:
 
 	bool save(string basePath);
 	bool load(string basePath);
+	bool loadSingle(string basePath);
 	bool loadAll(string basePath);
 
     Poco::Thread _thread;
@@ -77,6 +78,10 @@ public:
     unsigned long missedPackages = 0;
 
 
+    std::vector<std::vector<Coefficient>> indexData;
+    arma::Mat<T> data;
+    map<string,string> paramsB;
+    vector<uindex> lidTogid;
 private:
 
 	vector<QueryStructRsp> processQueries(char* input);
@@ -95,8 +100,6 @@ private:
 
 	bool needsRebuild = false;
 
-    std::vector<std::vector<Coefficient>> indexData;
-    arma::Mat<T> data;
-    map<string,string> paramsB;
+
 
 };

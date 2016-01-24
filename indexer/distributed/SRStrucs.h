@@ -6,7 +6,7 @@
 
 #define MEASURE_TIME
 typedef std::chrono::high_resolution_clock::time_point tp;
-typedef unsigned long uindex;
+typedef uint uindex;
 inline tp NOW() {return std::chrono::high_resolution_clock::now();}
 inline long ELAPSED(tp start) {return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now()-start).count();}
 inline long TO_LONG(tp start) {return std::chrono::duration_cast<std::chrono::microseconds>(start.time_since_epoch()).count();}
@@ -26,13 +26,16 @@ inline double myNorm2(arma::Mat<T> matrix){
     return sqrt(arma::dot(matrix,matrix));
 }
 struct Coefficient {
-    unsigned long vector_pos;
-    unsigned long original_id;
+    uindex vector_pos;
     float value;
 
-    Coefficient(unsigned long vp, unsigned long id, float v):
+    Coefficient():
+        vector_pos(0),
+        value(0)
+    {}
+
+    Coefficient(uindex vp, float v):
         vector_pos(vp),
-        original_id(id),
         value(v)
     {}
 
@@ -53,7 +56,7 @@ struct QueryStructReq {
     std::vector<float> query;
     std::vector<int> buckets;
     std::vector<float> coeffs;
-    std::vector<unsigned long> indexes;
+    std::vector<uindex> indexes;
     std::vector<float> parameters;
 
     char operation;
@@ -63,7 +66,7 @@ struct QueryStructReq {
         uint qBufferLen = query.size()*sizeof(float);
         uint bBufferLen = buckets.size()*sizeof(int);
         uint cBufferLen = coeffs.size()*sizeof(float);
-        uint iBufferLen = indexes.size()*sizeof(unsigned long);
+        uint iBufferLen = indexes.size()*sizeof(uindex);
         uint pBufferLen = parameters.size()*sizeof(float);
 
         return qBufferLen + bBufferLen + cBufferLen + iBufferLen + pBufferLen + sizeof(uint)*5 + 1/*operationType*/ + sizeof(uint) /*totalByteSize*/;
@@ -79,7 +82,7 @@ struct QueryStructReq {
         uint qBufferLen = query.size()*sizeof(float);
         uint bBufferLen = buckets.size()*sizeof(int);
         uint cBufferLen = coeffs.size()*sizeof(float);
-        uint iBufferLen = indexes.size()*sizeof(unsigned long);
+        uint iBufferLen = indexes.size()*sizeof(uindex);
         uint pBufferLen = parameters.size()*sizeof(float);
 
         totalByteSize = qBufferLen + bBufferLen + cBufferLen + iBufferLen + pBufferLen + sizeof(uint)*5 + 1/*operationType*/ + sizeof(uint) /*totalByteSize*/;
@@ -123,19 +126,19 @@ struct QueryStructReq {
         float* qBuffer = reinterpret_cast<float*>(&c[sizeof(uint)+1+sizeof(uint)]);
         int* bBuffer = reinterpret_cast<int*>(&c[sizeof(uint)+1+sizeof(uint)+qBufferLen+sizeof(uint)]);
         float* cBuffer = reinterpret_cast<float*>(&c[sizeof(uint)+1+sizeof(uint)+qBufferLen+sizeof(uint)+bBufferLen+sizeof(uint)]);
-        unsigned long* iBuffer = reinterpret_cast<unsigned long*>(&c[sizeof(uint)+1+sizeof(uint)+qBufferLen+sizeof(uint)+bBufferLen+sizeof(uint)+cBufferLen+sizeof(uint)]);
+        uindex* iBuffer = reinterpret_cast<uindex*>(&c[sizeof(uint)+1+sizeof(uint)+qBufferLen+sizeof(uint)+bBufferLen+sizeof(uint)+cBufferLen+sizeof(uint)]);
         float* pBuffer = reinterpret_cast<float*>(&c[sizeof(uint)+1+sizeof(uint)+qBufferLen+sizeof(uint)+bBufferLen+sizeof(uint)+cBufferLen+sizeof(uint)+iBufferLen+sizeof(uint)]);
 
         query.insert(query.end(), qBuffer, qBuffer+(uint)qBufferLen/sizeof(float));
         buckets.insert(buckets.end(), bBuffer, bBuffer+(uint)bBufferLen/sizeof(uint));
         coeffs.insert(coeffs.end(), cBuffer, cBuffer+(uint)cBufferLen/sizeof(float));
-        indexes.insert(indexes.end(), iBuffer, iBuffer+(uint)iBufferLen/sizeof(unsigned long));
+        indexes.insert(indexes.end(), iBuffer, iBuffer+(uint)iBufferLen/sizeof(uindex));
         parameters.insert(parameters.end(), pBuffer, pBuffer+(uint)pBufferLen/sizeof(float));
     }
 };
 
 struct QueryStructRsp {
-    std::vector<unsigned long> indexes;
+    std::vector<uindex> indexes;
     std::vector<float> dists;
     std::vector<float> parameters;
     char operation;
@@ -143,7 +146,7 @@ struct QueryStructRsp {
     uint totalByteSize;
 
     uint computeTotalByteSize(){
-        uint iBufferLen = indexes.size()*sizeof(unsigned long);
+        uint iBufferLen = indexes.size()*sizeof(uindex);
         uint dBufferLen = dists.size()*sizeof(float);
         uint pBufferLen = parameters.size()*sizeof(float);
 
@@ -155,7 +158,7 @@ struct QueryStructRsp {
         char* dBuffer = reinterpret_cast<char*>(&dists[0]);
         char* pBuffer = reinterpret_cast<char*>(&parameters[0]);
 
-        uint iBufferLen = indexes.size()*sizeof(unsigned long);
+        uint iBufferLen = indexes.size()*sizeof(uint);
         uint dBufferLen = dists.size()*sizeof(float);
         uint pBufferLen = parameters.size()*sizeof(float);
 
@@ -187,11 +190,11 @@ struct QueryStructRsp {
         uint dBufferLen = *reinterpret_cast<uint*>(&c[sizeof(uint)+1+sizeof(uint)+iBufferLen]);
         uint pBufferLen = *reinterpret_cast<uint*>(&c[sizeof(uint)+1+sizeof(uint)+iBufferLen+sizeof(uint)+dBufferLen]);
 
-        unsigned long* iBuffer = reinterpret_cast<unsigned long*>(&c[sizeof(uint)+1+sizeof(uint)]);
+        uint* iBuffer = reinterpret_cast<uindex*>(&c[sizeof(uint)+1+sizeof(uint)]);
         float* dBuffer = reinterpret_cast<float*>(&c[sizeof(uint)+1+sizeof(uint)+iBufferLen+sizeof(uint)]);
         float* pBuffer = reinterpret_cast<float*>(&c[sizeof(uint)+1+sizeof(uint)+iBufferLen+sizeof(uint)+dBufferLen+sizeof(uint)]);
 
-        indexes.insert(indexes.end(), iBuffer, iBuffer+(uint)iBufferLen/sizeof(unsigned long));
+        indexes.insert(indexes.end(), iBuffer, iBuffer+(uint)iBufferLen/sizeof(uindex));
         dists.insert(dists.end(), dBuffer, dBuffer+(uint)dBufferLen/sizeof(float));
         parameters.insert(parameters.end(), pBuffer, pBuffer+(uint)pBufferLen/sizeof(float));
     }

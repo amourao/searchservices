@@ -10,6 +10,7 @@
 	"limit": "1",
     "n": "10",
 
+    "dst": "tmp3",
     "data": "/localstore/amourao/saIndexingSplits/configCondor4_3.json_testI.mat",
 
     "nQueries": "100",

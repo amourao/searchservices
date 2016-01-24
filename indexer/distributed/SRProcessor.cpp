@@ -45,15 +45,19 @@ QueryStructRsp SRProcessor<T>::index(QueryStructReq queryS){
     vector<int> buckets = queryS.buckets;
     vector<uindex> indexes = queryS.indexes;
 
-    auto compare = [](float a, float b){ return a < b; };
-    auto p = MatrixTools::sortPermutation(coeffs,compare);
-    coeffs = MatrixTools::applyPermutation(coeffs, p, p.size());
-    indexes = MatrixTools::applyPermutation(indexes, p, p.size());
+    uint global_id = indexes[0];
+    uint local_id = lidTogid.size();
+
+    lidTogid.push_back(global_id);
+
+    auto compare = [](Coefficient a, Coefficient b){ return a < b; };
 
     for(uint i = 0; i < coeffs.size(); i++){
-        indexData[buckets[i]].push_back(Coefficient(data.n_cols,indexes[i],coeffs[i]));
+        indexData[buckets[i]].push_back(Coefficient(local_id,coeffs[i]));
+
+        auto p = MatrixTools::sortPermutation(indexData[buckets[i]],compare);
+        indexData[buckets[i]] = MatrixTools::applyPermutation(indexData[buckets[i]], p, p.size());
     }
-    data = features;
 
     QueryStructRsp result;
     result.operation = 2;
@@ -116,7 +120,7 @@ QueryStructRsp SRProcessor<T>::knnSearchIdLong(QueryStructReq queryS){
                     totalNCandidatesInsp++;
                 #endif
 
-                if (computedDists.find(candidates[i].original_id) == computedDists.end()){
+                if (computedDists.find(candidates[i].vector_pos) == computedDists.end()){
 
                     #ifdef MEASURE_TIME
                         totalNCandidatesInspNonDup++;
@@ -124,12 +128,13 @@ QueryStructRsp SRProcessor<T>::knnSearchIdLong(QueryStructReq queryS){
                     arma::Mat<T> candidate = data.col(candidates[i].vector_pos);
                     arma::Mat<T> diff = candidate - query;
                     float dist = myNorm(diff);
-                    long index = candidates[i].original_id;
+                    uindex lid = candidates[i].vector_pos;
+                    uindex gid = lidTogid[lid];
                     #pragma omp critical
                     {
-                        indices.push_back(index);
+                        indices.push_back(gid);
                         dists.push_back(dist);
-                        computedDists[index] = dist;
+                        computedDists[lid] = dist;
                     }
                 }
             }
@@ -352,7 +357,7 @@ template <typename T>
 bool SRProcessor<T>::save(string basePath){
     uint numBuckets = indexData.size();
     uint totalSize = sizeof(uint)+sizeof(uint)*numBuckets ;
-    uint sizeOfCoeff = sizeof(uindex)*2 + sizeof(float);
+    uint sizeOfCoeff = sizeof(uindex)*1 + sizeof(float);
     uint curr = 0;
     for(uint i = 0; i < indexData.size(); i++){
         totalSize+=sizeOfCoeff*indexData[i].size();
@@ -370,10 +375,8 @@ bool SRProcessor<T>::save(string basePath){
         for(uint j = 0; j < indexData[i].size(); j++){
             Coefficient c = indexData[i][j];
             //cout << c.vector_pos << endl;
-            memcpy(&dataToSave[curr],&c.vector_pos,sizeof(uindex));
-            curr += sizeof(uindex);
 
-            memcpy(&dataToSave[curr],&c.original_id,sizeof(uindex));
+            memcpy(&dataToSave[curr],&c.vector_pos,sizeof(uindex));
             curr += sizeof(uindex);
 
             memcpy(&dataToSave[curr],&c.value,sizeof(float));
@@ -384,6 +387,10 @@ bool SRProcessor<T>::save(string basePath){
     std::ofstream outfile (basePath + "_coeffs.bin",std::ofstream::binary);
     outfile.write (&dataToSave[0],curr);
     outfile.close();
+
+    std::ofstream outfile2 (basePath + "_lidtogid.bin",std::ofstream::binary);
+    outfile2.write ((char*)&lidTogid[0],sizeof(uint)*lidTogid.size());
+    outfile2.close();
 
     delete[] dataToSave;
 
@@ -419,13 +426,74 @@ bool SRProcessor<T>::loadAll(string basePath){
             uindex vector_pos = *reinterpret_cast<uindex*>(&buffer[curr]);
             curr += sizeof(uindex);
 
-            uindex original_id = *reinterpret_cast<uindex*>(&buffer[curr]);
-            curr += sizeof(uindex);
-
             uindex value = *reinterpret_cast<float*>(&buffer[curr]);
             curr += sizeof(float);
 
-            indexData[i].push_back(Coefficient(vector_pos,original_id,value));
+            indexData[i].push_back(Coefficient(vector_pos,value));
+        }
+    }
+
+    delete[] buffer;
+
+    data.load(basePath + "_features.bin");
+
+    return true;
+}
+
+template <typename T>
+bool SRProcessor<T>::loadSingle(string basePath){
+
+    std::ifstream file2(basePath + "_lidtogid.bin", std::ios::binary | std::ios::ate);
+    std::streamsize size2 = file2.tellg();
+    file2.seekg(0, std::ios::beg);
+
+    lidTogid = vector<uint>(size2/sizeof(uint));
+
+    if (!file2.read((char*)&lidTogid[0], size2)){
+        return false;
+    }
+    file2.close();
+
+
+    std::ifstream file(basePath + "_coeffs.bin", std::ios::binary | std::ios::ate);
+    std::streamsize size = file.tellg();
+    file.seekg(0, std::ios::beg);
+
+    char* buffer = new char[size];
+
+    if (!file.read(buffer, size)){
+        return false;
+    }
+    file.close();
+
+    uint curr = 0;
+    //uint nBuckets = *reinterpret_cast<uint*>(&buffer[curr]);
+    curr += sizeof(uint);
+
+    //bucketOffset = std::stoi(params["bucketOffset"]);
+	//bucketCount = std::stoi(params["bucketCount"]);
+
+    indexData = std::vector<std::vector<Coefficient>>(bucketCount);
+
+    for(long i = 0; i < bucketOffset; i++){
+        uint co = *reinterpret_cast<uint*>(&buffer[curr]);
+        curr += sizeof(uint) + (sizeof(uindex)*1+sizeof(float))*co;
+        //cout << co << " ";
+    }
+
+    //cout << endl << nBuckets << " " << bucketOffset << " " << bucketCount << " " << curr << endl;
+    for(long i = 0; i < bucketCount; i++){
+        uint co = *reinterpret_cast<uint*>(&buffer[curr]);
+        curr += sizeof(uint);
+
+        for(uint j = 0; j < co; j++){
+            uindex vector_pos = *reinterpret_cast<uindex*>(&buffer[curr]);
+            curr += sizeof(uindex);
+
+            float value = *reinterpret_cast<float*>(&buffer[curr]);
+            curr += sizeof(float);
+
+            indexData[i].push_back(Coefficient(vector_pos,value));
         }
     }
 
@@ -439,6 +507,9 @@ bool SRProcessor<T>::loadAll(string basePath){
 template <typename T>
 bool SRProcessor<T>::load(string basePath){
 
+    lidTogid = vector<uindex>();
+    map<uindex,uindex> lidTogidMap;
+
     std::ifstream file(basePath + "_coeffs.bin", std::ios::binary | std::ios::ate);
     std::streamsize size = file.tellg();
     file.seekg(0, std::ios::beg);
@@ -448,6 +519,7 @@ bool SRProcessor<T>::load(string basePath){
     if (!file.read(buffer, size)){
         return false;
     }
+    file.close();
 
     uint curr = 0;
     //uint nBuckets = *reinterpret_cast<uint*>(&buffer[curr]);
@@ -460,7 +532,7 @@ bool SRProcessor<T>::load(string basePath){
 
     for(long i = 0; i < bucketOffset; i++){
         uint co = *reinterpret_cast<uint*>(&buffer[curr]);
-        curr += sizeof(uint) + (sizeof(uindex)*2+sizeof(float))*co;
+        curr += sizeof(uint) + (sizeof(uindex)+sizeof(float))*co;
         //cout << co << " ";
     }
 
@@ -470,25 +542,39 @@ bool SRProcessor<T>::load(string basePath){
         curr += sizeof(uint);
 
         for(uint j = 0; j < co; j++){
-            uindex vector_pos = *reinterpret_cast<uindex*>(&buffer[curr]);
+            uindex gid = *reinterpret_cast<uindex*>(&buffer[curr]);
             curr += sizeof(uindex);
 
-            uindex original_id = *reinterpret_cast<uindex*>(&buffer[curr]);
-            curr += sizeof(uindex);
+            auto search = lidTogidMap.find(gid);
+            uindex lid = lidTogid.size();
+            if(search != lidTogidMap.end())
+                lid = search->second;
+            else {
+                lidTogidMap[gid] = lid;
+                lidTogid.push_back(gid);
+            }
 
             float value = *reinterpret_cast<float*>(&buffer[curr]);
             curr += sizeof(float);
 
-            indexData[i].push_back(Coefficient(vector_pos,original_id,value));
+            indexData[i].push_back(Coefficient(lid,value));
         }
     }
 
     delete[] buffer;
 
+    arma::uvec ttt(lidTogid.size());
+
+    for(int i = 0; i < lidTogid.size(); i++){
+        ttt(i) = lidTogid[i];
+    }
+
     data.load(basePath + "_features.bin");
+    data = data.cols(ttt);
 
     return true;
 }
+
 
 template class SRProcessor<int>;
 template class SRProcessor<float>;
