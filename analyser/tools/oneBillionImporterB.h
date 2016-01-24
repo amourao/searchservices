@@ -6,6 +6,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <string>
 #include <map>
+
 #include <cstdlib>
 
 #include "IBinImporter.h"
@@ -18,8 +19,13 @@ public:
     ~oneBillionImporterB();
 
 	void readBin(std::string file, int numberOfRows, cv::Mat& features, long long offsetInRows = 0);
+	void readBin(std::string file, int numberOfRows, arma::Mat<uchar>& features, long long offsetInRows = 0);
+    void readBinSlow(std::string file, int numberOfRows, arma::Mat<uchar>& features, long long offsetInRows = 0);
 	void readBin(std::string file, int numberOfRows, arma::fmat& features, long long offsetInRows = 0);
 	void readTags(std::string file, int numberOfRows, cv::Mat& tags);
+
+	void readBin(std::string filenamep, arma::Mat<uchar>& features, std::vector<uint>& buckets);
+
 
 private:
 

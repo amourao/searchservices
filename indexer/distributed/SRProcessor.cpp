@@ -2,11 +2,13 @@
 
 //static SRProcessor distIndexerWrapperServerFactory;
 
-SRProcessor::SRProcessor(){
+template <typename T>
+SRProcessor<T>::SRProcessor(){
 	//FactoryIndexer::getInstance()->registerType("SRProcessor",this);
 }
 
-SRProcessor::SRProcessor(string& typeId, map<string,string>& params){
+template <typename T>
+SRProcessor<T>::SRProcessor(string& typeId, map<string,string>& params){
 
     type = typeId;
     paramsB = params;
@@ -26,18 +28,22 @@ SRProcessor::SRProcessor(string& typeId, map<string,string>& params){
 
 }
 
-SRProcessor::~SRProcessor(){
+template <typename T>
+SRProcessor<T>::~SRProcessor(){
 	_stop = true;
 	if(_thread.isRunning())
         _thread.join();
 }
 
-QueryStructRsp SRProcessor::index(QueryStructReq queryS){
+template <typename T>
+QueryStructRsp SRProcessor<T>::index(QueryStructReq queryS){
 
-    arma::fmat features(&queryS.query[0],1,queryS.query.size(),true);
+    arma::fmat featuresT(&queryS.query[0],1,queryS.query.size(),true);
+    arma::Mat<T> features = arma::conv_to<arma::Mat<T>>::from(featuresT);
+
     vector<float> coeffs = queryS.coeffs;
     vector<int> buckets = queryS.buckets;
-    vector<unsigned long> indexes = queryS.indexes;
+    vector<uindex> indexes = queryS.indexes;
 
     auto compare = [](float a, float b){ return a < b; };
     auto p = MatrixTools::sortPermutation(coeffs,compare);
@@ -56,9 +62,12 @@ QueryStructRsp SRProcessor::index(QueryStructReq queryS){
     return result;
 }
 
-QueryStructRsp SRProcessor::knnSearchIdLong(QueryStructReq queryS){
+template <typename T>
+QueryStructRsp SRProcessor<T>::knnSearchIdLong(QueryStructReq queryS){
 
-    arma::fmat query(&queryS.query[0],queryS.query.size(),1,false);
+    arma::fmat queryT(&queryS.query[0],queryS.query.size(),1,false);
+    arma::Mat<T> query = arma::conv_to<arma::Mat<T>>::from(queryT);
+
     vector<int> buckets = queryS.buckets;
 
     int n = queryS.parameters[0];
@@ -68,13 +77,13 @@ QueryStructRsp SRProcessor::knnSearchIdLong(QueryStructReq queryS){
 
     QueryStructRsp result;
 
-    vector<unsigned long> indices;
+    vector<uindex> indices;
     vector<float> dists;
 
     indices.reserve(estimatedCandidateSize);
     dists.reserve(estimatedCandidateSize);
 
-    map<unsigned long, float> computedDists;
+    map<uindex, float> computedDists;
 
     #ifdef MEASURE_TIME
         totalBucketTimeStart = NOW();
@@ -112,8 +121,9 @@ QueryStructRsp SRProcessor::knnSearchIdLong(QueryStructReq queryS){
                     #ifdef MEASURE_TIME
                         totalNCandidatesInspNonDup++;
                     #endif
-
-                    float dist = norm(data.col(candidates[i].vector_pos) - query, 2);
+                    arma::Mat<T> candidate = data.col(candidates[i].vector_pos);
+                    arma::Mat<T> diff = candidate - query;
+                    float dist = myNorm(diff);
                     long index = candidates[i].original_id;
                     #pragma omp critical
                     {
@@ -149,7 +159,8 @@ QueryStructRsp SRProcessor::knnSearchIdLong(QueryStructReq queryS){
     return result;
 }
 
-QueryStructRsp SRProcessor::getStatistics(){
+template <typename T>
+QueryStructRsp SRProcessor<T>::getStatistics(){
     QueryStructRsp result;
     result.operation = 10;
 
@@ -187,11 +198,13 @@ QueryStructRsp SRProcessor::getStatistics(){
     return result;
 }
 
-void SRProcessor::rebuild(){
+template <typename T>
+void SRProcessor<T>::rebuild(){
 
 }
 
-void SRProcessor::run(){
+template <typename T>
+void SRProcessor<T>::run(){
     _ready.set();
 	Poco::Timespan span(250000);
 
@@ -269,7 +282,8 @@ void SRProcessor::run(){
 	}
 }
 
-vector<QueryStructRsp> SRProcessor::processQueries(char* input){
+template <typename T>
+vector<QueryStructRsp> SRProcessor<T>::processQueries(char* input){
     uint numOps = (uint)input[0];
     uint accumBytes = 1;
     vector<QueryStructRsp> result;
@@ -314,7 +328,8 @@ vector<QueryStructRsp> SRProcessor::processQueries(char* input){
     return result;
 }
 
-char* SRProcessor::processResponses(vector<QueryStructRsp>& responses){
+template <typename T>
+char* SRProcessor<T>::processResponses(vector<QueryStructRsp>& responses){
     char numOps = (char)responses.size();
     uint totalSize = 1;
     for (uint i = 0; i < responses.size(); i++){
@@ -333,13 +348,13 @@ char* SRProcessor::processResponses(vector<QueryStructRsp>& responses){
     return response;
 }
 
-
-bool SRProcessor::save(string basePath){
+template <typename T>
+bool SRProcessor<T>::save(string basePath){
     uint numBuckets = indexData.size();
     uint totalSize = sizeof(uint)+sizeof(uint)*numBuckets ;
-    uint sizeOfCoeff = sizeof(unsigned long)*2 + sizeof(float);
+    uint sizeOfCoeff = sizeof(uindex)*2 + sizeof(float);
     uint curr = 0;
-    for(long i = 0; i < indexData.size(); i++){
+    for(uint i = 0; i < indexData.size(); i++){
         totalSize+=sizeOfCoeff*indexData[i].size();
     }
 
@@ -355,11 +370,11 @@ bool SRProcessor::save(string basePath){
         for(uint j = 0; j < indexData[i].size(); j++){
             Coefficient c = indexData[i][j];
             //cout << c.vector_pos << endl;
-            memcpy(&dataToSave[curr],&c.vector_pos,sizeof(unsigned long));
-            curr += sizeof(unsigned long);
+            memcpy(&dataToSave[curr],&c.vector_pos,sizeof(uindex));
+            curr += sizeof(uindex);
 
-            memcpy(&dataToSave[curr],&c.original_id,sizeof(unsigned long));
-            curr += sizeof(unsigned long);
+            memcpy(&dataToSave[curr],&c.original_id,sizeof(uindex));
+            curr += sizeof(uindex);
 
             memcpy(&dataToSave[curr],&c.value,sizeof(float));
             curr += sizeof(float);
@@ -373,9 +388,12 @@ bool SRProcessor::save(string basePath){
     delete[] dataToSave;
 
     data.save(basePath + "_features.bin");
+
+    return 0;
 }
 
-bool SRProcessor::loadAll(string basePath){
+template <typename T>
+bool SRProcessor<T>::loadAll(string basePath){
 
     std::ifstream file(basePath + "_coeffs.bin", std::ios::binary | std::ios::ate);
     std::streamsize size = file.tellg();
@@ -398,13 +416,13 @@ bool SRProcessor::loadAll(string basePath){
         curr += sizeof(uint);
 
         for(uint j = 0; j < co; j++){
-            unsigned long vector_pos = *reinterpret_cast<unsigned long*>(&buffer[curr]);
-            curr += sizeof(unsigned long);
+            uindex vector_pos = *reinterpret_cast<uindex*>(&buffer[curr]);
+            curr += sizeof(uindex);
 
-            unsigned long original_id = *reinterpret_cast<unsigned long*>(&buffer[curr]);
-            curr += sizeof(unsigned long);
+            uindex original_id = *reinterpret_cast<uindex*>(&buffer[curr]);
+            curr += sizeof(uindex);
 
-            unsigned long value = *reinterpret_cast<float*>(&buffer[curr]);
+            uindex value = *reinterpret_cast<float*>(&buffer[curr]);
             curr += sizeof(float);
 
             indexData[i].push_back(Coefficient(vector_pos,original_id,value));
@@ -418,7 +436,8 @@ bool SRProcessor::loadAll(string basePath){
     return true;
 }
 
-bool SRProcessor::load(string basePath){
+template <typename T>
+bool SRProcessor<T>::load(string basePath){
 
     std::ifstream file(basePath + "_coeffs.bin", std::ios::binary | std::ios::ate);
     std::streamsize size = file.tellg();
@@ -431,7 +450,7 @@ bool SRProcessor::load(string basePath){
     }
 
     uint curr = 0;
-    uint nBuckets = *reinterpret_cast<uint*>(&buffer[curr]);
+    //uint nBuckets = *reinterpret_cast<uint*>(&buffer[curr]);
     curr += sizeof(uint);
 
     //bucketOffset = std::stoi(params["bucketOffset"]);
@@ -441,7 +460,7 @@ bool SRProcessor::load(string basePath){
 
     for(long i = 0; i < bucketOffset; i++){
         uint co = *reinterpret_cast<uint*>(&buffer[curr]);
-        curr += sizeof(uint) + (sizeof(unsigned long)*2+sizeof(float))*co;
+        curr += sizeof(uint) + (sizeof(uindex)*2+sizeof(float))*co;
         //cout << co << " ";
     }
 
@@ -451,11 +470,11 @@ bool SRProcessor::load(string basePath){
         curr += sizeof(uint);
 
         for(uint j = 0; j < co; j++){
-            unsigned long vector_pos = *reinterpret_cast<unsigned long*>(&buffer[curr]);
-            curr += sizeof(unsigned long);
+            uindex vector_pos = *reinterpret_cast<uindex*>(&buffer[curr]);
+            curr += sizeof(uindex);
 
-            unsigned long original_id = *reinterpret_cast<unsigned long*>(&buffer[curr]);
-            curr += sizeof(unsigned long);
+            uindex original_id = *reinterpret_cast<uindex*>(&buffer[curr]);
+            curr += sizeof(uindex);
 
             float value = *reinterpret_cast<float*>(&buffer[curr]);
             curr += sizeof(float);
@@ -470,3 +489,7 @@ bool SRProcessor::load(string basePath){
 
     return true;
 }
+
+template class SRProcessor<int>;
+template class SRProcessor<float>;
+template class SRProcessor<char>;

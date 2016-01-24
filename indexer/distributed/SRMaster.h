@@ -40,7 +40,7 @@ public:
 	void index(arma::fmat& features);
 	void printProcessorsStatistics();
 
-    std::pair<vector<unsigned long>,vector<float> > knnSearchIdLong(arma::fmat& query, int n, float search_limit);
+    std::pair<vector<uindex>,vector<float> > knnSearchIdLong(arma::fmat& query, int n, float search_limit);
 
 	bool save(string basePath);
 	bool load(string basePath);

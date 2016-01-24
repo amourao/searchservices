@@ -124,7 +124,7 @@ int srMaster(int argc, char *argv[]){
 
     map<string,string> params;
 
-    vector<SRProcessor*> ser;
+    vector<SRProcessor<float>*> ser;
 
     string name = "srMaster";
     arma::fmat dataToIndex;
@@ -137,12 +137,12 @@ int srMaster(int argc, char *argv[]){
     //#pragma omp parallel for schedule(dynamic)
     for(uint i = 0; i < nQueries; i++){
         arma::fmat query = dataToIndex.col(i);
-        std::pair<vector<unsigned long>,vector<float> > r = srm.knnSearchIdLong(query,std::stoi(parameters["n"]),std::stod(parameters["limit"]));
+        std::pair<vector<uindex>,vector<float> > r = srm.knnSearchIdLong(query,std::stoi(parameters["n"]),std::stod(parameters["limit"]));
 
         cout << "********** RESULTS **********" << endl;
         cout << "************* " << i << " ************" << endl;
-        for(int j = 0; j < r.first.size(); j++){
-            cout << r.first[j] << " " << r.second[j] << endl;
+        for(uint j = 0; j < r.first.size(); j++){
+            cout << r.first[j] << "\t" << r.second[j] << endl;
         }
         cout << "*****************************" << endl;
     }
@@ -199,7 +199,7 @@ int srTest(int argc, char *argv[]){
 
     map<string,string> params;
 
-    vector<SRProcessor*> ser;
+    vector<SRProcessor<float>*> ser;
 
     parameters["servers"] = "";
     params["bufferSize"] = parameters["bufferSize"];
@@ -221,7 +221,7 @@ int srTest(int argc, char *argv[]){
             parameters["servers"] +=  ";";
         }
         string name = "srProcessor_" + std::to_string(i);
-        SRProcessor* srp = new SRProcessor(name,params);
+        SRProcessor<float>* srp = new SRProcessor<float>(name,params);
         srp->load("tmp");
         ser.push_back(srp);
     }
@@ -236,12 +236,12 @@ int srTest(int argc, char *argv[]){
     //#pragma omp parallel for schedule(dynamic)
     for(uint i = 0; i < nQueries; i++){
         arma::fmat query = dataToIndex.col(i);
-        std::pair<vector<unsigned long>,vector<float> > r = srm.knnSearchIdLong(query,std::stoi(parameters["n"]),std::stod(parameters["limit"]));
+        std::pair<vector<uindex>,vector<float> > r = srm.knnSearchIdLong(query,std::stoi(parameters["n"]),std::stod(parameters["limit"]));
 
         cout << "********** RESULTS **********" << endl;
         cout << "************* " << i << " ************" << endl;
-        for(int j = 0; j < r.first.size(); j++){
-            cout << r.first[j] << " " << r.second[j];
+        for(uint j = 0; j < r.first.size(); j++){
+            cout << r.first[j] << "\t" << r.second[j];
         }
         cout << "*****************************" << endl;
     }
@@ -268,14 +268,14 @@ int dataPreProcessor(int argc, char *argv[]){
 
     std::vector<std::vector<Coefficient>> indexData(1024);
 
-    uint sizeOfCoeff = sizeof(unsigned long)*2 + sizeof(float);
+    uint sizeOfCoeff = sizeof(uindex)*2 + sizeof(float);
     uint numBuckets = 1024;
-    uint divisions = std::stoi(parameters["divisions"]);
+    //uint divisions = std::stoi(parameters["divisions"]);
 
     uint totalSize = sizeof(uint)+sizeof(uint)*numBuckets;
 
 
-    for(long i = 0; i < dataToIndex.n_cols; i++){
+    for(uint i = 0; i < dataToIndex.n_cols; i++){
         arma::fmat features = dataToIndex.col(i);
         arma::fmat sparseRep;
 
@@ -284,7 +284,7 @@ int dataPreProcessor(int argc, char *argv[]){
         for(uint j = 0; j < ind.n_rows; j++){
             totalSize+=sizeOfCoeff;
             uint bucket = ind[j];
-            uint machine = bucket/divisions;
+            //uint machine = bucket/divisions;
             indexData[bucket].push_back(Coefficient(i,i,sparseRep[bucket]));
         }
     }
@@ -302,22 +302,24 @@ int dataPreProcessor(int argc, char *argv[]){
         for(uint j = 0; j < indexData[i].size(); j++){
             Coefficient c = indexData[i][j];
             //cout << c.vector_pos << endl;
-            memcpy(&dataToSave[curr],&c.vector_pos,sizeof(unsigned long));
-            curr += sizeof(unsigned long);
+            memcpy(&dataToSave[curr],&c.vector_pos,sizeof(uindex));
+            curr += sizeof(uindex);
 
-            memcpy(&dataToSave[curr],&c.original_id,sizeof(unsigned long));
-            curr += sizeof(unsigned long);
+            memcpy(&dataToSave[curr],&c.original_id,sizeof(uindex));
+            curr += sizeof(uindex);
 
             memcpy(&dataToSave[curr],&c.value,sizeof(float));
             curr += sizeof(float);
 
         }
     }
-    std::ofstream outfile ("tmpB_coeffs.bin",std::ofstream::binary);
+
+    string dst = parameters["dst"];
+    std::ofstream outfile (dst + "_coeffs.bin",std::ofstream::binary);
     outfile.write (&dataToSave[0],curr);
     outfile.close();
 
-    dataToIndex.save("tmpB_features.bin");
+    dataToIndex.save(dst + "_features.bin");
     /*
     curr = 0;
     uint nBuckets = *reinterpret_cast<uint*>(&dataToSave[curr]);
@@ -331,13 +333,13 @@ int dataPreProcessor(int argc, char *argv[]){
         curr += sizeof(uint);
 
         for(uint j = 0; j < co; j++){
-            unsigned long vector_pos = *reinterpret_cast<unsigned long*>(&dataToSave[curr]);
-            curr += sizeof(unsigned long);
+            uindex vector_pos = *reinterpret_cast<uindex*>(&dataToSave[curr]);
+            curr += sizeof(uindex);
 
-            unsigned long original_id = *reinterpret_cast<unsigned long*>(&dataToSave[curr]);
-            curr += sizeof(unsigned long);
+            uindex original_id = *reinterpret_cast<uindex*>(&dataToSave[curr]);
+            curr += sizeof(uindex);
 
-            unsigned long value = *reinterpret_cast<float*>(&dataToSave[curr]);
+            uindex value = *reinterpret_cast<float*>(&dataToSave[curr]);
             curr += sizeof(float);
 
             indexData2[i].push_back(Coefficient(vector_pos,original_id,value));
@@ -383,7 +385,7 @@ int srProcessor(int argc, char *argv[]){
 
     map<string,string> params;
 
-    vector<SRProcessor*> ser;
+    vector<SRProcessor<float>*> ser;
 
     params["bufferSize"] = parameters["bufferSize"];
     for (uint i = 0; i < divisions; i++){
@@ -394,7 +396,7 @@ int srProcessor(int argc, char *argv[]){
         accum+=nBucketsPerServer;
 
         string name = "srProcessor_" + std::to_string(i);
-        SRProcessor* srp = new SRProcessor(name,params);
+        SRProcessor<float>* srp = new SRProcessor<float>(name,params);
         srp->load(path);
         ser.push_back(srp);
     }
@@ -408,10 +410,125 @@ int srProcessor(int argc, char *argv[]){
     return 0;
 }
 
+int matSizeTest(int argc, char *argv[]){
+
+    arma::Mat<char> teste(2,2,arma::fill::zeros);
+
+    teste(0,0) = 1;
+    teste(0,1) = 2;
+    teste(1,0) = 3;
+    teste(1,1) = 4;
+
+    arma::Mat<int> teste2(2,2,arma::fill::zeros);
+
+    teste2(0,0) = 1;
+    teste2(0,1) = 2;
+    teste2(1,0) = 3;
+    teste2(1,1) = 4;
+
+    arma::Mat<float> teste3(2,2,arma::fill::zeros);
+
+    teste3(0,0) = 1;
+    teste3(0,1) = 2;
+    teste3(1,0) = 3;
+    teste3(1,1) = 4;
+
+    tp totalSortTimeStart = NOW();
+    /*
+    cout << "\t" << myNorm(teste) << endl;
+    cout << ELAPSED(totalSortTimeStart) << endl;
+    totalSortTimeStart = NOW();
+    cout << "\t" << myNorm(teste2) << endl;
+    cout << ELAPSED(totalSortTimeStart) << endl;
+    totalSortTimeStart = NOW();
+    cout << "\t" << myNorm(teste3) << endl;
+    cout << ELAPSED(totalSortTimeStart) << endl;
+    totalSortTimeStart = NOW();
+    cout << "\t" << myNorm2(teste3) << endl;
+    cout << ELAPSED(totalSortTimeStart) << endl << endl;
+    */
+    oneBillionImporterB ob;
+
+    arma::Mat<uchar> featuresB;
+    arma::Mat<uchar> featuresC;
+
+    arma::Mat<uchar> featuresE;
+    arma::Mat<uchar> featuresF;
+
+    arma::Mat<uchar> featuresH;
+    arma::Mat<uchar> featuresI;
+
+
+
+
+    totalSortTimeStart = NOW();
+    ob.readBin("/localstore/1-billion-vectors/queries.bvecs",10000,featuresB,0);
+    cout << ELAPSED(totalSortTimeStart) << endl;
+
+    totalSortTimeStart = NOW();
+    ob.readBinSlow("/localstore/1-billion-vectors/queries.bvecs",10000,featuresC,0);
+    cout << ELAPSED(totalSortTimeStart) << endl;
+
+    totalSortTimeStart = NOW();
+    ob.readBin("/localstore/1-billion-vectors/queries.bvecs",10000,featuresE,0);
+    cout << ELAPSED(totalSortTimeStart) << endl;
+
+    totalSortTimeStart = NOW();
+    ob.readBinSlow("/localstore/1-billion-vectors/queries.bvecs",10000,featuresF,0);
+    cout << ELAPSED(totalSortTimeStart) << endl;
+
+    cout << (int)arma::accu(featuresF-featuresE) << endl;
+
+
+
+
+    vector<uint> buckets;
+
+
+    buckets.push_back(4);
+    buckets.push_back(3);
+    buckets.push_back(2);
+    buckets.push_back(1);
+    buckets.push_back(0);
+
+    totalSortTimeStart = NOW();
+    ob.readBin("/localstore/1-billion-vectors/queries.bvecs",featuresH,buckets);
+    cout << ELAPSED(totalSortTimeStart) << endl;
+
+    totalSortTimeStart = NOW();
+    ob.readBinSlow("/localstore/1-billion-vectors/queries.bvecs",5,featuresI,0);
+    cout << ELAPSED(totalSortTimeStart) << endl;
+
+    cout << featuresH << endl;
+    cout << featuresI << endl;
+
+    //cout << featuresB.n_rows << " " << featuresB.n_cols << endl;
+    //cout << featuresB << endl;
+    //featuresB.save("tmpData.bin");
+
+    //arma::fmat featuresBF;
+    //ob.readBin("/localstore/1-billion-vectors/queries.bvecs",5,featuresBF,0);
+    //cout << featuresBF.n_rows << " " << featuresBF.n_cols << endl;
+    //cout << featuresBF << endl;
+
+    return 0;
+}
+
 int main(int argc, char *argv[]){
     //el::Helpers::setCrashHandler(myCrashHandler);
     //el::Loggers::addFlag( el::LoggingFlag::DisableApplicationAbortOnFatalLog );
     //el::Loggers::addFlag( el::LoggingFlag::ColoredTerminalOutput );
+
+    /*
+    cout << sizeof(char) << endl;
+    cout << sizeof(short) << endl;
+    cout << sizeof(int) << endl;
+    cout << sizeof(uint) << endl;
+    cout << sizeof(long) << endl;
+    cout << sizeof(unsigned long) << endl;
+    cout << sizeof(float) << endl;
+    cout << sizeof(double) << endl;
+    */
 
     if(StringTools::endsWith(string(argv[1]),"testDistIndexer"))
         testDistIndexer(argc-1,&argv[1]);
@@ -423,6 +540,9 @@ int main(int argc, char *argv[]){
         srTest(argc-1,&argv[1]);
     else if(StringTools::endsWith(string(argv[1]),"dataPreProcessor"))
         dataPreProcessor(argc-1,&argv[1]);
+    else if(StringTools::endsWith(string(argv[1]),"matSizeTest"))
+        matSizeTest(argc-1,&argv[1]);
+
 
 
     return 0;

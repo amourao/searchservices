@@ -36,15 +36,15 @@ SRMaster::~SRMaster(){
 
 }
 
-std::pair<vector<unsigned long>,vector<float> > SRMaster::knnSearchIdLong(arma::fmat& query, int n, float search_limit){
+std::pair<vector<uindex>,vector<float> > SRMaster::knnSearchIdLong(arma::fmat& query, int n, float search_limit){
     #ifdef MEASURE_TIME
         totalNQueries++;
         totalQueryTimeStart = NOW();
         totalSRTimeStart = NOW();
     #endif
 
-    unordered_set<unsigned long> indicesSet;
-    vector<unsigned long> indices;
+    unordered_set<uindex> indicesSet;
+    vector<uindex> indices;
     vector<float> dists;
 
     QueryStructReq q;
@@ -229,7 +229,7 @@ void SRMaster::sendMessage(vector<QueryStructReq>& query, vector<QueryStructRsp>
             totalCommunicationTime += ELAPSED(_totalCommunicationTimeStart);
             tp _totalMarshallingTimeStart = NOW();
         #endif
-        uint numOpsRsp = (uint)outputBytes[0];
+        //uint numOpsRsp = (uint)outputBytes[0];
         uint accumBytes = 1;
 
         for (uint i = 0; i < query.size(); i++){
@@ -238,7 +238,7 @@ void SRMaster::sendMessage(vector<QueryStructReq>& query, vector<QueryStructRsp>
             QueryStructRsp response;
             response.toQueryStructRsp(newInput);
 
-            char op = response.operation;
+            //char op = response.operation;
             accumBytes += response.totalByteSize;
 
             output.push_back(response);

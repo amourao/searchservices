@@ -1,14 +1,30 @@
 #pragma once
 #include <cstring>
 #include <chrono>
+#include <armadillo>
 
 
 #define MEASURE_TIME
 typedef std::chrono::high_resolution_clock::time_point tp;
+typedef unsigned long uindex;
 inline tp NOW() {return std::chrono::high_resolution_clock::now();}
 inline long ELAPSED(tp start) {return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now()-start).count();}
 inline long TO_LONG(tp start) {return std::chrono::duration_cast<std::chrono::microseconds>(start.time_since_epoch()).count();}
 
+
+inline double myNorm(arma::Mat<float> matrix){
+    return arma::norm<arma::Mat<float>>(matrix);
+}
+
+template <typename T>
+inline double myNorm(arma::Mat<T> matrix){
+    return sqrt(arma::dot(matrix,matrix));
+}
+
+template <typename T>
+inline double myNorm2(arma::Mat<T> matrix){
+    return sqrt(arma::dot(matrix,matrix));
+}
 struct Coefficient {
     unsigned long vector_pos;
     unsigned long original_id;

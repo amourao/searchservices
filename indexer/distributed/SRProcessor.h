@@ -23,6 +23,7 @@
 
 using namespace std;
 
+template <typename T>
 class SRProcessor: public Poco::Runnable {
 
 public:
@@ -95,7 +96,7 @@ private:
 	bool needsRebuild = false;
 
     std::vector<std::vector<Coefficient>> indexData;
-    arma::fmat data;
+    arma::Mat<T> data;
     map<string,string> paramsB;
 
 };
