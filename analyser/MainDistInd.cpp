@@ -483,7 +483,7 @@ int srProcessorBillion(int argc, char *argv[]){
 
         string name = "srProcessor_" + std::to_string(i);
         SRProcessor<float>* srp = new SRProcessor<float>(name,params);
-        srp->loadBilion(path,coeffs);
+        srp->loadBilion(coeffs,path);
         ser.push_back(srp);
     }
 
