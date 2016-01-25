@@ -542,7 +542,7 @@ int srProcessorBillion(int argc, char *argv[]){
 
     map<string,string> params;
 
-    vector<SRProcessor<float>*> ser;
+    vector<SRProcessor<uchar>*> ser;
 
     params["bufferSize"] = parameters["bufferSize"];
     for (uint i = 0; i < divisions; i++){
@@ -553,7 +553,7 @@ int srProcessorBillion(int argc, char *argv[]){
         accum+=nBucketsPerServer;
 
         string name = "srProcessor_" + std::to_string(i);
-        SRProcessor<float>* srp = new SRProcessor<float>(name,params);
+        SRProcessor<uchar>* srp = new SRProcessor<uchar>(name,params);
         srp->loadBilion(coeffs,path);
         ser.push_back(srp);
     }

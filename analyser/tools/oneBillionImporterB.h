@@ -28,8 +28,6 @@ public:
 	void readBin(std::string filenamep, arma::Mat<int>& features, std::vector<uint>& buckets);
 	void readBin(std::string filenamep, arma::Mat<float>& features, std::vector<uint>& buckets);
 
-
-
 private:
 
 };

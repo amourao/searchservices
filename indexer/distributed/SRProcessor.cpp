@@ -511,19 +511,15 @@ bool SRProcessor<T>::loadBilion(string coeffs, string dataPath){
     lidTogid = vector<uindex>();
     map<uindex,uindex> lidTogidMap;
 
-    std::ifstream file(coeffs, std::ios::binary | std::ios::ate);
-    std::streamsize size = file.tellg();
-    file.seekg(0, std::ios::beg);
+    FILE * file = fopen(coeffs.c_str(), "rb" );
 
-    char* buffer = new char[size];
+    fseek(file, 0L, SEEK_END);
+    unsigned long long sz = ftell(file);
+    fseek(file, 0L, SEEK_SET);
 
+    char* buffer = new char[sizeof(uint)];
+    size_t result;
     cout << "Loading coefficients" << endl;
-    if (!file.read(buffer, size)){
-        return false;
-    }
-    file.close();
-    cout << "Loading coefficients... done" << endl;
-
 
     unsigned long long curr = 0;
     //uint nBuckets = *reinterpret_cast<uint*>(&buffer[curr]);
@@ -535,22 +531,26 @@ bool SRProcessor<T>::loadBilion(string coeffs, string dataPath){
     indexData = std::vector<std::vector<Coefficient>>(bucketCount);
     cout << "Parsing coefficients" << endl;
     for(long i = 0; i < bucketOffset; i++){
-        uint co = *reinterpret_cast<uint*>(&buffer[curr]);
+        result = fread (buffer,1,sizeof(uint),file);
+        uint co = *reinterpret_cast<uint*>(&buffer[0]);
         curr += sizeof(uint) + (sizeof(uindex)+sizeof(float))*co;
+        fseek(file, curr, SEEK_SET);
         //cout << co << " ";
     }
     cout << "\toffset " << bucketOffset <<  " jumped" << endl;
     cout << "\treading my " << bucketCount << " buckets" << endl;
     //cout << endl << nBuckets << " " << bucketOffset << " " << bucketCount << " " << curr << endl;
     for(long i = 0; i < bucketCount; i++){
-        uint co = *reinterpret_cast<uint*>(&buffer[curr]);
+        result = fread (buffer,1,sizeof(uint),file);
+        uint co = *reinterpret_cast<uint*>(&buffer[0]);
         curr += sizeof(uint);
 
         indCount+=co;
         cout << "\t\tBucket " << i+bucketOffset << "( " << i << " +" << bucketOffset << ") has " << co << endl;
 
         for(uint j = 0; j < co; j++){
-            uindex gid = *reinterpret_cast<uindex*>(&buffer[curr]);
+            result = fread (buffer,1,sizeof(uint),file);
+            uindex gid = *reinterpret_cast<uindex*>(&buffer[0]);
             curr += sizeof(uindex);
 
             auto search = lidTogidMap.find(gid);
@@ -561,8 +561,8 @@ bool SRProcessor<T>::loadBilion(string coeffs, string dataPath){
                 lidTogidMap[gid] = lid;
                 lidTogid.push_back(gid);
             }
-
-            float value = *reinterpret_cast<float*>(&buffer[curr]);
+            result = fread (buffer,1,sizeof(uint),file);
+            float value = *reinterpret_cast<float*>(&buffer[0]);
             curr += sizeof(float);
 
             indexData[i].push_back(Coefficient(lid,value));
@@ -571,6 +571,7 @@ bool SRProcessor<T>::loadBilion(string coeffs, string dataPath){
 
 
     delete[] buffer;
+    fclose(file);
 
     cout << "Parsing coefficients... done" << endl;
 
@@ -604,6 +605,7 @@ bool SRProcessor<T>::load(string basePath){
         return false;
     }
     file.close();
+
 
     uint curr = 0;
     //uint nBuckets = *reinterpret_cast<uint*>(&buffer[curr]);

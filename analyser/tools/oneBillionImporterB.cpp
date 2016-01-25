@@ -258,6 +258,13 @@ void oneBillionImporterB::readBin(std::string filenamep, int numberOfRows, arma:
 }
 
 
+void oneBillionImporterB::readBin(std::string filenamep, arma::Mat<int>& features, std::vector<uint>& buckets) {
+    std::cout << "error:  not implemented int" << std::endl;
+}
+
+void oneBillionImporterB::readBin(std::string filenamep, arma::Mat<float>& features, std::vector<uint>& buckets) {
+    std::cout << "error:  not implemented float" << std::endl;
+}
 
 void oneBillionImporterB::readBin(std::string filenamep, arma::Mat<uchar>& features, std::vector<uint>& buckets) {
 
@@ -319,11 +326,3 @@ void oneBillionImporterB::readBin(std::string filenamep, arma::Mat<uchar>& featu
 
 }
 
-
-void oneBillionImporterB::readBin(std::string filenamep, arma::Mat<int>& features, std::vector<uint>& buckets) {
-    std::cout << "error:  not implemented int" << std::endl;
-}
-
-void oneBillionImporterB::readBin(std::string filenamep, arma::Mat<float>& features, std::vector<uint>& buckets) {
-    std::cout << "error:  not implemented float" << std::endl;
-}
