@@ -772,10 +772,13 @@ int testMeasureDistance(int argc, char *argv[]){
 
     cout << "Inter matrix types similarity" << endl;
     cout << "Float" << endl;
-    cout << myNorm(queryF-queryCF) << " " << arma::norm(queryF-queryCF,2) << endl;
+    arma::Col<float> tmpF1 = queryF-queryCF;
+    arma::Mat<float> tmpF2 = queryF-queryCF;
+    cout << myNorm(tmpF1) << " " << arma::norm(tmpF1,2) << endl;
+    cout << myNorm(tmpF2) << " " << arma::norm(tmpF2,2) << endl;
 
     cout << "UChar" << endl;
-    arma::Mat<uchar> tmp = queryFC-queryC;
+    arma::Col<uchar> tmp = queryFC-queryC;
     arma::fmat tmpF;
     cout << myNorm(tmp) << endl;
 

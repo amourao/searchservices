@@ -16,8 +16,17 @@ inline double myNorm(arma::Mat<float> matrix){
     return arma::norm<arma::Mat<float>>(matrix,2);
 }
 
+inline double myNorm(arma::Col<float> matrix){
+    return arma::norm<arma::Col<float>>(matrix,2);
+}
+
 template <typename T>
 inline double myNorm(arma::Mat<T> matrix){
+    return sqrt(arma::dot(matrix,matrix));
+}
+
+template <typename T>
+inline double myNorm(arma::Col<T> matrix){
     return sqrt(arma::dot(matrix,matrix));
 }
 
@@ -25,6 +34,12 @@ template <typename T>
 inline double myNorm2(arma::Mat<T> matrix){
     return sqrt(arma::dot(matrix,matrix));
 }
+
+template <typename T>
+inline double myNorm2(arma::Col<T> matrix){
+    return sqrt(arma::dot(matrix,matrix));
+}
+
 struct Coefficient {
     uindex vector_pos;
     float value;
