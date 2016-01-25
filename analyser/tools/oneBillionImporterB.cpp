@@ -291,39 +291,43 @@ void oneBillionImporterB::readBin(std::string filenamep, arma::Mat<uchar>& featu
         fseek(out,offset,SEEK_SET);
         if( out != NULL ){
 
-  			if (fread(&currDimensions,1,sizeof(int),out) == 0){
+            if (fread(&currDimensions,1,sizeof(int),out) == 0){
                 std::cout << "error: cannot read middle of file" << std::endl;
                 return;
             }
-	   		if(currDimensions != dimensions){
+            if(currDimensions != dimensions){
                 features = arma::Mat<uchar>();
                 std::cout << "error: dims dont match at bucket " << bucket << " offset " << offset << " seek "<< ftell(out) << ": " << currDimensions << " " << dimensions << std::endl;
                 return;
-        }
+            }
 
-      if( ferror( out ) )      {
-        features = arma::Mat<uchar>();
-         std::cout << "error: EOF reached" << std::endl;
-          return;
-      }
-        //for (int g = 0; g < dimensions; g++){
-          uchar* aa = new uchar[dimensions];
-          if (fread(aa,1,dimensions,out) == 0){
+            if( ferror( out ) )      {
+                features = arma::Mat<uchar>();
+                std::cout << "error: EOF reached" << std::endl;
+                return;
+            }
+            //for (int g = 0; g < dimensions; g++){
+            uchar* aa = new uchar[dimensions];
+            if (fread(aa,1,dimensions,out) == 0){
                 std::cout << "error: cannot read middle of file" << std::endl;
                 return;
-          }
-        if( ferror( out ) )      {
-                  features = arma::Mat<uchar>();
-                    std::cout << "error: EOF reached" << std::endl;
-          return;
-      }
-            //std::cout << aa << " " << (unsigned int)aa << std::endl;
+            }
+            if( ferror( out ) ){
+                features = arma::Mat<uchar>();
+                std::cout << "error: EOF reached" << std::endl;
+                return;
+            }
+                //std::cout << aa << " " << (unsigned int)aa << std::endl;
             memcpy(&features(0,i),aa,dimensions);
-        //}
-    }
+            delete[] aa;
+
+            std::cout << "Read " << i << " bucket " << bucket << std::endl;
+
+            //}
+        }
 	    /* Flush buffer and close file */
     }
-          	fclose(out);
+    fclose(out);
 
 
 }
