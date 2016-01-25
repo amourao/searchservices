@@ -11,14 +11,9 @@ inline tp NOW() {return std::chrono::high_resolution_clock::now();}
 inline long ELAPSED(tp start) {return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now()-start).count();}
 inline long TO_LONG(tp start) {return std::chrono::duration_cast<std::chrono::microseconds>(start.time_since_epoch()).count();}
 
-
-inline float myNorm(arma::Mat<float>& matrix){
-    return arma::norm<arma::Mat<float>>(matrix,2);
-}
-
 template <typename T>
 inline float myNorm(arma::Mat<T>& matrix1, arma::Mat<T>& matrix2){
-    return arma::norm(arma::conv_to<arma::Mat<float>>::from(matrix1)-arma::conv_to<arma::Mat<float>>::from(matrix2));
+    return arma::norm<arma::Mat<float>>(arma::conv_to<arma::Mat<float>>::from(matrix1)-arma::conv_to<arma::Mat<float>>::from(matrix2),2);
 }
 
 template <typename T>
