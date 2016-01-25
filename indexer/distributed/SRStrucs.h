@@ -18,12 +18,7 @@ inline float myNorm(arma::Mat<float>& matrix){
 
 template <typename T>
 inline float myNorm(arma::Mat<T>& matrix1, arma::Mat<T>& matrix2){
-    arma::Mat<float> ppD(matrix1.n_rows,matrix1.n_cols,arma::fill::zeros);
-
-    for(int i = 0; i < matrix1.n_elem; i++)
-        ppD = (float)matrix1(i)-matrix2(i);
-
-    return arma::norm<arma::Mat<float>>(ppD,2);
+    return arma::norm(arma::conv_to<arma::Mat<float>>::from(matrix1)-arma::conv_to<arma::Mat<float>>::from(matrix2));
 }
 
 template <typename T>
