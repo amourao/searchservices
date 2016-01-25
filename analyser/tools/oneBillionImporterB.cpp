@@ -296,7 +296,7 @@ void oneBillionImporterB::readBin(std::string filenamep, arma::Mat<uchar>& featu
             }
 	   		if(currDimensions != dimensions){
                 features = arma::Mat<uchar>();
-                std::cout << "error: dims dont match at " offset << ": " << currDimensions << " " << dimensions << std::endl;
+                std::cout << "error: dims dont match at " << offset << ": " << currDimensions << " " << dimensions << std::endl;
                 return;
         }
 
