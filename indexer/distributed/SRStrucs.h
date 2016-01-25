@@ -16,18 +16,21 @@ inline double myNorm(arma::Mat<float> matrix){
     return arma::norm<arma::Mat<float>>(matrix,2);
 }
 
-inline double myNorm(arma::Col<float> matrix){
-    return arma::norm<arma::Col<float>>(matrix,2);
-}
-
 template <typename T>
 inline double myNorm(arma::Mat<T> matrix){
-    return sqrt(arma::dot(matrix,matrix));
-}
+    arma::mat ppD = arma::pow(arma::conv_to<arma::mat>::from(matrix),2);
+    arma::Mat<T> pp = arma::pow(matrix,2);
+    std::cout << std::endl;
+    std::cout << std::endl;
+    for(int i = 0; i < matrix.n_elem; i++)
+        std::cout << pp(i) << " , " << ppD(i);
+    std::cout << std::endl;
 
-template <typename T>
-inline double myNorm(arma::Col<T> matrix){
-    return sqrt(arma::dot(matrix,matrix));
+    double r = sqrt(arma::accu(pp));
+    double rD = sqrt(arma::accu(ppD));
+
+    std::cout << r << " " << rD << std::endl << std::endl << std::endl;
+    return rD;
 }
 
 template <typename T>
@@ -35,10 +38,6 @@ inline double myNorm2(arma::Mat<T> matrix){
     return sqrt(arma::dot(matrix,matrix));
 }
 
-template <typename T>
-inline double myNorm2(arma::Col<T> matrix){
-    return sqrt(arma::dot(matrix,matrix));
-}
 
 struct Coefficient {
     uindex vector_pos;

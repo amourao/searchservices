@@ -548,7 +548,7 @@ int srProcessorBillion(int argc, char *argv[]){
     for (uint i = 0; i < divisions; i++){
 
         params["port"] = std::to_string(startPort++);
-        params["bucketOffset"] = std::to_string(accum);
+        params["bucketOffset"] =  std::to_string(accum);
         params["bucketCount"] = std::to_string(nBucketsPerServer);
         accum+=nBucketsPerServer;
 
@@ -770,12 +770,20 @@ int testMeasureDistance(int argc, char *argv[]){
     queryF = queryF.col(offsetQueries);
     queryFC = arma::conv_to<arma::Mat<uchar>>::from(queryF);
 
+    arma::Mat<uchar> tmp = queryFC-queryC;
+    arma::Mat<double> tmp2 = arma::conv_to<arma::Mat<double>>::from(queryFC)-arma::conv_to<arma::Mat<double>>::from(queryC);
+    cout << tmp << endl;
+    cout << tmp2 << endl;
+    cout << queryFC-queryC << endl << endl;
+
+    cout << myNorm(tmp) << " " << myNorm(tmp2) << endl;
+    /*
     cout << "Inter matrix types similarity" << endl;
     cout << "Float" << endl;
     arma::Col<float> tmpF1 = queryF-queryCF;
     arma::Mat<float> tmpF2 = queryF-queryCF;
-    cout << myNorm(tmpF1) << " " << arma::norm(tmpF1,2) << endl;
-    cout << myNorm(tmpF2) << " " << arma::norm(tmpF2,2) << endl;
+    cout << myNorm(tmpF1) << " " << myNorm2(tmpF1) << " " << arma::norm(tmpF1,2) << endl;
+    cout << myNorm(tmpF2) << " " << myNorm2(tmpF1) << " " << arma::norm(tmpF2,2) << endl;
 
     cout << "UChar" << endl;
     arma::Col<uchar> tmp = queryFC-queryC;
@@ -784,16 +792,15 @@ int testMeasureDistance(int argc, char *argv[]){
 
     cout << "Intra matrix similarity" << endl;
     tmp = features-queryC;
-    cout << myNorm(tmp) << endl;
+    cout << myNorm(tmp) << " " << myNorm2(tmp) << endl;
     tmp = arma::abs(features-queryC);
-    cout << myNorm(tmp) << endl;
+    cout << myNorm(tmp) << " " << myNorm2(tmp) << endl;
 
     tmp = features-queryFC;
-    cout << myNorm(tmp) << endl;
+    cout << myNorm(tmp) << " " << myNorm2(tmp) << endl;
     tmpF = featuresF-queryF;
-    cout << myNorm(tmpF) << " " << arma::norm(tmpF,2) << endl;
-    cout << myNorm(tmpF) << " " << arma::norm(tmpF,2) << endl;
-
+    cout << myNorm(tmpF) << " " << myNorm2(tmpF) << " " << arma::norm(tmpF,2) << endl;
+    */
 
     return 0;
 
