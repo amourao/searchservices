@@ -571,6 +571,7 @@ bool SRProcessor<T>::loadBilion(string coeffs, string dataPath){
 
 
     delete[] buffer;
+
     cout << "Parsing coefficients... done" << endl;
 
     cout << "To import " << lidTogid.size() << " of " << indCount << " possible" << endl;
