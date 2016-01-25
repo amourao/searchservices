@@ -546,6 +546,7 @@ int srProcessorBillion(int argc, char *argv[]){
 
     params["bufferSize"] = parameters["bufferSize"];
     params["pollInterval"] = parameters["pollInterval"];
+    params["debugLimitPerBucket"] = parameters["debugLimitPerBucket"];
     for (uint i = 0; i < divisions; i++){
 
         params["port"] = std::to_string(startPort++);

@@ -546,7 +546,10 @@ bool SRProcessor<T>::loadBilion(string coeffs, string dataPath){
         uint co = *reinterpret_cast<uint*>(&buffer[0]);
         curr += sizeof(uint);
 
-        indexData[i].resize(co);
+        if(debugLimitPerBucket == -1)
+            indexData[i].resize(co);
+        else
+            indexData[i].resize(std::min((int)co,debugLimitPerBucket));
 
         indCount+=co;
         cout << "\t\tBucket " << i+bucketOffset << "( " << i << " +" << bucketOffset << ") has " << co << endl;
@@ -555,20 +558,25 @@ bool SRProcessor<T>::loadBilion(string coeffs, string dataPath){
             result = fread (buffer,1,sizeof(uint),file);
             uindex gid = *reinterpret_cast<uindex*>(&buffer[0]);
             curr += sizeof(uindex);
-
-            auto search = lidTogidMap.find(gid);
-            uindex lid = lidTogid.size();
-            if(search != lidTogidMap.end())
-                lid = search->second;
-            else {
-                lidTogidMap[gid] = lid;
-                lidTogid.push_back(gid);
-            }
             result = fread (buffer,1,sizeof(uint),file);
             float value = *reinterpret_cast<float*>(&buffer[0]);
             curr += sizeof(float);
 
-            indexData[i][j] = Coefficient(lid,value);
+            if(debugLimitPerBucket == -1 || j < debugLimitPerBucket){
+
+                auto search = lidTogidMap.find(gid);
+                uindex lid = lidTogid.size();
+                if(search != lidTogidMap.end())
+                    lid = search->second;
+                else {
+                    lidTogidMap[gid] = lid;
+                    lidTogid.push_back(gid);
+                }
+
+
+                indexData[i][j] = Coefficient(lid,value);
+
+            }
         }
     }
 

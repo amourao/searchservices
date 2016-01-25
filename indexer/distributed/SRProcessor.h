@@ -101,6 +101,7 @@ private:
 
 	uint bucketOffset = 0;
 	uint bucketCount = 0;
+	int debugLimitPerBucket = 0;
 
 	bool needsRebuild = false;
 
