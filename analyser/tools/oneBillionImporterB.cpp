@@ -270,7 +270,7 @@ void oneBillionImporterB::readBin(std::string filenamep, arma::Mat<uchar>& featu
 
     FILE * out = fopen(filenamep.c_str(), "rb" );
 
-    uint dimensions;
+    uint dimensions = 0;
     uint currDimensions = 0;
 
     if (fread(&dimensions,sizeof(int),1,out) == 0){
@@ -289,6 +289,7 @@ void oneBillionImporterB::readBin(std::string filenamep, arma::Mat<uchar>& featu
 
         long offset = (bucket*(dimensions+4));
         std::cout << (bucket*(dimensions+4)) << std::endl;
+        std::cout << (dimensions+4) << std::endl;
         std::cout << offset << std::endl;
         fseek(out,offset,SEEK_SET);
         if( out != NULL ){
@@ -299,7 +300,7 @@ void oneBillionImporterB::readBin(std::string filenamep, arma::Mat<uchar>& featu
             }
 	   		if(currDimensions != dimensions){
                 features = arma::Mat<uchar>();
-                std::cout << "error: dims dont match at bucket " << bucket << " offset " << offset << ": " << currDimensions << " " << dimensions << std::endl;
+                std::cout << "error: dims dont match at bucket " << bucket << " offset " << offset << " seek "<< ftell(out) << ": " << currDimensions << " " << dimensions << std::endl;
                 return;
         }
 
