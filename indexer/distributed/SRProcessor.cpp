@@ -546,6 +546,8 @@ bool SRProcessor<T>::loadBilion(string coeffs, string dataPath){
         uint co = *reinterpret_cast<uint*>(&buffer[0]);
         curr += sizeof(uint);
 
+        indexData[i].resize(co);
+
         indCount+=co;
         cout << "\t\tBucket " << i+bucketOffset << "( " << i << " +" << bucketOffset << ") has " << co << endl;
 
@@ -566,13 +568,14 @@ bool SRProcessor<T>::loadBilion(string coeffs, string dataPath){
             float value = *reinterpret_cast<float*>(&buffer[0]);
             curr += sizeof(float);
 
-            indexData[i].push_back(Coefficient(lid,value));
+            indexData[i][j] = Coefficient(lid,value);
         }
     }
 
 
     delete[] buffer;
     fclose(file);
+    lidTogidMap.clear();
 
     cout << "Parsing coefficients... done" << endl;
 

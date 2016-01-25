@@ -276,26 +276,28 @@ void oneBillionImporterB::readBin(std::string filenamep, arma::Mat<uchar>& featu
         std::cout << "error: cannot read begininig of file" << std::endl;
         return;
     }
+    fseek(out,0,SEEK_SET);
 
     features.set_size(dimensions,buckets.size());
 
     std::cout << "Reading " << dimensions << " dims for " << buckets.size() << " buckets" << std::endl;
 	/* Open file */
 	for (uint i=0;i<buckets.size();i++){
+        fseek(out,0,SEEK_SET);
         uint bucket = buckets[i];
-        unsigned long long offset = (bucket*(dimensions*1+1*4));
+        unsigned long long offset = (bucket*(dimensions+4));
         fseek(out,offset,SEEK_SET);
         if( out != NULL ){
 
 
         int currDimensions = 0;
-  			if (fread(&currDimensions,4,1,out) == 0){
+  			if (fread(&currDimensions,1,sizeof(int),out) == 0){
                 std::cout << "error: cannot read middle of file" << std::endl;
                 return;
             }
 	   		if(currDimensions != dimensions){
                 features = arma::Mat<uchar>();
-                std::cout << "error: dims dont match" << std::endl;
+                std::cout << "error: dims dont match: " << currDimensions << " " << dimensions << std::endl;
                 return;
         }
 
@@ -317,6 +319,7 @@ void oneBillionImporterB::readBin(std::string filenamep, arma::Mat<uchar>& featu
       }
             //std::cout << aa << " " << (unsigned int)aa << std::endl;
             memcpy(&features(0,i),aa,dimensions);
+            std::cout << features(0,i) << std::endl;
         //}
     }
 	    /* Flush buffer and close file */
