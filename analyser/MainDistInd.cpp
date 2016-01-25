@@ -737,7 +737,58 @@ int oneBillionToArmaMat(int argc, char *argv[]){
     tp totalSortTimeStart = NOW();
     ob.readBin("/localstore/1-billion-vectors/queries.bvecs",10000,featuresB,0);
     cout << ELAPSED(totalSortTimeStart) << endl;
+
+    arma::fmat q = arma::conv_to<arma::fmat>::from(featuresB);
+
+    q.save("/localstore/1-billion-vectors/bigann_query_fmat.bin");
+
     return 0;
+
+}
+
+int testMeasureDistance(int argc, char *argv[]){
+
+    oneBillionImporterB ob;
+    arma::Mat<uchar> features;
+    arma::Mat<float> featuresF;
+    arma::Mat<uchar> queryC;
+    arma::Mat<float> queryCF;
+    arma::Mat<float> queryF;
+    arma::Mat<uchar> queryFC;
+
+    long long offsetIndex = std::stoi(argv[1]);
+    long long offsetQueries = std::stoi(argv[2]);
+
+    ob.readBin("/localstore/amourao/1-billion-vectors/bigsift/bigann_base.bvecs",1,features,offsetIndex);
+    featuresF = arma::conv_to<arma::fmat>::from(features);
+
+    queryC.load("/localstore/amourao/1-billion-vectors/bigsift/bigann_query.bin");
+    queryC = queryC.col(offsetQueries);
+    queryCF = arma::conv_to<arma::fmat>::from(queryC);
+
+    queryF.load("/localstore/amourao/1-billion-vectors/bigsift/bigann_query_fmat.bin");
+    queryF = queryF.col(offsetQueries);
+    queryFC = arma::conv_to<arma::Mat<uchar>>::from(queryF);
+
+    cout << "Inter matrix types similarity" << endl;
+    cout << "Float" << endl;
+    cout << myNorm(queryF-queryCF) << " " << arma::norm(queryF-queryCF,2) << endl;
+
+    cout << "UChar" << endl;
+    arma::Mat<uchar> tmp = queryFC-queryC;
+    cout << myNorm(tmp) << endl;
+
+    cout << "Intra matrix similarity" << endl;
+    tmp = features-queryC;
+    cout << myNorm(tmp) << endl;
+    tmp = features-queryFC;
+    cout << myNorm(tmp) << endl;
+    cout << myNorm(featuresF-queryF) << " " << arma::norm(featuresF-queryF,2) << endl;
+    cout << myNorm(featuresF-queryCF) << " " << arma::norm(featuresF-queryCF,2) << endl;
+
+
+    return 0;
+
 }
 
 int main(int argc, char *argv[]){
@@ -774,9 +825,10 @@ int main(int argc, char *argv[]){
         matSizeTest(argc-1,&argv[1]);
     else if(StringTools::endsWith(string(argv[1]),"armaToBin"))
         armaToBin(argc-1,&argv[1]);
-
-
-
+    else if(StringTools::endsWith(string(argv[1]),"oneBillionToArmaMat"))
+        oneBillionToArmaMat(argc-1,&argv[1]);
+    else if(StringTools::endsWith(string(argv[1]),"testMeasureDistance"))
+        testMeasureDistance(argc-1,&argv[1]);
 
     return 0;
 }
