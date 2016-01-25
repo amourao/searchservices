@@ -782,6 +782,9 @@ int testMeasureDistance(int argc, char *argv[]){
     cout << "Intra matrix similarity" << endl;
     tmp = features-queryC;
     cout << myNorm(tmp) << endl;
+    tmp = arma::abs(features-queryC);
+    cout << myNorm(tmp) << endl;
+
     tmp = features-queryFC;
     cout << myNorm(tmp) << endl;
     tmpF = featuresF-queryF;
