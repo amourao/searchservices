@@ -321,7 +321,8 @@ void oneBillionImporterB::readBin(std::string filenamep, arma::Mat<uchar>& featu
             memcpy(&features(0,i),aa,dimensions);
             delete[] aa;
 
-            std::cout << "Read " << i << " bucket " << bucket << std::endl;
+            if(i%100000 == 0)
+                std::cout << "Read " << i << " of " << buckets.size() << std::endl;
 
             //}
         }
