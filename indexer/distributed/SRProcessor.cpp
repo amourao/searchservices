@@ -522,6 +522,7 @@ bool SRProcessor<T>::loadBilion(string coeffs, string dataPath){
     cout << "Loading coefficients" << endl;
 
     unsigned long long curr = 0;
+    result = fread (buffer,1,sizeof(uint),file);
     //uint nBuckets = *reinterpret_cast<uint*>(&buffer[curr]);
     curr += sizeof(uint);
 
