@@ -270,7 +270,8 @@ void oneBillionImporterB::readBin(std::string filenamep, arma::Mat<uchar>& featu
 
     FILE * out = fopen(filenamep.c_str(), "rb" );
 
-    int dimensions;
+    uint dimensions;
+    uint currDimensions = 0;
 
     if (fread(&dimensions,sizeof(int),1,out) == 0){
         std::cout << "error: cannot read begininig of file" << std::endl;
@@ -289,15 +290,13 @@ void oneBillionImporterB::readBin(std::string filenamep, arma::Mat<uchar>& featu
         fseek(out,offset,SEEK_SET);
         if( out != NULL ){
 
-
-        int currDimensions = 0;
   			if (fread(&currDimensions,1,sizeof(int),out) == 0){
                 std::cout << "error: cannot read middle of file" << std::endl;
                 return;
             }
 	   		if(currDimensions != dimensions){
                 features = arma::Mat<uchar>();
-                std::cout << "error: dims dont match: " << currDimensions << " " << dimensions << std::endl;
+                std::cout << "error: dims dont match at " offset << ": " << currDimensions << " " << dimensions << std::endl;
                 return;
         }
 
