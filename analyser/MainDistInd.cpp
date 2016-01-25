@@ -776,6 +776,7 @@ int testMeasureDistance(int argc, char *argv[]){
 
     cout << "UChar" << endl;
     arma::Mat<uchar> tmp = queryFC-queryC;
+    arma::fmat tmpF;
     cout << myNorm(tmp) << endl;
 
     cout << "Intra matrix similarity" << endl;
@@ -783,8 +784,9 @@ int testMeasureDistance(int argc, char *argv[]){
     cout << myNorm(tmp) << endl;
     tmp = features-queryFC;
     cout << myNorm(tmp) << endl;
-    cout << myNorm(featuresF-queryF) << " " << arma::norm(featuresF-queryF,2) << endl;
-    cout << myNorm(featuresF-queryCF) << " " << arma::norm(featuresF-queryCF,2) << endl;
+    tmpF = featuresF-queryF;
+    cout << myNorm(tmpF) << " " << arma::norm(tmpF,2) << endl;
+    cout << myNorm(tmpF) << " " << arma::norm(tmpF,2) << endl;
 
 
     return 0;
