@@ -517,10 +517,13 @@ bool SRProcessor<T>::loadBilion(string coeffs, string dataPath){
 
     char* buffer = new char[size];
 
+    cout << "Loading coefficients" << endl;
     if (!file.read(buffer, size)){
         return false;
     }
     file.close();
+    cout << "Loading coefficients... done" << endl;
+
 
     uint curr = 0;
     //uint nBuckets = *reinterpret_cast<uint*>(&buffer[curr]);
@@ -528,19 +531,23 @@ bool SRProcessor<T>::loadBilion(string coeffs, string dataPath){
 
     //bucketOffset = std::stoi(params["bucketOffset"]);
 	//bucketCount = std::stoi(params["bucketCount"]);
-
+    uint indCount = 0;
     indexData = std::vector<std::vector<Coefficient>>(bucketCount);
-
+    cout << "Parsing coefficients" << endl;
     for(long i = 0; i < bucketOffset; i++){
         uint co = *reinterpret_cast<uint*>(&buffer[curr]);
         curr += sizeof(uint) + (sizeof(uindex)+sizeof(float))*co;
         //cout << co << " ";
     }
-
+    cout << "\toffset " << bucketOffset <<  " jumped" << endl;
+    cout << "\treading my " << bucketCount << " buckets" << endl;
     //cout << endl << nBuckets << " " << bucketOffset << " " << bucketCount << " " << curr << endl;
     for(long i = 0; i < bucketCount; i++){
         uint co = *reinterpret_cast<uint*>(&buffer[curr]);
         curr += sizeof(uint);
+
+        indCount+=co;
+        cout << "\t\tBucket " << i+bucketOffset << "( " << i << " +" << bucketOffset << ") has " << co << endl;
 
         for(uint j = 0; j < co; j++){
             uindex gid = *reinterpret_cast<uindex*>(&buffer[curr]);
@@ -562,16 +569,18 @@ bool SRProcessor<T>::loadBilion(string coeffs, string dataPath){
         }
     }
 
+
     delete[] buffer;
+    cout << "Parsing coefficients... done" << endl;
 
-    arma::uvec ttt(lidTogid.size());
+    cout << "To import " << lidTogid.size() << " of " << indCount << " possible" << endl;
 
-    for(int i = 0; i < lidTogid.size(); i++){
-        ttt(i) = lidTogid[i];
-    }
-
+    cout << "Importing vectors" << endl;
     oneBillionImporterB ob;
     ob.readBin(dataPath,data,lidTogid);
+    cout << "Importing vectors... done" << endl;
+
+    cout << "Imported " << data.n_cols << endl;
 
     return true;
 }

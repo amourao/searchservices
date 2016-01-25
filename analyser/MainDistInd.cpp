@@ -177,6 +177,77 @@ int srMaster(int argc, char *argv[]){
 
 }
 
+
+
+int srMasterBillion(int argc, char *argv[]){
+
+    string paramFile(argv[1]);
+    map<string,string> parameters;
+	vector<IIndexer*> indexers;
+	vector<IAnalyser*> analysers;
+	vector<IClassifier*> classifiers;
+	vector<IEndpoint*> endpoints;
+
+	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
+
+    map<string,string> params;
+
+    vector<SRProcessor<float>*> ser;
+
+    string name = "srMaster";
+    arma::Mat<uchar> dataToIndex;
+    dataToIndex.load(parameters["dataQ"]);
+
+    SRMaster srm(name,parameters);
+
+    uint nQueries = std::stoi(parameters["nQueries"]);
+
+    //#pragma omp parallel for schedule(dynamic)
+    for(uint i = 0; i < nQueries; i++){
+        arma::Mat<uchar> queryC = dataToIndex.col(i);
+        arma::fmat query = arma::conv_to<arma::fmat>::from(queryC);
+
+        std::pair<vector<uindex>,vector<float> > r = srm.knnSearchIdLong(query,std::stoi(parameters["n"]),std::stod(parameters["limit"]));
+
+        cout << "********** RESULTS **********" << endl;
+        cout << "************* " << i << " ************" << endl;
+        for(uint j = 0; j < r.first.size(); j++){
+            cout << r.first[j] << "\t" << r.second[j] << endl;
+        }
+        cout << "*****************************" << endl;
+    }
+
+    cout << endl;
+    cout << srm.totalQueryTime << endl;
+    cout << srm.totalNQueries << endl << endl;
+    cout << srm.totalQueryTime/srm.totalNQueries/1000.0 << endl << endl;
+    cout << srm.totalAllServerTime/srm.totalNQueries/1000.0 << endl << endl;
+
+    cout << srm.totalSRTime/srm.totalNQueries/1000.0 << endl;
+    cout << srm.totalPreMarshallingTime/srm.totalNQueries/1000.0 << endl;
+
+    cout << srm.totalCommunicationTime/srm.totalNQueries/1000.0 << endl;
+
+    cout << "Q\t" << srm.totalCommunicationSendTime/srm.totalNQueries/1000.0 << endl;
+    cout << "Q\t" << srm.totalCommunicationReceiveTime/srm.totalNQueries/1000.0 << endl;
+
+    cout << "R\t\t" << srm.totalCommunicationSendTime/srm.totalRequests/1000.0 << endl;
+    cout << "R\t\t" << srm.totalCommunicationReceiveTime/srm.totalRequests/1000.0 << endl;
+
+    cout << srm.totalSortTime/srm.totalNQueries/1000.0 << endl << endl;
+
+    cout << "Missed packages: " << srm.missedPackages << endl << endl;
+    cout << "Total requests: " << srm.totalRequests << endl << endl;
+
+
+    cout << "Processor stats: " << endl;
+    srm.printProcessorsStatistics();
+
+    return 0;
+
+}
+
+
 int srTest(int argc, char *argv[]){
     string paramFile(argv[1]);
     map<string,string> parameters;
@@ -686,6 +757,8 @@ int main(int argc, char *argv[]){
         testDistIndexer(argc-1,&argv[1]);
     else if(StringTools::endsWith(string(argv[1]),"srMaster"))
         srMaster(argc-1,&argv[1]);
+    else if(StringTools::endsWith(string(argv[1]),"srMasterBillion"))
+        srMasterBillion(argc-1,&argv[1]);
     else if(StringTools::endsWith(string(argv[1]),"srProcessor"))
         srProcessor(argc-1,&argv[1]);
     else if(StringTools::endsWith(string(argv[1]),"srProcessorBillion"))
