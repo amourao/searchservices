@@ -15,6 +15,9 @@ SRMaster::SRMaster(string& typeId, map<string,string>& params){
         return;
     }
 
+
+    timeoutTime = std::stoi(params["timeoutTime"]);
+
     clientAddress = Poco::Net::SocketAddress("0.0.0.0", std::stoi(params["port"]));
     uint basePort = std::stoi(params["port"]);
 
@@ -203,7 +206,7 @@ void SRMaster::sendMessage(vector<QueryStructReq>& query, vector<QueryStructRsp>
     #endif
 
     Poco::Net::DatagramSocket dgs(client);
-    dgs.setReceiveTimeout(Poco::Timespan(1000*10));
+    dgs.setReceiveTimeout(Poco::Timespan(1000*timeoutTime));
     cout << "Master " << client.host().toString() << ":" << client.port()  << " wants to send " << totalSize << " to " << server.host().toString() << ":" << server.port() << endl;
 
     //cout << clientAddress.host().toString() << " " << clientAddress.port() << endl;

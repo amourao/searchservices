@@ -92,6 +92,7 @@ private:
 	string type;
 
 	int bufferSize;
+	int timeoutTime;
 
 	Poco::Net::SocketAddress clientAddress;
 
