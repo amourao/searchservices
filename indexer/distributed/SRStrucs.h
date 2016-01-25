@@ -12,29 +12,22 @@ inline long ELAPSED(tp start) {return std::chrono::duration_cast<std::chrono::mi
 inline long TO_LONG(tp start) {return std::chrono::duration_cast<std::chrono::microseconds>(start.time_since_epoch()).count();}
 
 
-inline double myNorm(arma::Mat<float> matrix){
+inline float myNorm(arma::Mat<float>& matrix){
     return arma::norm<arma::Mat<float>>(matrix,2);
 }
 
 template <typename T>
-inline double myNorm(arma::Mat<T> matrix){
-    arma::mat ppD = arma::pow(arma::conv_to<arma::mat>::from(matrix),2);
-    arma::Mat<T> pp = arma::pow(matrix,2);
-    std::cout << std::endl;
-    std::cout << std::endl;
-    for(int i = 0; i < matrix.n_elem; i++)
-        std::cout << (int)pp(i) << " , " << (int)ppD(i) << " ; ";
-    std::cout << std::endl;
+inline float myNorm(arma::Mat<T>& matrix1, arma::Mat<T>& matrix2){
+    arma::Mat<float> ppD(matrix1.n_rows,matrix1.n_cols,arma::fill::zeros);
 
-    double r = sqrt(arma::accu(pp));
-    double rD = sqrt(arma::accu(ppD));
+    for(int i = 0; i < matrix1.n_elem; i++)
+        ppD = (float)matrix1(i)-matrix2(i);
 
-    std::cout << r << " " << rD << std::endl << std::endl << std::endl;
-    return rD;
+    return arma::norm<arma::Mat<float>>(ppD,2);
 }
 
 template <typename T>
-inline double myNorm2(arma::Mat<T> matrix){
+inline float myNorm2(arma::Mat<T>& matrix){
     return sqrt(arma::dot(matrix,matrix));
 }
 

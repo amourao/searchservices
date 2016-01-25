@@ -97,6 +97,7 @@ private:
 	Poco::Event  _ready;
 	bool         _stop;
 	int          _bufferSize;
+	long pollInterval;
 
 	uint bucketOffset = 0;
 	uint bucketCount = 0;

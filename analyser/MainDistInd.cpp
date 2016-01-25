@@ -770,17 +770,13 @@ int testMeasureDistance(int argc, char *argv[]){
     queryF = queryF.col(offsetQueries);
     queryFC = arma::conv_to<arma::Mat<uchar>>::from(queryF);
 
-    arma::Mat<uchar> tmp = features-queryC;
     arma::Mat<double> tmp2 = arma::conv_to<arma::Mat<double>>::from(features)-arma::conv_to<arma::Mat<double>>::from(queryC);
-    cout << "tmp" << endl;
-    cout << tmp << endl;
-    cout << "tmp2" << endl;
-    cout << tmp2 << endl;
-    cout << "features-queryC" << endl;
-    cout << features-queryC << endl << endl;
 
-    cout << "myNorm(tmp) myNorm(tmp2)" << endl;
-    cout << myNorm(tmp) << " " << myNorm(tmp2) << endl;
+    cout << "features-queryC" << endl;
+    cout <<  myNorm(features,queryC) << endl;
+    cout <<  myNorm(featuresF,queryCF) << endl;
+    cout <<  arma::norm(tmp2,2) << endl;
+
     /*
     cout << "Inter matrix types similarity" << endl;
     cout << "Float" << endl;

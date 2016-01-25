@@ -20,6 +20,7 @@ SRProcessor<T>::SRProcessor(string& typeId, map<string,string>& params){
     bucketOffset = std::stoi(params["bucketOffset"]);
 	bucketCount = std::stoi(params["bucketCount"]);
     _bufferSize = std::stoi(params["bufferSize"]);
+    pollInterval = std::stol(params["pollInterval"]);
 
     _socket.bind(Poco::Net::SocketAddress("0.0.0.0", std::stoi(params["port"])), false);
 	_thread.start(*this);
@@ -126,8 +127,7 @@ QueryStructRsp SRProcessor<T>::knnSearchIdLong(QueryStructReq queryS){
                         totalNCandidatesInspNonDup++;
                     #endif
                     arma::Mat<T> candidate = data.col(candidates[i].vector_pos);
-                    arma::Mat<T> diff = candidate - query;
-                    float dist = myNorm(diff);
+                    float dist = myNorm(candidate,query);
                     uindex lid = candidates[i].vector_pos;
                     uindex gid = lidTogid[lid];
                     #pragma omp critical
@@ -211,7 +211,7 @@ void SRProcessor<T>::rebuild(){
 template <typename T>
 void SRProcessor<T>::run(){
     _ready.set();
-	Poco::Timespan span(250000);
+	Poco::Timespan span(pollInterval);
 
 	cout << "started Processor at " << _socket.address().host().toString() << ":" << _socket.address().port() << endl;
 
