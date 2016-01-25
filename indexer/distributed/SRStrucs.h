@@ -23,7 +23,7 @@ inline double myNorm(arma::Mat<T> matrix){
     std::cout << std::endl;
     std::cout << std::endl;
     for(int i = 0; i < matrix.n_elem; i++)
-        std::cout << pp(i) << " , " << ppD(i);
+        std::cout << (int)pp(i) << " , " << (int)ppD(i) << " ; ";
     std::cout << std::endl;
 
     double r = sqrt(arma::accu(pp));
