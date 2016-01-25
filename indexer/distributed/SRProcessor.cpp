@@ -21,6 +21,7 @@ SRProcessor<T>::SRProcessor(string& typeId, map<string,string>& params){
 	bucketCount = std::stoi(params["bucketCount"]);
     _bufferSize = std::stoi(params["bufferSize"]);
     pollInterval = std::stol(params["pollInterval"]);
+    debugLimitPerBucket = std::stoi(params["debugLimitPerBucket"]);
 
     _socket.bind(Poco::Net::SocketAddress("0.0.0.0", std::stoi(params["port"])), false);
 	_thread.start(*this);
@@ -562,7 +563,7 @@ bool SRProcessor<T>::loadBilion(string coeffs, string dataPath){
             float value = *reinterpret_cast<float*>(&buffer[0]);
             curr += sizeof(float);
 
-            if(debugLimitPerBucket == -1 || j < debugLimitPerBucket){
+            if(debugLimitPerBucket == -1 || ((int)j) < debugLimitPerBucket){
 
                 auto search = lidTogidMap.find(gid);
                 uindex lid = lidTogid.size();
