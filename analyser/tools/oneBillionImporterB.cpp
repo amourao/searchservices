@@ -287,7 +287,7 @@ void oneBillionImporterB::readBin(std::string filenamep, arma::Mat<uchar>& featu
         fseek(out,0,SEEK_SET);
         uint bucket = buckets[i];
 
-        unsigned long long offset = (bucket*(dimensions+4));
+        unsigned long long offset = (unsigned long long)bucket*(dimensions+4));
         std::cout << (bucket*(dimensions+4)) << std::endl;
         std::cout << (dimensions+4) << std::endl;
         std::cout << offset << std::endl;
