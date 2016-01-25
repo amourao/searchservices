@@ -319,9 +319,6 @@ void oneBillionImporterB::readBin(std::string filenamep, arma::Mat<uchar>& featu
       }
             //std::cout << aa << " " << (unsigned int)aa << std::endl;
             memcpy(&features(0,i),aa,dimensions);
-            for(int k = 0; k < dimensions; k++)
-                std::cout << (uint)features(k,i) << " ";
-            std::cout << std::endl;
         //}
     }
 	    /* Flush buffer and close file */
