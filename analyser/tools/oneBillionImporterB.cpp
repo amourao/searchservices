@@ -259,15 +259,14 @@ void oneBillionImporterB::readBin(std::string filenamep, int numberOfRows, arma:
 
 
 void oneBillionImporterB::readBin(std::string filenamep, arma::Mat<int>& features, std::vector<uint>& buckets) {
-
+    std::cout << "error:  not implemented float" << std::endl;
 }
 
 void oneBillionImporterB::readBin(std::string filenamep, arma::Mat<float>& features, std::vector<uint>& buckets) {
-
+    std::cout << "error:  not implemented float" << std::endl;
 }
 
 void oneBillionImporterB::readBin(std::string filenamep, arma::Mat<uchar>& features, std::vector<uint>& buckets) {
-
 
     FILE * out = fopen(filenamep.c_str(), "rb" );
 
@@ -280,6 +279,7 @@ void oneBillionImporterB::readBin(std::string filenamep, arma::Mat<uchar>& featu
 
     features.set_size(dimensions,buckets.size());
 
+    std::cout << "Reading " << dimensions << " dims for " << buckets.size() << " buckets" << std::endl;
 	/* Open file */
 	for (uint i=0;i<buckets.size();i++){
         uint bucket = buckets[i];

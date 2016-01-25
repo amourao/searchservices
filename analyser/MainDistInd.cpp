@@ -698,7 +698,7 @@ int armaToBin(int argc, char *argv[]){
     }
     F1.save(filename);
     */
-    cout << F.n_rows << " " << F.n_cols << " " << F.size() << " " << endl;
+    cout << F.n_rows << " " << F.n_cols << " " << F.size() << endl;
 
     FILE* pFile;
     pFile = fopen(filenameOut.c_str(), "wb");
@@ -709,7 +709,9 @@ int armaToBin(int argc, char *argv[]){
     for (arma::uword j = 0; j < nBuckets; ++j)
     {
         uint size = F(j,0).size();
+        cout << size << " ";
         fwrite((char*)&size, 1, 1*sizeof(uint), pFile);
+
 
         //cout << size << endl;
         for (arma::uword i = 0; i < F(j,0).size(); ++i)
@@ -722,6 +724,7 @@ int armaToBin(int argc, char *argv[]){
         }
     }
     fclose(pFile);
+    cout << endl;
 
     return 0;
 }
