@@ -307,8 +307,8 @@ void oneBillionImporterB::readBin(std::string filenamep, arma::Mat<uchar>& featu
                 return;
             }
             //for (int g = 0; g < dimensions; g++){
-            uchar* aa = new uchar[dimensions];
-            if (fread(aa,1,dimensions,out) == 0){
+            //uchar* aa = new uchar[dimensions];
+            if (fread(&features(0,i),1,dimensions,out) == 0){
                 std::cout << "error: cannot read middle of file" << std::endl;
                 return;
             }
@@ -318,8 +318,8 @@ void oneBillionImporterB::readBin(std::string filenamep, arma::Mat<uchar>& featu
                 return;
             }
                 //std::cout << aa << " " << (unsigned int)aa << std::endl;
-            memcpy(&features(0,i),aa,dimensions);
-            delete[] aa;
+            //memcpy(,aa,dimensions);
+            //delete[] aa;
 
             if(i%100000 == 0)
                 std::cout << "Read " << i << " of " << buckets.size() << std::endl;

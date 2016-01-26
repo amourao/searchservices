@@ -6,6 +6,7 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
+#include <unordered_set>
 
 
 #include <Poco/Net/DatagramSocket.h>
@@ -34,8 +35,8 @@ public:
 	SRProcessor(string& type, map<string,string>& params);
 	~SRProcessor();
 
-	QueryStructRsp index(QueryStructReq queryS);
-	QueryStructRsp knnSearchIdLong(QueryStructReq queryS);
+	QueryStructRsp index(QueryStructReq& queryS);
+	QueryStructRsp knnSearchIdLong(QueryStructReq& queryS);
 	QueryStructRsp getStatistics();
 
 	void rebuild();

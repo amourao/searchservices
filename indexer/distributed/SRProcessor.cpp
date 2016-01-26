@@ -38,7 +38,7 @@ SRProcessor<T>::~SRProcessor(){
 }
 
 template <typename T>
-QueryStructRsp SRProcessor<T>::index(QueryStructReq queryS){
+QueryStructRsp SRProcessor<T>::index(QueryStructReq& queryS){
 
     arma::fmat featuresT(&queryS.query[0],1,queryS.query.size(),true);
     arma::Mat<T> features = arma::conv_to<arma::Mat<T>>::from(featuresT);
@@ -69,7 +69,7 @@ QueryStructRsp SRProcessor<T>::index(QueryStructReq queryS){
 }
 
 template <typename T>
-QueryStructRsp SRProcessor<T>::knnSearchIdLong(QueryStructReq queryS){
+QueryStructRsp SRProcessor<T>::knnSearchIdLong(QueryStructReq& queryS){
 
     arma::fmat queryT(&queryS.query[0],queryS.query.size(),1,false);
     arma::Mat<T> query = arma::conv_to<arma::Mat<T>>::from(queryT);
@@ -595,6 +595,10 @@ bool SRProcessor<T>::loadBilion(string coeffs, string dataPath){
     delete[] buffer;
     fclose(file);
     lidTogidMap.clear();
+
+    cout << "Teste cap " << lidTogid.capacity() << endl;
+    lidTogid.shrink_to_fit();
+    cout << "Teste cap shrink " << lidTogid.capacity() << endl;
 
     cout << "Parsing coefficients... done" << endl;
 
