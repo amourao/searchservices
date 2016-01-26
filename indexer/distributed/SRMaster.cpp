@@ -74,6 +74,7 @@ std::pair<vector<uindex>,vector<float> > SRMaster::knnSearchIdLong(arma::fmat& q
     q.query.insert(q.query.end(), arrayData, arrayData+query.n_rows);
     q.parameters.push_back(n);
     q.parameters.push_back(search_limit);
+    q.parameters.push_back(totalNQueries-1);
     q.operation = 1;
 
 

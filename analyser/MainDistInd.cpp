@@ -124,8 +124,6 @@ int srMaster(int argc, char *argv[]){
 
     map<string,string> params;
 
-    vector<SRProcessor<float>*> ser;
-
     string name = "srMaster";
     arma::fmat dataToIndex;
     dataToIndex.load(parameters["dataQ"]);
@@ -139,35 +137,37 @@ int srMaster(int argc, char *argv[]){
         arma::fmat query = dataToIndex.col(i);
         std::pair<vector<uindex>,vector<float> > r = srm.knnSearchIdLong(query,std::stoi(parameters["n"]),std::stod(parameters["limit"]));
 
-        cout << "********** RESULTS **********" << endl;
-        cout << "************* " << i << " ************" << endl;
+        cout << "R;" << i << ";" << endl;
         for(uint j = 0; j < r.first.size(); j++){
-            cout << r.first[j] << "\t" << r.second[j] << endl;
+            cout << r.first[j] << "," << r.second[j] << ";";
         }
-        cout << "*****************************" << endl;
+        cout << endl;
     }
 
     cout << endl;
-    cout << srm.totalQueryTime << endl;
-    cout << srm.totalNQueries << endl << endl;
-    cout << srm.totalQueryTime/srm.totalNQueries/1000.0 << endl << endl;
-    cout << srm.totalAllServerTime/srm.totalNQueries/1000.0 << endl << endl;
+    cout << "totalQueryTime;" << srm.totalQueryTime << endl;
+    cout << "totalNQueries;" << srm.totalNQueries << endl;
+    cout << "totalRequests;" << srm.totalRequests << endl;
+    cout << "missedPackages;" << srm.missedPackages << endl << endl;
+    cout << "PerQuery;avgRequests;" << srm.totalRequests/srm.totalNQueries << endl << endl;
 
-    cout << srm.totalSRTime/srm.totalNQueries/1000.0 << endl;
-    cout << srm.totalPreMarshallingTime/srm.totalNQueries/1000.0 << endl;
+    cout << "PerQuery;totalQueryTime;" << srm.totalQueryTime/srm.totalNQueries/1000.0 << endl << endl;
+    cout << "PerQuery;totalAllServerTime;" << srm.totalAllServerTime/srm.totalNQueries/1000.0 << endl << endl;
 
-    cout << srm.totalCommunicationTime/srm.totalNQueries/1000.0 << endl;
+    cout << "PerQuery;totalSRTime;" << srm.totalSRTime/srm.totalNQueries/1000.0 << endl;
+    cout << "PerQuery;totalPreMarshallingTime;" << srm.totalPreMarshallingTime/srm.totalNQueries/1000.0 << endl;
 
-    cout << "Q\t" << srm.totalCommunicationSendTime/srm.totalNQueries/1000.0 << endl;
-    cout << "Q\t" << srm.totalCommunicationReceiveTime/srm.totalNQueries/1000.0 << endl;
+    cout << "PerQuery;totalCommunicationTime;" << srm.totalCommunicationTime/srm.totalNQueries/1000.0 << endl;
 
-    cout << "R\t\t" << srm.totalCommunicationSendTime/srm.totalRequests/1000.0 << endl;
-    cout << "R\t\t" << srm.totalCommunicationReceiveTime/srm.totalRequests/1000.0 << endl;
+    cout << "PerQuery;totalCommunicationSendTime;" << srm.totalCommunicationSendTime/srm.totalNQueries/1000.0 << endl;
+    cout << "PerQuery;totalCommunicationReceiveTime;" << srm.totalCommunicationReceiveTime/srm.totalNQueries/1000.0 << endl;
 
-    cout << srm.totalSortTime/srm.totalNQueries/1000.0 << endl << endl;
+    cout << "PerReq;totalCommunicationSendTime;" << srm.totalCommunicationSendTime/srm.totalRequests/1000.0 << endl;
+    cout << "PerReq;totalCommunicationReceiveTime;" << srm.totalCommunicationReceiveTime/srm.totalRequests/1000.0 << endl;
 
-    cout << "Missed packages: " << srm.missedPackages << endl << endl;
-    cout << "Total requests: " << srm.totalRequests << endl << endl;
+    cout << "PerQuery;totalSortTime;" << srm.totalSortTime/srm.totalNQueries/1000.0 << endl << endl;
+
+
 
 
     cout << "Processor stats: " << endl;
@@ -191,8 +191,6 @@ int srMasterBillion(int argc, char *argv[]){
 	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
 
     map<string,string> params;
-
-    vector<SRProcessor<float>*> ser;
 
     string name = "srMaster";
     arma::Mat<uchar> dataToIndex;

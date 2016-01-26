@@ -78,6 +78,7 @@ QueryStructRsp SRProcessor<T>::knnSearchIdLong(QueryStructReq queryS){
 
     int n = queryS.parameters[0];
     double search_limit = queryS.parameters[1];
+    float nQuery = queryS.parameters[2];
 
     uint estimatedCandidateSize = 50;
 
@@ -156,6 +157,7 @@ QueryStructRsp SRProcessor<T>::knnSearchIdLong(QueryStructReq queryS){
     result.operation = 1;
     result.parameters.push_back(n);
     result.parameters.push_back(newN);
+    result.parameters.push_back(nQuery);
     result.totalByteSize = result.computeTotalByteSize();
 
     #ifdef MEASURE_TIME
@@ -234,7 +236,7 @@ void SRProcessor<T>::run(){
 				#ifdef MEASURE_TIME
                     totalCommunicationReceiveTime += ELAPSED(totalCommunicationReceiveTimeStart);
                 #endif
-                cout << "Processor " << _socket.address().host().toString() << ":" << _socket.address().port()  << "  received: " <<  n << " from " << sender.host().toString() << ":" << sender.port() << endl;
+                //cout << "Processor " << _socket.address().host().toString() << ":" << _socket.address().port()  << "  received: " <<  n << " from " << sender.host().toString() << ":" << sender.port() << endl;
                 //_socket.sendTo(inputVector, outputVector);
 
                 //std::ofstream outfile ("proc.bin",std::ofstream::binary);
@@ -268,12 +270,20 @@ void SRProcessor<T>::run(){
                     totalCommunicationSendTimeStart = NOW();
                 #endif
 
-                cout << "Processor " << _socket.address().host().toString() << ":" << _socket.address().port()  << " sent: " << _socket.sendTo(&outbuffer[0], totalSize, sender) << endl;
+                n = _socket.sendTo(&outbuffer[0], totalSize, sender);
+                //cout << "Processor " << _socket.address().host().toString() << ":" << _socket.address().port()  << " sent: " << n << endl;
 
                 #ifdef MEASURE_TIME
                     totalCommunicationSendTime += ELAPSED(totalCommunicationSendTimeStart);
                     totalTime += ELAPSED(totalTimeStart);
                 #endif
+                if(responses.size() > 0){
+                    cout << "R;" << responses[0].parameters[2] << ";" << endl;
+                    for(uint j = 0; j < responses[0].indexes.size(); j++){
+                        cout << responses[0].indexes[j] << "," << responses[0].dists[j] << ";";
+                    }
+                    cout << endl;
+                }
 
 			} catch (Poco::Exception& exc){
                 #ifdef MEASURE_TIME
@@ -514,8 +524,8 @@ bool SRProcessor<T>::loadBilion(string coeffs, string dataPath){
 
     FILE * file = fopen(coeffs.c_str(), "rb" );
 
-    fseek(file, 0L, SEEK_END);
-    unsigned long long sz = ftell(file);
+    //fseek(file, 0L, SEEK_END);
+    //unsigned long long sz = ftell(file);
     fseek(file, 0L, SEEK_SET);
 
     char* buffer = new char[sizeof(uint)];
