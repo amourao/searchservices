@@ -278,7 +278,7 @@ void SRProcessor<T>::run(){
                     totalTime += ELAPSED(totalTimeStart);
                 #endif
                 if(responses.size() > 0){
-                    cout << "R;" << responses[0].parameters[2] << ";" << endl;
+                    cout << "R;" << responses[0].parameters[2] << ";";
                     for(uint j = 0; j < responses[0].indexes.size(); j++){
                         cout << responses[0].indexes[j] << "," << responses[0].dists[j] << ";";
                     }

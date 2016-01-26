@@ -137,7 +137,7 @@ int srMaster(int argc, char *argv[]){
         arma::fmat query = dataToIndex.col(i);
         std::pair<vector<uindex>,vector<float> > r = srm.knnSearchIdLong(query,std::stoi(parameters["n"]),std::stod(parameters["limit"]));
 
-        cout << "R;" << i << ";" << endl;
+        cout << "R;" << i << ";";
         for(uint j = 0; j < r.first.size(); j++){
             cout << r.first[j] << "," << r.second[j] << ";";
         }
