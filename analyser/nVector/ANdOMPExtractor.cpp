@@ -17,6 +17,7 @@ ANdOMPExtractor::ANdOMPExtractor(string& _type, map<string, string>& params){
         utils::normalize_columns(D);
     } else {
         D.load(params["dictPath"]);
+        //utils::normalize_columns(D);
     }
 
     max_iters = std::stoi(params["max_iters"]);

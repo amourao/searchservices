@@ -469,6 +469,83 @@ int dataPreProcessor(int argc, char *argv[]){
     return 0;
 }
 
+
+
+int dataPreProcessorOneBillionAzure(int argc, char *argv[]){
+    string paramFile(argv[1]);
+    map<string,string> parameters;
+	vector<IIndexer*> indexers;
+	vector<IAnalyser*> analysers;
+	vector<IClassifier*> classifiers;
+	vector<IEndpoint*> endpoints;
+
+	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
+
+	FeatureExtractor* sr = (FeatureExtractor*)analysers[0];
+
+
+    int numBuckets = std::stoi(parameters["nBuckets"]);
+    long offset = std::stol(parameters["offset"]);
+    long count = std::stol(parameters["count"]);
+
+    oneBillionImporterB ob;
+
+    arma::Mat<uchar> dataToIndex;
+    ob.readBin(parameters["data"],count,dataToIndex,offset);
+
+
+    string dst = parameters["dst"];
+    string nodeId = parameters["nodeId"];
+
+
+    std::vector<std::vector<Coefficient>> indexData(numBuckets);
+
+    vector<std::ofstream*> outfiles;
+    vector<uint> coeffCount(numBuckets);
+    for(uint i = 0; i < numBuckets; i++){
+        //cout << dst + "_coeffs_" + nodeId + "_" + std::to_string(i) + ".bin" << endl;
+        std::ofstream* outfile = new std::ofstream(dst + "_coeffs_" + nodeId + "_" + std::to_string(i) + ".bin",std::ofstream::binary | std::ofstream::app);
+        outfile->write((char*)&numBuckets,sizeof(uint));
+        //outfile->close();
+        outfiles.push_back(outfile);
+    }
+
+    for(uint i = 0; i < dataToIndex.n_cols; i++){
+
+        if(i % 100000 == 0)
+            cout << i << " out of " << dataToIndex.n_cols << endl;
+
+        uindex dataId = i+offset;
+        arma::fmat features = arma::conv_to<arma::fmat>::from(dataToIndex.col(i));
+        arma::fmat sparseRep;
+
+        sr->extractFeatures(features,sparseRep);
+        arma::uvec ind = find(sparseRep > 0);
+        for(uint j = 0; j < ind.n_rows; j++){
+            uint bucket = ind[j];
+            //uint machine = bucket/divisions;
+            //indexData[bucket].push_back(Coefficient(i,sparseRep[bucket]));
+            coeffCount[bucket]++;
+            //outfiles[bucket]->open(dst + "_coeffs_" + nodeId + "_" + std::to_string(i) + ".bin",std::ofstream::binary | std::ofstream::app);
+            outfiles[bucket]->write((char*)&dataId,sizeof(uint));
+            outfiles[bucket]->write((char*)&sparseRep[bucket],sizeof(float));
+            //outfiles[bucket]->close();
+        }
+    }
+
+    for(uint i = 0; i < numBuckets; i++){
+        //cout << dst + "_coeffs_" + nodeId + "_" + std::to_string(i) + ".bin" << endl;
+        //outfiles[i]->open(dst + "_coeffs_" + nodeId + "_" + std::to_string(i) + ".bin",std::ofstream::binary);
+        outfiles[i]->seekp(0);
+        outfiles[i]->write((char*)&coeffCount[i],sizeof(uint));
+        outfiles[i]->flush();
+        outfiles[i]->close();
+    }
+
+    return 0;
+}
+
+
 int srProcessor(int argc, char *argv[]){
     string paramFile(argv[1]);
     map<string,string> parameters;
@@ -844,6 +921,8 @@ int main(int argc, char *argv[]){
         oneBillionToArmaMat(argc-1,&argv[1]);
     else if(StringTools::endsWith(string(argv[1]),"testMeasureDistance"))
         testMeasureDistance(argc-1,&argv[1]);
+    else if(StringTools::endsWith(string(argv[1]),"dataPreProcessorOneBillionAzure"))
+        dataPreProcessorOneBillionAzure(argc-1,&argv[1]);
 
     return 0;
 }
