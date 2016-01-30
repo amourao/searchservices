@@ -33,6 +33,13 @@
 
 using namespace std;
 
+
+void normalize_columns(arma::fmat& matrix) {
+    for (uint i = 0; i < matrix.n_cols; ++i) {
+        matrix.col(i) /= norm(matrix.col(i), 2);
+    }
+}
+
 int testDistIndexer(int argc, char *argv[]){
 
     QueryStructReq s;
@@ -204,6 +211,7 @@ int srMasterBillion(int argc, char *argv[]){
     for(uint i = 0; i < nQueries; i++){
         arma::Mat<uchar> queryC = dataToIndex.col(i);
         arma::fmat query = arma::conv_to<arma::fmat>::from(queryC);
+        normalize_columns(query);
 
         std::pair<vector<uindex>,vector<float> > r = srm.knnSearchIdLong(query,std::stoi(parameters["n"]),std::stod(parameters["limit"]));
 
@@ -469,8 +477,6 @@ int dataPreProcessor(int argc, char *argv[]){
     return 0;
 }
 
-
-
 int dataPreProcessorOneBillionAzure(int argc, char *argv[]){
     string paramFile(argv[1]);
     map<string,string> parameters;
@@ -493,6 +499,9 @@ int dataPreProcessorOneBillionAzure(int argc, char *argv[]){
     arma::Mat<uchar> dataToIndex;
     ob.readBin(parameters["data"],count,dataToIndex,offset);
 
+    //cout << offset << endl;
+    //cout << dataToIndex.col(0) << endl;
+    //cout << dataToIndex.col(1) << endl;
 
     string dst = parameters["dst"];
     string nodeId = parameters["nodeId"];
@@ -517,9 +526,12 @@ int dataPreProcessorOneBillionAzure(int argc, char *argv[]){
 
         uindex dataId = i+offset;
         arma::fmat features = arma::conv_to<arma::fmat>::from(dataToIndex.col(i));
+        normalize_columns(features);
+        //cout << features << endl;
         arma::fmat sparseRep;
 
         sr->extractFeatures(features,sparseRep);
+
         arma::uvec ind = find(sparseRep > 0);
         for(uint j = 0; j < ind.n_rows; j++){
             uint bucket = ind[j];
