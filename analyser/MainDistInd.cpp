@@ -925,7 +925,7 @@ int sortBucketsFromBillion(int argc, char *argv[]){
     ///home/amourao/Desktop/1/coeffs1B_1__coeffs_server_1_37.bin
     ///home/amourao/Desktop/2/coeffs1B_2__coeffs_server_2_37.bin
     for(uint bucket = bucketOffset; bucket < bucketOffset+bucketCount; bucket++){
-        cout << "bucket " << bucket <<  " (" << bucket-bucketOffset << " of " << bucketCount << ")" << endl;
+        cout << "bucket " << bucket <<  " (" << bucket-bucketOffset+1 << " of " << bucketCount << ")" << endl;
 
         vector<uint> sizes(nServers);
 
@@ -946,7 +946,6 @@ int sortBucketsFromBillion(int argc, char *argv[]){
             totalCoeffs+=coeffs;
             cout << "\t" << coeffs << " coeffs to read from " << path << endl;
         }
-
         std::vector<Coefficient> indexData(totalCoeffs);
 
         ulong currCoeffs = 0;
@@ -958,19 +957,19 @@ int sortBucketsFromBillion(int argc, char *argv[]){
             std::stringstream fmt;
             fmt << basePath << j << basePath1 << j << basePath2 << j << "_" << bucket << ".bin";
             string path = fmt.str();
-            cout << "\t" << path << endl;
+            //cout << "\t" << path << endl;
 
             FILE* in = fopen(path.c_str(),"rb");
 
             uint coeffs = sizes[j];
-            cout << "\t" << coeffs << endl;
-            cout << fread(&coeffs,1,sizeof(uint),in) << endl;
-            cout << "\t read 1" << endl;
+            //cout << "\t" << coeffs << endl;
+            fread(&coeffs,1,sizeof(uint),in);
+            //cout << "\t read 1" << endl;
             coeffs = sizes[j];
-            cout << "\t " << sizes[j] << " " << sizeof(Coefficient) << endl;
-            cout << "\t read 1a " << currCoeffs << endl;
-            cout << fread(&indexData[currCoeffs],sizes[j],sizeof(Coefficient),in) << endl;
-            cout << "\t read 2" << endl;
+            //cout << "\t " << sizes[j] << " " << sizeof(Coefficient) << endl;
+            //cout << "\t read 1a " << currCoeffs << endl;
+            fread(&indexData[currCoeffs],sizes[j],sizeof(Coefficient),in);
+            //cout << "\t read 2" << endl;
             currCoeffs+=coeffs;
             fclose(in);
             cout << "\t" << "read " << coeffs << " coeffs from " << path << endl;
