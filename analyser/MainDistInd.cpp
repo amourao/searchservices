@@ -954,19 +954,23 @@ int sortBucketsFromBillion(int argc, char *argv[]){
         //bucketCount = std::stoi(params["bucketCount"]);
         //cout << endl << nBuckets << " " << bucketOffset << " " << bucketCount << " " << curr << endl;
         for(uint j = 0; j < nServers; j++){
-            cout << "\t" << "read " << coeffs << " coeffs from " << path << endl;
+
             std::stringstream fmt;
             fmt << basePath << j << basePath1 << j << basePath2 << j << "_" << bucket << ".bin";
             string path = fmt.str();
+            cout << "\t" << path << endl;
 
             FILE* in = fopen(path.c_str(),"rb");
 
             uint coeffs = sizes[j];
-            fread(&coeffs,1,sizeof(uint),in);
+            cout << "\t" << coeffs << endl;
+            cout << fread(&coeffs,1,sizeof(uint),in) << endl;
+            cout << "\t read 1" << endl;
             coeffs = sizes[j];
-            cout << sizes[j] << endl;
-            fread(&indexData[currCoeffs],sizes[j],sizeof(Coefficient),in);
-
+            cout << "\t " << sizes[j] << " " << sizeof(Coefficient) << endl;
+            cout << "\t read 1a " << currCoeffs << endl;
+            cout << fread(&indexData[currCoeffs],sizes[j],sizeof(Coefficient),in) << endl;
+            cout << "\t read 2" << endl;
             currCoeffs+=coeffs;
             fclose(in);
             cout << "\t" << "read " << coeffs << " coeffs from " << path << endl;
