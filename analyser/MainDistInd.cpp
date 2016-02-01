@@ -895,6 +895,128 @@ int testMeasureDistance(int argc, char *argv[]){
 
 }
 
+int sortBucketsFromBillion(int argc, char *argv[]){
+    string paramFile(argv[1]);
+    map<string,string> parameters;
+	vector<IIndexer*> indexers;
+	vector<IAnalyser*> analysers;
+	vector<IClassifier*> classifiers;
+	vector<IEndpoint*> endpoints;
+
+	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
+
+    uint nServers = std::stoi(parameters["nServers"]);
+    uint bucketCount = std::stoi(parameters["bucketCount"]);
+    uint bucketOffset = std::stoi(parameters["bucketOffset"]);
+
+    //cout << offset << endl;
+    //cout << dataToIndex.col(0) << endl;
+    //cout << dataToIndex.col(1) << ooendl;
+
+    string basePath = parameters["basePath"];
+    string basePath1 = "/coeffs1B_";
+    string basePath2 = "__coeffs_server_";
+
+    string basePathOut = parameters["basePathOut"];
+
+    ///remote/tmp/0/coeffs1B_0__coeffs_server_0_0.bin
+
+    ///home/amourao/Desktop/0/coeffs1B_0__coeffs_server_0_37.bin
+    ///home/amourao/Desktop/1/coeffs1B_1__coeffs_server_1_37.bin
+    ///home/amourao/Desktop/2/coeffs1B_2__coeffs_server_2_37.bin
+    for(uint bucket = bucketOffset; bucket < bucketOffset+bucketCount; bucket++){
+        cout << "bucket " << bucket <<  " (" << bucket-bucketOffset << " of " << bucketCount << ")" << endl;
+
+        vector<uint> sizes(nServers);
+
+        ulong totalCoeffs = 0;
+        for(uint j = 0; j < nServers; j++){
+            std::stringstream fmt;
+            fmt << basePath << j << basePath1 << j << basePath2 << j << "_" << bucket << ".bin";
+            string path = fmt.str();
+
+            FILE* in = fopen(path.c_str(),"rb");
+
+            fseek (in, 0, SEEK_END);   // non-portable
+            uint size=ftell(in);
+            uint coeffs = (size-4)/(sizeof(Coefficient));
+            sizes[j]=coeffs;
+            fclose (in);
+
+            totalCoeffs+=coeffs;
+            cout << "\t" << coeffs << " coeffs to read from " << path << endl;
+        }
+
+        std::vector<Coefficient> indexData(totalCoeffs);
+
+        ulong currCoeffs = 0;
+        //bucketOffset = std::stoi(params["bucketOffset"]);
+        //bucketCount = std::stoi(params["bucketCount"]);
+        //cout << endl << nBuckets << " " << bucketOffset << " " << bucketCount << " " << curr << endl;
+        for(uint j = 0; j < nServers; j++){
+            std::stringstream fmt;
+            fmt << basePath << j << basePath1 << j << basePath2 << j << "_" << bucket << ".bin";
+            string path = fmt.str();
+
+            FILE* in = fopen(path.c_str(),"rb");
+
+            uint coeffs = sizes[j];
+            fread(&coeffs,1,sizeof(uint),in);
+            coeffs = sizes[j];
+            cout << sizes[j] << endl;
+            fread(&indexData[currCoeffs],sizes[j],sizeof(Coefficient),in);
+
+            currCoeffs+=coeffs;
+            fclose(in);
+            cout << "\t" << "read " << coeffs << " coeffs from " << path << endl;
+        }
+
+        //for(uint j = 0; j < 6; j++){
+        //    cout << indexData[j].value << endl;
+        //}
+        //cout << endl;
+
+        auto compare = [](Coefficient a, Coefficient b){ return !(a < b); };
+        std::sort(indexData.begin(), indexData.end(),compare);
+
+        //for(uint j = 0; j < 6; j++){
+        //    cout << indexData[j].vector_pos << " " << indexData[j].value << endl;
+        //}
+
+        std::stringstream fmt;
+        fmt << basePathOut << bucket << ".bin";
+        string path = fmt.str();
+
+        FILE* out = fopen(path.c_str(),"wb");
+
+        int size = indexData.size();
+
+        //cout << "sizeof(Coefficient): " << sizeof(Coefficient) << endl;
+        //cout << "size: " << size << endl;
+        fwrite(&size,1,sizeof(int),out);
+
+
+        fwrite(&indexData[0],size,sizeof(Coefficient),out);
+        fclose(out);
+
+        //std::vector<Coefficient> indexData2;
+
+
+        //FILE* in = fopen(path.c_str(),"rb");
+
+        //uint coeffs = 0;
+        //fread(&coeffs,1,sizeof(uint),in);
+        //indexData2.resize(coeffs);
+        //fread(&indexData2[0],coeffs,sizeof(Coefficient),in);
+        //fclose(in);
+        //for(uint j = 0; j < 6; j++){
+        //    cout << indexData2[j].vector_pos << " " << indexData2[j].value << endl;
+        //}
+    }
+
+    return 0;
+}
+
 int main(int argc, char *argv[]){
     //el::Helpers::setCrashHandler(myCrashHandler);
     //el::Loggers::addFlag( el::LoggingFlag::DisableApplicationAbortOnFatalLog );
@@ -935,6 +1057,9 @@ int main(int argc, char *argv[]){
         testMeasureDistance(argc-1,&argv[1]);
     else if(StringTools::endsWith(string(argv[1]),"dataPreProcessorOneBillionAzure"))
         dataPreProcessorOneBillionAzure(argc-1,&argv[1]);
+    else if(StringTools::endsWith(string(argv[1]),"sortBucketsFromBillion"))
+        sortBucketsFromBillion(argc-1,&argv[1]);
+
 
     return 0;
 }
