@@ -954,6 +954,7 @@ int sortBucketsFromBillion(int argc, char *argv[]){
         //bucketCount = std::stoi(params["bucketCount"]);
         //cout << endl << nBuckets << " " << bucketOffset << " " << bucketCount << " " << curr << endl;
         for(uint j = 0; j < nServers; j++){
+            cout << "\t" << "read " << coeffs << " coeffs from " << path << endl;
             std::stringstream fmt;
             fmt << basePath << j << basePath1 << j << basePath2 << j << "_" << bucket << ".bin";
             string path = fmt.str();
