@@ -22,6 +22,7 @@ SRProcessor<T>::SRProcessor(string& typeId, map<string,string>& params){
     _bufferSize = std::stoi(params["bufferSize"]);
     pollInterval = std::stol(params["pollInterval"]);
     debugLimitPerBucket = std::stoi(params["debugLimitPerBucket"]);
+    maxIdToLoad = std::stoi(params["maxIdToLoad"]);
 
     _socket.bind(Poco::Net::SocketAddress("0.0.0.0", std::stoi(params["port"])), false);
 	_thread.start(*this);
@@ -617,6 +618,99 @@ bool SRProcessor<T>::loadBilion(string coeffs, string dataPath){
 
 
 template <typename T>
+bool SRProcessor<T>::loadBilionMultiFile(string coeffs, string dataPath){
+
+    lidTogid = vector<uindex>();
+    indexData = std::vector<std::vector<Coefficient>>(bucketCount);
+
+    map<uindex,uindex> lidTogidMap;
+
+
+    char* buffer = new char[sizeof(uint)];
+    size_t result;
+
+    uint indCount = 0;
+
+    cout << "\treading my " << bucketCount << " buckets" << endl;
+    //cout << endl << nBuckets << " " << bucketOffset << " " << bucketCount << " " << curr << endl;
+    for(long i = 0; i < bucketCount; i++){
+        uint loaded = 0;
+
+        string currCoeff = coeffs + std::to_string(i+bucketOffset) + ".bin";
+        FILE * file = fopen(coeffs.c_str(), "rb" );
+        result = fread (buffer,1,sizeof(uint),file);
+        uint co = *reinterpret_cast<uint*>(&buffer[0]);
+        char* bufferCoeffs = new char[co*sizeof(Coefficient)];
+        uint bufferCoeffsInd = 0;
+        result = fread (bufferCoeffs,co,sizeof(Coefficient),file);
+        fclose(file);
+
+
+        if(debugLimitPerBucket == -1)
+            indexData[i].resize(co);
+        else
+            indexData[i].resize(std::min((int)co,debugLimitPerBucket));
+
+        indCount+=co;
+        cout << "\t\tBucket " << i+bucketOffset << "( " << i << " +" << bucketOffset << ") has " << co << endl;
+
+        for(uint j = 0; j < co; j++){
+            uindex gid = *reinterpret_cast<uindex*>(&bufferCoeffs[bufferCoeffsInd]);
+            bufferCoeffsInd += sizeof(uint);
+            float value = *reinterpret_cast<float*>(&bufferCoeffs[bufferCoeffsInd]);
+            bufferCoeffsInd += sizeof(float);
+
+            if(maxIdToLoad == -1 || gid < maxIdToLoad){
+                if(debugLimitPerBucket == -1 || ((int)j) < debugLimitPerBucket){
+                    loaded ++;
+                    auto search = lidTogidMap.find(gid);
+                    uindex lid = lidTogid.size();
+                    if(search != lidTogidMap.end())
+                        lid = search->second;
+                    else {
+                        lidTogidMap[gid] = lid;
+                        lidTogid.push_back(gid);
+                    }
+
+
+                    indexData[i][j] = Coefficient(lid,value);
+                }
+            }
+        }
+        delete[] bufferCoeffs;
+
+        if(maxIdToLoad != -1){
+            indexData[i].resize(loaded);
+            indexData[i].shrink_to_fit();
+        }
+
+    }
+
+
+    delete[] buffer;
+    lidTogidMap.clear();
+
+    cout << "Teste cap " << lidTogid.capacity() << endl;
+    lidTogid.shrink_to_fit();
+    cout << "Teste cap shrink " << lidTogid.capacity() << endl;
+
+    cout << "Parsing coefficients... done" << endl;
+
+    cout << "To import " << lidTogid.size() << " of " << indCount << " possible" << endl;
+
+    cout << "Importing vectors" << endl;
+    oneBillionImporterB ob;
+    ob.readBin(dataPath,data,lidTogid);
+    cout << "Importing vectors... done" << endl;
+
+    cout << "Imported " << data.n_cols << endl;
+
+    return true;
+}
+
+
+
+template <typename T>
 bool SRProcessor<T>::load(string basePath){
 
     lidTogid = vector<uindex>();
@@ -687,6 +781,8 @@ bool SRProcessor<T>::load(string basePath){
 
     return true;
 }
+
+
 
 
 template class SRProcessor<int>;

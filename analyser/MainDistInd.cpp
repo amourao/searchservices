@@ -627,7 +627,7 @@ int srProcessorBillion(int argc, char *argv[]){
     string path = parameters["pathData"];
     string coeffs = parameters["pathCoeffs"];
 
-    map<string,string> params;
+    map<string,string> params = parameters;
 
     vector<SRProcessor<uchar>*> ser;
 
@@ -643,7 +643,10 @@ int srProcessorBillion(int argc, char *argv[]){
 
         string name = "srProcessor_" + std::to_string(i);
         SRProcessor<uchar>* srp = new SRProcessor<uchar>(name,params);
-        srp->loadBilion(coeffs,path);
+        if(parameters.count("multiFile") > 0)
+            srp->loadBilionMultiFile(coeffs,path);
+        else
+            srp->loadBilion(coeffs,path);
         ser.push_back(srp);
     }
 
@@ -655,6 +658,7 @@ int srProcessorBillion(int argc, char *argv[]){
 
     return 0;
 }
+
 
 
 

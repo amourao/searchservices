@@ -47,6 +47,8 @@ public:
 	bool loadSingle(string basePath);
 	bool loadAll(string basePath);
 	bool loadBilion(string coeffs, string dataPath);
+	bool loadBilionMultiFile(string coeffs, string dataPath);
+
 
     Poco::Thread _thread;
 
@@ -103,6 +105,7 @@ private:
 	uint bucketOffset = 0;
 	uint bucketCount = 0;
 	int debugLimitPerBucket = 0;
+	int maxIdToLoad = -1;
 
 	bool needsRebuild = false;
 
