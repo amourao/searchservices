@@ -637,7 +637,7 @@ bool SRProcessor<T>::loadBilionMultiFile(string coeffs, string dataPath){
         uint loaded = 0;
 
         string currCoeff = coeffs + std::to_string(i+bucketOffset) + ".bin";
-        FILE * file = fopen(coeffs.c_str(), "rb" );
+        FILE * file = fopen(currCoeff.c_str(), "rb" );
         result = fread (buffer,1,sizeof(uint),file);
         uint co = *reinterpret_cast<uint*>(&buffer[0]);
         char* bufferCoeffs = new char[co*sizeof(Coefficient)];
