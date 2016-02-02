@@ -548,7 +548,7 @@ int dataPreProcessorOneBillionAzure(int argc, char *argv[]){
     for(uint i = 0; i < numBuckets; i++){
         //cout << dst + "_coeffs_" + nodeId + "_" + std::to_string(i) + ".bin" << endl;
         //outfiles[i]->open(dst + "_coeffs_" + nodeId + "_" + std::to_string(i) + ".bin",std::ofstream::binary);
-        outfiles[i]->seekp(0);
+        outfiles[i]->seekp(0,ios_base::beg);
         outfiles[i]->write((char*)&coeffCount[i],sizeof(uint));
         outfiles[i]->flush();
         outfiles[i]->close();
@@ -939,7 +939,7 @@ int sortBucketsFromBillion(int argc, char *argv[]){
 
             fseek (in, 0, SEEK_END);   // non-portable
             uint size=ftell(in);
-            uint coeffs = (size-4)/(sizeof(Coefficient));
+            uint coeffs = (size-8)/(sizeof(Coefficient));
             sizes[j]=coeffs;
             fclose (in);
 
