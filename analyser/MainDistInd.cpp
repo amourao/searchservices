@@ -944,7 +944,7 @@ int sortBucketsFromBillion(int argc, char *argv[]){
             fclose (in);
 
             totalCoeffs+=coeffs;
-            cout << "\t" << coeffs << " coeffs to read from " << path << endl;
+            cout << "\t" << coeffs << " to read from " << j << endl;
         }
         std::vector<Coefficient> indexData(totalCoeffs);
 
@@ -972,7 +972,7 @@ int sortBucketsFromBillion(int argc, char *argv[]){
             //cout << "\t read 2" << endl;
             currCoeffs+=coeffs;
             fclose(in);
-            cout << "\t" << "read " << coeffs << " coeffs from " << path << endl;
+            cout << "\t" << "read " << coeffs << " from " << j << endl;
         }
 
         //for(uint j = 0; j < 6; j++){
