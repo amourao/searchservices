@@ -53,7 +53,10 @@ std::pair<vector<uindex>,vector<float> > SRMaster::knnSearchIdLong(arma::fmat& q
     QueryStructReq q;
 
     arma::fmat sparseRep;
-    baseFeatureExtractor->extractFeatures(query,sparseRep);
+
+    arma::fmat query2 = query;
+    normalizeColumns(query2);
+    baseFeatureExtractor->extractFeatures(query2,sparseRep);
 
     sparseRep = sparseRep.t();
 

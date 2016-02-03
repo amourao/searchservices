@@ -33,13 +33,6 @@
 
 using namespace std;
 
-
-void normalize_columns(arma::fmat& matrix) {
-    for (uint i = 0; i < matrix.n_cols; ++i) {
-        matrix.col(i) /= norm(matrix.col(i), 2);
-    }
-}
-
 int testDistIndexer(int argc, char *argv[]){
 
     QueryStructReq s;
@@ -142,6 +135,7 @@ int srMaster(int argc, char *argv[]){
     //#pragma omp parallel for schedule(dynamic)
     for(uint i = 0; i < nQueries; i++){
         arma::fmat query = dataToIndex.col(i);
+
         std::pair<vector<uindex>,vector<float> > r = srm.knnSearchIdLong(query,std::stoi(parameters["n"]),std::stod(parameters["limit"]));
 
         cout << "R;" << i << ";";
@@ -218,7 +212,7 @@ int srMasterBillion(int argc, char *argv[]){
     for(uint i = 0; i < nQueries; i++){
         arma::Mat<uchar> queryC = dataToIndex.col(i);
         arma::fmat query = arma::conv_to<arma::fmat>::from(queryC);
-        normalize_columns(query);
+        //normalize_columns(query);
 
         std::pair<vector<uindex>,vector<float> > r = srm.knnSearchIdLong(query,std::stoi(parameters["n"]),std::stod(parameters["limit"]));
 
@@ -533,7 +527,7 @@ int dataPreProcessorOneBillionAzure(int argc, char *argv[]){
 
         uindex dataId = i+offset;
         arma::fmat features = arma::conv_to<arma::fmat>::from(dataToIndex.col(i));
-        normalize_columns(features);
+        normalizeColumns(features);
         //cout << features << endl;
         arma::fmat sparseRep;
 

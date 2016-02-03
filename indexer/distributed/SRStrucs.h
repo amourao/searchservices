@@ -11,9 +11,19 @@ inline tp NOW() {return std::chrono::high_resolution_clock::now();}
 inline long ELAPSED(tp start) {return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now()-start).count();}
 inline long TO_LONG(tp start) {return std::chrono::duration_cast<std::chrono::microseconds>(start.time_since_epoch()).count();}
 
+
+inline float myNorm(arma::fmat matrix1){
+    return arma::norm<arma::Mat<float>>(matrix1,2);
+}
+
+template <typename T>
+inline float myNorm(arma::Mat<T> matrix1){
+    return arma::norm<arma::Mat<float>>(arma::conv_to<arma::Mat<float>>::from(matrix1),2);
+}
+
 template <typename T>
 inline float myNorm(arma::Mat<T>& matrix1, arma::Mat<T>& matrix2){
-    return arma::norm<arma::Mat<float>>(arma::conv_to<arma::Mat<float>>::from(matrix1)-arma::conv_to<arma::Mat<float>>::from(matrix2),2);
+    return myNorm(arma::conv_to<arma::Mat<float>>::from(matrix1)-arma::conv_to<arma::Mat<float>>::from(matrix2));
 }
 
 template <typename T>
@@ -21,6 +31,13 @@ inline float myNorm2(arma::Mat<T>& matrix){
     return sqrt(arma::dot(matrix,matrix));
 }
 
+template <typename T>
+inline void normalizeColumns(arma::Mat<T>& matrix) {
+    for (uint i = 0; i < matrix.n_cols; ++i) {
+        arma::Mat<T> col = matrix.col(i);
+        matrix.col(i) /= myNorm(col);
+    }
+}
 
 struct Coefficient {
     uindex vector_pos;

@@ -637,12 +637,6 @@ void MatrixTools::getRandomSample(vector<arma::fmat>& mList, int nRows, vector<a
 
 }
 
-
-
-
-
-
-
 /*
 void MatrixTools::matToVector(cv::Mat &src, vector<char>& dst){
 	float* array = (float*)src.data;
