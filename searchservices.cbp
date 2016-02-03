@@ -100,7 +100,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gnu_gcc_compiler_49" />
-				<Option parameters=" sortBucketsFromBillion /home/amourao/code/searchservices/configs/defaultMergeProcessBillion.json" />
+				<Option parameters="srProcessorBillion /home/amourao/code/searchservices/untitled.json" />
 				<Compiler>
 					<Add option="-g" />
 					<Add directory="commons" />

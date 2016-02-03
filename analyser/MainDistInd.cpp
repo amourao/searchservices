@@ -200,12 +200,19 @@ int srMasterBillion(int argc, char *argv[]){
     map<string,string> params;
 
     string name = "srMaster";
+
+
+    oneBillionImporterB ob;
+
     arma::Mat<uchar> dataToIndex;
-    dataToIndex.load(parameters["dataQ"]);
+
+
 
     SRMaster srm(name,parameters);
 
     uint nQueries = std::stoi(parameters["nQueries"]);
+
+    ob.readBin(parameters["dataQ"],nQueries,dataToIndex,0);
 
     //#pragma omp parallel for schedule(dynamic)
     for(uint i = 0; i < nQueries; i++){
@@ -914,7 +921,7 @@ int sortBucketsFromBillion(int argc, char *argv[]){
     uint bucketOffset = std::stoi(parameters["bucketOffset"]);
 
     //cout << offset << endl;
-    //cout << dataToIndex.col(0) << endl;
+    //cout << dataToIndex.col(0) << en;
     //cout << dataToIndex.col(1) << ooendl;
 
     string basePath = parameters["basePath"];
