@@ -14,6 +14,9 @@
 
 //#include <easylogging++.h>
 
+
+#include "../analyser/nVector/ANdOMPExtractor.h"
+
 #include "tools/TrainTestFeaturesTools.h"
 #include "tools/MIRFlickrImporter.h"
 #include "tools/tinyImageImporter.h"
@@ -24,6 +27,8 @@
 #include "../indexer/distributed/SRStrucs.h"
 #include "../indexer/distributed/SRProcessor.h"
 #include "../indexer/distributed/SRMaster.h"
+
+
 
 #include "../commons/StringTools.h"
 #include "../commons/Timing.h"
@@ -1026,6 +1031,77 @@ int sortBucketsFromBillion(int argc, char *argv[]){
     return 0;
 }
 
+int testShuffleDictionary(int argc, char *argv[]){
+
+    string paramFile(argv[1]);
+    map<string,string> parameters;
+	vector<IIndexer*> indexers;
+	vector<IAnalyser*> analysers;
+	vector<IClassifier*> classifiers;
+	vector<IEndpoint*> endpoints;
+
+
+
+
+	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
+
+    string dictionaryS = parameters["dictionary"];
+    string queryS = parameters["query"];
+
+    arma::fmat query,dictionary,dictionary2,sr1,sr2;
+    arma::Mat<uchar> queryB;
+
+    oneBillionImporterB ob;
+
+    ob.readBin(queryS,1,queryB,0);
+    query = arma::conv_to<arma::fmat>::from(queryB);
+    queryB = queryB.t();
+    //dictionary = dictionary.t();
+
+    dictionary.load(dictionaryS);
+
+    arma::uvec v = arma::linspace<arma::uvec>(0, dictionary.n_cols, dictionary.n_cols);
+    v = arma::shuffle(v);
+    dictionary2 = dictionary.cols(v);
+
+    cout << queryB.n_cols << " " << queryB.n_rows << endl;
+    cout << dictionary.n_cols << " " << dictionary.n_rows << endl;
+    cout << dictionary2.n_cols << " " << dictionary2.n_rows << endl;
+
+
+    string t = "OMP";
+    std::shared_ptr<ANdOMPExtractor> baseFeatureExtractor = std::shared_ptr<ANdOMPExtractor>((ANdOMPExtractor*)FactoryAnalyser::getInstance()->createType(t));
+
+    //baseFeatureExtractor->changeDictionary(dictionary);
+    baseFeatureExtractor->extractFeatures(query,sr1);
+
+    arma::uvec a = arma::find(sr1 != 0);
+    cout << a << endl;
+    cout << sr1.elem(a) << endl;
+
+    baseFeatureExtractor->changeDictionary(dictionary2);
+    baseFeatureExtractor->extractFeatures(query,sr2);
+
+    arma::uvec b = arma::find(sr2 != 0);
+    cout << b << endl;
+    cout << sr2.elem(b) << endl;
+
+    dictionary2.save("/localstore/1-billion-vectors/bigann_dict_8192_new.bin");
+
+    ofstream myfile;
+    myfile.open ("keyBucketSort.txt");
+
+    for (int i = 0 ; i < v.size(); i++)
+        myfile << "mv /remote/coeffs/coeffs1B_sorted" << i << ".bin /remote/coeffs/coeffs1B_alt_sorted" << v(i) << ".bin"  << endl;
+
+    myfile.close();
+
+
+
+
+
+}
+
 int main(int argc, char *argv[]){
     //el::Helpers::setCrashHandler(myCrashHandler);
     //el::Loggers::addFlag( el::LoggingFlag::DisableApplicationAbortOnFatalLog );
@@ -1068,6 +1144,8 @@ int main(int argc, char *argv[]){
         dataPreProcessorOneBillionAzure(argc-1,&argv[1]);
     else if(StringTools::endsWith(string(argv[1]),"sortBucketsFromBillion"))
         sortBucketsFromBillion(argc-1,&argv[1]);
+    else if(StringTools::endsWith(string(argv[1]),"testShuffleDictionary"))
+        testShuffleDictionary(argc-1,&argv[1]);
 
 
     return 0;

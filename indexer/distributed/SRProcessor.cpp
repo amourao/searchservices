@@ -654,9 +654,9 @@ bool SRProcessor<T>::loadBilionMultiFile(string coeffs, string dataPath){
 
 
         if(debugLimitPerBucket == -1)
-            indexData[i].resize(co);
+            indexData[i].reserve(co);
         else
-            indexData[i].resize(std::min((int)co,debugLimitPerBucket));
+            indexData[i].reserve(std::min((int)co,debugLimitPerBucket));
 
         indCount+=co;
         cout << "\t\tBucket " << i+bucketOffset << "( " << i << " +" << bucketOffset << ") has " << co << endl;
@@ -680,16 +680,20 @@ bool SRProcessor<T>::loadBilionMultiFile(string coeffs, string dataPath){
                     }
 
 
-                    indexData[i][j] = Coefficient(lid,value);
+                    indexData[i].push_back(Coefficient(lid,value));
                 }
             }
         }
         delete[] bufferCoeffs;
 
-        if(maxIdToLoad != -1){
-            indexData[i].resize(loaded);
-            indexData[i].shrink_to_fit();
-        }
+        //if(maxIdToLoad != -1){
+        cout << "Teste cap " << indexData[i].capacity() << endl;
+        indexData[i].shrink_to_fit();
+        cout << "Teste cap shrink " << indexData[i].capacity() << endl;
+
+        //resize(loaded);
+        //indexData[i].shrink_to_fit();
+        //}
 
     }
 

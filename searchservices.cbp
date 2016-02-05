@@ -100,7 +100,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gnu_gcc_compiler_49" />
-				<Option parameters="srProcessorBillion /home/amourao/code/searchservices/untitled.json" />
+				<Option parameters="testShuffleDictionary /home/amourao/code/searchservices/testShuffleDict.json" />
 				<Compiler>
 					<Add option="-g" />
 					<Add directory="commons" />
