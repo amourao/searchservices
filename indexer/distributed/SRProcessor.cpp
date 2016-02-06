@@ -621,16 +621,21 @@ bool SRProcessor<T>::loadBilion(string coeffs, string dataPath){
     return true;
 }
 
-
+int getMem() {
+    string cmd = "ps l " + std::to_string(::getpid()) + " | tail -1 | tr -s ' ' | cut -d ' ' -f 7";
+    std::shared_ptr<FILE> pipe(popen(cmd.c_str(), "r"), pclose);
+    char buffer[128];
+    std::string result = "";
+    while (!feof(pipe.get())) {
+        if (fgets(buffer, 128, pipe.get()) != NULL)
+            result += buffer;
+    }
+    return std::stoi(result);
+}
 
 template <typename T>
-bool SRProcessor<T>::loadBilionMultiFile(string coeffs, string dataPath){
-
-    lidTogid = vector<uindex>();
-    indexData = std::vector<std::vector<Coefficient>>(bucketCount);
-
+int SRProcessor<T>::loadB(string coeffs){
     map<uindex,uindex> lidTogidMap;
-
 
     char* buffer = new char[sizeof(uint)];
     size_t result;
@@ -669,7 +674,7 @@ bool SRProcessor<T>::loadBilionMultiFile(string coeffs, string dataPath){
 
             if(maxIdToLoad == -1 || gid < maxIdToLoad){
                 if(debugLimitPerBucket == -1 || ((int)j) < debugLimitPerBucket){
-                    loaded ++;
+                    //loaded ++;
                     auto search = lidTogidMap.find(gid);
                     uindex lid = lidTogid.size();
                     if(search != lidTogidMap.end())
@@ -679,7 +684,6 @@ bool SRProcessor<T>::loadBilionMultiFile(string coeffs, string dataPath){
                         lidTogid.push_back(gid);
                     }
 
-
                     indexData[i].push_back(Coefficient(lid,value));
                 }
             }
@@ -687,23 +691,40 @@ bool SRProcessor<T>::loadBilionMultiFile(string coeffs, string dataPath){
         delete[] bufferCoeffs;
 
         //if(maxIdToLoad != -1){
-        cout << "Teste cap " << indexData[i].capacity() << endl;
-        indexData[i].shrink_to_fit();
-        cout << "Teste cap shrink " << indexData[i].capacity() << endl;
+        //cout << "Teste cap " << indexData[i].capacity() << endl;
+        //indexData[i].shrink_to_fit();
+        //cout << "Teste cap shrink " << indexData[i].capacity() << endl;
 
         //resize(loaded);
         //indexData[i].shrink_to_fit();
         //}
 
     }
-
-
     delete[] buffer;
     lidTogidMap.clear();
+    return indCount;
+}
 
+template <typename T>
+bool SRProcessor<T>::loadBilionMultiFile(string coeffs, string dataPath){
+
+    cout << getMem()*1000 << endl;
+
+
+    lidTogid = vector<uindex>();
+    indexData = std::vector<std::vector<Coefficient>>(bucketCount);
+
+    uint indCount = loadB(coeffs);
+
+    cout << getMem()*1000 << endl;
+
+
+    cout << getMem()*1000 << endl;
     cout << "Teste cap " << lidTogid.capacity() << endl;
     lidTogid.shrink_to_fit();
     cout << "Teste cap shrink " << lidTogid.capacity() << endl;
+
+    cout << getMem()*1000 << " " << lidTogid.size()*4+indCount*8 << endl;
 
     cout << "Parsing coefficients... done" << endl;
 
@@ -715,6 +736,9 @@ bool SRProcessor<T>::loadBilionMultiFile(string coeffs, string dataPath){
     cout << "Importing vectors... done" << endl;
 
     cout << "Imported " << data.n_cols << endl;
+    long totalMem = data.n_cols*(long)128;
+    totalMem += lidTogid.size()*4+indCount*8;
+    cout << getMem()*1000 << " " << totalMem << endl;
 
     return true;
 }

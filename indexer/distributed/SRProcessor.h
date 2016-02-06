@@ -8,6 +8,9 @@
 #include <fstream>
 #include <unordered_set>
 
+#include <sys/time.h>
+#include <sys/resource.h>
+
 
 #include <Poco/Net/DatagramSocket.h>
 #include <Poco/Net/SocketAddress.h>
@@ -23,6 +26,10 @@
 
 #include <armadillo>
 
+#include <string>
+#include <iostream>
+#include <cstdio>
+#include <memory>
 
 using namespace std;
 
@@ -49,6 +56,7 @@ public:
 	bool loadBilion(string coeffs, string dataPath);
 	bool loadBilionMultiFile(string coeffs, string dataPath);
 
+	int loadB(string coeffs);
 
     Poco::Thread _thread;
 
