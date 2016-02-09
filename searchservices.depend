@@ -444,7 +444,7 @@
 	"FactoryIndexer.h"
 	"../commons/Timing.h"
 
-1452771584 source:/home/amourao/code/searchservices/analyser/Main3.cpp
+1452793720 source:/home/amourao/code/searchservices/analyser/Main3.cpp
 	<iostream>
 	<fstream>
 	<string>
@@ -489,7 +489,6 @@
 	"../indexer/FlannkNNIndexer.h"
 	"../indexer/MSIDXIndexer.h"
 	"../indexer/LSHIndexer.h"
-	"../indexer/distributed/SRStrucs.h"
 	"../indexer/sphericalHashing/Main.cpp"
 	"../commons/StringTools.h"
 	"../commons/Timing.h"
@@ -9022,7 +9021,7 @@
 	<chrono>
 	<armadillo>
 
-1454631711 source:/home/amourao/code/searchservices/analyser/MainDistInd.cpp
+1454949442 source:/home/amourao/code/searchservices/analyser/MainDistInd.cpp
 	<iostream>
 	<fstream>
 	<string>
@@ -9068,7 +9067,7 @@
 	"../../analyser/FactoryAnalyser.h"
 	"../../analyser/tools/MatrixTools.h"
 
-1454697433 source:/home/amourao/code/searchservices/indexer/distributed/SRProcessor.cpp
+1454945672 source:/home/amourao/code/searchservices/indexer/distributed/SRProcessor.cpp
 	"SRProcessor.h"
 
 1454695236 /home/amourao/code/searchservices/indexer/distributed/SRProcessor.h

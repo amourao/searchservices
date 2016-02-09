@@ -526,7 +526,6 @@ bool SRProcessor<T>::loadSingle(string basePath){
 template <typename T>
 bool SRProcessor<T>::loadBilion(string coeffs, string dataPath){
 
-    lidTogid = vector<uindex>();
     map<uindex,uindex> lidTogidMap;
 
     FILE * file = fopen(coeffs.c_str(), "rb" );
@@ -635,7 +634,7 @@ int getMem() {
 
 template <typename T>
 int SRProcessor<T>::loadB(string coeffs){
-    map<uindex,uindex> lidTogidMap;
+    map<uindex,uindex>* lidTogidMap = new map<uindex,uindex>();
 
     char* buffer = new char[sizeof(uint)];
     size_t result;
@@ -649,7 +648,7 @@ int SRProcessor<T>::loadB(string coeffs){
 
         string currCoeff = coeffs + std::to_string(i+bucketOffset) + ".bin";
         FILE * file = fopen(currCoeff.c_str(), "rb" );
-        cout << currCoeff << endl;
+        //cout << currCoeff << endl;
         result = fread (buffer,1,sizeof(uint),file);
         uint co = *reinterpret_cast<uint*>(&buffer[0]);
         char* bufferCoeffs = new char[co*sizeof(Coefficient)];
@@ -665,22 +664,22 @@ int SRProcessor<T>::loadB(string coeffs){
 
         indCount+=co;
         cout << "\t\tBucket " << i+bucketOffset << "( " << i << " +" << bucketOffset << ") has " << co << endl;
+        //bufferCoeffsInd += sizeof(uint);
 
         for(uint j = 0; j < co; j++){
             uindex gid = *reinterpret_cast<uindex*>(&bufferCoeffs[bufferCoeffsInd]);
             bufferCoeffsInd += sizeof(uint);
             float value = *reinterpret_cast<float*>(&bufferCoeffs[bufferCoeffsInd]);
             bufferCoeffsInd += sizeof(float);
-
             if(maxIdToLoad == -1 || gid < maxIdToLoad){
                 if(debugLimitPerBucket == -1 || ((int)j) < debugLimitPerBucket){
                     //loaded ++;
-                    auto search = lidTogidMap.find(gid);
+                    auto search = (*lidTogidMap).find(gid);
                     uindex lid = lidTogid.size();
-                    if(search != lidTogidMap.end())
+                    if(search != (*lidTogidMap).end())
                         lid = search->second;
                     else {
-                        lidTogidMap[gid] = lid;
+                        (*lidTogidMap)[gid] = lid;
                         lidTogid.push_back(gid);
                     }
 
@@ -701,35 +700,34 @@ int SRProcessor<T>::loadB(string coeffs){
 
     }
     delete[] buffer;
-    lidTogidMap.clear();
+    delete lidTogidMap;
     return indCount;
 }
 
 template <typename T>
 bool SRProcessor<T>::loadBilionMultiFile(string coeffs, string dataPath){
 
-    cout << getMem()*1000 << endl;
+    cout << "base: " << getMem()*1000 << endl;
+    int baseMem = getMem()*1000;
 
-
-    lidTogid = vector<uindex>();
+    lidTogid.clear();
     indexData = std::vector<std::vector<Coefficient>>(bucketCount);
 
+
+
+    cout << (getMem()*1000)-baseMem << endl;
     uint indCount = loadB(coeffs);
-
-    cout << getMem()*1000 << endl;
-
-
-    cout << getMem()*1000 << endl;
+    cout << (getMem()*1000)-baseMem << endl;
     cout << "Teste cap " << lidTogid.capacity() << endl;
     lidTogid.shrink_to_fit();
     cout << "Teste cap shrink " << lidTogid.capacity() << endl;
 
-    cout << getMem()*1000 << " " << lidTogid.size()*4+indCount*8 << endl;
+    cout << (getMem()*1000)-baseMem  <<" " << lidTogid.size()*4+indCount*8 << endl;
 
     cout << "Parsing coefficients... done" << endl;
 
     cout << "To import " << lidTogid.size() << " of " << indCount << " possible" << endl;
-
+    int memInter = (getMem()*1000)-baseMem;
     cout << "Importing vectors" << endl;
     oneBillionImporterB ob;
     ob.readBin(dataPath,data,lidTogid);
@@ -738,7 +736,7 @@ bool SRProcessor<T>::loadBilionMultiFile(string coeffs, string dataPath){
     cout << "Imported " << data.n_cols << endl;
     long totalMem = data.n_cols*(long)128;
     totalMem += lidTogid.size()*4+indCount*8;
-    cout << getMem()*1000 << " " << totalMem << endl;
+    cout << (getMem()*1000)-baseMem << " " << totalMem << " " << (getMem()*1000)-baseMem-memInter << " " << data.n_cols*(long)128  << endl;
 
     return true;
 }
@@ -748,7 +746,7 @@ bool SRProcessor<T>::loadBilionMultiFile(string coeffs, string dataPath){
 template <typename T>
 bool SRProcessor<T>::load(string basePath){
 
-    lidTogid = vector<uindex>();
+    lidTogid.clear();
     map<uindex,uindex> lidTogidMap;
 
     std::ifstream file(basePath + "_coeffs.bin", std::ios::binary | std::ios::ate);

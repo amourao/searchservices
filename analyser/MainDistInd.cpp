@@ -1060,8 +1060,12 @@ int testShuffleDictionary(int argc, char *argv[]){
 
     dictionary.load(dictionaryS);
 
-    arma::uvec v = arma::linspace<arma::uvec>(0, dictionary.n_cols, dictionary.n_cols);
+    arma::uvec v = arma::linspace<arma::uvec>(0, dictionary.n_cols-1, dictionary.n_cols);
+
+    //cout << v << " " << v.size() << endl;
     v = arma::shuffle(v);
+    //cout << v << " " << v.size() << endl;
+
     dictionary2 = dictionary.cols(v);
 
     cout << queryB.n_cols << " " << queryB.n_rows << endl;
@@ -1092,13 +1096,9 @@ int testShuffleDictionary(int argc, char *argv[]){
     myfile.open ("keyBucketSort.txt");
 
     for (int i = 0 ; i < v.size(); i++)
-        myfile << "mv /remote/coeffs/coeffs1B_sorted" << i << ".bin /remote/coeffs/coeffs1B_alt_sorted" << v(i) << ".bin"  << endl;
+        myfile << "mv /remote/coeffs/coeffs1B_sorted" << i << ".bin /remote/coeffs/coeffs1B_alt1_sorted" << v(i) << ".bin"  << endl;
 
     myfile.close();
-
-
-
-
 
 }
 
