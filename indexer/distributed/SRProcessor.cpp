@@ -130,7 +130,7 @@ QueryStructRsp SRProcessor<T>::knnSearchIdLong(QueryStructReq& queryS){
                         totalNCandidatesInspNonDup++;
                     #endif
                     arma::Mat<T> candidate = data.col(candidates[i].vector_pos);
-                    normalizeColumns(candidate);
+                    //normalizeColumns(candidate);
                     float dist = myNorm(candidate,query);
                     uindex lid = candidates[i].vector_pos;
                     uindex gid = lidTogid[lid];

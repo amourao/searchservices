@@ -1090,17 +1090,45 @@ int testShuffleDictionary(int argc, char *argv[]){
     cout << b << endl;
     cout << sr2.elem(b) << endl;
 
-    dictionary2.save("/localstore/1-billion-vectors/bigann_dict_8192_new.bin");
+    dictionary2.save("/localstore/1-billion-vectors/bigann_dict_8192_new2.bin");
 
     ofstream myfile;
-    myfile.open ("keyBucketSort.txt");
+    myfile.open ("/localstore/1-billion-vectors/keyBucketSort2.txt");
 
     for (int i = 0 ; i < v.size(); i++)
-        myfile << "mv /remote/coeffs/coeffs1B_sorted" << i << ".bin /remote/coeffs/coeffs1B_alt1_sorted" << v(i) << ".bin"  << endl;
+        myfile << "mv /remote/coeffs/coeffs1B_sorted" << v(i) << ".bin /remote/coeffs/coeffs1B_alt1_sorted" << i << ".bin"  << endl;
 
     myfile.close();
 
 }
+
+
+int shuffleDictionaryGivenOrder(int argc, char *argv[]){
+
+    string dictionaryS = argv[1];
+    string orderS = argv[2];
+
+    arma::fmat dictionary,dictionary2;
+
+    dictionary.load(dictionaryS);
+
+    arma::uvec v(8192);
+
+    ifstream file(orderS.c_str(), ifstream::in);
+    string line;
+
+    int i = 0;
+    while (getline(file, line)) {
+        v(i) = std::stoi(line);
+        i++;
+    }
+
+    cout << v << endl;
+
+    dictionary2 = dictionary.cols(v);
+    dictionary2.save("/localstore/1-billion-vectors/bigann_dict_8192_new3.bin");
+}
+
 
 int main(int argc, char *argv[]){
     //el::Helpers::setCrashHandler(myCrashHandler);
@@ -1146,6 +1174,8 @@ int main(int argc, char *argv[]){
         sortBucketsFromBillion(argc-1,&argv[1]);
     else if(StringTools::endsWith(string(argv[1]),"testShuffleDictionary"))
         testShuffleDictionary(argc-1,&argv[1]);
+    else if(StringTools::endsWith(string(argv[1]),"shuffleDictionaryGivenOrder"))
+        shuffleDictionaryGivenOrder(argc-1,&argv[1]);
 
 
     return 0;

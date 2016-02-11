@@ -100,7 +100,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gnu_gcc_compiler_49" />
-				<Option parameters="srProcessorBillion /home/amourao/code/searchservices/configs/defaultProcessBillion.json" />
+				<Option parameters="shuffleDictionaryGivenOrder /localstore/1-billion-vectors/bigann_dict_8192.bin  /home/amourao/Desktop/newOrder3_new.csv" />
 				<Compiler>
 					<Add option="-g" />
 					<Add directory="commons" />
