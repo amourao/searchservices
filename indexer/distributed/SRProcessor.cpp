@@ -620,7 +620,7 @@ bool SRProcessor<T>::loadBilion(string coeffs, string dataPath){
     return true;
 }
 
-int getMem() {
+long getMem() {
     string cmd = "ps l " + std::to_string(::getpid()) + " | tail -1 | tr -s ' ' | cut -d ' ' -f 7";
     std::shared_ptr<FILE> pipe(popen(cmd.c_str(), "r"), pclose);
     char buffer[128];
@@ -629,7 +629,7 @@ int getMem() {
         if (fgets(buffer, 128, pipe.get()) != NULL)
             result += buffer;
     }
-    return std::stoi(result);
+    return std::stol(result);
 }
 
 template <typename T>
@@ -730,13 +730,13 @@ bool SRProcessor<T>::loadBilionMultiFile(string coeffs, string dataPath){
     int memInter = (getMem()*1000)-baseMem;
     cout << "Importing vectors" << endl;
     oneBillionImporterB ob;
-    ob.readBin(dataPath,data,lidTogid);
+    ob.readBin(dataPath,data,lidTogid,2000000L);
     cout << "Importing vectors... done" << endl;
 
     cout << "Imported " << data.n_cols << endl;
-    long totalMem = data.n_cols*(long)128;
-    totalMem += lidTogid.size()*4+indCount*8;
-    cout << (getMem()*1000)-baseMem << " " << totalMem << " " << (getMem()*1000)-baseMem-memInter << " " << data.n_cols*(long)128  << endl;
+    //long totalMem = data.n_cols*(long)128;
+    //totalMem += lidTogid.size()*4+indCount*8;
+    //cout << (getMem()*1000)-baseMem << " " << totalMem << " " << (getMem()*1000)-baseMem-memInter << " " << data.n_cols*(long)128  << endl;
 
     return true;
 }

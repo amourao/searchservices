@@ -143,9 +143,9 @@ int srMaster(int argc, char *argv[]){
 
         std::pair<vector<uindex>,vector<float> > r = srm.knnSearchIdLong(query,std::stoi(parameters["n"]),std::stod(parameters["limit"]));
 
-        cout << "R;" << i << ";";
+        cout << "R;" << i;
         for(uint j = 0; j < r.first.size(); j++){
-            cout << r.first[j] << "," << r.second[j] << ";";
+            cout << ";" << r.first[j] << "," << r.second[j] ;
         }
         cout << endl;
     }
@@ -221,12 +221,11 @@ int srMasterBillion(int argc, char *argv[]){
 
         std::pair<vector<uindex>,vector<float> > r = srm.knnSearchIdLong(query,std::stoi(parameters["n"]),std::stod(parameters["limit"]));
 
-        cout << "********** RESULTS **********" << endl;
-        cout << "************* " << i << " ************" << endl;
+        cout << "R;" << i;
         for(uint j = 0; j < r.first.size(); j++){
-            cout << r.first[j] << "\t" << r.second[j] << endl;
+            cout << ";" << r.first[j] << "," << r.second[j];
         }
-        cout << "*****************************" << endl;
+        cout << endl;
     }
 
     cout << endl;
@@ -321,12 +320,12 @@ int srTest(int argc, char *argv[]){
         arma::fmat query = dataToIndex.col(i);
         std::pair<vector<uindex>,vector<float> > r = srm.knnSearchIdLong(query,std::stoi(parameters["n"]),std::stod(parameters["limit"]));
 
-        cout << "********** RESULTS **********" << endl;
-        cout << "************* " << i << " ************" << endl;
+
+        cout << "R;" << i;
         for(uint j = 0; j < r.first.size(); j++){
-            cout << r.first[j] << "\t" << r.second[j];
+            cout << ";" << r.first[j] << "," << r.second[j];
         }
-        cout << "*****************************" << endl;
+        cout << endl;
     }
 
 
@@ -1129,6 +1128,109 @@ int shuffleDictionaryGivenOrder(int argc, char *argv[]){
     dictionary2.save("/localstore/1-billion-vectors/bigann_dict_8192_new3.bin");
 }
 
+int testNewFeatureRead(int argc, char *argv[]){
+
+    string file2 = "/localstore/1-billion-vectors/bigann_query_fmat.bin";
+
+    string file = "/localstore/1-billion-vectors/queries.bvecs";
+
+    vector<uint> lidTogid;
+
+    lidTogid.push_back(999);
+    lidTogid.push_back(998);
+    lidTogid.push_back(997);
+    lidTogid.push_back(996);
+    lidTogid.push_back(995);
+    lidTogid.push_back(994);
+    lidTogid.push_back(993);
+    lidTogid.push_back(992);
+    lidTogid.push_back(991);
+
+    lidTogid.push_back(99);
+    lidTogid.push_back(98);
+    lidTogid.push_back(97);
+    lidTogid.push_back(96);
+    lidTogid.push_back(95);
+    lidTogid.push_back(94);
+    lidTogid.push_back(93);
+    lidTogid.push_back(92);
+    lidTogid.push_back(91);
+
+    lidTogid.push_back(919);
+    lidTogid.push_back(918);
+    lidTogid.push_back(917);
+    lidTogid.push_back(916);
+    lidTogid.push_back(915);
+    lidTogid.push_back(914);
+    lidTogid.push_back(913);
+    lidTogid.push_back(912);
+    lidTogid.push_back(911);
+
+    arma::Mat<uchar> data,data2;
+
+    oneBillionImporterB ob;
+    ob.readBin(file,data,lidTogid);
+
+    ob.readBinSlow(file,data2,lidTogid);
+
+    arma::fmat data3;
+
+    data3.load(file2);
+
+    arma::uvec ttt(lidTogid.size());
+
+    for(int i = 0; i < lidTogid.size(); i++){
+        ttt(i) = lidTogid[i];
+    }
+
+    data3 = data3.cols(ttt);
+
+    //for(int i = 0; i < 5; i++)
+    //    for(int j = 0; j < 5; j++)
+    //        cout << data3(j,i) << " " << (int)data2(j,i) << " " << (int)data(j,i) << endl;
+
+    cout << arma::accu(data3-data2) << " " << arma::accu(data3-data) << endl;
+}
+
+
+
+int testNewFeatureRead2(int argc, char *argv[]){
+
+    string file(argv[1]);
+    int toRead = std::stoi(argv[2]);
+    int total = std::stoi(argv[3]);
+    ulong buff = std::stol(argv[4]);
+
+    arma::uvec v = arma::linspace<arma::uvec>(0, total-1, total);
+    v = shuffle(v);
+    v = v.rows(0,toRead-1);
+
+    vector<uint> lidTogid(toRead);
+
+    for(int i = 0; i < toRead; i++)
+        lidTogid.at(i)=v(i);
+
+
+    arma::Mat<uchar> data,data2;
+
+    oneBillionImporterB ob;
+
+
+    tp start = NOW();
+    ob.readBin(file,data,lidTogid,buff);
+    cout << "time: " << ELAPSED(start) << endl;
+    start = NOW();
+    ob.readBinSlow(file,data2,lidTogid);
+    cout << "time2: " << ELAPSED(start) << endl;
+
+    //for(int i = 0; i < 5; i++)
+    //    for(int j = 0; j < 5; j++)
+    //        cout << data3(j,i) << " " << (int)data2(j,i) << " " << (int)data(j,i) << endl;
+
+    cout << (int)arma::accu(data2-data) << " " << (int)arma::accu(data-data2) << endl;
+}
+
+
 
 int main(int argc, char *argv[]){
     //el::Helpers::setCrashHandler(myCrashHandler);
@@ -1176,7 +1278,10 @@ int main(int argc, char *argv[]){
         testShuffleDictionary(argc-1,&argv[1]);
     else if(StringTools::endsWith(string(argv[1]),"shuffleDictionaryGivenOrder"))
         shuffleDictionaryGivenOrder(argc-1,&argv[1]);
-
+    else if(StringTools::endsWith(string(argv[1]),"testNewFeatureRead"))
+        testNewFeatureRead(argc-1,&argv[1]);
+    else if(StringTools::endsWith(string(argv[1]),"testNewFeatureRead2"))
+        testNewFeatureRead2(argc-1,&argv[1]);
 
     return 0;
 }

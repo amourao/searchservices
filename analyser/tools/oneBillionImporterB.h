@@ -10,6 +10,7 @@
 #include <cstdlib>
 
 #include "IBinImporter.h"
+#include "MatrixTools.h"
 
 class oneBillionImporterB: public IBinImporter {
 
@@ -24,9 +25,11 @@ public:
 	void readBin(std::string file, int numberOfRows, arma::fmat& features, long long offsetInRows = 0);
 	void readTags(std::string file, int numberOfRows, cv::Mat& tags);
 
-	void readBin(std::string filenamep, arma::Mat<uchar>& features, std::vector<uint>& buckets);
-	void readBin(std::string filenamep, arma::Mat<int>& features, std::vector<uint>& buckets);
-	void readBin(std::string filenamep, arma::Mat<float>& features, std::vector<uint>& buckets);
+	void readBin(std::string filenamep, arma::Mat<uchar>& features, std::vector<uint>& buckets, ulong bufferSize = 1000L);
+	void readBin(std::string filenamep, arma::Mat<int>& features, std::vector<uint>& buckets, ulong bufferSize = 1000L);
+	void readBin(std::string filenamep, arma::Mat<float>& features, std::vector<uint>& buckets, ulong bufferSize = 1000L);
+
+	void readBinSlow(std::string filenamep, arma::Mat<uchar>& features, std::vector<uint>& buckets);
 
 private:
 

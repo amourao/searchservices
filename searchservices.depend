@@ -8844,10 +8844,10 @@
 	"boost/limits.hpp"
 	"boost/config.hpp"
 
-1453830286 source:/home/amourao/code/searchservices/analyser/tools/oneBillionImporterB.cpp
+1455312008 source:/home/amourao/code/searchservices/analyser/tools/oneBillionImporterB.cpp
 	"oneBillionImporterB.h"
 
-1453685323 /home/amourao/code/searchservices/analyser/tools/oneBillionImporterB.h
+1455311970 /home/amourao/code/searchservices/analyser/tools/oneBillionImporterB.h
 	<armadillo>
 	<opencv2/core/core.hpp>
 	<opencv2/highgui/highgui.hpp>
@@ -8856,6 +8856,7 @@
 	<map>
 	<cstdlib>
 	"IBinImporter.h"
+	"MatrixTools.h"
 
 1452695847 source:/home/amourao/code/searchservices/indexer/DistributedIndexWrapperServer.cpp
 	"DistributedIndexWrapperServer.h"
@@ -9021,7 +9022,7 @@
 	<chrono>
 	<armadillo>
 
-1455125279 source:/home/amourao/code/searchservices/analyser/MainDistInd.cpp
+1455297430 source:/home/amourao/code/searchservices/analyser/MainDistInd.cpp
 	<iostream>
 	<fstream>
 	<string>
@@ -9067,7 +9068,7 @@
 	"../../analyser/FactoryAnalyser.h"
 	"../../analyser/tools/MatrixTools.h"
 
-1455031355 source:/home/amourao/code/searchservices/indexer/distributed/SRProcessor.cpp
+1455312059 source:/home/amourao/code/searchservices/indexer/distributed/SRProcessor.cpp
 	"SRProcessor.h"
 
 1454695236 /home/amourao/code/searchservices/indexer/distributed/SRProcessor.h
