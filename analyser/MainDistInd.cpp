@@ -221,7 +221,7 @@ int srMasterBillion(int argc, char *argv[]){
 
         std::pair<vector<uindex>,vector<float> > r = srm.knnSearchIdLong(query,std::stoi(parameters["n"]),std::stod(parameters["limit"]));
 
-        cout << "R;" << i;
+         cout << "R;" << i;
         for(uint j = 0; j < r.first.size(); j++){
             cout << ";" << r.first[j] << "," << r.second[j];
         }

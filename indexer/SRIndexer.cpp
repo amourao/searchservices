@@ -512,4 +512,4 @@ string SRIndexer::getIndexingParameters(){
 
 	    labelData << ";best_iter;" << n_iter << ";all_iter;" << max_iters;
 		return labelData.str();
-	}
+}

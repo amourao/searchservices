@@ -64,7 +64,7 @@ QueryStructRsp SRProcessor<T>::index(QueryStructReq& queryS){
 
     QueryStructRsp result;
     result.operation = 2;
-    result.parameters.push_back(0);
+    result.parameters.push_back(global_id);
 
     return result;
 }
