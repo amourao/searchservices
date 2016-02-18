@@ -24,6 +24,15 @@ SRProcessor<T>::SRProcessor(string& typeId, map<string,string>& params){
     debugLimitPerBucket = std::stoi(params["debugLimitPerBucket"]);
     maxIdToLoad = std::stoi(params["maxIdToLoad"]);
 
+    if(params.count("startFromPivot") > 0)
+        startFromPivot = true;
+
+    if(params.count("dontFinalSort") > 0)
+        doFinalSort = false;
+
+    if(params.count("doFinalSortCoeff") > 0)
+        doFinalSortCoeff = true;
+
     _socket.bind(Poco::Net::SocketAddress("0.0.0.0", std::stoi(params["port"])), false);
 	_thread.start(*this);
 	_ready.wait();
@@ -116,8 +125,32 @@ QueryStructRsp SRProcessor<T>::knnSearchIdLong(QueryStructReq& queryS){
             else {
                 on = std::min((uint)indexData[bucket].size(),(uint)search_limit);
             }
+            vector<Coefficient> candidates;
+            if (!startFromPivot){
+                candidates = vector<Coefficient>(indexData[bucket].begin(),indexData[bucket].begin()+on);
+            } else {
+                if(on == indexData[bucket].size()){ //search full bucket anyway
 
-            vector<Coefficient> candidates(indexData[bucket].begin(),indexData[bucket].begin()+on);
+                    candidates = vector<Coefficient>(indexData[bucket].begin(),indexData[bucket].begin()+on);
+
+                } else {
+                    float queryBucketCoeff = queryS.coeffs[bucket];
+                    uint closestPivotIndex = getClosestPivot(queryBucketCoeff,indexData[bucket]);
+                    uint overflow = 0;
+                    int start = closestPivotIndex-on/2;
+                    if(start < 0){
+                        overflow = -start;
+                        start = 0;
+                    }
+                    uint end = closestPivotIndex+overflow+on/2;
+                    if(end >= indexData[bucket].size()){
+                        end = indexData[bucket].size()-1;
+                    }
+                    candidates = vector<Coefficient>(indexData[bucket].begin()+start,indexData[bucket].begin()+end);
+                }
+            }
+
+
             for(uint i = 0; i < candidates.size(); i++){
 
                 #ifdef MEASURE_TIME
@@ -815,7 +848,24 @@ bool SRProcessor<T>::load(string basePath){
     return true;
 }
 
-
+template <typename T>
+int SRProcessor<T>::getClosestPivot(float coeff, vector<Coefficient>& bucket){
+	uint imin = 0;
+	uint imax = bucket.size();
+	uint imid = 0;
+	while (imax >= imin){
+		imid = imin + ((imax-imin)/2);
+		float currentCoeff = bucket.at(imid).value;
+		float result = coeff-currentCoeff;
+		if (abs(result) < 0.00001)
+			return imid;
+		else if (result > 0)
+			imax = imid - 1;
+		else
+			imin = imid + 1;
+	}
+	return imid;
+}
 
 
 template class SRProcessor<int>;

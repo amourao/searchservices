@@ -1232,6 +1232,82 @@ int testNewFeatureRead2(int argc, char *argv[]){
 
 
 
+
+int testPivotBucket(int argc, char *argv[]){
+
+    string paramFile(argv[1]);
+    map<string,string> parameters;
+	vector<IIndexer*> indexers;
+	vector<IAnalyser*> analysers;
+	vector<IClassifier*> classifiers;
+	vector<IEndpoint*> endpoints;
+
+	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
+
+    uint divisions = std::stoi(parameters["divisions"]);
+    uint nBuckets = std::stoi(parameters["bucketCount"]);
+    uint startPort = std::stoi(parameters["port"]);
+    uint nBucketsPerServer = nBuckets/divisions;
+
+    uint accum = std::stoi(parameters["bucketOffset"]);
+
+
+    string path = parameters["pathData"];
+    string coeffs = parameters["pathCoeffs"];
+
+    map<string,string> params = parameters;
+
+    vector<SRProcessor<uchar>*> ser;
+
+    params["bufferSize"] = parameters["bufferSize"];
+    params["pollInterval"] = parameters["pollInterval"];
+    params["debugLimitPerBucket"] = parameters["debugLimitPerBucket"];
+    int i = 0;
+
+    params["port"] = std::to_string(startPort);
+    params["bucketOffset"] =  std::to_string(accum);
+    params["bucketCount"] = std::to_string(nBucketsPerServer);
+
+    params["startFromPivot"] = "";
+    params["dontFinalSort"] = "";
+    params["doFinalSortCoeff"] = "";
+
+    string name = "srProcessor_" + std::to_string(i);
+    SRProcessor<uchar>* srp = new SRProcessor<uchar>(name,params);
+    if(parameters.count("multiFile") > 0)
+        srp->loadBilionMultiFile(coeffs,path);
+    else
+        srp->loadBilion(coeffs,path);
+
+
+    name = "srMaster";
+    arma::fmat dataToIndex;
+    dataToIndex.load(parameters["dataQ"]);
+
+    SRMaster srm(name,parameters);
+
+    uint nQueries = std::stoi(parameters["nQueries"]);
+
+    //#pragma omp parallel for schedule(dynamic)
+    for(uint i = 0; i < nQueries; i++){
+        arma::fmat query = dataToIndex.col(i);
+        std::pair<vector<uindex>,vector<float> > r = srm.knnSearchIdLong(query,std::stoi(parameters["n"]),std::stod(parameters["limit"]));
+
+        cout << "R;" << i;
+        for(uint j = 0; j < r.first.size(); j++){
+            cout << ";" << r.first[j] << "," << r.second[j];
+        }
+        cout << endl;
+    }
+
+
+
+    srp->_thread.join();
+    return 0;
+}
+
+
+
 int main(int argc, char *argv[]){
     //el::Helpers::setCrashHandler(myCrashHandler);
     //el::Loggers::addFlag( el::LoggingFlag::DisableApplicationAbortOnFatalLog );
@@ -1282,6 +1358,8 @@ int main(int argc, char *argv[]){
         testNewFeatureRead(argc-1,&argv[1]);
     else if(StringTools::endsWith(string(argv[1]),"testNewFeatureRead2"))
         testNewFeatureRead2(argc-1,&argv[1]);
+    else if(StringTools::endsWith(string(argv[1]),"testPivotBucket"))
+        testPivotBucket(argc-1,&argv[1]);
 
     return 0;
 }

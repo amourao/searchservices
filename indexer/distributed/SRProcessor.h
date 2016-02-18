@@ -96,10 +96,17 @@ public:
     arma::Mat<T> data;
     map<string,string> paramsB;
     vector<uindex> lidTogid;
+
+    bool startFromPivot = false;
+    bool doFinalSort = true;
+    bool doFinalSortCoeff = false;
+
 private:
 
 	vector<QueryStructRsp> processQueries(char* input);
 	char* processResponses(vector<QueryStructRsp>& responses);
+    int getClosestPivot(float coeff, vector<Coefficient>& bucket);
+
 
 	string type;
 
