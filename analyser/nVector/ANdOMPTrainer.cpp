@@ -18,13 +18,14 @@ ANdOMPTrainer::ANdOMPTrainer(ANdOMPExtractor _fe, int _n_iters, double _eps, uin
 	eps = _eps;
 	withBias = false;
 
+    positiveOnly = true;
     expon = 0;
     regFactor = 0;
     weight = 0;
 
 }
 
-ANdOMPTrainer::ANdOMPTrainer(ANdOMPExtractor _fe, int _n_iters, double _eps, uint _dimensions, double _expon, double _regFactor, double _weight, bool _withBias){
+ANdOMPTrainer::ANdOMPTrainer(ANdOMPExtractor _fe, int _n_iters, double _eps, uint _dimensions, double _expon, double _regFactor, double _weight, bool _withBias, bool _positiveOnly){
 
     dimensions = _dimensions;
     n_iters = _n_iters;
@@ -35,6 +36,9 @@ ANdOMPTrainer::ANdOMPTrainer(ANdOMPExtractor _fe, int _n_iters, double _eps, uin
     expon = _expon;
     regFactor = _regFactor;
     weight = _weight;
+
+    positiveOnly = _positiveOnly;
+
 
 }
 
@@ -98,7 +102,12 @@ void ANdOMPTrainer::iterate(){
             Gamma.col(i) = b.t();
 
         arma::fmat c = b;
-        c.elem( find(c > 0) ).ones();
+
+        if (positiveOnly)
+            c.elem( find(c > 0) ).ones();
+        else
+            c.elem( find(c != 0) ).ones();
+
         countAppearing +=  arma::conv_to<arma::mat>::from(c.t());
         sumAppearing += arma::conv_to<arma::mat>::from(b.t());
     }

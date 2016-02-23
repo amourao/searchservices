@@ -94,6 +94,8 @@ private:
 	int bufferSize;
 	int timeoutTime;
 
+	bool posOnly;
+
 	Poco::Net::SocketAddress clientAddress;
 
 	vector<Poco::Net::SocketAddress> serverAddresses;

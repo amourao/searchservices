@@ -132,12 +132,11 @@ QueryStructRsp SRProcessor<T>::knnSearchIdLong(QueryStructReq& queryS){
             if (!startFromPivot){
                 candidates = vector<Coefficient>(indexData[bucket].begin(),indexData[bucket].begin()+on);
             } else {
-                //if(on == indexData[bucket].size()){ //search full bucket anyway
+                if(on == indexData[bucket].size()){ //search full bucket anyway
 
-                 //   candidates = vector<Coefficient>(indexData[bucket].begin(),indexData[bucket].begin()+on);
+                    candidates = vector<Coefficient>(indexData[bucket].begin(),indexData[bucket].begin()+on);
 
-               // } else {
-               if (indexData[bucket].size() > 0){
+               } else if (indexData[bucket].size() > 0){
                     int b = 0;
                     while(queryS.buckets[b] != bucket)
                         b++;

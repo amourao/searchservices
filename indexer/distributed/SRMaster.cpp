@@ -25,6 +25,9 @@ SRMaster::SRMaster(string& typeId, map<string,string>& params){
     baseFeatureExtractor = std::shared_ptr<FeatureExtractor>((FeatureExtractor*)FactoryAnalyser::getInstance()->createType(params["extractor"]));
 
     string serversString = params["servers"];
+
+    bool posOnly = params.find("positiveOnly") != params.end();
+
     vector<string> servers = StringTools::split(serversString,';');
     for (uint i = 0; i < servers.size(); i++){
         serverAddresses.push_back(Poco::Net::SocketAddress(servers.at(i)));
@@ -82,7 +85,7 @@ std::pair<vector<uindex>,vector<float> > SRMaster::knnSearchIdLong(arma::fmat& q
 
 
     for(uint i = 0; i < sparseRep.n_rows; i++){
-        if(sparseRep(i,0) != 0){
+        if( (posOnly && sparseRep(i,0) > 0) ||  (!posOnly && sparseRep(i,0) != 0) ){
             q.buckets.push_back(i);
             q.coeffs.push_back(sparseRep(i,0));
         }
@@ -299,6 +302,22 @@ vector<Poco::Net::SocketAddress> SRMaster::getRelevantServers(arma::fmat& sparse
 }
 
 void SRMaster::printProcessorsStatistics(){
+    vector<string> statistics;
+    statistics.push_back("totalTime");
+    statistics.push_back("\ttotalQueryTime");
+    statistics.push_back("\ttotalCommunicationReceiveTime");
+    statistics.push_back("\ttotalCommunicationSendTime");
+    statistics.push_back("\ttotalBucketTime");
+    statistics.push_back("\ttotalSortTime");
+    statistics.push_back("\ttotalPreMarshallingTime");
+    statistics.push_back("\ttotalMarshallingTime");
+    statistics.push_back("totalNQueries");
+    statistics.push_back("totalNBucketsReq");
+    statistics.push_back("totalNBucketInsp");
+    statistics.push_back("totalNCandidatesInsp");
+    statistics.push_back("totalNCandidatesInspNonDup");
+    statistics.push_back("missedPackages");
+
     vector<QueryStructReq> query;
 
     QueryStructReq q;
@@ -314,7 +333,7 @@ void SRMaster::printProcessorsStatistics(){
         cout << "Server statistics: " << server.host().toString() << ":" << server.port() << endl;
         if(output.size() > 0){
             for(uint j = 0; j < output.at(0).indexes.size(); j++){
-                cout << output.at(0).indexes.at(j) << endl;
+                cout << statistics.at(j) << ": " <<  output.at(0).indexes.at(j) << endl;
             }
         }
     }

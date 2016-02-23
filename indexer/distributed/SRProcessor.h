@@ -102,6 +102,8 @@ public:
     bool doFinalSort = true;
     bool doFinalSortCoeff = false;
 
+    bool         _stop;
+
 private:
 
 	vector<QueryStructRsp> processQueries(char* input);
@@ -114,7 +116,7 @@ private:
     Poco::Net::DatagramSocket _socket;
 
 	Poco::Event  _ready;
-	bool         _stop;
+
 	int          _bufferSize;
 	long pollInterval;
 

@@ -349,6 +349,9 @@ int dataPreProcessor(int argc, char *argv[]){
     arma::fmat dataToIndex;
     dataToIndex.load(parameters["data"]);
 
+    bool positiveOnly = parameters.find("positiveOnly") != parameters.end();
+
+
     std::vector<std::vector<Coefficient>> indexData(1024);
 
     uint sizeOfCoeff = sizeof(uindex)*1 + sizeof(float);
@@ -365,7 +368,13 @@ int dataPreProcessor(int argc, char *argv[]){
         arma::fmat sparseRep;
 
         sr->extractFeatures(features,sparseRep);
-        arma::uvec ind = find(sparseRep != 0);
+        arma::uvec ind;
+
+        if (positiveOnly)
+            ind = find(sparseRep > 0);
+        else
+            ind = find(sparseRep != 0);
+
         for(uint j = 0; j < ind.n_rows; j++){
             totalSize+=sizeOfCoeff;
             uint bucket = ind[j];
@@ -499,9 +508,23 @@ int trainDictionary(int argc, char *argv[]){
     long offset = std::stol(parameters["offset"]);
     long count = std::stol(parameters["count"]);
 
+    bool withBias = parameters.find("withBias") != parameters.end();
+
+    bool positiveOnly = parameters.find("positiveOnly") != parameters.end();
+
+    double expon = 0;
+    double regFactor = 0;
+    double weight = 0;
+
+    if (withBias){
+        expon = std::stod(parameters["expon"]);
+        regFactor = std::stod(parameters["regFactor"]);
+        weight = std::stod(parameters["weight"]);
+    }
+
 	ANdOMPExtractor* sr = (ANdOMPExtractor*)analysers[0];
 
-    ANdOMPTrainer trainer(*sr, 10, 0, numBuckets);
+    ANdOMPTrainer trainer(*sr, 25, 0, numBuckets,expon,regFactor,weight,withBias,positiveOnly);
 
     oneBillionImporterB ob;
 
@@ -526,8 +549,11 @@ int trainDictionary(int argc, char *argv[]){
     string dst = parameters["dst"];
 
     arma::fmat validation;
-    arma::fmat dictionary = arma::randu<arma::fmat>(128,numBuckets);
-    utils::normalize_columns(dictionary);
+    //arma::fmat dictionary = arma::randu<arma::fmat>(128,numBuckets);
+    //utils::normalize_columns(dictionary);
+
+    arma::fmat dictionary;
+    dictionary.load(parameters["seed"]);
 
     trainer.train(dictionary, dataToIndexF, validation, validation);
 
@@ -566,6 +592,8 @@ int dataPreProcessorOneBillionAzureWithSort(int argc, char *argv[]){
     string dst = parameters["dst"];
     string nodeId = parameters["nodeId"];
 
+    bool positiveOnly = parameters.find("posiviteOnly") != parameters.end();
+
 
     std::vector<std::vector<Coefficient>> indexData(numBuckets);
 
@@ -592,7 +620,12 @@ int dataPreProcessorOneBillionAzureWithSort(int argc, char *argv[]){
 
         sr->extractFeatures(features,sparseRep);
 
-        arma::uvec ind = find(sparseRep != 0);
+        arma::uvec ind;
+
+        if (positiveOnly)
+            ind = find(sparseRep > 0);
+        else
+            ind = find(sparseRep != 0);
         for(uint j = 0; j < ind.n_rows; j++){
             uint bucket = ind[j];
             indexData[bucket].push_back(Coefficient(i,sparseRep[bucket]));
@@ -653,6 +686,9 @@ int dataPreProcessorOneBillionAzure(int argc, char *argv[]){
     string dst = parameters["dst"];
     string nodeId = parameters["nodeId"];
 
+    bool positiveOnly = parameters.find("posiviteOnly") != parameters.end();
+
+
 
     std::vector<std::vector<Coefficient>> indexData(numBuckets);
 
@@ -679,7 +715,13 @@ int dataPreProcessorOneBillionAzure(int argc, char *argv[]){
 
         sr->extractFeatures(features,sparseRep);
 
-        arma::uvec ind = find(sparseRep != 0);
+        arma::uvec ind;
+
+
+        if (positiveOnly)
+            ind = find(sparseRep > 0);
+        else
+            ind = find(sparseRep != 0);
 
 
         for(uint j = 0; j < ind.n_rows; j++){
@@ -1422,7 +1464,7 @@ int testPivotBucket(int argc, char *argv[]){
     params["bucketOffset"] =  std::to_string(accum);
     params["bucketCount"] = std::to_string(nBuckets);
 
-    params["startFromPivot"] = "";
+    //params["startFromPivot"] = "";
     //params["dontFinalSort"] = "";
     //params["doFinalSortCoeff"] = "";
 
@@ -1455,8 +1497,33 @@ int testPivotBucket(int argc, char *argv[]){
         cout << endl;
     }
 
+    cout << endl;
+    cout << srm.totalQueryTime << endl;
+    cout << srm.totalNQueries << endl << endl;
+    cout << srm.totalQueryTime/srm.totalNQueries/1000.0 << endl << endl;
+    cout << srm.totalAllServerTime/srm.totalNQueries/1000.0 << endl << endl;
+
+    cout << srm.totalSRTime/srm.totalNQueries/1000.0 << endl;
+    cout << srm.totalPreMarshallingTime/srm.totalNQueries/1000.0 << endl;
+
+    cout << srm.totalCommunicationTime/srm.totalNQueries/1000.0 << endl;
+
+    cout << "Q\t" << srm.totalCommunicationSendTime/srm.totalNQueries/1000.0 << endl;
+    cout << "Q\t" << srm.totalCommunicationReceiveTime/srm.totalNQueries/1000.0 << endl;
+
+    cout << "R\t\t" << srm.totalCommunicationSendTime/srm.totalRequests/1000.0 << endl;
+    cout << "R\t\t" << srm.totalCommunicationReceiveTime/srm.totalRequests/1000.0 << endl;
+
+    cout << srm.totalSortTime/srm.totalNQueries/1000.0 << endl << endl;
+
+    cout << "Missed packages: " << srm.missedPackages << endl << endl;
+    cout << "Total requests: " << srm.totalRequests << endl << endl;
 
 
+    cout << "Processor stats: " << endl;
+    srm.printProcessorsStatistics();
+
+    srp->_stop = true;
     srp->_thread.join();
     return 0;
 }
@@ -1464,6 +1531,7 @@ int testPivotBucket(int argc, char *argv[]){
 
 
 int main(int argc, char *argv[]){
+
     //el::Helpers::setCrashHandler(myCrashHandler);
     //el::Loggers::addFlag( el::LoggingFlag::DisableApplicationAbortOnFatalLog );
     //el::Loggers::addFlag( el::LoggingFlag::ColoredTerminalOutput );
