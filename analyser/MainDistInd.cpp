@@ -16,6 +16,7 @@
 
 
 #include "../analyser/nVector/ANdOMPExtractor.h"
+#include "../analyser/nVector/ANdOMPTrainer.h"
 
 #include "tools/TrainTestFeaturesTools.h"
 #include "tools/MIRFlickrImporter.h"
@@ -364,7 +365,7 @@ int dataPreProcessor(int argc, char *argv[]){
         arma::fmat sparseRep;
 
         sr->extractFeatures(features,sparseRep);
-        arma::uvec ind = find(sparseRep > 0);
+        arma::uvec ind = find(sparseRep != 0);
         for(uint j = 0; j < ind.n_rows; j++){
             totalSize+=sizeOfCoeff;
             uint bucket = ind[j];
@@ -482,6 +483,147 @@ int dataPreProcessor(int argc, char *argv[]){
     return 0;
 }
 
+
+int trainDictionary(int argc, char *argv[]){
+    string paramFile(argv[1]);
+    map<string,string> parameters;
+	vector<IIndexer*> indexers;
+	vector<IAnalyser*> analysers;
+	vector<IClassifier*> classifiers;
+	vector<IEndpoint*> endpoints;
+
+	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
+
+
+    int numBuckets = std::stoi(parameters["nBuckets"]);
+    long offset = std::stol(parameters["offset"]);
+    long count = std::stol(parameters["count"]);
+
+	ANdOMPExtractor* sr = (ANdOMPExtractor*)analysers[0];
+
+    ANdOMPTrainer trainer(*sr, 10, 0, numBuckets);
+
+    oneBillionImporterB ob;
+
+    arma::Mat<uchar> dataToIndex;
+    ob.readBin(parameters["data"],count,dataToIndex,offset);
+    arma::Mat<float> dataToIndexF = arma::conv_to<arma::Mat<float>>::from(dataToIndex);
+
+
+    arma::fmat means = arma::mean(dataToIndexF);
+    arma::fmat stddevs = arma::stddev(dataToIndexF);
+
+    for(uint i = 0; i < dataToIndexF.n_cols; i++){
+        if(stddevs.at(0,i) == 0)
+            dataToIndexF.col(i) = (dataToIndexF.col(i) - means.at(0,i));
+        else
+            dataToIndexF.col(i) = (dataToIndexF.col(i) - means.at(0,i))/stddevs.at(0,i);
+    }
+    //cout << offset << endl;
+    //cout << dataToIndex.col(0) << endl;
+    //cout << dataToIndex.col(1) << endl;
+
+    string dst = parameters["dst"];
+
+    arma::fmat validation;
+    arma::fmat dictionary = arma::randu<arma::fmat>(128,numBuckets);
+    utils::normalize_columns(dictionary);
+
+    trainer.train(dictionary, dataToIndexF, validation, validation);
+
+    trainer.D.save(dst);
+
+    return 0;
+}
+
+
+int dataPreProcessorOneBillionAzureWithSort(int argc, char *argv[]){
+    string paramFile(argv[1]);
+    map<string,string> parameters;
+	vector<IIndexer*> indexers;
+	vector<IAnalyser*> analysers;
+	vector<IClassifier*> classifiers;
+	vector<IEndpoint*> endpoints;
+
+	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
+
+	FeatureExtractor* sr = (FeatureExtractor*)analysers[0];
+
+
+    int numBuckets = std::stoi(parameters["nBuckets"]);
+    long offset = std::stol(parameters["offset"]);
+    long count = std::stol(parameters["count"]);
+
+    oneBillionImporterB ob;
+
+    arma::Mat<uchar> dataToIndex;
+    ob.readBin(parameters["data"],count,dataToIndex,offset);
+
+    //cout << offset << endl;
+    //cout << dataToIndex.col(0) << endl;
+    //cout << dataToIndex.col(1) << endl;
+
+    string dst = parameters["dst"];
+    string nodeId = parameters["nodeId"];
+
+
+    std::vector<std::vector<Coefficient>> indexData(numBuckets);
+
+    vector<std::ofstream*> outfiles;
+    vector<uint> coeffCount(numBuckets);
+    for(uint i = 0; i < numBuckets; i++){
+        //cout << dst + "_coeffs_" + nodeId + "_" + std::to_string(i) + ".bin" << endl;
+        std::ofstream* outfile = new std::ofstream(dst + "_coeffs_" + nodeId + "_" + std::to_string(i) + ".bin",std::ofstream::binary);
+        outfile->write((char*)&numBuckets,sizeof(uint));
+        //outfile->close();
+        outfiles.push_back(outfile);
+    }
+
+    for(uint i = 0; i < dataToIndex.n_cols; i++){
+
+        if(i % 100000 == 0)
+            cout << i << " out of " << dataToIndex.n_cols << endl;
+
+        uindex dataId = i+offset;
+        arma::fmat features = arma::conv_to<arma::fmat>::from(dataToIndex.col(i));
+        normalizeColumns(features);
+        //cout << features << endl;
+        arma::fmat sparseRep;
+
+        sr->extractFeatures(features,sparseRep);
+
+        arma::uvec ind = find(sparseRep != 0);
+        for(uint j = 0; j < ind.n_rows; j++){
+            uint bucket = ind[j];
+            indexData[bucket].push_back(Coefficient(i,sparseRep[bucket]));
+        }
+
+    }
+    auto compare = [](Coefficient a, Coefficient b){ return !(a < b); };
+    for(uint i = 0; i < numBuckets; i++){
+        std::ofstream outfile(dst + "_coeffs_" + nodeId + "_" + std::to_string(i) + ".bin",std::ofstream::binary);
+        //cout << dst + "_coeffs_" + nodeId + "_" + std::to_string(i) + ".bin" << endl;
+        //outfiles[i]->open(dst + "_coeffs_" + nodeId + "_" + std::to_string(i) + ".bin",std::ofstream::binary);
+        uint size = indexData[i].size();
+        outfile.write((char*)&size,sizeof(uint));
+
+        std::sort(indexData[i].begin(), indexData[i].end(),compare);
+
+        //outfiles[bucket]->open(dst + "_coeffs_" + nodeId + "_" + std::to_string(i) + ".bin",std::ofstream::binary | std::ofstream::app);
+        for(uint j = 0; j < indexData[i].size(); j++){
+            outfile.write((char*)&indexData[i][j].vector_pos,sizeof(uint));
+            outfile.write((char*)&indexData[i][j].value,sizeof(float));
+        }
+        outfile.flush();
+        outfile.close();
+    }
+
+    return 0;
+}
+
+
+
+
 int dataPreProcessorOneBillionAzure(int argc, char *argv[]){
     string paramFile(argv[1]);
     map<string,string> parameters;
@@ -518,7 +660,7 @@ int dataPreProcessorOneBillionAzure(int argc, char *argv[]){
     vector<uint> coeffCount(numBuckets);
     for(uint i = 0; i < numBuckets; i++){
         //cout << dst + "_coeffs_" + nodeId + "_" + std::to_string(i) + ".bin" << endl;
-        std::ofstream* outfile = new std::ofstream(dst + "_coeffs_" + nodeId + "_" + std::to_string(i) + ".bin",std::ofstream::binary | std::ofstream::app);
+        std::ofstream* outfile = new std::ofstream(dst + "_coeffs_" + nodeId + "_" + std::to_string(i) + ".bin",std::ofstream::binary);
         outfile->write((char*)&numBuckets,sizeof(uint));
         //outfile->close();
         outfiles.push_back(outfile);
@@ -537,7 +679,9 @@ int dataPreProcessorOneBillionAzure(int argc, char *argv[]){
 
         sr->extractFeatures(features,sparseRep);
 
-        arma::uvec ind = find(sparseRep > 0);
+        arma::uvec ind = find(sparseRep != 0);
+
+
         for(uint j = 0; j < ind.n_rows; j++){
             uint bucket = ind[j];
             //uint machine = bucket/divisions;
@@ -553,7 +697,9 @@ int dataPreProcessorOneBillionAzure(int argc, char *argv[]){
     for(uint i = 0; i < numBuckets; i++){
         //cout << dst + "_coeffs_" + nodeId + "_" + std::to_string(i) + ".bin" << endl;
         //outfiles[i]->open(dst + "_coeffs_" + nodeId + "_" + std::to_string(i) + ".bin",std::ofstream::binary);
-        outfiles[i]->seekp(0,ios_base::beg);
+        outfiles[i]->flush();
+        outfiles[i]->seekp(0,outfiles[i]->beg);
+        //outfiles[i]->seekg(0,outfiles[i]->beg);
         outfiles[i]->write((char*)&coeffCount[i],sizeof(uint));
         outfiles[i]->flush();
         outfiles[i]->close();
@@ -1244,10 +1390,17 @@ int testPivotBucket(int argc, char *argv[]){
 
 	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
 
-    uint divisions = std::stoi(parameters["divisions"]);
-    uint nBuckets = std::stoi(parameters["bucketCount"]);
-    uint startPort = std::stoi(parameters["port"]);
-    uint nBucketsPerServer = nBuckets/divisions;
+    string name;
+
+    name = "srMaster";
+
+    parameters["port"] = parameters["portMaster"];
+
+    SRMaster srm(name,parameters);
+
+    uint nBuckets = std::stoi(parameters["nBuckets"]);
+    parameters["port"] = parameters["portProcessor"];
+    parameters["offsetDataFile"] = parameters["offset"];
 
     uint accum = std::stoi(parameters["bucketOffset"]);
 
@@ -1262,35 +1415,37 @@ int testPivotBucket(int argc, char *argv[]){
     params["bufferSize"] = parameters["bufferSize"];
     params["pollInterval"] = parameters["pollInterval"];
     params["debugLimitPerBucket"] = parameters["debugLimitPerBucket"];
+    params["maxIdToLoad"] = parameters["maxIdToLoad"];
     int i = 0;
 
-    params["port"] = std::to_string(startPort);
+    params["port"] = parameters["port"];
     params["bucketOffset"] =  std::to_string(accum);
-    params["bucketCount"] = std::to_string(nBucketsPerServer);
+    params["bucketCount"] = std::to_string(nBuckets);
 
     params["startFromPivot"] = "";
-    params["dontFinalSort"] = "";
-    params["doFinalSortCoeff"] = "";
+    //params["dontFinalSort"] = "";
+    //params["doFinalSortCoeff"] = "";
 
-    string name = "srProcessor_" + std::to_string(i);
+    name = "srProcessor_" + std::to_string(i);
     SRProcessor<uchar>* srp = new SRProcessor<uchar>(name,params);
     if(parameters.count("multiFile") > 0)
         srp->loadBilionMultiFile(coeffs,path);
     else
         srp->loadBilion(coeffs,path);
 
+    oneBillionImporterB ob;
 
-    name = "srMaster";
-    arma::fmat dataToIndex;
-    dataToIndex.load(parameters["dataQ"]);
-
-    SRMaster srm(name,parameters);
-
+    arma::Mat<uchar> dataU;
     uint nQueries = std::stoi(parameters["nQueries"]);
+    uint offset = std::stoi(parameters["offset"]);
+    ob.readBin(parameters["data"],nQueries,dataU,offset);
+
+    arma::fmat data = arma::conv_to<arma::fmat>::from(dataU);
 
     //#pragma omp parallel for schedule(dynamic)
     for(uint i = 0; i < nQueries; i++){
-        arma::fmat query = dataToIndex.col(i);
+        arma::fmat query = data.col(i);
+        //normalizeColumns(query);
         std::pair<vector<uindex>,vector<float> > r = srm.knnSearchIdLong(query,std::stoi(parameters["n"]),std::stod(parameters["limit"]));
 
         cout << "R;" << i;
@@ -1348,6 +1503,8 @@ int main(int argc, char *argv[]){
         testMeasureDistance(argc-1,&argv[1]);
     else if(StringTools::endsWith(string(argv[1]),"dataPreProcessorOneBillionAzure"))
         dataPreProcessorOneBillionAzure(argc-1,&argv[1]);
+    else if(StringTools::endsWith(string(argv[1]),"dataPreProcessorOneBillionAzureWithSort"))
+        dataPreProcessorOneBillionAzureWithSort(argc-1,&argv[1]);
     else if(StringTools::endsWith(string(argv[1]),"sortBucketsFromBillion"))
         sortBucketsFromBillion(argc-1,&argv[1]);
     else if(StringTools::endsWith(string(argv[1]),"testShuffleDictionary"))
@@ -1360,6 +1517,8 @@ int main(int argc, char *argv[]){
         testNewFeatureRead2(argc-1,&argv[1]);
     else if(StringTools::endsWith(string(argv[1]),"testPivotBucket"))
         testPivotBucket(argc-1,&argv[1]);
+    else if(StringTools::endsWith(string(argv[1]),"trainDictionary"))
+        trainDictionary(argc-1,&argv[1]);
 
     return 0;
 }

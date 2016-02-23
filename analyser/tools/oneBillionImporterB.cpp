@@ -258,11 +258,11 @@ void oneBillionImporterB::readBin(std::string filenamep, int numberOfRows, arma:
 }
 
 
-void oneBillionImporterB::readBin(std::string filenamep, arma::Mat<int>& features, std::vector<uint>& buckets, ulong bufferVecToRead) {
+void oneBillionImporterB::readBin(std::string filenamep, arma::Mat<int>& features, std::vector<uint>& buckets, ulong bufferVecToRead, ulong offsetStartOfFile) {
     std::cout << "error:  not implemented int" << std::endl;
 }
 
-void oneBillionImporterB::readBin(std::string filenamep, arma::Mat<float>& features, std::vector<uint>& buckets, ulong bufferVecToRead) {
+void oneBillionImporterB::readBin(std::string filenamep, arma::Mat<float>& features, std::vector<uint>& buckets, ulong bufferVecToRead, ulong offsetStartOfFile) {
     std::cout << "error:  not implemented float" << std::endl;
 }
 
@@ -334,8 +334,7 @@ void oneBillionImporterB::readBinSlow(std::string filenamep, arma::Mat<uchar>& f
 }
 
 
-void oneBillionImporterB::readBin(std::string filenamep, arma::Mat<uchar>& features, std::vector<uint>& featuresCols, ulong bufferVecToRead) {
-
+void oneBillionImporterB::readBin(std::string filenamep, arma::Mat<uchar>& features, std::vector<uint>& featuresCols, ulong bufferVecToRead, ulong offsetStartOfFile) {
 
     auto compare = [](uint a, uint b){ return a > b; };
     std::cout << "sorting buckets for reading..." << std::endl;
@@ -365,7 +364,7 @@ void oneBillionImporterB::readBin(std::string filenamep, arma::Mat<uchar>& featu
 	uint i = 0;
 	while (i < featuresCols.size()){
 
-        uint featureCol = featuresCols[featuresColIndexes[i]];
+        uint featureCol = featuresCols[featuresColIndexes[i]]+offsetStartOfFile;
 
         unsigned long long offset = ((unsigned long long)featureCol)*(dimensions+4);
 
@@ -393,7 +392,7 @@ void oneBillionImporterB::readBin(std::string filenamep, arma::Mat<uchar>& featu
             if(i >= featuresCols.size())
                 continue;
 
-            featureCol = featuresCols[featuresColIndexes[i]];
+            featureCol = featuresCols[featuresColIndexes[i]]+offsetStartOfFile;
             offset = ((unsigned long long)featureCol)*(dimensions+4);
             innerOffset=offset-offsetStart;
 

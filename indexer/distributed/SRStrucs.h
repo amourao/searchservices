@@ -35,7 +35,8 @@ template <typename T>
 inline void normalizeColumns(arma::Mat<T>& matrix) {
     for (uint i = 0; i < matrix.n_cols; ++i) {
         arma::Mat<T> col = matrix.col(i);
-        matrix.col(i) /= myNorm(col);
+        if (myNorm(col) != 0)
+            matrix.col(i) /= myNorm(col);
     }
 }
 

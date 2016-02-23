@@ -53,7 +53,7 @@
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gnu_gcc_compiler_49" />
-				<Option parameters="dataPreProcessor configs/defaultMaster.json" />
+				<Option parameters="testPivotBucket /home/amourao/code/searchservices/configs/processorAndMaster_charlie.json" />
 				<Compiler>
 					<Add option="-O2" />
 					<Add directory="commons" />
@@ -100,7 +100,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gnu_gcc_compiler_49" />
-				<Option parameters="testNewFeatureRead2 /localstore/1-billion-vectors/queries.bvecs 1000 1000" />
+				<Option parameters="testPivotBucket /home/amourao/code/searchservices/configs/processorAndMaster_charlie.json" />
 				<Compiler>
 					<Add option="-g" />
 					<Add directory="commons" />

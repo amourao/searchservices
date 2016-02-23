@@ -71,6 +71,7 @@ void ANdOMPTrainer::train(arma::fmat& dictionary, arma::fmat& train, arma::fmat&
     lastSumAppearing   = arma::ones<arma::vec>(D.n_cols);
 
     for(uint i = 0; i < n_iters; i++){
+        cout << "niter ANd: " << i << endl;
         iterate();
     }
 }
@@ -81,7 +82,8 @@ void ANdOMPTrainer::iterate(){
     sumAppearing   = arma::zeros<arma::vec>(D.n_cols);
 
     fe.changeDictionary(D);
-    arma::fmat G = D * arma::trans(D);
+    arma::fmat G = D.t() * D;
+
     for (arma::uword i = 0; i < X.n_cols; ++i) {
         arma::fmat a,b;
         a = X.col(i);

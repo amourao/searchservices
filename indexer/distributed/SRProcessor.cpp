@@ -24,6 +24,9 @@ SRProcessor<T>::SRProcessor(string& typeId, map<string,string>& params){
     debugLimitPerBucket = std::stoi(params["debugLimitPerBucket"]);
     maxIdToLoad = std::stoi(params["maxIdToLoad"]);
 
+    if(params.count("offsetDataFile") > 0)
+        offsetDataFile = std::stol(params["offsetDataFile"]);
+
     if(params.count("startFromPivot") > 0)
         startFromPivot = true;
 
@@ -106,7 +109,7 @@ QueryStructRsp SRProcessor<T>::knnSearchIdLong(QueryStructReq& queryS){
         totalBucketTimeStart = NOW();
     #endif
 
-    #pragma omp parallel for schedule(dynamic)
+    //#pragma omp parallel for schedule(dynamic)
     for(uint b = 0; b < buckets.size(); b++){
         int bucket = buckets[b]-bucketOffset;
         #ifdef MEASURE_TIME
@@ -129,15 +132,19 @@ QueryStructRsp SRProcessor<T>::knnSearchIdLong(QueryStructReq& queryS){
             if (!startFromPivot){
                 candidates = vector<Coefficient>(indexData[bucket].begin(),indexData[bucket].begin()+on);
             } else {
-                if(on == indexData[bucket].size()){ //search full bucket anyway
+                //if(on == indexData[bucket].size()){ //search full bucket anyway
 
-                    candidates = vector<Coefficient>(indexData[bucket].begin(),indexData[bucket].begin()+on);
+                 //   candidates = vector<Coefficient>(indexData[bucket].begin(),indexData[bucket].begin()+on);
 
-                } else {
-                    float queryBucketCoeff = queryS.coeffs[bucket];
+               // } else {
+               if (indexData[bucket].size() > 0){
+                    int b = 0;
+                    while(queryS.buckets[b] != bucket)
+                        b++;
+                    float queryBucketCoeff = queryS.coeffs[b];
                     uint closestPivotIndex = getClosestPivot(queryBucketCoeff,indexData[bucket]);
                     uint overflow = 0;
-                    int start = closestPivotIndex-on/2;
+                    int start = closestPivotIndex-on/2-1;
                     if(start < 0){
                         overflow = -start;
                         start = 0;
@@ -146,7 +153,12 @@ QueryStructRsp SRProcessor<T>::knnSearchIdLong(QueryStructReq& queryS){
                     if(end >= indexData[bucket].size()){
                         end = indexData[bucket].size()-1;
                     }
-                    candidates = vector<Coefficient>(indexData[bucket].begin()+start,indexData[bucket].begin()+end);
+                    //  cout << endl << "b: " << indexData[bucket].size() << closestPivotIndex << " " << indexData[bucket][closestPivotIndex].vector_pos << " " << closestPivotIndex <<  " " << start << " " << end << " " << indexData[bucket].size() << endl << endl;
+                    for(uint bi = start; bi < end; bi++){
+                        candidates.push_back(indexData[bucket][bi]);
+                        //cout << bi << " " << indexData[bucket][bi].vector_pos << endl;
+                    }
+                    //candidates = vector<Coefficient>(indexData[bucket].begin()+start,indexData[bucket].begin()+end);
                 }
             }
 
@@ -164,9 +176,11 @@ QueryStructRsp SRProcessor<T>::knnSearchIdLong(QueryStructReq& queryS){
                     #endif
                     arma::Mat<T> candidate = data.col(candidates[i].vector_pos);
                     //normalizeColumns(candidate);
+                    //normalizeColumns(query);
                     float dist = myNorm(candidate,query);
                     uindex lid = candidates[i].vector_pos;
                     uindex gid = lidTogid[lid];
+                    //cout << "c: " << lid << " " << gid << " " <<  (float)candidate.at(2,0) << " " << (float)query.at(2,0) <<  " " << dist << endl;
                     #pragma omp critical
                     {
                         indices.push_back(gid);
@@ -314,11 +328,13 @@ void SRProcessor<T>::run(){
                 #endif
                 if(responses.size() > 0){
                     if(responses[0].operation == 1){
+                        /*
                         cout << "R;" << responses[0].parameters[2] << ";";
                         for(uint j = 0; j < responses[0].indexes.size(); j++){
                             cout << responses[0].indexes[j] << "," << responses[0].dists[j] << ";";
                         }
                         cout << endl;
+                        */
                     } else if(responses[0].operation == 10){
                         cout << "Sending statistics" << endl;
                     }
@@ -715,7 +731,7 @@ int SRProcessor<T>::loadB(string coeffs){
                         (*lidTogidMap)[gid] = lid;
                         lidTogid.push_back(gid);
                     }
-
+                    //cout << "a: " << debugLimitPerBucket << " " << maxIdToLoad << " " << lid << " " << gid << endl;
                     indexData[i].push_back(Coefficient(lid,value));
                 }
             }
@@ -763,7 +779,7 @@ bool SRProcessor<T>::loadBilionMultiFile(string coeffs, string dataPath){
     int memInter = (getMem()*1000)-baseMem;
     cout << "Importing vectors" << endl;
     oneBillionImporterB ob;
-    ob.readBin(dataPath,data,lidTogid,2000000L);
+    ob.readBin(dataPath,data,lidTogid,2000000L,offsetDataFile);
     cout << "Importing vectors... done" << endl;
 
     cout << "Imported " << data.n_cols << endl;
@@ -851,15 +867,19 @@ bool SRProcessor<T>::load(string basePath){
 template <typename T>
 int SRProcessor<T>::getClosestPivot(float coeff, vector<Coefficient>& bucket){
 	uint imin = 0;
-	uint imax = bucket.size();
+	uint imax = bucket.size()-1;
 	uint imid = 0;
-	while (imax >= imin){
+	while (imax >= imin && imin >= 0 && imax < bucket.size()){
 		imid = imin + ((imax-imin)/2);
+
 		float currentCoeff = bucket.at(imid).value;
-		float result = coeff-currentCoeff;
-		if (abs(result) < 0.00001)
+		float diff = coeff-currentCoeff;
+		//cout << "d: " << imin << " " << imid << " " << imax << " " << coeff << " " << currentCoeff << " " << diff << " " << bucket.at(imid).vector_pos << endl;
+		if (abs(diff) < 0.00001)
 			return imid;
-		else if (result > 0)
+        //else if (abs(lastDiff) < abs(diff))
+        //    return bestMid;
+		else if (diff > 0)
 			imax = imid - 1;
 		else
 			imin = imid + 1;

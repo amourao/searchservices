@@ -7,6 +7,7 @@
 #include <vector>
 #include <fstream>
 #include <unordered_set>
+#include <limits>
 
 #include <sys/time.h>
 #include <sys/resource.h>
@@ -119,6 +120,7 @@ private:
 
 	uint bucketOffset = 0;
 	uint bucketCount = 0;
+	ulong offsetDataFile = 0;
 	int debugLimitPerBucket = 0;
 	int maxIdToLoad = -1;
 
