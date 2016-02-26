@@ -592,7 +592,7 @@ int dataPreProcessorOneBillionAzureWithSort(int argc, char *argv[]){
     string dst = parameters["dst"];
     string nodeId = parameters["nodeId"];
 
-    bool positiveOnly = parameters.find("posiviteOnly") != parameters.end();
+    bool positiveOnly = parameters.find("positiveOnly") != parameters.end();
 
 
     std::vector<std::vector<Coefficient>> indexData(numBuckets);
@@ -686,7 +686,7 @@ int dataPreProcessorOneBillionAzure(int argc, char *argv[]){
     string dst = parameters["dst"];
     string nodeId = parameters["nodeId"];
 
-    bool positiveOnly = parameters.find("posiviteOnly") != parameters.end();
+    bool positiveOnly = parameters.find("positiveOnly") != parameters.end();
 
 
 
@@ -1464,7 +1464,8 @@ int testPivotBucket(int argc, char *argv[]){
     params["bucketOffset"] =  std::to_string(accum);
     params["bucketCount"] = std::to_string(nBuckets);
 
-    //params["startFromPivot"] = "";
+    if(parameters.find("startFromPivot") != parameters.end())
+        params["startFromPivot"] = "";
     //params["dontFinalSort"] = "";
     //params["doFinalSortCoeff"] = "";
 

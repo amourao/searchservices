@@ -27,7 +27,7 @@ SRProcessor<T>::SRProcessor(string& typeId, map<string,string>& params){
     if(params.count("offsetDataFile") > 0)
         offsetDataFile = std::stol(params["offsetDataFile"]);
 
-    if(params.count("startFromPivot") > 0)
+    if(params.find("startFromPivot") != params.end())
         startFromPivot = true;
 
     if(params.count("dontFinalSort") > 0)
@@ -109,7 +109,7 @@ QueryStructRsp SRProcessor<T>::knnSearchIdLong(QueryStructReq& queryS){
         totalBucketTimeStart = NOW();
     #endif
 
-    //#pragma omp parallel for schedule(dynamic)
+    #pragma omp parallel for schedule(dynamic)
     for(uint b = 0; b < buckets.size(); b++){
         int bucket = buckets[b]-bucketOffset;
         #ifdef MEASURE_TIME

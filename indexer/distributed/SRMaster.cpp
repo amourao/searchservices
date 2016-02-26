@@ -26,7 +26,7 @@ SRMaster::SRMaster(string& typeId, map<string,string>& params){
 
     string serversString = params["servers"];
 
-    bool posOnly = params.find("positiveOnly") != params.end();
+    posOnly = params.find("positiveOnly") != params.end();
 
     vector<string> servers = StringTools::split(serversString,';');
     for (uint i = 0; i < servers.size(); i++){
