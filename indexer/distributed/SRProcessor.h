@@ -18,12 +18,13 @@
 #include <Poco/Thread.h>
 #include <Poco/Event.h>
 
-#include <easylogging++.h>
-
 #include "SRStrucs.h"
 #include "../../analyser/tools/MatrixTools.h"
 #include "../../analyser/tools/oneBillionImporterB.h"
 
+#ifdef SINGLETHREADED
+   #include <omp.h>
+#endif
 
 #include <armadillo>
 
@@ -56,6 +57,10 @@ public:
 	bool loadAll(string basePath);
 	bool loadBilion(string coeffs, string dataPath);
 	bool loadBilionMultiFile(string coeffs, string dataPath);
+
+	bool loadBilionGIST(string coeffs, string dataPath);
+	bool loadCoefsGIST(string coeffs);
+
 
 	int loadB(string coeffs);
 

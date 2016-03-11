@@ -218,7 +218,7 @@ void SRMaster::sendMessage(vector<QueryStructReq>& query, vector<QueryStructRsp>
 
     //cout << clientAddress.host().toString() << " " << clientAddress.port() << endl;
     int sent = dgs.sendTo(&inbuffer[0], totalSize, server);
-    cout << "Master " << client.host().toString() << ":" << client.port()  << " sent " << sent << " to " << server.host().toString() << ":" << server.port() << endl;
+    //cout << "Master " << client.host().toString() << ":" << client.port()  << " sent " << sent << " to " << server.host().toString() << ":" << server.port() << endl;
 
     #ifdef MEASURE_TIME
         totalCommunicationSendTime += ELAPSED(_totalCommunicationSendTimeStart);

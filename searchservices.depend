@@ -711,7 +711,7 @@
 1443707179 source:/home/amourao/code/searchservices/commons/factory/Factory.cpp
 	"Factory.h"
 
-1450106889 source:/home/amourao/code/searchservices/commons/FileDownloader.cpp
+1457706396 source:/home/amourao/code/searchservices/commons/FileDownloader.cpp
 	"FileDownloader.h"
 
 1418384655 /home/amourao/code/searchservices/commons/FileDownloader.h
@@ -8844,7 +8844,7 @@
 	"boost/limits.hpp"
 	"boost/config.hpp"
 
-1456232480 source:/home/amourao/code/searchservices/analyser/tools/oneBillionImporterB.cpp
+1456493545 source:/home/amourao/code/searchservices/analyser/tools/oneBillionImporterB.cpp
 	"oneBillionImporterB.h"
 
 1456232502 /home/amourao/code/searchservices/analyser/tools/oneBillionImporterB.h
@@ -9022,7 +9022,7 @@
 	<chrono>
 	<armadillo>
 
-1456315759 source:/home/amourao/code/searchservices/analyser/MainDistInd.cpp
+1456657344 source:/home/amourao/code/searchservices/analyser/MainDistInd.cpp
 	<iostream>
 	<fstream>
 	<string>
@@ -9048,7 +9048,7 @@
 	"../commons/Timing.h"
 	"../commons/LoadConfig.h"
 
-1456272534 source:/home/amourao/code/searchservices/indexer/distributed/SRMaster.cpp
+1456758623 source:/home/amourao/code/searchservices/indexer/distributed/SRMaster.cpp
 	"SRMaster.h"
 
 1456250046 /home/amourao/code/searchservices/indexer/distributed/SRMaster.h
@@ -9069,10 +9069,10 @@
 	"../../analyser/FactoryAnalyser.h"
 	"../../analyser/tools/MatrixTools.h"
 
-1456240823 source:/home/amourao/code/searchservices/indexer/distributed/SRProcessor.cpp
+1456749706 source:/home/amourao/code/searchservices/indexer/distributed/SRProcessor.cpp
 	"SRProcessor.h"
 
-1456240087 /home/amourao/code/searchservices/indexer/distributed/SRProcessor.h
+1456705642 /home/amourao/code/searchservices/indexer/distributed/SRProcessor.h
 	<memory>
 	<map>
 	<string>
@@ -9087,10 +9087,10 @@
 	<Poco/Net/SocketAddress.h>
 	<Poco/Thread.h>
 	<Poco/Event.h>
-	<easylogging++.h>
 	"SRStrucs.h"
 	"../../analyser/tools/MatrixTools.h"
 	"../../analyser/tools/oneBillionImporterB.h"
+	<omp.h>
 	<armadillo>
 	<string>
 	<iostream>

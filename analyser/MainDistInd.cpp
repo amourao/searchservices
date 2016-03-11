@@ -492,7 +492,7 @@ int dataPreProcessor(int argc, char *argv[]){
     return 0;
 }
 
-
+template <class T>
 int trainDictionary(int argc, char *argv[]){
     string paramFile(argv[1]);
     map<string,string> parameters;
@@ -526,12 +526,17 @@ int trainDictionary(int argc, char *argv[]){
 
     ANdOMPTrainer trainer(*sr, 25, 0, numBuckets,expon,regFactor,weight,withBias,positiveOnly);
 
-    oneBillionImporterB ob;
-
-    arma::Mat<uchar> dataToIndex;
-    ob.readBin(parameters["data"],count,dataToIndex,offset);
-    arma::Mat<float> dataToIndexF = arma::conv_to<arma::Mat<float>>::from(dataToIndex);
-
+    arma::Mat<float> dataToIndexF;
+    if(std::is_same<T,uchar>::value){
+        oneBillionImporterB ob;
+        arma::Mat<uchar> dataToIndex;
+        ob.readBin(parameters["data"],count,dataToIndex,offset);
+        dataToIndexF = arma::conv_to<arma::Mat<float>>::from(dataToIndex);
+    } else if(std::is_same<T,float>::value){
+        oneBillionImporter ob;
+        arma::Mat<float> dataToIndex;
+        ob.readBin(parameters["data"],count,dataToIndexF,offset);
+    }
 
     arma::fmat means = arma::mean(dataToIndexF);
     arma::fmat stddevs = arma::stddev(dataToIndexF);
@@ -562,7 +567,7 @@ int trainDictionary(int argc, char *argv[]){
     return 0;
 }
 
-
+template <class T>
 int dataPreProcessorOneBillionAzureWithSort(int argc, char *argv[]){
     string paramFile(argv[1]);
     map<string,string> parameters;
@@ -580,11 +585,17 @@ int dataPreProcessorOneBillionAzureWithSort(int argc, char *argv[]){
     long offset = std::stol(parameters["offset"]);
     long count = std::stol(parameters["count"]);
 
-    oneBillionImporterB ob;
+    arma::Mat<float> dataToIndex;
 
-    arma::Mat<uchar> dataToIndex;
-    ob.readBin(parameters["data"],count,dataToIndex,offset);
-
+    if(std::is_same<T,uchar>::value){
+        oneBillionImporterB ob;
+        arma::Mat<uchar> dataToIndexU;
+        ob.readBin(parameters["data"],count,dataToIndexU,offset);
+        dataToIndex = arma::conv_to<arma::Mat<float>>::from(dataToIndexU);
+    } else if(std::is_same<T,float>::value){
+        oneBillionImporter ob;
+        ob.readBin(parameters["data"],count,dataToIndex,offset);
+    }
     //cout << offset << endl;
     //cout << dataToIndex.col(0) << endl;
     //cout << dataToIndex.col(1) << endl;
@@ -613,7 +624,7 @@ int dataPreProcessorOneBillionAzureWithSort(int argc, char *argv[]){
             cout << i << " out of " << dataToIndex.n_cols << endl;
 
         uindex dataId = i+offset;
-        arma::fmat features = arma::conv_to<arma::fmat>::from(dataToIndex.col(i));
+        arma::fmat features = dataToIndex.col(i);
         normalizeColumns(features);
         //cout << features << endl;
         arma::fmat sparseRep;
@@ -626,6 +637,7 @@ int dataPreProcessorOneBillionAzureWithSort(int argc, char *argv[]){
             ind = find(sparseRep > 0);
         else
             ind = find(sparseRep != 0);
+
         for(uint j = 0; j < ind.n_rows; j++){
             uint bucket = ind[j];
             indexData[bucket].push_back(Coefficient(i,sparseRep[bucket]));
@@ -639,6 +651,7 @@ int dataPreProcessorOneBillionAzureWithSort(int argc, char *argv[]){
         //outfiles[i]->open(dst + "_coeffs_" + nodeId + "_" + std::to_string(i) + ".bin",std::ofstream::binary);
         uint size = indexData[i].size();
         outfile.write((char*)&size,sizeof(uint));
+        cout << size << endl;
 
         std::sort(indexData[i].begin(), indexData[i].end(),compare);
 
@@ -653,9 +666,6 @@ int dataPreProcessorOneBillionAzureWithSort(int argc, char *argv[]){
 
     return 0;
 }
-
-
-
 
 int dataPreProcessorOneBillionAzure(int argc, char *argv[]){
     string paramFile(argv[1]);
@@ -1419,8 +1429,7 @@ int testNewFeatureRead2(int argc, char *argv[]){
 }
 
 
-
-
+template <class T>
 int testPivotBucket(int argc, char *argv[]){
 
     string paramFile(argv[1]);
@@ -1452,8 +1461,6 @@ int testPivotBucket(int argc, char *argv[]){
 
     map<string,string> params = parameters;
 
-    vector<SRProcessor<uchar>*> ser;
-
     params["bufferSize"] = parameters["bufferSize"];
     params["pollInterval"] = parameters["pollInterval"];
     params["debugLimitPerBucket"] = parameters["debugLimitPerBucket"];
@@ -1470,20 +1477,28 @@ int testPivotBucket(int argc, char *argv[]){
     //params["doFinalSortCoeff"] = "";
 
     name = "srProcessor_" + std::to_string(i);
-    SRProcessor<uchar>* srp = new SRProcessor<uchar>(name,params);
+    SRProcessor<T>* srp = new SRProcessor<T>(name,params);
     if(parameters.count("multiFile") > 0)
         srp->loadBilionMultiFile(coeffs,path);
     else
         srp->loadBilion(coeffs,path);
 
-    oneBillionImporterB ob;
 
-    arma::Mat<uchar> dataU;
     uint nQueries = std::stoi(parameters["nQueries"]);
     uint offset = std::stoi(parameters["offset"]);
-    ob.readBin(parameters["data"],nQueries,dataU,offset);
 
-    arma::fmat data = arma::conv_to<arma::fmat>::from(dataU);
+
+
+    arma::Mat<float> data;
+    if(std::is_same<T,uchar>::value){
+        oneBillionImporterB ob;
+        arma::Mat<T> dataU;
+        ob.readBin(parameters["data"],nQueries,dataU,offset);
+        data = arma::conv_to<arma::fmat>::from(dataU);
+    } else if(std::is_same<T,float>::value){
+        oneBillionImporter ob;
+        ob.readBin(parameters["data"],nQueries,data,offset);
+    }
 
     //#pragma omp parallel for schedule(dynamic)
     for(uint i = 0; i < nQueries; i++){
@@ -1531,12 +1546,16 @@ int testPivotBucket(int argc, char *argv[]){
 
 
 
+
 int main(int argc, char *argv[]){
 
     //el::Helpers::setCrashHandler(myCrashHandler);
     //el::Loggers::addFlag( el::LoggingFlag::DisableApplicationAbortOnFatalLog );
     //el::Loggers::addFlag( el::LoggingFlag::ColoredTerminalOutput );
-
+    //arma::fmat D = arma::randu<arma::fmat>(960,1024);
+    //utils::normalize_columns(D);
+    //D.save("/media/Share/Documents/Dropbox/PhD/Projects/2015-12_DistributedIndexing/experiments/2016-02_005/seed1024_960.bin");
+    //exit(0);
     /*
     cout << sizeof(char) << endl;
     cout << sizeof(short) << endl;
@@ -1573,7 +1592,9 @@ int main(int argc, char *argv[]){
     else if(StringTools::endsWith(string(argv[1]),"dataPreProcessorOneBillionAzure"))
         dataPreProcessorOneBillionAzure(argc-1,&argv[1]);
     else if(StringTools::endsWith(string(argv[1]),"dataPreProcessorOneBillionAzureWithSort"))
-        dataPreProcessorOneBillionAzureWithSort(argc-1,&argv[1]);
+        dataPreProcessorOneBillionAzureWithSort<uchar>(argc-1,&argv[1]);
+    else if(StringTools::endsWith(string(argv[1]),"dataPreProcessorOneBillionAzureWithSortGIST"))
+        dataPreProcessorOneBillionAzureWithSort<float>(argc-1,&argv[1]);
     else if(StringTools::endsWith(string(argv[1]),"sortBucketsFromBillion"))
         sortBucketsFromBillion(argc-1,&argv[1]);
     else if(StringTools::endsWith(string(argv[1]),"testShuffleDictionary"))
@@ -1585,9 +1606,13 @@ int main(int argc, char *argv[]){
     else if(StringTools::endsWith(string(argv[1]),"testNewFeatureRead2"))
         testNewFeatureRead2(argc-1,&argv[1]);
     else if(StringTools::endsWith(string(argv[1]),"testPivotBucket"))
-        testPivotBucket(argc-1,&argv[1]);
+        testPivotBucket<uchar>(argc-1,&argv[1]);
+    else if(StringTools::endsWith(string(argv[1]),"testPivotBucketGIST"))
+        testPivotBucket<float>(argc-1,&argv[1]);
     else if(StringTools::endsWith(string(argv[1]),"trainDictionary"))
-        trainDictionary(argc-1,&argv[1]);
+        trainDictionary<uchar>(argc-1,&argv[1]);
+    else if(StringTools::endsWith(string(argv[1]),"trainDictionaryGIST"))
+        trainDictionary<float>(argc-1,&argv[1]);
 
     return 0;
 }

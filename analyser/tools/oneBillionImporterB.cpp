@@ -262,9 +262,77 @@ void oneBillionImporterB::readBin(std::string filenamep, arma::Mat<int>& feature
     std::cout << "error:  not implemented int" << std::endl;
 }
 
-void oneBillionImporterB::readBin(std::string filenamep, arma::Mat<float>& features, std::vector<uint>& buckets, ulong bufferVecToRead, ulong offsetStartOfFile) {
-    std::cout << "error:  not implemented float" << std::endl;
+void oneBillionImporterB::readBin(std::string filenamep, arma::Mat<float>& features, std::vector<uint>& featuresCols, ulong bufferVecToRead, ulong offsetStartOfFile) {
+
+    auto compare = [](uint a, uint b){ return a > b; };
+    std::cout << "sorting buckets for reading..." << std::endl;
+    auto featuresColIndexes = MatrixTools::sortPermutation(featuresCols,compare);
+    std::cout << "sorting buckets for reading... done" << std::endl;
+
+    FILE * out = fopen(filenamep.c_str(), "rb" );
+
+    uint dimensions = 0;
+    uint currDimensions = 0;
+
+    if (fread(&dimensions,sizeof(int),1,out) == 0){
+        std::cout << "error: cannot read begininig of file" << std::endl;
+        return;
+    }
+
+    ulong bufferSize = ((dimensions)*sizeof(float)+4)*bufferVecToRead;
+    char* buffer = new char[bufferSize];
+
+    features.set_size(dimensions,featuresCols.size());
+
+    unsigned long long offsetStart = 0;
+    unsigned long long offsetEnd = 0;
+
+    std::cout << "Reading " << dimensions << " dims for " << featuresCols.size() << " feature vectors" << std::endl;
+	/* Open file */
+	uint i = 0;
+	while (i < featuresCols.size()){
+
+        uint featureCol = featuresCols[featuresColIndexes[i]]+offsetStartOfFile;
+
+        unsigned long long offset = ((unsigned long long)featureCol)*((dimensions)*sizeof(float)+4);
+
+        offsetStart = ((unsigned long long)featureCol)*((dimensions)*sizeof(float)+4);
+        offsetEnd = offsetStart+bufferSize;
+
+        //fseek(out,offsetStart,SEEK_SET);
+        fseek(out,offsetStart,SEEK_SET);
+        int res = fread(buffer,bufferSize,sizeof(char),out);
+
+        unsigned long long innerOffset = 0;
+
+        //cout << i << " "  << featuresColIndexes[i] << " " << featureCol << " " << offsetStart << " " << offsetEnd << " " << innerOffset << endl;
+
+        while (offset < offsetEnd && i < featuresCols.size()){
+
+            //featureCol = featuresCols[featuresColIndexes[i]];
+            memcpy(&features(0,featuresColIndexes[i]),&buffer[innerOffset+4],dimensions*sizeof(float));
+
+            if(i%100000 == 0)
+                std::cout << "Read " << i << " of " << featuresCols.size() << std::endl;
+            //cout << "\t" << i << " "  << featuresColIndexes[i] << " " << featureCol << " " << offsetStart << " " << offsetEnd << " " << offset << " " << innerOffset << endl;
+            i++;
+
+            if(i >= featuresCols.size())
+                continue;
+
+            featureCol = featuresCols[featuresColIndexes[i]]+offsetStartOfFile;
+            offset = ((unsigned long long)featureCol)*((dimensions)*sizeof(float)+4);
+            innerOffset=offset-offsetStart;
+
+        }
+	    /* Flush buffer and close file */
+    }
+    fclose(out);
+    delete[] buffer;
+
+
 }
+
 
 void oneBillionImporterB::readBinSlow(std::string filenamep, arma::Mat<uchar>& features, std::vector<uint>& buckets) {
 

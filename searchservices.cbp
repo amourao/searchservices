@@ -39,7 +39,7 @@
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gnu_gcc_compiler_49" />
-				<Option parameters="default.json" />
+				<Option parameters="configs/config.json" />
 				<Compiler>
 					<Add option="-O2" />
 					<Add directory="commons" />
@@ -56,6 +56,30 @@
 				<Option parameters="testPivotBucket /home/amourao/code/searchservices/configs/processorAndMaster_charlieDist.json" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add directory="commons" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+			<Target title="ReleaseDistIndexingSingle">
+				<Option output="bin/Release/distIndexerSingle" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gnu_gcc_compiler_49" />
+				<Option parameters="testPivotBucket /home/amourao/code/searchservices/configs/processorAndMaster_charlieDist.json" />
+				<Option projectCompilerOptionsRelation="1" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-std=c++11" />
+					<Add option="-Wall" />
+					<Add option="-fexceptions" />
+					<Add option="-DREAL_FLOAT" />
+					<Add option="-DUSE_GIST" />
+					<Add option="-DSTANDALONE_GIST" />
+					<Add option="-DPOCO_NO_FPENVIRONMENT" />
+					<Add option="-DSINGLETHREADED" />
+					<Add option="-DMEASURE_PER_BUCKET" />
 					<Add directory="commons" />
 				</Compiler>
 				<Linker>
@@ -89,7 +113,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gnu_gcc_compiler_49" />
-				<Option parameters="default.json" />
+				<Option parameters="configs/config.json" />
 				<Compiler>
 					<Add option="-g" />
 					<Add directory="commons" />
@@ -201,6 +225,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/FactoryAnalyser.h">
 			<Option target="ReleaseMainInd" />
@@ -213,6 +238,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/FactoryClassifier.cpp">
 			<Option target="ReleaseMainInd" />
@@ -225,6 +251,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/FactoryClassifier.h">
 			<Option target="ReleaseMainInd" />
@@ -237,6 +264,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/IAnalyser.h">
 			<Option target="ReleaseMainInd" />
@@ -249,6 +277,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/Main.cpp">
 			<Option target="&lt;{~None~}&gt;" />
@@ -264,6 +293,7 @@
 		<Unit filename="analyser/MainDistInd.cpp">
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/MainEusipco.cpp">
 			<Option target="ReleaseEusipco" />
@@ -280,6 +310,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nKeypoint/SIFTExtractor.cpp">
 			<Option target="ReleaseMainInd" />
@@ -292,6 +323,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nKeypoint/SIFTExtractor.h">
 			<Option target="ReleaseMainInd" />
@@ -304,6 +336,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nKeypoint/SURFExtractor.cpp">
 			<Option target="ReleaseMainInd" />
@@ -316,6 +349,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nKeypoint/SURFExtractor.h">
 			<Option target="ReleaseMainInd" />
@@ -328,6 +362,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nRoi/FaceDetection.cpp">
 			<Option target="ReleaseMainInd" />
@@ -340,6 +375,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nRoi/FaceDetection.h">
 			<Option target="ReleaseMainInd" />
@@ -352,6 +388,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nRoi/HaarDetector.cpp">
 			<Option target="ReleaseMainInd" />
@@ -364,6 +401,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nRoi/HaarDetector.h">
 			<Option target="ReleaseMainInd" />
@@ -376,6 +414,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nRoi/RoiFeatureExtractor.h">
 			<Option target="ReleaseMainInd" />
@@ -388,6 +427,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nTag/FaceRecognition.cpp">
 			<Option target="ReleaseMainInd" />
@@ -400,6 +440,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nTag/FaceRecognition.h">
 			<Option target="ReleaseMainInd" />
@@ -412,6 +453,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nTag/FacialExpressionRecognition.cpp">
 			<Option target="ReleaseMainInd" />
@@ -424,6 +466,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nTag/FacialExpressionRecognition.h">
 			<Option target="ReleaseMainInd" />
@@ -436,6 +479,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nTag/IClassifier.h">
 			<Option target="ReleaseMainInd" />
@@ -448,6 +492,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nTag/SRClassifier.cpp">
 			<Option target="ReleaseMainInd" />
@@ -460,6 +505,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nTag/SRClassifier.h">
 			<Option target="ReleaseMainInd" />
@@ -472,6 +518,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nTag/SVMClassifier.cpp">
 			<Option target="ReleaseMainInd" />
@@ -484,6 +531,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nTag/SVMClassifier.h">
 			<Option target="ReleaseMainInd" />
@@ -496,6 +544,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nTag/TagFeatureExtractor.h">
 			<Option target="ReleaseMainInd" />
@@ -508,6 +557,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nTag/VWBasicClassifier.cpp">
 			<Option target="ReleaseMainInd" />
@@ -520,6 +570,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nTag/VWBasicClassifier.h">
 			<Option target="ReleaseMainInd" />
@@ -532,6 +583,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nTag/dalm.h">
 			<Option target="ReleaseMainInd" />
@@ -544,6 +596,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nTag/fista.h">
 			<Option target="ReleaseMainInd" />
@@ -556,6 +609,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nTag/kNNClassifier.cpp">
 			<Option target="ReleaseMainInd" />
@@ -568,6 +622,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nTag/kNNClassifier.h">
 			<Option target="ReleaseMainInd" />
@@ -580,6 +635,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nTag/omp.h">
 			<Option target="ReleaseMainInd" />
@@ -592,6 +648,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nTag/thresholding.h">
 			<Option target="ReleaseMainInd" />
@@ -604,6 +661,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nVector/ANdOMPExtractor.cpp">
 			<Option target="ReleaseMainInd" />
@@ -616,6 +674,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nVector/ANdOMPExtractor.h">
 			<Option target="ReleaseMainInd" />
@@ -628,6 +687,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nVector/ANdOMPTrainer.cpp">
 			<Option target="ReleaseMainInd" />
@@ -640,6 +700,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nVector/ANdOMPTrainer.h">
 			<Option target="ReleaseMainInd" />
@@ -652,6 +713,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nVector/CombinedExtractor.cpp">
 			<Option target="ReleaseMainInd" />
@@ -664,6 +726,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nVector/CombinedExtractor.h">
 			<Option target="ReleaseMainInd" />
@@ -676,6 +739,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nVector/EigenExtractor.cpp">
 			<Option target="ReleaseMainInd" />
@@ -688,6 +752,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nVector/EigenExtractor.h">
 			<Option target="ReleaseMainInd" />
@@ -700,6 +765,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nVector/FeatureExtractor.h">
 			<Option target="ReleaseMainInd" />
@@ -712,6 +778,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nVector/GISTExtractor.cpp">
 			<Option target="ReleaseMainInd" />
@@ -724,6 +791,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nVector/GISTExtractor.h">
 			<Option target="ReleaseMainInd" />
@@ -736,6 +804,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nVector/GaborExtractor.cpp">
 			<Option target="ReleaseMainInd" />
@@ -748,6 +817,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nVector/GaborExtractor.h">
 			<Option target="ReleaseMainInd" />
@@ -760,6 +830,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nVector/HistogramExtractor.cpp">
 			<Option target="ReleaseMainInd" />
@@ -772,6 +843,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nVector/HistogramExtractor.h">
 			<Option target="ReleaseMainInd" />
@@ -784,6 +856,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nVector/LBPExtractor.cpp">
 			<Option target="ReleaseMainInd" />
@@ -796,6 +869,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nVector/LBPExtractor.h">
 			<Option target="ReleaseMainInd" />
@@ -808,6 +882,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nVector/LLCExtractor.cpp">
 			<Option target="ReleaseMainInd" />
@@ -820,6 +895,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nVector/LLCExtractor.h">
 			<Option target="ReleaseMainInd" />
@@ -832,6 +908,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nVector/LireExtractor.cpp">
 			<Option target="ReleaseMainInd" />
@@ -844,6 +921,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nVector/LireExtractor.h">
 			<Option target="ReleaseMainInd" />
@@ -856,6 +934,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nVector/NullExtractor.cpp">
 			<Option target="ReleaseMainInd" />
@@ -868,6 +947,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nVector/NullExtractor.h">
 			<Option target="ReleaseMainInd" />
@@ -880,6 +960,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nVector/SIFTBowExtractor.cpp">
 			<Option target="ReleaseMainInd" />
@@ -892,6 +973,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nVector/SIFTBowExtractor.h">
 			<Option target="ReleaseMainInd" />
@@ -904,6 +986,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nVector/SRExtractor.cpp">
 			<Option target="ReleaseMainInd" />
@@ -916,6 +999,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nVector/SRExtractor.h">
 			<Option target="ReleaseMainInd" />
@@ -928,6 +1012,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nVector/SegmentedHistogramExtractor.cpp">
 			<Option target="ReleaseMainInd" />
@@ -940,6 +1025,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nVector/SegmentedHistogramExtractor.h">
 			<Option target="ReleaseMainInd" />
@@ -952,6 +1038,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nVector/gist.c">
 			<Option compilerVar="CC" />
@@ -965,6 +1052,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nVector/gist.h">
 			<Option target="ReleaseMainInd" />
@@ -977,6 +1065,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nVector/lbp.cpp">
 			<Option target="ReleaseMainInd" />
@@ -989,6 +1078,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nVector/lbp.h">
 			<Option target="ReleaseMainInd" />
@@ -1001,6 +1091,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nVector/standalone_image.c">
 			<Option compilerVar="CC" />
@@ -1014,6 +1105,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/nVector/standalone_image.h">
 			<Option target="ReleaseMainInd" />
@@ -1026,6 +1118,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/sources/CamSource.cpp">
 			<Option target="ReleaseMainInd" />
@@ -1038,6 +1131,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/sources/CamSource.h">
 			<Option target="ReleaseMainInd" />
@@ -1050,6 +1144,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/sources/ImageSource.h">
 			<Option target="ReleaseMainInd" />
@@ -1062,6 +1157,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/sources/SingleImageSource.cpp">
 			<Option target="ReleaseMainInd" />
@@ -1074,6 +1170,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/sources/SingleImageSource.h">
 			<Option target="ReleaseMainInd" />
@@ -1086,6 +1183,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/sources/TextFileSource.cpp">
 			<Option target="ReleaseMainInd" />
@@ -1098,6 +1196,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/sources/TextFileSource.h">
 			<Option target="ReleaseMainInd" />
@@ -1110,6 +1209,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/sources/TextFileSourceV2.cpp">
 			<Option target="ReleaseMainInd" />
@@ -1122,6 +1222,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/sources/TextFileSourceV2.h">
 			<Option target="ReleaseMainInd" />
@@ -1134,6 +1235,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/sources/VideoSource.cpp">
 			<Option target="ReleaseMainInd" />
@@ -1146,6 +1248,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/sources/VideoSource.h">
 			<Option target="ReleaseMainInd" />
@@ -1158,6 +1261,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/tools/FrameFilter.cpp">
 			<Option target="ReleaseMainInd" />
@@ -1170,6 +1274,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/tools/FrameFilter.h">
 			<Option target="ReleaseMainInd" />
@@ -1182,6 +1287,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/tools/IBinImporter.h">
 			<Option target="ReleaseMainInd" />
@@ -1194,6 +1300,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/tools/IlluminationCorrectionFilter.cpp">
 			<Option target="ReleaseMainInd" />
@@ -1206,6 +1313,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/tools/IlluminationCorrectionFilter.h">
 			<Option target="ReleaseMainInd" />
@@ -1218,6 +1326,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/tools/ImageFilter.h">
 			<Option target="ReleaseMainInd" />
@@ -1230,6 +1339,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/tools/ImageSegmentator.cpp">
 			<Option target="ReleaseMainInd" />
@@ -1242,6 +1352,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/tools/ImageSegmentator.h">
 			<Option target="ReleaseMainInd" />
@@ -1254,6 +1365,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/tools/MIRFlickrImporter.cpp">
 			<Option target="ReleaseMainInd" />
@@ -1266,6 +1378,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/tools/MIRFlickrImporter.h">
 			<Option target="ReleaseMainInd" />
@@ -1278,6 +1391,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/tools/MainShotDetection.cpp">
 			<Option target="MainShotDetectionMulti" />
@@ -1294,6 +1408,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/tools/MatrixTools.h">
 			<Option target="ReleaseMainInd" />
@@ -1306,6 +1421,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/tools/ShotDetector.cpp" />
 		<Unit filename="analyser/tools/ShotDetector.h" />
@@ -1320,6 +1436,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/tools/TrainTestFeaturesTools.cpp">
 			<Option target="ReleaseMainInd" />
@@ -1332,6 +1449,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/tools/TrainTestFeaturesTools.h">
 			<Option target="ReleaseMainInd" />
@@ -1344,6 +1462,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/tools/oneBillionImporter.cpp">
 			<Option target="ReleaseMainInd" />
@@ -1356,6 +1475,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/tools/oneBillionImporter.h">
 			<Option target="ReleaseMainInd" />
@@ -1368,6 +1488,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/tools/oneBillionImporterB.cpp" />
 		<Unit filename="analyser/tools/oneBillionImporterB.h" />
@@ -1382,6 +1503,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="analyser/tools/tinyImageImporter.h">
 			<Option target="ReleaseMainInd" />
@@ -1394,6 +1516,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="appData/GameImage.cpp">
 			<Option target="ReleaseMainInd" />
@@ -1406,6 +1529,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="appData/GameImage.h">
 			<Option target="ReleaseMainInd" />
@@ -1418,6 +1542,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="commons/AppConfig.cpp">
 			<Option target="ReleaseMainInd" />
@@ -1430,6 +1555,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="commons/AppConfig.h">
 			<Option target="ReleaseMainInd" />
@@ -1442,6 +1568,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="commons/FileDownloader.cpp">
 			<Option target="ReleaseMainInd" />
@@ -1454,6 +1581,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="commons/FileDownloader.h">
 			<Option target="ReleaseMainInd" />
@@ -1466,6 +1594,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="commons/LoadConfig.cpp">
 			<Option target="ReleaseMainInd" />
@@ -1478,6 +1607,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="commons/LoadConfig.h">
 			<Option target="ReleaseMainInd" />
@@ -1490,6 +1620,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="commons/StringTools.cpp">
 			<Option target="ReleaseMainInd" />
@@ -1502,6 +1633,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="commons/StringTools.h">
 			<Option target="ReleaseMainInd" />
@@ -1514,6 +1646,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="commons/Timing.h">
 			<Option target="ReleaseMainInd" />
@@ -1526,6 +1659,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="commons/factory/Factory.cpp">
 			<Option target="ReleaseMainInd" />
@@ -1538,6 +1672,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="commons/factory/Factory.h">
 			<Option target="ReleaseMainInd" />
@@ -1550,6 +1685,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="dataModel/DataModelController.cpp">
 			<Option target="ReleaseMainInd" />
@@ -1562,6 +1698,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="dataModel/DataModelController.h">
 			<Option target="ReleaseMainInd" />
@@ -1574,6 +1711,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="dataModel/DatabaseConnection.cpp">
 			<Option target="ReleaseMainInd" />
@@ -1586,6 +1724,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="dataModel/DatabaseConnection.h">
 			<Option target="ReleaseMainInd" />
@@ -1598,6 +1737,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="dataModel/IDataModel.h">
 			<Option target="ReleaseMainInd" />
@@ -1610,6 +1750,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="dataModel/NKeypoint.cpp">
 			<Option target="ReleaseMainInd" />
@@ -1622,6 +1763,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="dataModel/NKeypoint.h">
 			<Option target="ReleaseMainInd" />
@@ -1634,6 +1776,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="dataModel/NRoi.cpp">
 			<Option target="ReleaseMainInd" />
@@ -1646,6 +1789,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="dataModel/NRoi.h">
 			<Option target="ReleaseMainInd" />
@@ -1658,6 +1802,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="dataModel/NTag.cpp">
 			<Option target="ReleaseMainInd" />
@@ -1670,6 +1815,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="dataModel/NTag.h">
 			<Option target="ReleaseMainInd" />
@@ -1682,6 +1828,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="dataModel/NVector.cpp">
 			<Option target="ReleaseMainInd" />
@@ -1694,6 +1841,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="dataModel/NVector.h">
 			<Option target="ReleaseMainInd" />
@@ -1706,6 +1854,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/DistributedIndexWrapperClient.cpp">
 			<Option target="&lt;{~None~}&gt;" />
@@ -1724,6 +1873,7 @@
 			<Option target="DebugMainAna" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/DistributedIndexWrapperClientDist.h">
 			<Option target="ReleaseMainInd" />
@@ -1736,6 +1886,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/DistributedIndexWrapperServer.cpp">
 			<Option target="ReleaseMainInd" />
@@ -1748,6 +1899,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/DistributedIndexWrapperServer.h">
 			<Option target="ReleaseMainInd" />
@@ -1760,6 +1912,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/FactoryIndexer.cpp">
 			<Option target="ReleaseMainInd" />
@@ -1772,6 +1925,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/FactoryIndexer.h">
 			<Option target="ReleaseMainInd" />
@@ -1784,6 +1938,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/FlannkNNIndexer.cpp">
 			<Option target="ReleaseMainInd" />
@@ -1796,6 +1951,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/FlannkNNIndexer.h">
 			<Option target="ReleaseMainInd" />
@@ -1808,6 +1964,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/IIndexer.h">
 			<Option target="ReleaseMainInd" />
@@ -1820,6 +1977,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/LSHIndexer.cpp">
 			<Option target="ReleaseMainInd" />
@@ -1832,6 +1990,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/LSHIndexer.h">
 			<Option target="ReleaseMainInd" />
@@ -1844,6 +2003,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/MSIDXIndexer.cpp">
 			<Option target="ReleaseMainInd" />
@@ -1856,6 +2016,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/MSIDXIndexer.h">
 			<Option target="ReleaseMainInd" />
@@ -1868,6 +2029,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/SRIndexer.cpp">
 			<Option target="ReleaseMainInd" />
@@ -1880,6 +2042,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/SRIndexer.h">
 			<Option target="ReleaseMainInd" />
@@ -1892,6 +2055,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/SRIndexerClient.cpp">
 			<Option target="&lt;{~None~}&gt;" />
@@ -1910,6 +2074,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/SphericalHashIndexer.h">
 			<Option target="ReleaseMainInd" />
@@ -1922,26 +2087,32 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/distributed/SRMaster.cpp">
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/distributed/SRMaster.h">
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/distributed/SRProcessor.cpp">
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/distributed/SRProcessor.h">
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/distributed/SRStrucs.h">
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/e2lsh/BasicDefinitions.h">
 			<Option target="ReleaseMainInd" />
@@ -1954,6 +2125,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/e2lsh/BucketHashing.cpp">
 			<Option target="ReleaseMainInd" />
@@ -1966,6 +2138,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/e2lsh/BucketHashing.h">
 			<Option target="ReleaseMainInd" />
@@ -1978,6 +2151,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/e2lsh/Geometry.cpp">
 			<Option target="ReleaseMainInd" />
@@ -1990,6 +2164,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/e2lsh/Geometry.h">
 			<Option target="ReleaseMainInd" />
@@ -2002,6 +2177,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/e2lsh/GlobalVars.cpp">
 			<Option target="ReleaseMainInd" />
@@ -2014,6 +2190,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/e2lsh/GlobalVars.h">
 			<Option target="ReleaseMainInd" />
@@ -2026,6 +2203,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/e2lsh/LSHMain.cpp">
 			<Option target="ReleaseMainInd" />
@@ -2038,6 +2216,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/e2lsh/LocalitySensitiveHashing.cpp">
 			<Option target="ReleaseMainInd" />
@@ -2050,6 +2229,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/e2lsh/LocalitySensitiveHashing.h">
 			<Option target="ReleaseMainInd" />
@@ -2062,6 +2242,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/e2lsh/NearNeighbors.cpp">
 			<Option target="ReleaseMainInd" />
@@ -2074,6 +2255,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/e2lsh/NearNeighbors.h">
 			<Option target="ReleaseMainInd" />
@@ -2086,6 +2268,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/e2lsh/Random.cpp">
 			<Option target="ReleaseMainInd" />
@@ -2098,6 +2281,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/e2lsh/Random.h">
 			<Option target="ReleaseMainInd" />
@@ -2110,6 +2294,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/e2lsh/SelfTuning.cpp">
 			<Option target="ReleaseMainInd" />
@@ -2122,6 +2307,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/e2lsh/SelfTuning.h">
 			<Option target="ReleaseMainInd" />
@@ -2134,6 +2320,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/e2lsh/Util.cpp">
 			<Option target="ReleaseMainInd" />
@@ -2146,6 +2333,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/e2lsh/Util.h">
 			<Option target="ReleaseMainInd" />
@@ -2158,6 +2346,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/e2lsh/headers.h">
 			<Option target="ReleaseMainInd" />
@@ -2170,6 +2359,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/sphericalHashing/BinaryHash.cpp">
 			<Option target="ReleaseMainInd" />
@@ -2182,6 +2372,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/sphericalHashing/BinaryHash.h">
 			<Option target="ReleaseMainInd" />
@@ -2194,6 +2385,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/sphericalHashing/Common.cpp">
 			<Option target="ReleaseMainInd" />
@@ -2206,6 +2398,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/sphericalHashing/Common.h">
 			<Option target="ReleaseMainInd" />
@@ -2218,6 +2411,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/sphericalHashing/Evaluation.h">
 			<Option target="ReleaseMainInd" />
@@ -2230,6 +2424,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/sphericalHashing/Main.cpp">
 			<Option target="ReleaseMainInd" />
@@ -2242,6 +2437,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/sphericalHashing/Parameters.h">
 			<Option target="ReleaseMainInd" />
@@ -2254,6 +2450,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/sphericalHashing/Points.h">
 			<Option target="ReleaseMainInd" />
@@ -2266,6 +2463,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/sphericalHashing/Stopwatch.cpp">
 			<Option target="ReleaseMainInd" />
@@ -2278,6 +2476,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="indexer/sphericalHashing/Stopwatch.hpp">
 			<Option target="ReleaseMainInd" />
@@ -2290,6 +2489,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="rest/Endpoints/TestEndpoint.cpp">
 			<Option target="ReleaseMainInd" />
@@ -2302,6 +2502,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="rest/Endpoints/TestEndpoint.h">
 			<Option target="ReleaseMainInd" />
@@ -2314,6 +2515,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="rest/Endpoints/analyser/CombSearchResult.cpp">
 			<Option target="ReleaseMainInd" />
@@ -2326,6 +2528,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="rest/Endpoints/analyser/CombSearchResult.h">
 			<Option target="ReleaseMainInd" />
@@ -2338,6 +2541,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="rest/Endpoints/analyser/EnsembleClassifier.cpp">
 			<Option target="ReleaseMainInd" />
@@ -2350,6 +2554,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="rest/Endpoints/analyser/EnsembleClassifier.h">
 			<Option target="ReleaseMainInd" />
@@ -2362,6 +2567,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="rest/Endpoints/analyser/ExtractFeatures.cpp">
 			<Option target="ReleaseMainInd" />
@@ -2374,6 +2580,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="rest/Endpoints/analyser/ExtractFeatures.h">
 			<Option target="ReleaseMainInd" />
@@ -2386,6 +2593,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="rest/Endpoints/analyser/GenericClassifier.cpp">
 			<Option target="ReleaseMainInd" />
@@ -2398,6 +2606,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="rest/Endpoints/analyser/GenericClassifier.h">
 			<Option target="ReleaseMainInd" />
@@ -2410,6 +2619,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="rest/Endpoints/analyser/GetObjectFeatures.cpp">
 			<Option target="ReleaseMainInd" />
@@ -2422,6 +2632,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="rest/Endpoints/analyser/GetObjectFeatures.h">
 			<Option target="ReleaseMainInd" />
@@ -2434,6 +2645,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="rest/Endpoints/analyser/MedicalSearchEngine.cpp">
 			<Option target="ReleaseMainInd" />
@@ -2446,6 +2658,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="rest/Endpoints/analyser/MedicalSearchEngine.h">
 			<Option target="ReleaseMainInd" />
@@ -2458,6 +2671,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="rest/Endpoints/analyser/SearchResult.cpp">
 			<Option target="ReleaseMainInd" />
@@ -2470,6 +2684,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="rest/Endpoints/analyser/SearchResult.h">
 			<Option target="ReleaseMainInd" />
@@ -2482,6 +2697,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="rest/Endpoints/analyser/VideoTagger.cpp">
 			<Option target="ReleaseMainInd" />
@@ -2494,6 +2710,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="rest/Endpoints/analyser/VideoTagger.h">
 			<Option target="ReleaseMainInd" />
@@ -2506,6 +2723,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="rest/Endpoints/codebits/Codebits.cpp">
 			<Option target="ReleaseMainInd" />
@@ -2518,6 +2736,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="rest/Endpoints/codebits/Codebits.h">
 			<Option target="ReleaseMainInd" />
@@ -2530,6 +2749,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="rest/Endpoints/database/GetMetadata.cpp">
 			<Option target="ReleaseMainInd" />
@@ -2542,6 +2762,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="rest/Endpoints/database/GetMetadata.h">
 			<Option target="ReleaseMainInd" />
@@ -2554,6 +2775,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="rest/Endpoints/indexer/GenericIndexer.cpp">
 			<Option target="ReleaseMainInd" />
@@ -2566,6 +2788,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="rest/Endpoints/indexer/GenericIndexer.h">
 			<Option target="ReleaseMainInd" />
@@ -2578,6 +2801,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="rest/FactoryEndpoint.cpp">
 			<Option target="ReleaseMainInd" />
@@ -2590,6 +2814,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="rest/FactoryEndpoint.h">
 			<Option target="ReleaseMainInd" />
@@ -2602,6 +2827,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="rest/IEndpoint.h">
 			<Option target="ReleaseMainInd" />
@@ -2614,6 +2840,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="rest/RestRequestHandler.cpp">
 			<Option target="ReleaseMainInd" />
@@ -2626,6 +2853,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="rest/RestRequestHandler.h">
 			<Option target="ReleaseMainInd" />
@@ -2638,6 +2866,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="rest/RestServer.cpp">
 			<Option target="ReleaseMainInd" />
@@ -2650,6 +2879,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="rest/RestServer.h">
 			<Option target="ReleaseMainInd" />
@@ -2662,6 +2892,7 @@
 			<Option target="DebugEusipco" />
 			<Option target="ReleaseDistIndexing" />
 			<Option target="DebugDistIndexing" />
+			<Option target="ReleaseDistIndexingSingle" />
 		</Unit>
 		<Unit filename="rest/main.cpp">
 			<Option target="ReleaseServer" />
