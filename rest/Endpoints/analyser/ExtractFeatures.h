@@ -3,6 +3,7 @@
 #include <iostream>
 #include <sstream>
 #include <map>
+#include "../../../dataModel/IDataModel.h"
 #include "../../FactoryEndpoint.h"
 #include "../../../analyser/FactoryAnalyser.h"
 #include "../../../analyser/tools/MatrixTools.h"

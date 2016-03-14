@@ -22,7 +22,7 @@
 	"../commons/factory/Factory.h"
 	"../dataModel/IDataModel.h"
 
-1449851940 /home/amourao/code/searchservices/dataModel/IDataModel.h
+1457974562 /home/amourao/code/searchservices/dataModel/IDataModel.h
 	<iostream>
 	<fstream>
 	<string>
@@ -830,13 +830,14 @@
 	<Poco/Net/HTTPServerResponse.h>
 	"../commons/factory/Factory.h"
 
-1457963895 source:/home/amourao/code/searchservices/rest/Endpoints/analyser/ExtractFeatures.cpp
+1457975181 source:/home/amourao/code/searchservices/rest/Endpoints/analyser/ExtractFeatures.cpp
 	"ExtractFeatures.h"
 
-1457711263 /home/amourao/code/searchservices/rest/Endpoints/analyser/ExtractFeatures.h
+1457974768 /home/amourao/code/searchservices/rest/Endpoints/analyser/ExtractFeatures.h
 	<iostream>
 	<sstream>
 	<map>
+	"../../../dataModel/IDataModel.h"
 	"../../FactoryEndpoint.h"
 	"../../../analyser/FactoryAnalyser.h"
 	"../../../analyser/tools/MatrixTools.h"

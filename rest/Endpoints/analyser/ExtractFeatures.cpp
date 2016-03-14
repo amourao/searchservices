@@ -76,10 +76,10 @@ string ExtractFeatures::getFeaturesSingle(map<string, string > parameters){
 
         if (filenameStatus < 0){
             root["message"] = "File does not exist/Error reading file: " + std::to_string(filenameStatus);
-            root["error"] = "";
+            root["status"] = "error";
         } else if (extractor == NULL){
             root["message"] = "Extractor does not exist";
-            root["error"] = "";
+            root["status"] = "error";
         } else if (extractor->getType() == IDataModel::NVECTOR){
             data = extractor->getFeatures(filename);
 
@@ -91,7 +91,9 @@ string ExtractFeatures::getFeaturesSingle(map<string, string > parameters){
                 //cout << features->at(i) << " " ;
             }
             root["result"] = featureArray;
-            root["type"] = "IDataModel::NVECTOR";
+            root["type"] = "nVector";
+            root["status"] = "ok";
+
 
         } else if (extractor->getType() == IDataModel::NKEYPOINT){
             data = extractor->getFeatures(filename);
@@ -123,14 +125,41 @@ string ExtractFeatures::getFeaturesSingle(map<string, string > parameters){
                 featurePointArray.append(featurePoint);
             }
             root["result"] = featurePointArray;
-            root["type"] = "IDataModel::NKEYPOINT";
+            root["type"] = "nKeypoint";
+            root["status"] = "ok";
+
+        } else if (extractor->getType() == IDataModel::NROI){
+            data = extractor->getFeatures(filename);
+
+            map<string,region>* features = (map<string,region>*) data->getValue();
+            Json::Value featurePointArray(Json::arrayValue);
+            for(auto const &pairF : *features) {
+                region r = pairF.second;
+
+                Json::Value featurePoint;
+                featurePoint["x"] = r.x;
+                featurePoint["y"] = r.y;
+                featurePoint["width"] = r.width;
+                featurePoint["height"] = r.height;
+                featurePoint["type"] = r.annotationType;
+                featurePoint["name"] = pairF.first;
+
+                featurePointArray.append(featurePoint);
+            }
+            root["result"] = featurePointArray;
+            root["type"] = "nRoi";
+            root["status"] = "ok";
+
+        } else {
+            root["message"] = "Unknown data type to output";
+            root["status"] = "error";
         }
     } catch(exception& e){
         root["message"] = e.what();
-        root["error"] = "";
+        root["status"] = "error";
     } catch(...){
         root["message"] = "Unknown error";
-        root["error"] = "";
+        root["status"] = "error";
     }
     Json::FastWriter writter;
 	return writter.write(root);
