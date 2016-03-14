@@ -21,7 +21,7 @@ using namespace std;
 class KeypointFeatureExtractor: public IAnalyser
 {
 public:
-	
+
 	virtual ~KeypointFeatureExtractor()  {}
 
 	IDataModel* getFeatures(string name){
@@ -38,8 +38,8 @@ public:
 		extractFeatures(source,keypointsCv, featuresMat);
 
 		for(unsigned int i = 0; i < keypointsCv.size(); i++){
-			cout << keypointsCv.at(i).pt.x << " " << keypointsCv.at(i).pt.y << " "<< keypointsCv.at(i).angle << " "<< keypointsCv.at(i).size << " "<< keypointsCv.at(i).response << " " << keypointsCv.at(i).octave << " " << keypointsCv.at(i).class_id  << endl;
-			
+			//cout << keypointsCv.at(i).pt.x << " " << keypointsCv.at(i).pt.y << " "<< keypointsCv.at(i).angle << " "<< keypointsCv.at(i).size << " "<< keypointsCv.at(i).response << " " << keypointsCv.at(i).octave << " " << keypointsCv.at(i).class_id  << endl;
+
 			vector<float> point;
 			point.push_back( keypointsCv.at(i).pt.x);
 			point.push_back( keypointsCv.at(i).pt.y);
@@ -49,27 +49,27 @@ public:
 			point.push_back( keypointsCv.at(i).octave);
 			point.push_back( keypointsCv.at(i).class_id);
 			//keypoints.push_back(point);
-			
-			
+
+
 			vector<float> featuresR;
 			Mat m = featuresMat.row(i);
 			MatrixTools::matToVector(m, featuresR);
-			
+
 			pair<vector<float>,vector<float> > pairP = make_pair(point,featuresR);
-			
+
 			features.push_back(pairP);
 		}
 	}
-	
+
 	virtual void extractFeatures(Mat& source,vector< cv::KeyPoint>& keypoints, Mat& features) = 0;
-	
+
 	virtual int getDescriptorSize() = 0;
-	
+
 	virtual string getName() = 0;
-	
+
 	virtual void* createType(string &typeId) = 0;
-	
-		IDataModel::type getType(){
+
+    IDataModel::type getType(){
 		return IDataModel::NKEYPOINT;
 	}
 };

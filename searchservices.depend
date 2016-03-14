@@ -194,7 +194,7 @@
 	"../FactoryAnalyser.h"
 	<map>
 
-1390951648 /home/amourao/code/searchservices/analyser/nKeypoint/KeypointFeatureExtractor.h
+1457707057 /home/amourao/code/searchservices/analyser/nKeypoint/KeypointFeatureExtractor.h
 	<opencv2/core/core.hpp>
 	<opencv2/highgui/highgui.hpp>
 	<opencv2/imgproc/imgproc.hpp>
@@ -711,16 +711,17 @@
 1443707179 source:/home/amourao/code/searchservices/commons/factory/Factory.cpp
 	"Factory.h"
 
-1457706396 source:/home/amourao/code/searchservices/commons/FileDownloader.cpp
+1457963690 source:/home/amourao/code/searchservices/commons/FileDownloader.cpp
 	"FileDownloader.h"
 
-1418384655 /home/amourao/code/searchservices/commons/FileDownloader.h
+1457963772 /home/amourao/code/searchservices/commons/FileDownloader.h
 	<curl/curl.h>
 	<string>
 	<cstdio>
 	<vector>
 	<sstream>
 	<iostream>
+	<fstream>
 	<stdio.h>
 	<stdlib.h>
 	<time.h>
@@ -829,10 +830,10 @@
 	<Poco/Net/HTTPServerResponse.h>
 	"../commons/factory/Factory.h"
 
-1434546088 source:/home/amourao/code/searchservices/rest/Endpoints/analyser/ExtractFeatures.cpp
+1457963895 source:/home/amourao/code/searchservices/rest/Endpoints/analyser/ExtractFeatures.cpp
 	"ExtractFeatures.h"
 
-1418384655 /home/amourao/code/searchservices/rest/Endpoints/analyser/ExtractFeatures.h
+1457711263 /home/amourao/code/searchservices/rest/Endpoints/analyser/ExtractFeatures.h
 	<iostream>
 	<sstream>
 	<map>
@@ -844,6 +845,7 @@
 	"../../../analyser/sources/TextFileSourceV2.h"
 	"../../IEndpoint.h"
 	<jsoncpp/json/json.h>
+	<jsoncpp/json/writer.h>
 	<jsoncpp/json/autolink.h>
 	"../../../commons/FileDownloader.h"
 

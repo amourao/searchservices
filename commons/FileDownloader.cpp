@@ -22,7 +22,8 @@ int FileDownloader::getFile(std::string url, std::string location){
   CURL *curl;
   CURLcode res;
 
-  cout << url << endl;
+
+  //cout << url << endl;
   url = StringTools::replaceAll(url," ", "%20");
   if (url == ""){
     return -3;
@@ -67,21 +68,26 @@ std::vector<std::string> FileDownloader::getFiles(std::string url){
 }
 
 std::string FileDownloader::getFile(std::string url, int& status){
-  std::stringstream ss;
-  std::string name;
-  ss << baseFolder << StringTools::genRandom(RANDOM_NAME_SIZE) << "." << getExtension(url);
-  name = ss.str();
-  status = getFile(url,name);
-  return name;
+    if(url.find("/") == 0){ // is local file
+        std::ifstream infile(url);
+        if (!infile.good())
+            status = -4;
+        else
+            status = 0;
+        return url;
+    } else { // is remote file, copy to localstore
+        std::stringstream ss;
+        std::string name;
+        ss << baseFolder << StringTools::genRandom(RANDOM_NAME_SIZE) << "." << getExtension(url);
+        name = ss.str();
+        status = getFile(url,name);
+        return name;
+    }
 }
 
 std::string FileDownloader::getFile(std::string url){
-  std::stringstream ss;
-  std::string name;
-  ss << baseFolder << StringTools::genRandom(RANDOM_NAME_SIZE) << "." << getExtension(url);
-  name = ss.str();
-  getFile(url,name);
-  return name;
+    int i = 0;
+    return getFile(url,i);
 }
 
 

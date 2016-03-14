@@ -55,53 +55,85 @@ void ExtractFeatures::handleRequest(string method, map<string, string> queryStri
 
 string ExtractFeatures::getFeaturesSingle(map<string, string > parameters){
 
-	FileDownloader fd;
+    Json::Value root;
 
-	string filename = fd.getFile(parameters["url"]);
-	string extractorName = parameters["extractor"];
+    try{
+
+        FileDownloader fd;
 
 
-	FactoryAnalyser * f = FactoryAnalyser::getInstance();
+        int filenameStatus;
+        string filename = fd.getFile(parameters["url"],filenameStatus);
+        string extractorName = parameters["extractor"];
 
-	f->listTypes();
-	IAnalyser* extractor= (IAnalyser*)f->createType(extractorName);
-	IDataModel* data = extractor->getFeatures(filename);
-	vector<float>* features = (vector<float>*) data->getValue();
 
-	for (uint i = 0; i < features->size(); i++){
-		cout << features->at(i) << " " ;
-	}
-	cout << endl;
+        FactoryAnalyser * f = FactoryAnalyser::getInstance();
 
-	Json::Value root;
-	Json::Value results;
+        IAnalyser* extractor = (IAnalyser*)f->createType(extractorName);
 
-	Json::Value featureArray(Json::arrayValue);
-	for (uint i = 0; i < features->size(); i++){
 
-		featureArray.append(features->at(i));
-		//cout << features->at(i) << " " ;
-	}
-	/*
-	for(int i = 0; i < 8; i++)
-	{
-		Json::Value result;
-		Json::Value tags;
-		result["id"] = rand() % 25000;
-		result["rank"] = rand() % 10;
-		result["path"] = "/some/path/";
-		result["title"] = "randomTitle";
-		tags["0"] = "tag1";
-		tags["1"] = "tag2";
-		tags["2"] = "tag3";
-		result["tags"] = tags;
-		results[i] = result;
-	}
-	*/
-	root["result"] = featureArray;
-	stringstream ss;
-	ss << root;
-	return ss.str();
+        IDataModel* data;
+
+        if (filenameStatus < 0){
+            root["message"] = "File does not exist/Error reading file: " + std::to_string(filenameStatus);
+            root["error"] = "";
+        } else if (extractor == NULL){
+            root["message"] = "Extractor does not exist";
+            root["error"] = "";
+        } else if (extractor->getType() == IDataModel::NVECTOR){
+            data = extractor->getFeatures(filename);
+
+            vector<float>* features = (vector<float>*) data->getValue();
+
+            Json::Value featureArray(Json::arrayValue);
+            for (uint i = 0; i < features->size(); i++){
+                featureArray.append(features->at(i));
+                //cout << features->at(i) << " " ;
+            }
+            root["result"] = featureArray;
+            root["type"] = "IDataModel::NVECTOR";
+
+        } else if (extractor->getType() == IDataModel::NKEYPOINT){
+            data = extractor->getFeatures(filename);
+
+            vector<pair<vector<float>,vector<float> > >* features = (vector<pair<vector<float>,vector<float> > >*) data->getValue();
+            Json::Value featurePointArray(Json::arrayValue);
+            for (auto &point : *features){
+                vector<float> pointInfo = point.first;
+                vector<float> featureVec = point.second;
+
+                Json::Value featurePoint;
+                Json::Value featureArray(Json::arrayValue);
+
+                featurePoint["x"] = pointInfo.at(0);
+                featurePoint["y"] = pointInfo.at(1);
+                featurePoint["angle"] = pointInfo.at(2);
+                featurePoint["size"] = pointInfo.at(3);
+                featurePoint["response"] = pointInfo.at(4);
+                featurePoint["octave"] = pointInfo.at(5);
+                featurePoint["class_id"] = pointInfo.at(6);
+
+                for (uint i = 0; i < featureVec.size(); i++){
+                    featureArray.append(featureVec.at(i));
+                    //cout << features->at(i) << " " ;
+                }
+
+                featurePoint["features"] = featureArray;
+
+                featurePointArray.append(featurePoint);
+            }
+            root["result"] = featurePointArray;
+            root["type"] = "IDataModel::NKEYPOINT";
+        }
+    } catch(exception& e){
+        root["message"] = e.what();
+        root["error"] = "";
+    } catch(...){
+        root["message"] = "Unknown error";
+        root["error"] = "";
+    }
+    Json::FastWriter writter;
+	return writter.write(root);
 }
 
 void ExtractFeatures::exportLabels(string filename, vector<map<string, int> > labels){
