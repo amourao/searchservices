@@ -15,7 +15,7 @@ CFLAGS = -O2 -std=c++11 -Wall -fexceptions -fopenmp -DREAL_FLOAT -DUSE_GIST -DST
 RESINC = 
 LIBDIR = 
 LIB = 
-LDFLAGS = -fopenmp -ljsoncpp -lopencv_core -lopencv_imgproc -lopencv_calib3d -lopencv_video -lopencv_photo -lopencv_features2d -lopencv_xfeatures2d -lopencv_ml -lopencv_highgui -lopencv_objdetect -lfftw3 -lfftw3f -lm -lopencv_flann -larmadillo -lPocoFoundation -lPocoData -lPocoDataSQLite -lPocoNet -lPocoXML -lPocoJSON -lPocoUtil -lcurl -ldb -ldb_cxx  -fopenmp
+LDFLAGS = -fopenmp -ljsoncpp -lopencv_core -lopencv_imgcodecs -lopencv_imgproc -lopencv_calib3d -lopencv_videoio -lopencv_video -lopencv_photo -lopencv_features2d -lopencv_xfeatures2d -lopencv_ml -lopencv_highgui -lopencv_objdetect -lfftw3 -lfftw3f -lm -lopencv_flann -larmadillo -lPocoFoundation -lPocoData -lPocoDataSQLite -lPocoNet -lPocoXML -lPocoJSON -lPocoUtil -lcurl -ldb -ldb_cxx  -fopenmp
 
 INC_RELEASEMAININD = $(INC) -Icommons
 CFLAGS_RELEASEMAININD = $(CFLAGS) -O2
