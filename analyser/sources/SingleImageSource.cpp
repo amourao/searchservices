@@ -1,7 +1,7 @@
 #include "SingleImageSource.h"
 
 
-SingleImageSource::SingleImageSource(string filename){
+SingleImageSource::SingleImageSource(std::string filename){
 	image = imread(filename, CV_LOAD_IMAGE_COLOR);
 }
 
@@ -9,12 +9,12 @@ SingleImageSource::~SingleImageSource(){
 
 }
 
-Mat SingleImageSource::nextImage(){
+cv::Mat SingleImageSource::nextImage(){
 	return image;
 
 }
 
-string SingleImageSource::getImageInfo(){
+std::string SingleImageSource::getImageInfo(){
 	return "";
 }
 

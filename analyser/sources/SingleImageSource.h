@@ -8,18 +8,18 @@ class SingleImageSource :
 	public ImageSource
 {
 public:
-	SingleImageSource(string filename);
+	SingleImageSource(std::string filename);
 	~SingleImageSource();
 
-	Mat nextImage();
-	string getImageInfo();
+	cv::Mat nextImage();
+	std::string getImageInfo();
 	bool isAvailable();
 	int getImageCount();
 	int getRemainingImageCount();
 
 private:
 
-	Mat image;
+	cv::Mat image;
 
 };
 

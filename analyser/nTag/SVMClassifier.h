@@ -35,7 +35,7 @@ public:
 	string getName();
 private:
 
-	CvSVM* svm;
+	cv::Ptr<cv::ml::SVM> svm;
 	string type;
 };
 
