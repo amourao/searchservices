@@ -49,6 +49,8 @@ public:
 
 	string getName();
 
+	
+
 	unsigned long totalQueryTime = 0;
     tp totalQueryTimeStart;
 
@@ -79,6 +81,9 @@ public:
 	unsigned long totalPreMarshallingTime = 0;
 	tp totalPreMarshallingTimeStart;
 
+	unsigned long totalPostMarshallingTime = 0;
+	tp totalPostMarshallingTimeStart;
+
 	unsigned long totalNQueries = 0;
 	unsigned long missedPackages = 0;
 	unsigned long totalRequests = 0;
@@ -95,6 +100,10 @@ private:
 	int timeoutTime;
 
 	bool posOnly;
+
+	bool startFromPivot;
+    bool doFinalSort;
+    bool doFinalSortCoeff;
 
 	Poco::Net::SocketAddress clientAddress;
 

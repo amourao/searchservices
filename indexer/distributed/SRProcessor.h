@@ -22,9 +22,9 @@
 #include "../../analyser/tools/MatrixTools.h"
 #include "../../analyser/tools/oneBillionImporterB.h"
 
-#ifdef SINGLETHREADED
-   #include <omp.h>
-#endif
+
+#include <omp.h>
+
 
 #include <armadillo>
 
@@ -66,6 +66,12 @@ public:
 
     Poco::Thread _thread;
 
+	unsigned long totalLoadingBucketTime = 0;
+	tp totalLoadingBucketTimeStart;
+
+	unsigned long totalLoadingVectorsTime = 0;
+	tp totalLoadingVectorsTimeStart;
+
     unsigned long totalTime = 0;
     tp totalTimeStart;
 
@@ -103,9 +109,7 @@ public:
     map<string,string> paramsB;
     vector<uindex> lidTogid;
 
-    bool startFromPivot = false;
-    bool doFinalSort = true;
-    bool doFinalSortCoeff = false;
+
 
     bool         _stop;
 

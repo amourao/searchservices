@@ -27,15 +27,6 @@ SRProcessor<T>::SRProcessor(string& typeId, map<string,string>& params){
     if(params.count("offsetDataFile") > 0)
         offsetDataFile = std::stol(params["offsetDataFile"]);
 
-    if(params.find("startFromPivot") != params.end())
-        startFromPivot = true;
-
-    if(params.count("dontFinalSort") > 0)
-        doFinalSort = false;
-
-    if(params.count("doFinalSortCoeff") > 0)
-        doFinalSortCoeff = true;
-
     _socket.bind(Poco::Net::SocketAddress("0.0.0.0", std::stoi(params["port"])), false);
 	_thread.start(*this);
 	_ready.wait();
@@ -81,6 +72,8 @@ QueryStructRsp SRProcessor<T>::index(QueryStructReq& queryS){
     return result;
 }
 
+
+
 template <typename T>
 QueryStructRsp SRProcessor<T>::knnSearchIdLong(QueryStructReq& queryS){
 
@@ -92,6 +85,10 @@ QueryStructRsp SRProcessor<T>::knnSearchIdLong(QueryStructReq& queryS){
     int n = queryS.parameters[0];
     double search_limit = queryS.parameters[1];
     float nQuery = queryS.parameters[2];
+
+    bool startFromPivot = ((int)queryS.parameters[3]) == 1;
+    bool doFinalSort = ((int)queryS.parameters[4]) == 1;
+    bool doFinalSortCoeff = ((int)queryS.parameters[5]) == 1;
 
     uint estimatedCandidateSize = 50;
 
@@ -275,6 +272,10 @@ void SRProcessor<T>::run(){
             char* inBuffer = NULL;
 			try	{
                 #ifdef MEASURE_TIME
+                    unsigned long  totalTimeQ = 0;
+                    unsigned long  totalCommunicationReceiveTimeQ = 0;
+                    unsigned long  totalPreMarshallingTimeQ = 0;
+                    unsigned long  totalCommunicationSendTimeQ = 0; 
                     totalNQueries++;
                     totalTimeStart = NOW();
                     totalCommunicationReceiveTimeStart = NOW();
@@ -285,7 +286,8 @@ void SRProcessor<T>::run(){
 				int n =  _socket.receiveFrom(inBuffer, _bufferSize, sender);
 
 				#ifdef MEASURE_TIME
-                    totalCommunicationReceiveTime += ELAPSED(totalCommunicationReceiveTimeStart);
+                    totalCommunicationReceiveTimeQ = ELAPSED(totalCommunicationReceiveTimeStart);
+                    totalCommunicationReceiveTime += totalCommunicationReceiveTimeQ;
                 #endif
                 //cout << "Processor " << _socket.address().host().toString() << ":" << _socket.address().port()  << "  received: " <<  n << " from " << sender.host().toString() << ":" << sender.port() << endl;
                 //_socket.sendTo(inputVector, outputVector);
@@ -317,7 +319,8 @@ void SRProcessor<T>::run(){
                 }
 
                 #ifdef MEASURE_TIME
-                    totalPreMarshallingTime += ELAPSED(totalPreMarshallingTimeStart);
+                    totalPreMarshallingTimeQ = ELAPSED(totalPreMarshallingTimeStart);
+                    totalPreMarshallingTime += totalPreMarshallingTimeQ;
                     totalCommunicationSendTimeStart = NOW();
                 #endif
 
@@ -325,22 +328,33 @@ void SRProcessor<T>::run(){
                 //cout << "Processor " << _socket.address().host().toString() << ":" << _socket.address().port()  << " sent: " << n << endl;
 
                 #ifdef MEASURE_TIME
-                    totalCommunicationSendTime += ELAPSED(totalCommunicationSendTimeStart);
-                    totalTime += ELAPSED(totalTimeStart);
+                    totalCommunicationSendTimeQ += ELAPSED(totalCommunicationSendTimeStart);
+                    totalCommunicationSendTime = totalCommunicationSendTimeQ;
+
+                    totalTimeQ = ELAPSED(totalTimeStart);
+                    totalTime += totalTimeQ ;
                 #endif
+
                 if(responses.size() > 0){
                     if(responses[0].operation == 1){
-                        /*
+                        
                         cout << "R;" << responses[0].parameters[2] << ";";
                         for(uint j = 0; j < responses[0].indexes.size(); j++){
                             cout << responses[0].indexes[j] << "," << responses[0].dists[j] << ";";
                         }
+
                         cout << endl;
-                        */
+                        cout << "QT;" << responses[0].parameters[2] << ";" << totalTimeQ<< ";" << totalCommunicationReceiveTimeQ << ";" << totalPreMarshallingTimeQ << ";" << totalCommunicationSendTimeQ << endl;
+                        
                     } else if(responses[0].operation == 10){
                         cout << "Sending statistics" << endl;
                     }
 
+                }
+
+                if(responses[0].operation == 11){
+                    cout << "Stopping server" << endl;
+                    _stop = true;
                 }
 
 			} catch (Poco::Exception& exc){
@@ -361,6 +375,10 @@ vector<QueryStructRsp> SRProcessor<T>::processQueries(char* input){
     uint numOps = (uint)input[0];
     uint accumBytes = 1;
     vector<QueryStructRsp> result;
+
+    #ifdef MEASURE_TIME
+            totalMarshallingTimeStart = NOW();
+    #endif
 
     for (uint i = 0; i < numOps; i++){
         #ifdef MEASURE_TIME
@@ -761,6 +779,10 @@ bool SRProcessor<T>::loadBilionMultiFile(string coeffs, string dataPath){
     cout << "base: " << getMem()*1000 << endl;
     int baseMem = getMem()*1000;
 
+    #ifdef MEASURE_TIME
+        totalLoadingBucketTimeStart = NOW();
+    #endif
+
     lidTogid.clear();
     indexData = std::vector<std::vector<Coefficient>>(bucketCount);
 
@@ -779,12 +801,29 @@ bool SRProcessor<T>::loadBilionMultiFile(string coeffs, string dataPath){
 
     cout << "To import " << lidTogid.size() << " of " << indCount << " possible" << endl;
     int memInter = (getMem()*1000)-baseMem;
+
+
+
+    #ifdef MEASURE_TIME
+        totalLoadingBucketTime += ELAPSED(totalLoadingBucketTimeStart);
+        totalLoadingVectorsTimeStart = NOW();
+    #endif
+
+    cout << "LC;" << totalLoadingBucketTime << endl;
+
     cout << "Importing vectors" << endl;
     oneBillionImporterB ob;
     ob.readBin(dataPath,data,lidTogid,2000000L,offsetDataFile);
     cout << "Importing vectors... done" << endl;
 
     cout << "Imported " << data.n_cols << endl;
+
+    #ifdef MEASURE_TIME
+        totalLoadingVectorsTime += ELAPSED(totalLoadingVectorsTimeStart);
+    #endif
+    cout << "Imported " << data.n_cols << endl;
+    cout << "LFV;" << totalLoadingVectorsTime << endl;
+
     //long totalMem = data.n_cols*(long)128;
     //totalMem += lidTogid.size()*4+indCount*8;
     //cout << (getMem()*1000)-baseMem << " " << totalMem << " " << (getMem()*1000)-baseMem-memInter << " " << data.n_cols*(long)128  << endl;
@@ -875,7 +914,7 @@ int SRProcessor<T>::getClosestPivot(float coeff, vector<Coefficient>& bucket){
 		float currentCoeff = bucket.at(imid).value;
 		float diff = coeff-currentCoeff;
 		//cout << "d: " << imin << " " << imid << " " << imax << " " << coeff << " " << currentCoeff << " " << diff << " " << bucket.at(imid).vector_pos << endl;
-		if (abs(diff) < 0.00001)
+        if (abs(diff) < 0.0001)
 			return imid;
         //else if (abs(lastDiff) < abs(diff))
         //    return bestMid;

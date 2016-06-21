@@ -26,6 +26,15 @@ SRMaster::SRMaster(string& typeId, map<string,string>& params){
 
     string serversString = params["servers"];
 
+    if(params.count("startFromPivot") > 0)
+        startFromPivot = true;
+
+    if(params.count("doFinalSort") > 0)
+        doFinalSort = true;
+
+    if(params.count("doFinalSortCoeff") > 0)
+        doFinalSortCoeff = true;
+
     posOnly = params.find("positiveOnly") != params.end();
 
     vector<string> servers = StringTools::split(serversString,';');
@@ -44,6 +53,14 @@ SRMaster::~SRMaster(){
 
 std::pair<vector<uindex>,vector<float> > SRMaster::knnSearchIdLong(arma::fmat& query, int n, float search_limit){
     #ifdef MEASURE_TIME
+        unsigned long totalQueryTimeQ = 0;
+        unsigned long totalSRTimeQ = 0;
+        unsigned long totalRelServerTimeQ = 0;
+        unsigned long totalPreMarshallingTimeQ = 0;
+        unsigned long totalAllServerTimeQ = 0;
+        unsigned long totalPostMarshallingTimeQ = 0;
+        unsigned long totalSortTimeQ = 0;
+
         totalNQueries++;
         totalQueryTimeStart = NOW();
         totalSRTimeStart = NOW();
@@ -64,7 +81,9 @@ std::pair<vector<uindex>,vector<float> > SRMaster::knnSearchIdLong(arma::fmat& q
     sparseRep = sparseRep.t();
 
     #ifdef MEASURE_TIME
-        totalSRTime += ELAPSED(totalSRTimeStart);
+        totalSRTimeQ = ELAPSED(totalSRTimeStart);
+        totalSRTime += totalSRTimeQ;
+        
         totalRelServerTimeStart = NOW();
     #endif
 
@@ -72,7 +91,11 @@ std::pair<vector<uindex>,vector<float> > SRMaster::knnSearchIdLong(arma::fmat& q
 
 
     #ifdef MEASURE_TIME
-        totalRelServerTime += ELAPSED(totalRelServerTimeStart);
+    
+        
+        totalRelServerTimeQ = ELAPSED(totalRelServerTimeStart);
+        totalRelServerTime += totalRelServerTimeQ;
+
         totalPreMarshallingTimeStart = NOW();
     #endif
 
@@ -81,26 +104,33 @@ std::pair<vector<uindex>,vector<float> > SRMaster::knnSearchIdLong(arma::fmat& q
     q.parameters.push_back(n);
     q.parameters.push_back(search_limit);
     q.parameters.push_back(totalNQueries-1);
+
+    q.parameters.push_back((int)startFromPivot);
+    q.parameters.push_back((int)doFinalSort);
+    q.parameters.push_back((int)doFinalSortCoeff);
+
     q.operation = 1;
 
-
+    float coeffSum = 0;
     for(uint i = 0; i < sparseRep.n_rows; i++){
         if( (posOnly && sparseRep(i,0) > 0) ||  (!posOnly && sparseRep(i,0) != 0) ){
             q.buckets.push_back(i);
             q.coeffs.push_back(sparseRep(i,0));
+            coeffSum+=abs(sparseRep(i,0));
         }
     }
+    q.parameters.push_back(coeffSum);
 
     #ifdef MEASURE_TIME
         totalRequests+=servers.size();
-        totalPreMarshallingTime += ELAPSED(totalPreMarshallingTimeStart);
+
+        totalPreMarshallingTimeQ = ELAPSED(totalPreMarshallingTimeStart);
+        totalPreMarshallingTime += totalPreMarshallingTimeQ; 
         totalAllServerTimeStart = NOW();
     #endif
 
 
     vector<QueryStructRsp> output;
-
-
 
     #pragma omp parallel for schedule(dynamic)
     for(uint i = 0; i < servers.size(); i++){
@@ -116,12 +146,12 @@ std::pair<vector<uindex>,vector<float> > SRMaster::knnSearchIdLong(arma::fmat& q
             sendMessage(input,outputIn,client_address,server_address);
         }
         if(outputIn.size() == 0){
-            #pragma omp critical
-            {
-                #ifdef MEASURE_TIME
-                    missedPackages++;
-                #endif
-            }
+            #ifdef MEASURE_TIME
+                #pragma omp critical
+                {
+                        missedPackages++;
+                }
+            #endif
             cout << "Master " << client_address.host().toString() << ":" << client_address.port() << " failed to receive response from " << server_address.host().toString() << ":" << server_address.port() << endl;
         }
 
@@ -133,8 +163,11 @@ std::pair<vector<uindex>,vector<float> > SRMaster::knnSearchIdLong(arma::fmat& q
     }
 
     #ifdef MEASURE_TIME
-        totalAllServerTime += ELAPSED(totalAllServerTimeStart);
-        totalPreMarshallingTimeStart = NOW();
+        
+        totalAllServerTimeQ = ELAPSED(totalAllServerTimeStart);
+        totalAllServerTime += totalAllServerTimeQ;
+
+        totalPostMarshallingTimeStart = NOW();
     #endif
 
     for(uint s = 0; s < output.size(); s++){
@@ -148,13 +181,9 @@ std::pair<vector<uindex>,vector<float> > SRMaster::knnSearchIdLong(arma::fmat& q
         }
     }
     #ifdef MEASURE_TIME
-        totalPreMarshallingTime += ELAPSED(totalPreMarshallingTimeStart);
-    #endif
-
-
-
-    #ifdef MEASURE_TIME
-            totalSortTimeStart = NOW();
+        totalPostMarshallingTimeQ = ELAPSED(totalPostMarshallingTimeStart);
+        totalPostMarshallingTime += totalPostMarshallingTimeQ;
+        totalSortTimeStart = NOW();
     #endif
 
     auto compare = [](float a, float b){ return a < b; };
@@ -164,9 +193,16 @@ std::pair<vector<uindex>,vector<float> > SRMaster::knnSearchIdLong(arma::fmat& q
     indices = MatrixTools::applyPermutation(indices, p, n);
 
     #ifdef MEASURE_TIME
-            totalQueryTime += ELAPSED(totalQueryTimeStart);
-            totalSortTime += ELAPSED(totalSortTimeStart);
+            totalSortTimeQ = ELAPSED(totalSortTimeStart);
+            totalQueryTimeQ =  ELAPSED(totalQueryTimeStart);
+            totalQueryTime += totalQueryTimeQ;
+            totalSortTime += totalSortTimeQ;
     #endif
+
+    #ifdef MEASURE_TIME
+        cout << "T1;" <<  totalNQueries-1 << ";" << (totalQueryTimeQ) << ";" << (totalSRTimeQ) << ";" << (totalRelServerTimeQ) << ";" << (totalPreMarshallingTimeQ) << ";" << (totalAllServerTimeQ) << ";" << (totalPostMarshallingTimeQ) << ";" << (totalSortTimeQ) << endl; 
+    #endif
+
 	return make_pair(indices,dists);
 }
 
@@ -189,8 +225,23 @@ int SRMaster::addToIndexLive(arma::fmat& features){
 void SRMaster::sendMessage(vector<QueryStructReq>& query, vector<QueryStructRsp>& output, Poco::Net::SocketAddress& client, Poco::Net::SocketAddress& server){
 
     #ifdef MEASURE_TIME
+
+        unsigned long totalReqTimeQ = 0;
+        unsigned long totalMarshallingTimeQ = 0;
+        unsigned long totalRequestComunicationTimeQ = 0;
+        unsigned long totalRequestComunicationSendTimeQ = 0;
+        unsigned long totalRequestComunicationRecTimeQ = 0;
+        unsigned long totalPreMarshallingTimeQ = 0;
+        unsigned long totalAllServerTimeQ = 0;
+        unsigned long totalPostMarshallingTimeQ = 0;
+        unsigned long totalSortTimeQ = 0;
+
         tp _totalMarshallingTimeStart = NOW();
+        tp _totalReqTimeStart = NOW();
+
+        
     #endif
+
     char numOps = (char)query.size();
     uint totalSize = 1;
     for (uint i = 0; i < query.size(); i++){
@@ -207,7 +258,9 @@ void SRMaster::sendMessage(vector<QueryStructReq>& query, vector<QueryStructRsp>
         curByte+=query[i].totalByteSize;
     }
     #ifdef MEASURE_TIME
-        totalMarshallingTime += ELAPSED(_totalMarshallingTimeStart);
+        totalMarshallingTimeQ = ELAPSED(_totalMarshallingTimeStart);
+        totalMarshallingTime += totalMarshallingTimeQ;
+
         tp _totalCommunicationTimeStart = NOW();
         tp _totalCommunicationSendTimeStart = NOW();
     #endif
@@ -221,7 +274,9 @@ void SRMaster::sendMessage(vector<QueryStructReq>& query, vector<QueryStructRsp>
     //cout << "Master " << client.host().toString() << ":" << client.port()  << " sent " << sent << " to " << server.host().toString() << ":" << server.port() << endl;
 
     #ifdef MEASURE_TIME
-        totalCommunicationSendTime += ELAPSED(_totalCommunicationSendTimeStart);
+        totalRequestComunicationSendTimeQ = ELAPSED(_totalCommunicationSendTimeStart);
+        
+        totalCommunicationSendTime += totalRequestComunicationSendTimeQ;
         tp _totalCommunicationReceiveTimeStart = NOW();
     #endif
     //std::ofstream outfile ("master.bin",std::ofstream::binary);
@@ -235,8 +290,12 @@ void SRMaster::sendMessage(vector<QueryStructReq>& query, vector<QueryStructRsp>
         floatBufferSize = dgs.receiveBytes(outputBytes,bufferSize);
         cout << "Master " << client.host().toString() << ":" << client.port()  << " received " << floatBufferSize << " from " << server.host().toString() << ":" << server.port() << endl;
         #ifdef MEASURE_TIME
-            totalCommunicationReceiveTime += ELAPSED(_totalCommunicationReceiveTimeStart);
-            totalCommunicationTime += ELAPSED(_totalCommunicationTimeStart);
+            totalRequestComunicationTimeQ = ELAPSED(_totalCommunicationTimeStart);
+            totalCommunicationTime += totalRequestComunicationTimeQ;
+
+            totalRequestComunicationRecTimeQ = ELAPSED(_totalCommunicationReceiveTimeStart);
+            totalCommunicationReceiveTime += totalRequestComunicationRecTimeQ; 
+            
             tp _totalMarshallingTimeStart = NOW();
         #endif
         //uint numOpsRsp = (uint)outputBytes[0];
@@ -255,12 +314,20 @@ void SRMaster::sendMessage(vector<QueryStructReq>& query, vector<QueryStructRsp>
         }
 
         #ifdef MEASURE_TIME
-            totalMarshallingTime += ELAPSED(_totalMarshallingTimeStart);
+            totalReqTimeQ = ELAPSED(_totalReqTimeStart);
+            totalPostMarshallingTimeQ = ELAPSED(_totalMarshallingTimeStart);
+            totalMarshallingTime += totalPostMarshallingTimeQ;
         #endif
+
 
     } catch(Poco::TimeoutException t){
 
     }
+
+    #ifdef MEASURE_TIME
+        if(query.size() > 0 && query[0].parameters.size() > 2)
+            cout << "T2;" <<  query[0].parameters[2] << ";" << (totalReqTimeQ) << ";" << (totalMarshallingTimeQ) << ";" << (totalRequestComunicationTimeQ) << ";" << (totalRequestComunicationSendTimeQ) << ";" << (totalRequestComunicationRecTimeQ) << ";" << (totalPreMarshallingTimeQ) << ";" << (totalAllServerTimeQ) << ";" << (totalPostMarshallingTimeQ) << ";" << (totalSortTimeQ) << endl; 
+    #endif
     delete[] outputBytes;
     //float* floatBuffer = reinterpret_cast<float*>(buffer);
 	//output.insert(output.end(), &buffer[0], &buffer[floatBufferSize]);
@@ -273,24 +340,22 @@ vector<Poco::Net::SocketAddress> SRMaster::getRelevantServers(arma::fmat& sparse
 
     uint repSize = sparseRep.n_rows;
     uint bucketsPerServer = repSize/(float)serverAddresses.size();
-    for(uint i = 0; i < serverAddresses.size()-1; i++){
-        arma::fmat subset = sparseRep.rows(i*bucketsPerServer,(i+1)*bucketsPerServer);
-        arma::uvec b = find(subset > 0);
+    for(uint i = 0; i < serverAddresses.size(); i++){
+        arma::fmat subset = sparseRep.rows(i*bucketsPerServer, min((i+1)*bucketsPerServer,(uint)sparseRep.n_rows)-1 );
+
+        arma::uvec b;
+        if(posOnly)
+            b = find(subset > 0);
+        else
+            b = find(subset != 0);
+
         uint count = b.n_rows;
         if(count > 0){
             results.push_back(serverAddresses.at(i));
             resultsIndex.push_back(i);
         }
     }
-    uint i = serverAddresses.size()-1;
-    arma::fmat subset = sparseRep.rows(i*bucketsPerServer,min((i+1)*bucketsPerServer,(uint)sparseRep.n_rows-1));
-    arma::uvec b = find(subset > 0);
-    int count = b.n_rows;
-    if(count > 0){
-        results.push_back(serverAddresses.at((serverAddresses.size()-1)));
-        resultsIndex.push_back(serverAddresses.size()-1);
-    }
-
+        
     string relServers = "Relevant servers: ";
     for(uint i = 0; i < results.size(); i++){
         relServers += std::to_string(resultsIndex.at(i)) + " ";
