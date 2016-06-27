@@ -46,6 +46,8 @@ public:
 
 	QueryStructRsp index(QueryStructReq& queryS);
 	QueryStructRsp knnSearchIdLong(QueryStructReq& queryS);
+	QueryStructRsp knnSearchIdLongL2(QueryStructReq& queryS);
+	QueryStructRsp knnSearchIdLongCoeffs(QueryStructReq& queryS);
 	QueryStructRsp getStatistics();
 
 	void rebuild();
@@ -77,6 +79,9 @@ public:
 
     unsigned long totalQueryTime = 0;
     tp totalQueryTimeStart;
+
+    unsigned long totalQueryTime2 = 0;
+    tp totalQueryTimeStart2;
 
 	unsigned long totalCommunicationReceiveTime = 0;
 	tp totalCommunicationReceiveTimeStart;

@@ -32,6 +32,9 @@ SRProcessor<T>::SRProcessor(string& typeId, map<string,string>& params){
 	_ready.wait();
 	_stop = false;
 
+    cout << "--------------------------------------------------------------------------------" << endl;
+    cout << "started Processor at " << _socket.address().host().toString() << ":" << params["port"] << endl;
+
 }
 
 template <typename T>
@@ -73,9 +76,22 @@ QueryStructRsp SRProcessor<T>::index(QueryStructReq& queryS){
 }
 
 
-
 template <typename T>
 QueryStructRsp SRProcessor<T>::knnSearchIdLong(QueryStructReq& queryS){
+    
+    bool doFinalSortCoeff = ((int)queryS.parameters[5]) == 1;
+
+    if(doFinalSortCoeff==true){
+        return knnSearchIdLongCoeffs(queryS);
+    } else {
+        return knnSearchIdLongL2(queryS);
+    }
+
+
+}
+
+template <typename T>
+QueryStructRsp SRProcessor<T>::knnSearchIdLongL2(QueryStructReq& queryS){
 
     arma::fmat queryT(&queryS.query[0],queryS.query.size(),1,false);
     arma::Mat<T> query = arma::conv_to<arma::Mat<T>>::from(queryT);
@@ -89,8 +105,15 @@ QueryStructRsp SRProcessor<T>::knnSearchIdLong(QueryStructReq& queryS){
     bool startFromPivot = ((int)queryS.parameters[3]) == 1;
     bool doFinalSort = ((int)queryS.parameters[4]) == 1;
     bool doFinalSortCoeff = ((int)queryS.parameters[5]) == 1;
+    float coeffSum = queryS.parameters[6];
 
-    uint estimatedCandidateSize = 50;
+    uint estimatedCandidateSize = 0;
+    
+    if(search_limit <= 1){
+        estimatedCandidateSize = maxIdToLoad*search_limit/5;
+    } else {
+        estimatedCandidateSize = search_limit;
+    }
 
     QueryStructRsp result;
 
@@ -99,12 +122,14 @@ QueryStructRsp SRProcessor<T>::knnSearchIdLong(QueryStructReq& queryS){
 
     indices.reserve(estimatedCandidateSize);
     dists.reserve(estimatedCandidateSize);
-
+    
     map<uindex, float> computedDists;
 
     #ifdef MEASURE_TIME
+        cout << "T;" << nQuery << ",1" << endl;
+        cout << "L;" << nQuery << "," << search_limit << "," << startFromPivot << "," << doFinalSort << "," << doFinalSortCoeff << endl;
         totalBucketTimeStart = NOW();
-    #endif
+    #endif 
 
     //#pragma omp parallel for schedule(dynamic)
     for(uint b = 0; b < buckets.size(); b++){
@@ -121,52 +146,62 @@ QueryStructRsp SRProcessor<T>::knnSearchIdLong(QueryStructReq& queryS){
 
             //cout << type << " " << bucket << " " << bucketOffset << endl;
             uint on = 0;
+            //if(search_limit <= 1)
+            //    on = indexData[bucket].size()*search_limit;
+            //else {
+            //    on = std::min((uint)indexData[bucket].size(),(uint)search_limit);
+            //}
             if(search_limit <= 1)
-                on = indexData[bucket].size()*search_limit;
+                on = std::min((uint)indexData[bucket].size(),(uint)(maxIdToLoad*search_limit* (queryBucketCoeff/coeffSum) ));
             else {
                 on = std::min((uint)indexData[bucket].size(),(uint)search_limit);
             }
+
+
             int start = 0;
             uint end = on;
             vector<Coefficient> candidates;
-            if (!startFromPivot || on == indexData[bucket].size()){ //search full bucket anyway
 
-                    candidates = vector<Coefficient>(indexData[bucket].begin(),indexData[bucket].begin()+on);
+            if (!startFromPivot || on == indexData[bucket].size()){ //search from the start
 
-               } else if (indexData[bucket].size() > 0){
+                candidates = vector<Coefficient>(indexData[bucket].begin(),indexData[bucket].begin()+on);
 
-                    uint closestPivotIndex = getClosestPivot(queryBucketCoeff,indexData[bucket]);
-                    uint overflow = 0;
-                    start = closestPivotIndex -on/2-1;
-                    if(start < 0){
-                        overflow = -start;
-                        start = 0;
-                    }
-                    end = closestPivotIndex+overflow+on/2;
-                    if(end >= indexData[bucket].size()){
-                        end = indexData[bucket].size()-1;
-                    }
-                    //  cout << endl << "b: " << indexData[bucket].size() << closestPivotIndex << " " << indexData[bucket][closestPivotIndex].vector_pos << " " << closestPivotIndex <<  " " << start << " " << end << " " << indexData[bucket].size() << endl << endl;
+            } else if (indexData[bucket].size() > 0){
 
-                    for(uint bi = start; bi < end; bi++){
-                        candidates.push_back(indexData[bucket][bi]);
-                    }
-                    //candidates = vector<Coefficient>(indexData[bucket].begin()+start,indexData[bucket].begin()+end);
+                uint closestPivotIndex = getClosestPivot(queryBucketCoeff,indexData[bucket]);
+                uint overflow = 0;
+                start = closestPivotIndex -on/2-1;
+                if(start < 0){
+                    overflow = -start;
+                    start = 0;
+                }
+                end = closestPivotIndex+overflow+on/2;
+                if(end >= indexData[bucket].size()){
+                    end = indexData[bucket].size()-1;
+                }
+                //  cout << endl << "b: " << indexData[bucket].size() << closestPivotIndex << " " << indexData[bucket][closestPivotIndex].vector_pos << " " << closestPivotIndex <<  " " << start << " " << end << " " << indexData[bucket].size() << endl << endl;
+                candidates.reserve(end-start);
+                for(uint bi = start; bi < end; bi++){
+                    candidates.push_back(indexData[bucket][bi]);
+                }
+                //candidates = vector<Coefficient>(indexData[bucket].begin()+start,indexData[bucket].begin()+end);
             }
-            #ifdef MEASURE_PER_BUCKET
-                cout << "B;" << (int)nQuery << "," << bucket << "," << queryBucketCoeff << "," << indexData[bucket].size() << "," << end-start;
+            
+            //#ifdef MEASURE_PER_BUCKET
+            //    cout << "B;" << (int)nQuery << "," << bucket << "," << queryBucketCoeff << "," << indexData[bucket].size() << "," << end-start;
+            //#endif
+
+            #ifdef MEASURE_TIME
+                cout << "B;" << nQuery << ";" << bucket << "," << indexData[bucket].size() << "," << on << "," << candidates.size() << "," << start << "," << end;
+                if(search_limit <= 1)
+                    cout << ";" << queryBucketCoeff/coeffSum << ";" << maxIdToLoad*search_limit* (queryBucketCoeff/coeffSum);
+                cout << endl;
+                totalNCandidatesInsp+=candidates.size();
             #endif
+
+            #pragma omp parallel for schedule(static)
             for(uint i = 0; i < candidates.size(); i++){
-
-                #ifdef MEASURE_TIME
-                    totalNCandidatesInsp++;
-                #endif
-
                 if (computedDists.find(candidates[i].vector_pos) == computedDists.end()){
-
-                    #ifdef MEASURE_TIME
-                        totalNCandidatesInspNonDup++;
-                    #endif
                     arma::Mat<T> candidate = data.col(candidates[i].vector_pos);
                     //normalizeColumns(candidate);
                     //normalizeColumns(query);
@@ -181,13 +216,13 @@ QueryStructRsp SRProcessor<T>::knnSearchIdLong(QueryStructReq& queryS){
                         computedDists[lid] = dist;
                     }
                 }
-                #ifdef MEASURE_PER_BUCKET
-                    cout << ";" << lidTogid[candidates[i].vector_pos] << "," << candidates[i].value << "," << computedDists[candidates[i].vector_pos];
-                #endif
+                //#ifdef MEASURE_PER_BUCKET
+                //    cout << ";" << lidTogid[candidates[i].vector_pos] << "," << candidates[i].value << "," << computedDists[candidates[i].vector_pos];
+                //#endif
             }
-            #ifdef MEASURE_PER_BUCKET
-                cout << endl;
-            #endif
+            //#ifdef MEASURE_PER_BUCKET
+            //    cout << endl;
+            //#endif
         }
     }
 
@@ -200,20 +235,184 @@ QueryStructRsp SRProcessor<T>::knnSearchIdLong(QueryStructReq& queryS){
     auto compare = [](float a, float b){ return a < b; };
     auto p = MatrixTools::sortPermutation(dists,compare);
 
+
     result.dists = MatrixTools::applyPermutation(dists, p, newN);
     result.indexes = MatrixTools::applyPermutation(indices, p, newN);
+
+    #ifdef MEASURE_TIME
+        totalSortTime += ELAPSED(totalSortTimeStart);
+    #endif
+
     result.operation = 1;
     result.parameters.push_back(n);
     result.parameters.push_back(newN);
     result.parameters.push_back(nQuery);
     result.totalByteSize = result.computeTotalByteSize();
 
+
+
+    return result;
+}
+
+
+template <typename T>
+QueryStructRsp SRProcessor<T>::knnSearchIdLongCoeffs(QueryStructReq& queryS){
+
+
+    vector<int> buckets = queryS.buckets;
+
+    int n = queryS.parameters[0];
+    double search_limit = queryS.parameters[1];
+    float nQuery = queryS.parameters[2];
+
+    bool startFromPivot = ((int)queryS.parameters[3]) == 1;
+    bool doFinalSort = ((int)queryS.parameters[4]) == 1;
+    bool doFinalSortCoeff = ((int)queryS.parameters[5]) == 1;
+    float coeffSum = queryS.parameters[6];
+
+    uint estimatedCandidateSize = 0;
+    
+    if(search_limit <= 1){
+        estimatedCandidateSize = maxIdToLoad*search_limit/5;
+    } else {
+        estimatedCandidateSize = search_limit;
+    }
+
+    QueryStructRsp result;
+
+    vector<uindex> indices;
+    vector<float> dists;
+
+    indices.reserve(estimatedCandidateSize);
+    dists.reserve(estimatedCandidateSize);
+    
+    #ifdef MEASURE_TIME
+        cout << "T;" << nQuery << ",2" << endl;
+        cout << "L;" << nQuery << "," << search_limit << "," << startFromPivot << "," << doFinalSort << "," << doFinalSortCoeff << endl;
+        totalBucketTimeStart = NOW();
+        
+    #endif 
+
+    //#pragma omp parallel for schedule(dynamic)
+    for(uint b = 0; b < buckets.size(); b++){
+        int bucket = buckets[b]-bucketOffset;
+        float queryBucketCoeff = queryS.coeffs[b];
+        #ifdef MEASURE_TIME
+                totalNBucketsReq++;
+        #endif
+        if (bucket >= 0 && bucket < indexData.size()){ //is one of this node buckets
+
+            #ifdef MEASURE_TIME
+                totalNBucketInsp++;
+            #endif
+
+            //cout << type << " " << bucket << " " << bucketOffset << endl;
+            uint on = 0;
+            //if(search_limit <= 1)
+            //    on = indexData[bucket].size()*search_limit;
+            //else {
+            //    on = std::min((uint)indexData[bucket].size(),(uint)search_limit);
+            //}
+            if(search_limit <= 1)
+                on = std::min((uint)indexData[bucket].size(),(uint)(maxIdToLoad*search_limit* (queryBucketCoeff/coeffSum) ));
+            else {
+                on = std::min((uint)indexData[bucket].size(),(uint)search_limit);
+            }
+
+
+            int start = 0;
+            uint end = on;
+            vector<Coefficient> candidates;
+
+            if (!startFromPivot || on == indexData[bucket].size()){ //search from the start
+
+                candidates = vector<Coefficient>(indexData[bucket].begin(),indexData[bucket].begin()+on);
+
+            } else if (indexData[bucket].size() > 0){
+
+                uint closestPivotIndex = getClosestPivot(queryBucketCoeff,indexData[bucket]);
+                uint overflow = 0;
+                start = closestPivotIndex -on/2-1;
+                if(start < 0){
+                    overflow = -start;
+                    start = 0;
+                }
+                end = closestPivotIndex+overflow+on/2;
+                if(end >= indexData[bucket].size()){
+                    end = indexData[bucket].size()-1;
+                }
+                //  cout << endl << "b: " << indexData[bucket].size() << closestPivotIndex << " " << indexData[bucket][closestPivotIndex].vector_pos << " " << closestPivotIndex <<  " " << start << " " << end << " " << indexData[bucket].size() << endl << endl;
+                candidates.reserve(end-start);
+                for(uint bi = start; bi < end; bi++){
+                    candidates.push_back(indexData[bucket][bi]);
+                }
+                //candidates = vector<Coefficient>(indexData[bucket].begin()+start,indexData[bucket].begin()+end);
+            }
+            
+            //#ifdef MEASURE_PER_BUCKET
+            //    cout << "B;" << (int)nQuery << "," << bucket << "," << queryBucketCoeff << "," << indexData[bucket].size() << "," << end-start;
+            //#endif
+
+            #ifdef MEASURE_TIME
+                cout << "B;" << nQuery << ";" << bucket << "," << indexData[bucket].size() << "," << on << "," << candidates.size() << "," << start << "," << end;
+                if(search_limit <= 1)
+                    cout << ";" << queryBucketCoeff/coeffSum << ";" << maxIdToLoad*search_limit* (queryBucketCoeff/coeffSum);
+                cout << endl;
+                totalNCandidatesInsp+=candidates.size();
+            #endif
+
+            #pragma omp parallel for schedule(static)
+            for(uint i = 0; i < candidates.size(); i++){
+                  //normalizeColumns(candidate);
+                    //normalizeColumns(query);
+                    float dist = abs(queryBucketCoeff-candidates[i].value);
+                    uindex lid = candidates[i].vector_pos;
+                    uindex gid = lidTogid[lid];
+                    //cout << "c: " << lid << " " << gid << " " <<  (float)candidate.at(2,0) << " " << (float)query.at(2,0) <<  " " << dist << endl;
+                    #pragma omp critical
+                    {
+                        indices.push_back(gid);
+                        dists.push_back(dist);
+                    }
+                
+                //#ifdef MEASURE_PER_BUCKET
+                //    cout << ";" << lidTogid[candidates[i].vector_pos] << "," << candidates[i].value << "," << computedDists[candidates[i].vector_pos];
+                //#endif
+            }
+            //#ifdef MEASURE_PER_BUCKET
+            //    cout << endl;
+            //#endif
+        }
+    }
+
+    #ifdef MEASURE_TIME
+        totalBucketTime += ELAPSED(totalBucketTimeStart);
+        totalSortTimeStart = NOW();
+    #endif
+    uint newN = min((uint)n,(uint)dists.size());
+
+    auto compare = [](float a, float b){ return a < b; };
+    auto p = MatrixTools::sortPermutation(dists,compare);
+
+
+    result.dists = MatrixTools::applyPermutation(dists, p, newN);
+    result.indexes = MatrixTools::applyPermutation(indices, p, newN);
+
     #ifdef MEASURE_TIME
         totalSortTime += ELAPSED(totalSortTimeStart);
     #endif
 
+    result.operation = 1;
+    result.parameters.push_back(n);
+    result.parameters.push_back(newN);
+    result.parameters.push_back(nQuery);
+    result.totalByteSize = result.computeTotalByteSize();
+
+
+
     return result;
 }
+
 
 template <typename T>
 QueryStructRsp SRProcessor<T>::getStatistics(){
@@ -276,6 +475,7 @@ void SRProcessor<T>::run(){
                     unsigned long  totalCommunicationReceiveTimeQ = 0;
                     unsigned long  totalPreMarshallingTimeQ = 0;
                     unsigned long  totalCommunicationSendTimeQ = 0; 
+
                     totalNQueries++;
                     totalTimeStart = NOW();
                     totalCommunicationReceiveTimeStart = NOW();
@@ -287,6 +487,7 @@ void SRProcessor<T>::run(){
 
 				#ifdef MEASURE_TIME
                     totalCommunicationReceiveTimeQ = ELAPSED(totalCommunicationReceiveTimeStart);
+                    totalQueryTimeStart2 = NOW();
                     totalCommunicationReceiveTime += totalCommunicationReceiveTimeQ;
                 #endif
                 //cout << "Processor " << _socket.address().host().toString() << ":" << _socket.address().port()  << "  received: " <<  n << " from " << sender.host().toString() << ":" << sender.port() << endl;
@@ -300,6 +501,7 @@ void SRProcessor<T>::run(){
 
 
                 #ifdef MEASURE_TIME
+                    totalQueryTime2 = ELAPSED(totalQueryTimeStart2);
                     totalPreMarshallingTimeStart = NOW();
                 #endif
 
@@ -332,19 +534,19 @@ void SRProcessor<T>::run(){
                     totalCommunicationSendTime = totalCommunicationSendTimeQ;
 
                     totalTimeQ = ELAPSED(totalTimeStart);
-                    totalTime += totalTimeQ ;
+                    totalTime += totalTimeQ;
                 #endif
 
                 if(responses.size() > 0){
                     if(responses[0].operation == 1){
                         
-                        cout << "R;" << responses[0].parameters[2] << ";";
+                        cout << "R;" << responses[0].parameters[2] << "," << responses[0].parameters[1] << "," << responses[0].parameters[3] << ";";
                         for(uint j = 0; j < responses[0].indexes.size(); j++){
                             cout << responses[0].indexes[j] << "," << responses[0].dists[j] << ";";
                         }
 
                         cout << endl;
-                        cout << "QT;" << responses[0].parameters[2] << ";" << totalTimeQ<< ";" << totalCommunicationReceiveTimeQ << ";" << totalPreMarshallingTimeQ << ";" << totalCommunicationSendTimeQ << endl;
+                        cout << "QT;" << responses[0].parameters[2] << ";" << totalTimeQ<< ";" << totalCommunicationReceiveTimeQ << ";" << totalQueryTime2 << ";" << totalPreMarshallingTimeQ << ";" << totalCommunicationSendTimeQ << endl;
                         
                     } else if(responses[0].operation == 10){
                         cout << "Sending statistics" << endl;
@@ -713,8 +915,7 @@ int SRProcessor<T>::loadB(string coeffs){
     cout << "\treading my " << bucketCount << " buckets" << endl;
     //cout << endl << nBuckets << " " << bucketOffset << " " << bucketCount << " " << curr << endl;
     for(long i = 0; i < bucketCount; i++){
-        uint loaded = 0;
-
+        
         string currCoeff = coeffs + std::to_string(i+bucketOffset) + ".bin";
         FILE * file = fopen(currCoeff.c_str(), "rb" );
         //cout << currCoeff << endl;
@@ -800,7 +1001,7 @@ bool SRProcessor<T>::loadBilionMultiFile(string coeffs, string dataPath){
     cout << "Parsing coefficients... done" << endl;
 
     cout << "To import " << lidTogid.size() << " of " << indCount << " possible" << endl;
-    int memInter = (getMem()*1000)-baseMem;
+    //int memInter = (getMem()*1000)-baseMem;
 
 
 
@@ -914,7 +1115,7 @@ int SRProcessor<T>::getClosestPivot(float coeff, vector<Coefficient>& bucket){
 		float currentCoeff = bucket.at(imid).value;
 		float diff = coeff-currentCoeff;
 		//cout << "d: " << imin << " " << imid << " " << imax << " " << coeff << " " << currentCoeff << " " << diff << " " << bucket.at(imid).vector_pos << endl;
-        if (abs(diff) < 0.0001)
+        if (abs(diff) < 0.00001)
 			return imid;
         //else if (abs(lastDiff) < abs(diff))
         //    return bestMid;

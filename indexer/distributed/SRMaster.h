@@ -40,6 +40,8 @@ public:
 	void index(arma::fmat& features);
 	void printProcessorsStatistics();
 
+
+
     std::pair<vector<uindex>,vector<float> > knnSearchIdLong(arma::fmat& query, int n, float search_limit);
 
 	bool save(string basePath);
@@ -93,6 +95,8 @@ private:
     void sendMessage(vector<QueryStructReq>& query, vector<QueryStructRsp>& output, Poco::Net::SocketAddress& client, Poco::Net::SocketAddress& server);
 
     vector<Poco::Net::SocketAddress> getRelevantServers(arma::fmat& query);
+
+    std::pair<std::vector<uindex>,std::vector<float>> computeScores(const std::vector<uindex>& ind, const std::vector<float>& dists);
 
 	string type;
 
