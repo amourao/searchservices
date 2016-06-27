@@ -397,7 +397,7 @@ vector<Poco::Net::SocketAddress> SRMaster::getRelevantServers(arma::fmat& sparse
         uint count = b.n_rows;
         if(count > 0){
             int bucket = i;
-            if(bucketTransposition.size() > 0)
+            if(bucketTransposition.empty())
                 bucket = bucketTransposition[bucket];
             results.push_back(serverAddresses.at(bucket));
             resultsIndex.push_back(bucket);

@@ -925,7 +925,7 @@ int SRProcessor<T>::loadB(string coeffs){
         uint currentBucketBeforeTrans = i+bucketOffset;
         uint currentBucket = currentBucketBeforeTrans;
 
-        if(bucketTransposition.size() > 0){
+        if(!bucketTransposition.empty()){
             currentBucket = bucketTransposition[currentBucket];
         }
         string currCoeff = coeffs + std::to_string(currentBucket) + ".bin";
@@ -998,8 +998,6 @@ bool SRProcessor<T>::loadBilionMultiFile(string coeffs, string dataPath){
 
     lidTogid.clear();
     indexData = std::vector<std::vector<Coefficient>>(bucketCount);
-
-
 
     cout << (getMem()*1000)-baseMem << endl;
     uint indCount = loadB(coeffs);
