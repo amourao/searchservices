@@ -27,6 +27,14 @@ SRProcessor<T>::SRProcessor(string& typeId, map<string,string>& params){
     if(params.count("offsetDataFile") > 0)
         offsetDataFile = std::stol(params["offsetDataFile"]);
 
+    if(params.count("bucketTransposition") > 0){
+        std::ifstream infile(params["bucketTransposition"]);
+        uint a;
+        while (infile >> a){
+            bucketTransposition.push_back(a);
+        }
+    }
+
     _socket.bind(Poco::Net::SocketAddress("0.0.0.0", std::stoi(params["port"])), false);
 	_thread.start(*this);
 	_ready.wait();
@@ -126,8 +134,7 @@ QueryStructRsp SRProcessor<T>::knnSearchIdLongL2(QueryStructReq& queryS){
     map<uindex, float> computedDists;
 
     #ifdef MEASURE_TIME
-        cout << "T;" << nQuery << ",1" << endl;
-        cout << "L;" << nQuery << "," << search_limit << "," << startFromPivot << "," << doFinalSort << "," << doFinalSortCoeff << endl;
+        cout << "L;" << nQuery << "," << maxIdToLoad << "," << search_limit << "," << startFromPivot << "," << doFinalSort << "," << doFinalSortCoeff << endl;
         totalBucketTimeStart = NOW();
     #endif 
 
@@ -287,7 +294,6 @@ QueryStructRsp SRProcessor<T>::knnSearchIdLongCoeffs(QueryStructReq& queryS){
     dists.reserve(estimatedCandidateSize);
     
     #ifdef MEASURE_TIME
-        cout << "T;" << nQuery << ",2" << endl;
         cout << "L;" << nQuery << "," << search_limit << "," << startFromPivot << "," << doFinalSort << "," << doFinalSortCoeff << endl;
         totalBucketTimeStart = NOW();
         
@@ -915,8 +921,14 @@ int SRProcessor<T>::loadB(string coeffs){
     cout << "\treading my " << bucketCount << " buckets" << endl;
     //cout << endl << nBuckets << " " << bucketOffset << " " << bucketCount << " " << curr << endl;
     for(long i = 0; i < bucketCount; i++){
-        
-        string currCoeff = coeffs + std::to_string(i+bucketOffset) + ".bin";
+
+        uint currentBucketBeforeTrans = i+bucketOffset;
+        uint currentBucket = currentBucketBeforeTrans;
+
+        if(bucketTransposition.size() > 0){
+            currentBucket = bucketTransposition[currentBucket];
+        }
+        string currCoeff = coeffs + std::to_string(currentBucket) + ".bin";
         FILE * file = fopen(currCoeff.c_str(), "rb" );
         //cout << currCoeff << endl;
         result = fread (buffer,1,sizeof(uint),file);
@@ -933,7 +945,7 @@ int SRProcessor<T>::loadB(string coeffs){
             indexData[i].reserve(std::min((int)co,debugLimitPerBucket));
 
         indCount+=co;
-        cout << "\t\tBucket " << i+bucketOffset << "( " << i << " +" << bucketOffset << ") has " << co << endl;
+        cout << "\t\tBucket " << currentBucket << " (" << currentBucketBeforeTrans << ") => ( " << i << " +" << bucketOffset << ") has " << co << endl;
         //bufferCoeffsInd += sizeof(uint);
 
         for(uint j = 0; j < co; j++){
@@ -1024,6 +1036,11 @@ bool SRProcessor<T>::loadBilionMultiFile(string coeffs, string dataPath){
     #endif
     cout << "Imported " << data.n_cols << endl;
     cout << "LFV;" << totalLoadingVectorsTime << endl;
+    cout << "Params;" << paramsB["nServers"] << ";" << paramsB["bucketCount"] << ";" << paramsB["bucketOffset"] << endl;
+    //"nServers": "32","bucketCount": "256"
+    
+
+    //"nServers": "32","bucketCount": "256"
 
     //long totalMem = data.n_cols*(long)128;
     //totalMem += lidTogid.size()*4+indCount*8;

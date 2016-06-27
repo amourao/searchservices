@@ -43,6 +43,14 @@ SRMaster::SRMaster(string& typeId, map<string,string>& params){
         clientAddresses.push_back(Poco::Net::SocketAddress("0.0.0.0", basePort++));
     }
 
+    if(params.count("bucketTransposition") > 0){
+        std::ifstream infile(params["bucketTransposition"]);
+        uint a;
+        while (infile >> a){
+            bucketTransposition.push_back(a);
+        }
+    }
+
     cout << "--------------------------------------------------------------------------------" << endl;
     cout << "started Master at " << clientAddress.host().toString() << ":" << clientAddress.port() << endl;
 
@@ -388,8 +396,11 @@ vector<Poco::Net::SocketAddress> SRMaster::getRelevantServers(arma::fmat& sparse
 
         uint count = b.n_rows;
         if(count > 0){
-            results.push_back(serverAddresses.at(i));
-            resultsIndex.push_back(i);
+            int bucket = i;
+            if(bucketTransposition.size() > 0)
+                bucket = bucketTransposition[bucket];
+            results.push_back(serverAddresses.at(bucket));
+            resultsIndex.push_back(bucket);
         }
     }
         

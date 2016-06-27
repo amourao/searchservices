@@ -117,5 +117,6 @@ private:
 
     map<string,string> paramsB;
 
+	vector<uint> bucketTransposition;
 
 };

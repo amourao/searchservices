@@ -142,6 +142,8 @@ private:
 
 	bool needsRebuild = false;
 
+	vector<uint> bucketTransposition;
+
 
 
 };
