@@ -100,6 +100,8 @@ private:
 
 	string type;
 
+	int currentQueryIndex;
+
 	int bufferSize;
 	int timeoutTime;
 
@@ -117,6 +119,6 @@ private:
 
     map<string,string> paramsB;
 
-	vector<uint> bucketTransposition;
+	arma::uvec bucketTransposition;
 
 };

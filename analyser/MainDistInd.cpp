@@ -210,13 +210,17 @@ int srMasterBillion(int argc, char *argv[]){
 
     SRMaster srm(name,parameters);
 
+    uint currentQueryIndex = 0;
+    if(parameters.count("currentQueryIndex") > 0)
+        currentQueryIndex = std::stoi(parameters["currentQueryIndex"]);
+
     uint nQueries = std::stoi(parameters["nQueries"]);
 
-    ob.readBin(parameters["dataQ"],nQueries,dataToIndex,0);
+    ob.readBin(parameters["dataQ"],currentQueryIndex+nQueries,dataToIndex,0);
 
     //#pragma omp parallel for schedule(dynamic)
     for(uint i = 0; i < nQueries; i++){
-        arma::Mat<uchar> queryC = dataToIndex.col(i);
+        arma::Mat<uchar> queryC = dataToIndex.col(i+currentQueryIndex);
         arma::fmat query = arma::conv_to<arma::fmat>::from(queryC);
         //normalize_columns(query);
 

@@ -35,6 +35,10 @@ SRMaster::SRMaster(string& typeId, map<string,string>& params){
     if(params.count("doFinalSortCoeff") > 0)
         doFinalSortCoeff = true;
 
+    currentQueryIndex = 0;
+    if(params.count("currentQueryIndex") > 0)
+        currentQueryIndex = std::stoi(params["currentQueryIndex"]);
+
     posOnly = params.find("positiveOnly") != params.end();
 
     vector<string> servers = StringTools::split(serversString,';');
@@ -43,11 +47,14 @@ SRMaster::SRMaster(string& typeId, map<string,string>& params){
         clientAddresses.push_back(Poco::Net::SocketAddress("0.0.0.0", basePort++));
     }
 
+    
     if(params.count("bucketTransposition") > 0){
+        bucketTransposition.set_size(8192);
         std::ifstream infile(params["bucketTransposition"]);
         uint a;
+        int i = 0;
         while (infile >> a){
-            bucketTransposition.push_back(a);
+            bucketTransposition(i++) = a;
         }
     }
 
@@ -135,7 +142,7 @@ std::pair<vector<uindex>,vector<float> > SRMaster::knnSearchIdLong(arma::fmat& q
     q.query.insert(q.query.end(), arrayData, arrayData+query.n_rows);
     q.parameters.push_back(n);
     q.parameters.push_back(search_limit);
-    q.parameters.push_back(totalNQueries-1);
+    q.parameters.push_back(currentQueryIndex);
 
     q.parameters.push_back((int)startFromPivot);
     q.parameters.push_back((int)doFinalSort);
@@ -245,8 +252,10 @@ std::pair<vector<uindex>,vector<float> > SRMaster::knnSearchIdLong(arma::fmat& q
     #endif
 
     #ifdef MEASURE_TIME
-        cout << "T1;" <<  totalNQueries-1 << ";" << (totalQueryTimeQ) << ";" << (totalSRTimeQ) << ";" << (totalRelServerTimeQ) << ";" << (totalPreMarshallingTimeQ) << ";" << (totalAllServerTimeQ) << ";" << (totalPostMarshallingTimeQ) << ";" << (totalSortTimeQ) << endl; 
+        cout << "T1;" <<  currentQueryIndex << ";" << (totalQueryTimeQ) << ";" << (totalSRTimeQ) << ";" << (totalRelServerTimeQ) << ";" << (totalPreMarshallingTimeQ) << ";" << (totalAllServerTimeQ) << ";" << (totalPostMarshallingTimeQ) << ";" << (totalSortTimeQ) << endl; 
     #endif
+
+    currentQueryIndex++;
 
 	return make_pair(indices,dists);
 }
@@ -380,11 +389,19 @@ void SRMaster::sendMessage(vector<QueryStructReq>& query, vector<QueryStructRsp>
 
 
 vector<Poco::Net::SocketAddress> SRMaster::getRelevantServers(arma::fmat& sparseRep){
+
+    //arma::fmat sparseRep(sparseRepO);
+    //for(uint i = 0; i < bucketTransposition.size(); i++)
+    //    sparseRep(bucketTransposition(i)) = sparseRepO(i);
+    if(!bucketTransposition.empty())
+        sparseRep = sparseRep.rows(bucketTransposition);
+
     vector<Poco::Net::SocketAddress> results;
-    vector<int> resultsIndex;
 
     uint repSize = sparseRep.n_rows;
     uint bucketsPerServer = repSize/(float)serverAddresses.size();
+    
+    cout << "Rel Serv: ";
     for(uint i = 0; i < serverAddresses.size(); i++){
         arma::fmat subset = sparseRep.rows(i*bucketsPerServer, min((i+1)*bucketsPerServer,(uint)sparseRep.n_rows)-1 );
 
@@ -397,18 +414,11 @@ vector<Poco::Net::SocketAddress> SRMaster::getRelevantServers(arma::fmat& sparse
         uint count = b.n_rows;
         if(count > 0){
             int bucket = i;
-            if(bucketTransposition.empty())
-                bucket = bucketTransposition[bucket];
             results.push_back(serverAddresses.at(bucket));
-            resultsIndex.push_back(bucket);
+            cout << bucket << " ";
         }
     }
-        
-    string relServers = "Rel Serv: ";
-    for(uint i = 0; i < results.size(); i++){
-        relServers += std::to_string(resultsIndex.at(i)) + " ";
-    }
-    cout << relServers << endl;
+    cout << endl;
 
     return results;
 
