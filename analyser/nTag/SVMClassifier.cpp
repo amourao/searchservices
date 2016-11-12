@@ -36,14 +36,14 @@ void* SVMClassifier::createType(string& type, std::map<string,string>& params){
 
 
 void SVMClassifier::train( cv::Mat trainData, cv::Mat trainLabels ){
-	CvSVMParams params;
+	cv::Ptr<cv::ml::TrainData> data = cv::ml::TrainData::create(trainData,cv::ml::ROW_SAMPLE,trainLabels);
 	//params.svm_type = CvSVM::C_SVC;
 	//params.kernel_type = CvSVM::RBF;
 	//params.gamma = 0.03375;
 	//params.C = 62.5;
 	//params.p = 1.1920928955078125e-007;
-	svm = new CvSVM();
-	svm->train_auto(trainData,trainLabels,cv::Mat(),cv::Mat(),params);
+	svm = cv::ml::SVM::create();
+	svm->trainAuto(data);
 
 	//TODO
 	//svm.train(trainData,trainLabels);
@@ -54,7 +54,7 @@ float SVMClassifier::classify( cv::Mat query){
 }
 
 float SVMClassifier::getClassificationConfidence( cv::Mat query){
-	return svm->predict(query,true);
+	return svm->predict(query);
 }
 
 void SVMClassifier::test( cv::Mat testData, cv::Mat testLabels ){
@@ -69,7 +69,7 @@ bool SVMClassifier::save(string basePath){
 	ss << CLASSIFIER_BASE_SAVE_PATH << basePath << TRAINDATA_EXTENSION_SVM;
 
 	if (svm != NULL)
-		svm->save(ss.str().c_str());
+		svm->save(ss.str());
 	return true;
 
 
@@ -81,12 +81,9 @@ bool SVMClassifier::load(string basePath){
 	ss << CLASSIFIER_BASE_SAVE_PATH << basePath << TRAINDATA_EXTENSION_SVM;
     string path = ss.str();
 
-	svm = new CvSVM();
-
 	if (FileDownloader::fileExists(path)){
-        svm->load(ss.str().c_str());
+        svm = cv::ml::StatModel::load<cv::ml::SVM>(path);
         return true;
-	} else {
-        return false;
-	}
+	} 
+	return false;
 }

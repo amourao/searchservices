@@ -8,6 +8,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
+#include "tools/ImageFilter.h"
 #include "nVector/GaborExtractor.h"
 #include "nVector/LBPExtractor.h"
 #include "nVector/FeatureExtractor.h"
@@ -24,15 +25,15 @@ int getGaborImage(int argc, char *argv[]) {
 
 	ImageFilter* filter;
 
-	if(features == 'LBP')
-		filter = new LBPExtractor();
-	else if(features == 'LBP')
-		filter = new GaborExtractor();
+	if(features == "LBP")
+		filter = new LBPExtractor(16,4,4,false);
+	else if(features == "Gabor")
+		filter = new GaborExtractor(640,480,4,8);
 
-	Mat imageNeutral,imageExpression,featuresNeutral,featuresExpression,diff,diffNormalized;
+	cv::Mat imageNeutral,imageExpression,featuresNeutral,featuresExpression,diff,diffNormalized;
 
-	imread(imageNeutralPath,imageNeutral);
-	imread(imageExpressionPath,imageExpression);
+	imageNeutral = imread(imageNeutralPath);
+	imageExpression = imread(imageExpressionPath);
 
 	filter->applyFilter(imageNeutral,featuresNeutral);
 	filter->applyFilter(imageExpression,featuresExpression);

@@ -15,10 +15,10 @@ SIFTBowExtractor::SIFTBowExtractor(string& _type, map<string,string>& params){
 
     if (params.size() > 0){
         loadVocabulary(params["vocabulary"]);
-		detector = new SiftFeatureDetector(0, 4, 0.04, 10, 1.6);
-		bowMatcher = new BOWImgDescriptorExtractor(DescriptorExtractor::create("SIFT"),DescriptorMatcher::create("BruteForce"));
-		bowMatcher->setVocabulary(vocabulary);
-	}
+	detector = SiftFeatureDetector::create(0, 4, 0.04, 10, 1.6);
+	bowMatcher = makePtr<BOWImgDescriptorExtractor>(SIFT::create(),DescriptorMatcher::create("BruteForce"));
+	bowMatcher->setVocabulary(vocabulary);
+    }
 }
 
 SIFTBowExtractor::~SIFTBowExtractor(){
