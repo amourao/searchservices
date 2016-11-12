@@ -16,11 +16,12 @@ SURFExtractor::SURFExtractor(string& typeId, map<string,string>& params){
     if(params.size() == 0)
         return;
 
-    detector = SurfFeatureDetector(atof(params["hessianThreshold"].c_str()) , atof(params["nOctaves"].c_str()), atof(params["nOctaveLayers"].c_str()), params["extended"] == "true", params["upright"] == "true");
+    detector = SurfFeatureDetector::create(atof(params["hessianThreshold"].c_str()) , atof(params["nOctaves"].c_str()), atof(params["nOctaveLayers"].c_str()), params["extended"] == "true", params["upright"] == "true");
+    extractor = SurfDescriptorExtractor::create();
 }
 
 SURFExtractor::SURFExtractor(double hessianThreshold, int nOctaves, int nOctaveLayers, bool extended, bool upright){
-	detector = SurfFeatureDetector( hessianThreshold , nOctaves, nOctaveLayers, extended, upright);
+	detector = SurfFeatureDetector::create( hessianThreshold , nOctaves, nOctaveLayers, extended, upright);
 }
 
 SURFExtractor::~SURFExtractor(){
@@ -45,14 +46,14 @@ void SURFExtractor::extractFeatures(Mat& src,vector< cv::KeyPoint>& keypoints, M
 	} else if (src.type() != CV_8U){
 		src.convertTo(srcGray,CV_8U);
 	}
-	detector.detect( srcGray, keypoints );
-	extractor.compute( srcGray, keypoints, features);
+	detector->detect( srcGray, keypoints );
+	extractor->compute( srcGray, keypoints, features);
 	features.convertTo(features,CV_32F);
 }
 
 
 int SURFExtractor::getDescriptorSize(){
-	return detector.descriptorSize();
+	return detector->descriptorSize();
 }
 
 

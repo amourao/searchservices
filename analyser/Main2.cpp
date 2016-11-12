@@ -4,7 +4,7 @@
 #include <cstdlib>
 #include <memory>
 #include <opencv2/features2d/features2d.hpp>
-#include <opencv2/nonfree/nonfree.hpp>
+#include <opencv2/xfeatures2d.hpp>
 #include <time.h>
 //#include <math>
 
@@ -1089,8 +1089,9 @@ void classifyAllBlipImagesCondor(int argc, char *argv[]) {
 	cv::Mat vocabulary, labelsAll;
 	string outV = "/localstore/amourao/code/vocabulary.bin";
 	MatrixTools::readBinV2(outV,vocabulary,labelsAll);
-	BOWImgDescriptorExtractor bowMatcher(DescriptorExtractor::create("SIFT"),DescriptorMatcher::create("BruteForce"));
-	bowMatcher.setVocabulary(vocabulary);
+	
+	Ptr<BOWImgDescriptorExtractor> bowMatcher = makePtr<BOWImgDescriptorExtractor>(SIFT::create(),DescriptorMatcher::create("BruteForce"));
+	bowMatcher->setVocabulary(vocabulary);
 
 
     vector<FeatureExtractor*> fExtractors;
@@ -1161,7 +1162,7 @@ void classifyAllBlipImagesCondor(int argc, char *argv[]) {
         			features.release();
         			//if (kExtractors.at(i)->getName() == "SIFTExtractor"){
         				cv::Mat imgDescriptor;
-        				bowMatcher.compute(src, keypoints, imgDescriptor);
+        				bowMatcher->compute(src, keypoints, imgDescriptor);
         				stringstream ss2;
         				ss2 << "blip_" << kExtractors.at(i)->getName() << "_bow_";
         				ss2 << std::setw(2) << std::setfill('0') << myDivision << ".bin";
@@ -1222,13 +1223,11 @@ int testBinFormat(int argc, char *argv[]){
 
 	LoadConfig::load(paramFile,parameters);
 
-    FeatureDetector* detector = new SiftFeatureDetector(0, // nFeatures
-                                                        4, // nOctaveLayers
-                                                        0.04, // contrastThreshold
-                                                        10, //edgeThreshold
-                                                        1.6 //sigma
-                                                        );
-    DescriptorExtractor* extractor = new SiftDescriptorExtractor();
+	Ptr<SiftFeatureDetector> detector;
+    Ptr<SiftDescriptorExtractor> extractor;
+
+    detector = SiftFeatureDetector::create(atoi(parameters["nFeatures"].c_str()),atoi(parameters["nOctaveLayers"].c_str()), atof(parameters["contrastThreshold"].c_str()), atof(parameters["edgeThreshold"].c_str()), atof(parameters["sigma"].c_str()));
+    extractor = SiftDescriptorExtractor::create();
 
     vector<KeyPoint> keypoints;
     cv::Mat descriptors;
@@ -1310,14 +1309,14 @@ int createBlipKnnVWDict(int argc, char *argv[]){
 	MatrixTools::readBinV2(outV,vocabulary,labelsAll);
 
 	cout << "setting vocabulary" << endl;
-	Ptr<FeatureDetector> detector = new SiftFeatureDetector(0, // nFeatures
-                                                        4, // nOctaveLayers
-                                                        0.04, // contrastThreshold
-                                                        10, //edgeThreshold
-                                                        1.6 //sigma
-                                                        );
-	BOWImgDescriptorExtractor bowMatcher(DescriptorExtractor::create("SIFT"),DescriptorMatcher::create("BruteForce"));
-	bowMatcher.setVocabulary(vocabulary);
+	
+	Ptr<FeatureDetector> detector;
+	Ptr<BOWImgDescriptorExtractor> bowMatcher;
+
+
+	detector = SiftFeatureDetector::create(0, 4, 0.04, 10, 1.6);
+	bowMatcher = makePtr<BOWImgDescriptorExtractor>(SIFT::create(),DescriptorMatcher::create("BruteForce"));
+	bowMatcher->setVocabulary(vocabulary);
 
 	cv::Mat imgDescriptor;
 	vector<KeyPoint> keypoints2;
@@ -1325,7 +1324,7 @@ int createBlipKnnVWDict(int argc, char *argv[]){
 	detector->detect(image, keypoints2);
 
 	cout << "extracting demo image" << endl;
-	bowMatcher.compute(image, keypoints2, imgDescriptor);
+	bowMatcher->compute(image, keypoints2, imgDescriptor);
 
 	cv::Mat tempLabels;
 
@@ -1335,7 +1334,7 @@ int createBlipKnnVWDict(int argc, char *argv[]){
 	cout << "writing outfiles" << endl;
 
 
-	cout << bowMatcher.descriptorSize() << " " << bowMatcher.descriptorType() << endl;
+	cout << bowMatcher->descriptorSize() << " " << bowMatcher->descriptorType() << endl;
 	cout << image.cols << " " << image.rows << endl;
 	cout << imgDescriptor.cols << " " << imgDescriptor.rows << endl;
 
@@ -2553,7 +2552,7 @@ int testANdMP2(int argc, char *argv[]){
 
     andEx.changeDictionary(sr.dictionary_seed);
 
-    ANdOMPTrainer andTr(andEx,stoi(params["iters"]),stod(params["eps_ksvd"]),dimensionality);
+    	ANdOMPTrainer andTr(andEx,stoi(params["iters"]),stod(params["eps_ksvd"]),dimensionality);
 
     andTr.train(sr.dictionary_seed,T,VI,VQ);
 
@@ -2702,7 +2701,7 @@ int testANdMPWithBias(int argc, char *argv[]){
     ANdOMPExtractor andEx(type,params);
 
     arma::fmat dictionary_seed = andEx.D;
-    ANdOMPTrainer andTr(andEx,stoi(params["iters"]),stod(params["eps_ksvd"]),dimensionality, expon, regFactor, weight,withBias);
+    ANdOMPTrainer andTr(andEx,stoi(params["iters"]),stod(params["eps_ksvd"]),dimensionality, expon, regFactor, weight,withBias,false);
     //ANdOMPExtractor _fe, int _n_iters, double _eps, uint _dimensions, double _expon, double _regFactor, double _weight, bool _withBias
     andTr.train(dictionary_seed,T,VI,VQ);
     andTr.D.save("workingDir/andTr_D_" + bias + "_" + std::to_string(expon) + "_" + std::to_string(regFactor) + "_" + std::to_string(weight) + ".bin");

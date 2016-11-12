@@ -6,8 +6,7 @@
 #include <iostream>
 #include <opencv2/core/core.hpp>
 #include <opencv2/features2d/features2d.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/nonfree/features2d.hpp>
+#include <opencv2/xfeatures2d.hpp>
 #include "../FactoryAnalyser.h"
 
 #include <map>
@@ -20,6 +19,7 @@
  */
 
 using namespace std;
+using namespace cv::xfeatures2d;
 
 class SURFExtractor :
 	public KeypointFeatureExtractor
@@ -45,7 +45,7 @@ public:
 
 private:
     string type;
-	SurfFeatureDetector detector;
-	SurfDescriptorExtractor extractor;
+    Ptr<SurfFeatureDetector> detector;
+    Ptr<SurfDescriptorExtractor> extractor;
 };
 

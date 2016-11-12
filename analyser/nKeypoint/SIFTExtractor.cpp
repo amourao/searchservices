@@ -16,18 +16,17 @@ SIFTExtractor::SIFTExtractor(string& typeId, map<string,string>& params){
     if(params.size() == 0)
         return;
 
-    detector = new SiftFeatureDetector(atoi(params["nFeatures"].c_str()),atoi(params["nOctaveLayers"].c_str()), atof(params["contrastThreshold"].c_str()), atof(params["edgeThreshold"].c_str()), atof(params["sigma"].c_str()));
-    extractor = new SiftDescriptorExtractor();
+    detector = SiftFeatureDetector::create(atoi(params["nFeatures"].c_str()),atoi(params["nOctaveLayers"].c_str()), atof(params["contrastThreshold"].c_str()), atof(params["edgeThreshold"].c_str()), atof(params["sigma"].c_str()));
+    extractor = SiftDescriptorExtractor::create();
 }
 
 SIFTExtractor::SIFTExtractor(int nFeatures, int nOctaveLayers, double contrastThreshold, double edgeThreshold, double sigma){
-	detector = new SiftFeatureDetector(nFeatures , nOctaveLayers, contrastThreshold, edgeThreshold, sigma);
-	extractor = new SiftDescriptorExtractor();
+	detector = SiftFeatureDetector::create(nFeatures , nOctaveLayers, contrastThreshold, edgeThreshold, sigma);
+	extractor = SiftDescriptorExtractor::create();
 }
 
 SIFTExtractor::~SIFTExtractor(){
-	delete extractor;
-	delete detector;
+
 }
 
 

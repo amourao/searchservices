@@ -7,7 +7,7 @@
 
 
 class LBPExtractor :
-	public FeatureExtractor,ImageFilter
+	public FeatureExtractor, public ImageFilter
 {
 public:
 	LBPExtractor();
