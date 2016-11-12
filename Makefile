@@ -5,10 +5,10 @@
 
 WORKDIR = `pwd`
 
-CC = gcc-4.8
-CXX = g++-4.8
+CC = gcc
+CXX = g++
 AR = ar
-LD = g++-4.8
+LD = g++
 
 INC = -I/localstore/searchservices/libsOld/include/ -I/home/amourao/code/sparsereconstruction/
 CFLAGS = -O2 -std=c++11 -Wall -fexceptions -fopenmp -DREAL_FLOAT -DUSE_GIST -DSTANDALONE_GIST -DPOCO_NO_FPENVIRONMENT -DMEASURE_TIME
@@ -24,7 +24,7 @@ RCFLAGS_RELEASEMAININD = $(RCFLAGS)
 LIBDIR_RELEASEMAININD = $(LIBDIR)
 LIB_RELEASEMAININD = $(LIB)
 LDFLAGS_RELEASEMAININD = $(LDFLAGS) -
-sOBJDIR_RELEASEMAININD = obj/Release
+OBJDIR_RELEASEMAININD = obj/Release
 DEP_RELEASEMAININD = 
 OUT_RELEASEMAININD = bin/Release/runIndexer
 
