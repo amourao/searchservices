@@ -207,9 +207,11 @@
 			<Add option="-DPOCO_NO_FPENVIRONMENT" />
 			<Add directory="/home/amourao/code/sparsereconstruction/" />
 			<Add directory="/nas/Public/amourao/code/sparsereconstruction/" />
+			<Add directory="/localstore/searchservices/libsNew/include" />
 		</Compiler>
 		<Linker>
 			<Add option="-fopenmp -ljsoncpp -lopencv_core -lopencv_imgcodecs -lopencv_imgproc -lopencv_calib3d -lopencv_videoio -lopencv_video -lopencv_photo -lopencv_features2d -lopencv_xfeatures2d -lopencv_ml -lopencv_highgui -lopencv_objdetect -lfftw3 -lfftw3f -lm -lopencv_flann -larmadillo -lPocoFoundation -lPocoData -lPocoDataSQLite -lPocoNet -lPocoXML -lPocoJSON -lPocoUtil -lcurl -ldb -ldb_cxx  -fopenmp" />
+			<Add directory="/localstore/searchservices/libsNew/lib" />
 		</Linker>
 		<Unit filename="analyser/FactoryAnalyser.cpp">
 			<Option target="ReleaseMainInd" />
