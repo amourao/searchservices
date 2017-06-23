@@ -4,13 +4,13 @@
 	<Project>
 		<Option title="searchservices" />
 		<Option pch_mode="2" />
-		<Option compiler="gnu_gcc_compiler_49" />
+		<Option compiler="gcc" />
 		<Build>
 			<Target title="ReleaseMainInd">
 				<Option output="bin/Release/runIndexer" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
-				<Option compiler="gnu_gcc_compiler_49" />
+				<Option compiler="gcc" />
 				<Option parameters="testDistIndexer" />
 				<Compiler>
 					<Add option="-O2" />
@@ -24,7 +24,7 @@
 				<Option output="bin/Release/runAnalyser" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
-				<Option compiler="gnu_gcc_compiler_49" />
+				<Option compiler="gcc" />
 				<Option parameters="validateANdMPWithBias configs/testBucketCapacity.json /home/amourao/code/searchservices/indexer/data/configCondor4_1_k_dict_seed.bin" />
 				<Compiler>
 					<Add option="-O2" />
@@ -38,7 +38,7 @@
 				<Option output="bin/Release/server" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
-				<Option compiler="gnu_gcc_compiler_49" />
+				<Option compiler="gcc" />
 				<Option parameters="configs/config.json" />
 				<Compiler>
 					<Add option="-O2" />
@@ -52,7 +52,7 @@
 				<Option output="bin/Release/distIndexer" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
-				<Option compiler="gnu_gcc_compiler_49" />
+				<Option compiler="gcc" />
 				<Option parameters="testPivotBucket /home/amourao/code/searchservices/configs/processorAndMaster_charlieDist.json" />
 				<Compiler>
 					<Add option="-O2" />
@@ -66,7 +66,7 @@
 				<Option output="bin/Release/distIndexerSingle" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
-				<Option compiler="gnu_gcc_compiler_49" />
+				<Option compiler="gcc" />
 				<Option parameters="testPivotBucket /home/amourao/code/searchservices/configs/processorAndMaster_charlieDist.json" />
 				<Option projectCompilerOptionsRelation="1" />
 				<Compiler>
@@ -90,7 +90,7 @@
 				<Option output="bin/Debug/runIndexer" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
-				<Option compiler="gnu_gcc_compiler_49" />
+				<Option compiler="gcc" />
 				<Option parameters="testDistIndexer" />
 				<Compiler>
 					<Add option="-g" />
@@ -101,7 +101,7 @@
 				<Option output="bin/Debug/runAnalyser" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
-				<Option compiler="gnu_gcc_compiler_49" />
+				<Option compiler="gcc" />
 				<Option parameters="testANdMPWithBias configs/testBucketCapacity.json -bias" />
 				<Compiler>
 					<Add option="-g" />
@@ -112,7 +112,7 @@
 				<Option output="bin/Debug/server" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
-				<Option compiler="gnu_gcc_compiler_49" />
+				<Option compiler="gcc" />
 				<Option parameters="configs/config.json" />
 				<Compiler>
 					<Add option="-g" />
@@ -123,7 +123,7 @@
 				<Option output="bin/Debug/distIndexer" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
-				<Option compiler="gnu_gcc_compiler_49" />
+				<Option compiler="gcc" />
 				<Option parameters="testPivotBucket /home/amourao/code/searchservices/configs/processorAndMaster_charlie.json" />
 				<Compiler>
 					<Add option="-g" />
@@ -134,7 +134,7 @@
 				<Option output="bin/Release/runEusipco" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
-				<Option compiler="gnu_gcc_compiler_49" />
+				<Option compiler="gcc" />
 				<Option parameters="~/code/searchservices/default.json" />
 				<Compiler>
 					<Add option="-O2" />
@@ -148,7 +148,7 @@
 				<Option output="bin/Debug/runEusipco" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
-				<Option compiler="gnu_gcc_compiler_49" />
+				<Option compiler="gcc" />
 				<Option parameters="~/code/searchservices/default.json" />
 				<Compiler>
 					<Add option="-g" />
@@ -159,7 +159,7 @@
 				<Option output="bin/Release/shotDetectionMulti" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
-				<Option compiler="gnu_gcc_compiler_49" />
+				<Option compiler="gcc" />
 				<Option parameters="~/code/searchservices/config.json" />
 				<Option projectCompilerOptionsRelation="1" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -179,7 +179,7 @@
 				<Option output="bin/Release/shotDetectionSingle" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
-				<Option compiler="gnu_gcc_compiler_49" />
+				<Option compiler="gcc" />
 				<Option parameters="/home/amourao/code/shotdetection/demoVideos/2rWTjNUCvY2qIu4Kv9O4.mp4" />
 				<Option projectCompilerOptionsRelation="1" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -207,9 +207,11 @@
 			<Add option="-DPOCO_NO_FPENVIRONMENT" />
 			<Add directory="/home/amourao/code/sparsereconstruction/" />
 			<Add directory="/nas/Public/amourao/code/sparsereconstruction/" />
+			<Add directory="/localstore/searchservices/libsNew/include" />
 		</Compiler>
 		<Linker>
 			<Add option="-fopenmp -ljsoncpp -lopencv_core -lopencv_imgcodecs -lopencv_imgproc -lopencv_calib3d -lopencv_videoio -lopencv_video -lopencv_photo -lopencv_features2d -lopencv_xfeatures2d -lopencv_ml -lopencv_highgui -lopencv_objdetect -lfftw3 -lfftw3f -lm -lopencv_flann -larmadillo -lPocoFoundation -lPocoData -lPocoDataSQLite -lPocoNet -lPocoXML -lPocoJSON -lPocoUtil -lcurl -ldb -ldb_cxx  -fopenmp" />
+			<Add directory="/localstore/searchservices/libsNew/lib" />
 		</Linker>
 		<Unit filename="analyser/FactoryAnalyser.cpp">
 			<Option target="ReleaseMainInd" />

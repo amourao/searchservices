@@ -14,7 +14,7 @@
 #include "StringTools.h"
 #include <sys/stat.h>
 
-#define DOWNLOAD_FOLDER "/localstore/amourao/code/searchservices/tmpData/"
+#define DOWNLOAD_FOLDER "/home/amourao/code/searchservices/tmpData/"
 #define RANDOM_NAME_SIZE 32
 
 class FileDownloader {
