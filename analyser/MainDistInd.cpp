@@ -121,12 +121,12 @@ int srMaster(int argc, char *argv[]){
 
     string paramFile(argv[1]);
     map<string,string> parameters;
-	vector<IIndexer*> indexers;
-	vector<IAnalyser*> analysers;
-	vector<IClassifier*> classifiers;
-	vector<IEndpoint*> endpoints;
+    vector<IIndexer*> indexers;
+    vector<IAnalyser*> analysers;
+    vector<IClassifier*> classifiers;
+    vector<IEndpoint*> endpoints;
 
-	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
+    LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
 
     map<string,string> params;
 
@@ -190,12 +190,12 @@ int srMasterBillion(int argc, char *argv[]){
 
     string paramFile(argv[1]);
     map<string,string> parameters;
-	vector<IIndexer*> indexers;
-	vector<IAnalyser*> analysers;
-	vector<IClassifier*> classifiers;
-	vector<IEndpoint*> endpoints;
+    vector<IIndexer*> indexers;
+    vector<IAnalyser*> analysers;
+    vector<IClassifier*> classifiers;
+    vector<IEndpoint*> endpoints;
 
-	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
+    LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
 
     map<string,string> params;
 
@@ -267,12 +267,12 @@ int srMasterBillion(int argc, char *argv[]){
 int srTest(int argc, char *argv[]){
     string paramFile(argv[1]);
     map<string,string> parameters;
-	vector<IIndexer*> indexers;
-	vector<IAnalyser*> analysers;
-	vector<IClassifier*> classifiers;
-	vector<IEndpoint*> endpoints;
+    vector<IIndexer*> indexers;
+    vector<IAnalyser*> analysers;
+    vector<IClassifier*> classifiers;
+    vector<IEndpoint*> endpoints;
 
-	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
+    LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
 
 
 
@@ -341,14 +341,14 @@ int srTest(int argc, char *argv[]){
 int dataPreProcessor(int argc, char *argv[]){
     string paramFile(argv[1]);
     map<string,string> parameters;
-	vector<IIndexer*> indexers;
-	vector<IAnalyser*> analysers;
-	vector<IClassifier*> classifiers;
-	vector<IEndpoint*> endpoints;
+    vector<IIndexer*> indexers;
+    vector<IAnalyser*> analysers;
+    vector<IClassifier*> classifiers;
+    vector<IEndpoint*> endpoints;
 
-	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
+    LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
 
-	FeatureExtractor* sr = (FeatureExtractor*)analysers[0];
+    FeatureExtractor* sr = (FeatureExtractor*)analysers[0];
 
     arma::fmat dataToIndex;
     dataToIndex.load(parameters["data"]);
@@ -500,12 +500,12 @@ template <class T>
 int trainDictionary(int argc, char *argv[]){
     string paramFile(argv[1]);
     map<string,string> parameters;
-	vector<IIndexer*> indexers;
-	vector<IAnalyser*> analysers;
-	vector<IClassifier*> classifiers;
-	vector<IEndpoint*> endpoints;
+    vector<IIndexer*> indexers;
+    vector<IAnalyser*> analysers;
+    vector<IClassifier*> classifiers;
+    vector<IEndpoint*> endpoints;
 
-	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
+    LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
 
 
     int numBuckets = std::stoi(parameters["nBuckets"]);
@@ -526,7 +526,7 @@ int trainDictionary(int argc, char *argv[]){
         weight = std::stod(parameters["weight"]);
     }
 
-	ANdOMPExtractor* sr = (ANdOMPExtractor*)analysers[0];
+    ANdOMPExtractor* sr = (ANdOMPExtractor*)analysers[0];
 
     ANdOMPTrainer trainer(*sr, 25, 0, numBuckets,expon,regFactor,weight,withBias,positiveOnly);
 
@@ -542,15 +542,6 @@ int trainDictionary(int argc, char *argv[]){
         ob.readBin(parameters["data"],count,dataToIndexF,offset);
     }
 
-    arma::fmat means = arma::mean(dataToIndexF);
-    arma::fmat stddevs = arma::stddev(dataToIndexF);
-
-    for(uint i = 0; i < dataToIndexF.n_cols; i++){
-        if(stddevs.at(0,i) == 0)
-            dataToIndexF.col(i) = (dataToIndexF.col(i) - means.at(0,i));
-        else
-            dataToIndexF.col(i) = (dataToIndexF.col(i) - means.at(0,i))/stddevs.at(0,i);
-    }
     //cout << offset << endl;
     //cout << dataToIndex.col(0) << endl;
     //cout << dataToIndex.col(1) << endl;
@@ -575,14 +566,14 @@ template <class T>
 int dataPreProcessorOneBillionAzureWithSort(int argc, char *argv[]){
     string paramFile(argv[1]);
     map<string,string> parameters;
-	vector<IIndexer*> indexers;
-	vector<IAnalyser*> analysers;
-	vector<IClassifier*> classifiers;
-	vector<IEndpoint*> endpoints;
+    vector<IIndexer*> indexers;
+    vector<IAnalyser*> analysers;
+    vector<IClassifier*> classifiers;
+    vector<IEndpoint*> endpoints;
 
-	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
+    LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
 
-	FeatureExtractor* sr = (FeatureExtractor*)analysers[0];
+    FeatureExtractor* sr = (FeatureExtractor*)analysers[0];
 
 
     int numBuckets = std::stoi(parameters["nBuckets"]);
@@ -612,16 +603,19 @@ int dataPreProcessorOneBillionAzureWithSort(int argc, char *argv[]){
 
     std::vector<std::vector<Coefficient>> indexData(numBuckets);
 
-    vector<std::ofstream*> outfiles;
-    vector<uint> coeffCount(numBuckets);
+    //vector<uint> coeffCount(numBuckets);
+    //for(uint i = 0; i < numBuckets; i++){
+    //    //cout << dst + "_coeffs_" + nodeId + "_" + std::to_string(i) + ".bin" << endl;
+    //    std::ofstream outfile(dst + "_coeffs_" + nodeId + "_" + std::to_string(i) + ".bin",std::ofstream::binary);
+    //    outfile.write((char*)&numBuckets,sizeof(uint));
+    //    outfile.close();
+    //}
+
     for(uint i = 0; i < numBuckets; i++){
-        //cout << dst + "_coeffs_" + nodeId + "_" + std::to_string(i) + ".bin" << endl;
-        std::ofstream* outfile = new std::ofstream(dst + "_coeffs_" + nodeId + "_" + std::to_string(i) + ".bin",std::ofstream::binary);
-        outfile->write((char*)&numBuckets,sizeof(uint));
-        //outfile->close();
-        outfiles.push_back(outfile);
+        indexData[i].reserve(20000);
     }
 
+    #pragma omp parallel for schedule(dynamic)
     for(uint i = 0; i < dataToIndex.n_cols; i++){
 
         if(i % 100000 == 0)
@@ -629,7 +623,8 @@ int dataPreProcessorOneBillionAzureWithSort(int argc, char *argv[]){
 
         uindex dataId = i+offset;
         arma::fmat features = dataToIndex.col(i);
-        normalizeColumns(features);
+    
+        //normalizeColumns(features);
         //cout << features << endl;
         arma::fmat sparseRep;
 
@@ -642,13 +637,14 @@ int dataPreProcessorOneBillionAzureWithSort(int argc, char *argv[]){
         else
             ind = find(sparseRep != 0);
 
+        #pragma omp critical
         for(uint j = 0; j < ind.n_rows; j++){
             uint bucket = ind[j];
             indexData[bucket].push_back(Coefficient(i,sparseRep[bucket]));
         }
 
     }
-    auto compare = [](Coefficient a, Coefficient b){ return !(a < b); };
+    //auto compare = [](const Coefficient& a, const Coefficient& b){ return a > b; };
     for(uint i = 0; i < numBuckets; i++){
         std::ofstream outfile(dst + "_coeffs_" + nodeId + "_" + std::to_string(i) + ".bin",std::ofstream::binary);
         //cout << dst + "_coeffs_" + nodeId + "_" + std::to_string(i) + ".bin" << endl;
@@ -657,31 +653,124 @@ int dataPreProcessorOneBillionAzureWithSort(int argc, char *argv[]){
         outfile.write((char*)&size,sizeof(uint));
         cout << size << endl;
 
-        std::sort(indexData[i].begin(), indexData[i].end(),compare);
+        std::sort(indexData[i].begin(), indexData[i].end());
+        cout << size << " sorted" << endl;
 
         //outfiles[bucket]->open(dst + "_coeffs_" + nodeId + "_" + std::to_string(i) + ".bin",std::ofstream::binary | std::ofstream::app);
         for(uint j = 0; j < indexData[i].size(); j++){
             outfile.write((char*)&indexData[i][j].vector_pos,sizeof(uint));
             outfile.write((char*)&indexData[i][j].value,sizeof(float));
+
+            if(j%1000==0)
+                outfile.flush();
         }
-        outfile.flush();
+        
         outfile.close();
     }
 
     return 0;
 }
 
+
+
+template <class T>
+int fvecToHash(int argc, char *argv[]){
+    string paramFile(argv[1]);
+    map<string,string> parameters;
+    vector<IIndexer*> indexers;
+    vector<IAnalyser*> analysers;
+    vector<IClassifier*> classifiers;
+    vector<IEndpoint*> endpoints;
+
+    LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
+
+    FeatureExtractor* sr = (FeatureExtractor*)analysers[0];
+
+
+    int numBuckets = std::stoi(parameters["nBuckets"]);
+    long offset = std::stol(parameters["offset"]);
+    long count = std::stol(parameters["count"]);
+
+    arma::Mat<float> dataToNorm;
+    arma::Mat<float> dataToIndex;
+
+    if(std::is_same<T,uchar>::value){
+        oneBillionImporterB ob;
+        arma::Mat<uchar> dataToNormU;
+        ob.readBin(parameters["data"],count,dataToNormU,offset);
+        dataToNorm = arma::conv_to<arma::Mat<float>>::from(dataToNormU);
+    } else if(std::is_same<T,float>::value){
+        oneBillionImporter ob;
+        ob.readBin(parameters["data"],count,dataToNorm,offset);
+    }
+
+    if(std::is_same<T,uchar>::value){
+        oneBillionImporterB ob;
+        arma::Mat<uchar> dataToIndexU;
+        ob.readBin(parameters["queries"],1000,dataToIndexU,offset);
+        dataToIndex = arma::conv_to<arma::Mat<float>>::from(dataToIndexU);
+    } else if(std::is_same<T,float>::value){
+        oneBillionImporter ob;
+        ob.readBin(parameters["queries"],1000,dataToIndex,offset);
+    }
+    //cout << offset << endl;
+    //cout << dataToIndex.col(0) << endl;
+    //cout << dataToIndex.col(1) << endl;
+
+    string dst = parameters["dst"];
+    string dstQueries = parameters["dstQueries"];
+    string nodeId = parameters["nodeId"];
+
+    bool positiveOnly = parameters.find("positiveOnly") != parameters.end();
+
+
+    std::vector<std::vector<Coefficient>> indexData(numBuckets);
+
+    //vector<uint> coeffCount(numBuckets);
+    //for(uint i = 0; i < numBuckets; i++){
+    //    //cout << dst + "_coeffs_" + nodeId + "_" + std::to_string(i) + ".bin" << endl;
+    //    std::ofstream outfile(dst + "_coeffs_" + nodeId + "_" + std::to_string(i) + ".bin",std::ofstream::binary);
+    //    outfile.write((char*)&numBuckets,sizeof(uint));
+    //    outfile.close();
+    //}
+
+    arma::fmat hashes = arma::zeros<arma::fmat>(numBuckets,dataToIndex.n_cols);
+
+    for(uint i = 0; i < dataToIndex.n_cols; i++){
+
+
+        uindex dataId = i+offset;
+        arma::fmat features = dataToIndex.col(i);
+    
+        //normalizeColumns(features);
+        //cout << features << endl;
+        arma::fmat sparseRep;
+
+        sr->extractFeatures(features,sparseRep);
+
+        hashes.col(i) = sparseRep.t();
+       
+
+    }
+
+    hashes.save(dstQueries);
+    
+
+    return 0;
+}
+
+
 int dataPreProcessorOneBillionAzure(int argc, char *argv[]){
     string paramFile(argv[1]);
     map<string,string> parameters;
-	vector<IIndexer*> indexers;
-	vector<IAnalyser*> analysers;
-	vector<IClassifier*> classifiers;
-	vector<IEndpoint*> endpoints;
+    vector<IIndexer*> indexers;
+    vector<IAnalyser*> analysers;
+    vector<IClassifier*> classifiers;
+    vector<IEndpoint*> endpoints;
 
-	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
+    LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
 
-	FeatureExtractor* sr = (FeatureExtractor*)analysers[0];
+    FeatureExtractor* sr = (FeatureExtractor*)analysers[0];
 
 
     int numBuckets = std::stoi(parameters["nBuckets"]);
@@ -768,12 +857,12 @@ int dataPreProcessorOneBillionAzure(int argc, char *argv[]){
 int srProcessor(int argc, char *argv[]){
     string paramFile(argv[1]);
     map<string,string> parameters;
-	vector<IIndexer*> indexers;
-	vector<IAnalyser*> analysers;
-	vector<IClassifier*> classifiers;
-	vector<IEndpoint*> endpoints;
+    vector<IIndexer*> indexers;
+    vector<IAnalyser*> analysers;
+    vector<IClassifier*> classifiers;
+    vector<IEndpoint*> endpoints;
 
-	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
+    LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
 
     uint divisions = std::stoi(parameters["divisions"]);
     uint nBuckets = std::stoi(parameters["bucketCount"]);
@@ -816,12 +905,12 @@ int srProcessor(int argc, char *argv[]){
 int srProcessorBillion(int argc, char *argv[]){
     string paramFile(argv[1]);
     map<string,string> parameters;
-	vector<IIndexer*> indexers;
-	vector<IAnalyser*> analysers;
-	vector<IClassifier*> classifiers;
-	vector<IEndpoint*> endpoints;
+    vector<IIndexer*> indexers;
+    vector<IAnalyser*> analysers;
+    vector<IClassifier*> classifiers;
+    vector<IEndpoint*> endpoints;
 
-	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
+    LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
 
     uint divisions = std::stoi(parameters["divisions"]);
     uint nBuckets = std::stoi(parameters["bucketCount"]);
@@ -1109,12 +1198,12 @@ int testMeasureDistance(int argc, char *argv[]){
 int sortBucketsFromBillion(int argc, char *argv[]){
     string paramFile(argv[1]);
     map<string,string> parameters;
-	vector<IIndexer*> indexers;
-	vector<IAnalyser*> analysers;
-	vector<IClassifier*> classifiers;
-	vector<IEndpoint*> endpoints;
+    vector<IIndexer*> indexers;
+    vector<IAnalyser*> analysers;
+    vector<IClassifier*> classifiers;
+    vector<IEndpoint*> endpoints;
 
-	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
+    LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
 
     uint nServers = std::stoi(parameters["nServers"]);
     uint bucketCount = std::stoi(parameters["bucketCount"]);
@@ -1191,8 +1280,8 @@ int sortBucketsFromBillion(int argc, char *argv[]){
         //}
         //cout << endl;
 
-        auto compare = [](Coefficient a, Coefficient b){ return !(a < b); };
-        std::sort(indexData.begin(), indexData.end(),compare);
+        //auto compare = [](Coefficient a, Coefficient b){ return a > b; };
+        std::sort(indexData.begin(), indexData.end());
 
         //for(uint j = 0; j < 6; j++){
         //    cout << indexData[j].vector_pos << " " << indexData[j].value << endl;
@@ -1236,15 +1325,15 @@ int testShuffleDictionary(int argc, char *argv[]){
 
     string paramFile(argv[1]);
     map<string,string> parameters;
-	vector<IIndexer*> indexers;
-	vector<IAnalyser*> analysers;
-	vector<IClassifier*> classifiers;
-	vector<IEndpoint*> endpoints;
+    vector<IIndexer*> indexers;
+    vector<IAnalyser*> analysers;
+    vector<IClassifier*> classifiers;
+    vector<IEndpoint*> endpoints;
 
 
 
 
-	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
+    LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
 
     string dictionaryS = parameters["dictionary"];
     string queryS = parameters["query"];
@@ -1438,12 +1527,12 @@ int testPivotBucket(int argc, char *argv[]){
 
     string paramFile(argv[1]);
     map<string,string> parameters;
-	vector<IIndexer*> indexers;
-	vector<IAnalyser*> analysers;
-	vector<IClassifier*> classifiers;
-	vector<IEndpoint*> endpoints;
+    vector<IIndexer*> indexers;
+    vector<IAnalyser*> analysers;
+    vector<IClassifier*> classifiers;
+    vector<IEndpoint*> endpoints;
 
-	LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
+    LoadConfig::load(paramFile,parameters,indexers,analysers,classifiers,endpoints);
 
     string name;
 
@@ -1556,10 +1645,38 @@ int main(int argc, char *argv[]){
     //el::Helpers::setCrashHandler(myCrashHandler);
     //el::Loggers::addFlag( el::LoggingFlag::DisableApplicationAbortOnFatalLog );
     //el::Loggers::addFlag( el::LoggingFlag::ColoredTerminalOutput );
-    //arma::fmat D = arma::randu<arma::fmat>(960,1024);
-    //utils::normalize_columns(D);
-    //D.save("/media/Share/Documents/Dropbox/PhD/Projects/2015-12_DistributedIndexing/experiments/2016-02_005/seed1024_960.bin");
-    //exit(0);
+
+    /*
+    arma::fmat D = arma::randu<arma::fmat>(960,512);
+    utils::normalize_columns(D);
+    D.save("/nas/Public/amourao/localstore/2017-01_002_DistDict/GIST/seed512_960.bin");
+    D = arma::randu<arma::fmat>(960,2048);
+    utils::normalize_columns(D);
+    D.save("/nas/Public/amourao/localstore/2017-01_002_DistDict/GIST/seed2048_960.bin");
+    D = arma::randu<arma::fmat>(960,4096);
+    utils::normalize_columns(D);
+    D.save("/nas/Public/amourao/localstore/2017-01_002_DistDict/GIST/seed4096_960.bin");
+    D = arma::randu<arma::fmat>(960,8192);
+    utils::normalize_columns(D);
+    D.save("/nas/Public/amourao/localstore/2017-01_002_DistDict/GIST/seed8192_960.bin");
+
+
+    D = arma::randu<arma::fmat>(128,512);
+    utils::normalize_columns(D);
+    D.save("/nas/Public/amourao/localstore/2017-01_002_DistDict/SIFT/seed512_128.bin");
+    D = arma::randu<arma::fmat>(128,2048);
+    utils::normalize_columns(D);
+    D.save("/nas/Public/amourao/localstore/2017-01_002_DistDict/SIFT/seed2048_128.bin");
+    D = arma::randu<arma::fmat>(128,4096);
+    utils::normalize_columns(D);
+    D.save("/nas/Public/amourao/localstore/2017-01_002_DistDict/SIFT/seed4096_128.bin");
+    D = arma::randu<arma::fmat>(128,8192);
+    utils::normalize_columns(D);
+    D.save("/nas/Public/amourao/localstore/2017-01_002_DistDict/SIFT/seed8192_128.bin");
+
+
+    exit(0);
+    */
     /*
     cout << sizeof(char) << endl;
     cout << sizeof(short) << endl;
@@ -1617,6 +1734,12 @@ int main(int argc, char *argv[]){
         trainDictionary<uchar>(argc-1,&argv[1]);
     else if(StringTools::endsWith(string(argv[1]),"trainDictionaryGIST"))
         trainDictionary<float>(argc-1,&argv[1]);
+    else if(StringTools::endsWith(string(argv[1]),"fvecToHash"))
+        fvecToHash<uchar>(argc-1,&argv[1]);
+    else if(StringTools::endsWith(string(argv[1]),"fvecToHashGIST"))
+        fvecToHash<float>(argc-1,&argv[1]);
+    
+    
 
     return 0;
 }
