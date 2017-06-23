@@ -14,7 +14,7 @@ WINDRES = windres
 INC = -I/home/amourao/code/sparsereconstruction/ -I/nas/Public/amourao/code/sparsereconstruction/ -I/nas/Public/amourao/libs/include -I /opt/lapack/gnu/include -I /opt/fftw/3.3.4/gnu/mvapich2_eth/include 
 CFLAGS = -O2 -std=c++11 -Wall -fexceptions -fopenmp -DREAL_FLOAT -DUSE_GIST -DSTANDALONE_GIST -DPOCO_NO_FPENVIRONMENT
 RESINC = 
-LIBDIR = -L/localstore/searchservices/libs/lib/ -L/localstore/searchservices/libs/include/ -L/home/amourao/code/sparsereconstruction/ -L/nas/Public/amourao/libs/lib
+LIBDIR = -L/localstore/searchservices/libs/lib/ -L/localstore/searchservices/libs/include/ -L/home/amourao/code/sparsereconstruction/ -L/nas/Public/amourao/libs/lib -L/opt/hdf5/gnu/mvapich2_eth/lib/
 LIB = 
 LDFLAGS = -lrt -lhdf5 -ljsoncpp -lopencv_imgcodecs -lopencv_core -lopencv_imgproc -lopencv_calib3d -lopencv_video -lopencv_videoio -lopencv_photo -lopencv_xfeatures2d -lopencv_features2d -lopencv_ml -lopencv_highgui -lopencv_objdetect -lfftw3f -lfftw3 -lm -lopencv_flann -larmadillo -llapack -lblas -lPocoFoundation -lPocoData -lPocoDataSQLite -lPocoNet -lPocoXML -lPocoJSON -lPocoUtil -lcurl -ldb -ldb_cxx -fopenmp
 LDFLAGS2 = -fopenmp -ljsoncpp -lopencv_core -lopencv_imgcodecs -lopencv_imgproc -lopencv_calib3d -lopencv_videoio -lopencv_video -lopencv_photo -lopencv_features2d -lopencv_xfeatures2d -lopencv_ml -lopencv_highgui -lopencv_objdetect -lfftw3 -lfftw3f -lm -lopencv_flann -larmadillo -lPocoFoundation -lPocoData -lPocoDataSQLite -lPocoNet -lPocoXML -lPocoJSON -lPocoUtil -lcurl -ldb -ldb_cxx  -fopenmp
